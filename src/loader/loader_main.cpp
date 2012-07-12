@@ -1,7 +1,7 @@
 /**
 * =============================================================================
-* Eventscripts
-* Copyright (C) 2012 Eventscripts Development Team.  All rights reserved.
+* Source Python
+* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -16,7 +16,7 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Eventscripts Development Team gives you permission 
+* As a special exception, the Source Python Team gives you permission 
 * to link the code of this program (as well as its derivative works) to 
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
@@ -83,8 +83,8 @@ bool CEventscriptsPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterf
 	char szEventscripts[1024];
 
 	// Load all of the Eventscripts dependencies first.
-	V_snprintf(szPythonHome, 1024, "%s/addons/eventscripts/engines", szGameDir);
-	V_snprintf(szEventscripts, sizeof(szEventscripts), "%s/addons/eventscripts/%s", szGameDir, CORE_NAME);
+	V_snprintf(szPythonHome, 1024, "%s/addons/source-python/engines", szGameDir);
+	V_snprintf(szEventscripts, sizeof(szEventscripts), "%s/addons/source-python/%s", szGameDir, CORE_NAME);
 	V_snprintf(szPythonEngine, sizeof(szPythonEngine), "%s/%s", szPythonHome, PYLIB_NAME);
 
 	// Fixup the paths with the correct slashes.
@@ -93,7 +93,7 @@ bool CEventscriptsPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterf
 	V_FixSlashes(szPythonEngine);
 
 	// Load python as the core depends on it.
-	Msg("[ES-LOADER] Loading %s\n", szPythonEngine);
+	Msg("[SP-LOADER] Loading %s\n", szPythonEngine);
 
 #ifdef _WIN32
 	m_pPython = Sys_LoadModule(szPythonEngine);
@@ -108,7 +108,7 @@ bool CEventscriptsPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterf
 	
 	if( !m_pPython ) {
 		Warning("===========================================\n");
-		Warning("[ES-LOADER] Could not load %s!\n", szPythonEngine);
+		Warning("[SP-LOADER] Could not load %s!\n", szPythonEngine);
 		Warning("===========================================\n");
 		return false;
 	}
@@ -118,7 +118,7 @@ bool CEventscriptsPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterf
 
 	if( !m_pCore->GetFactory() ) {
 		Warning("===========================================\n");
-		Warning("[ES-LOADER] Could not load the %s!\n", szEventscripts);
+		Warning("[SP-LOADER] Could not load the %s!\n", szEventscripts);
 		Warning("===========================================\n");
 		return false;
 	}
@@ -130,7 +130,7 @@ bool CEventscriptsPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterf
 
 	if( !m_pCorePlugin ) {
 		Warning("=========================================================================\n");
-		Warning("[ES-LOADER] Could not retrieve the server plugin interface from the core!\n");
+		Warning("[SP-LOADER] Could not retrieve the server plugin interface from the core!\n");
 		Warning("=========================================================================\n");
 		return false;
 	}

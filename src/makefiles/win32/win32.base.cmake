@@ -24,7 +24,7 @@ Include_Directories(
 )
 
 # ------------------------------------------------------------------
-# Required to get ES to compile on MSVC for csgo.
+# Required to get SP to compile on MSVC for csgo.
 # ------------------------------------------------------------------
 Add_Definitions(-DCOMPILER_MSVC -DCOMPILER_MSVC32)
 
@@ -51,7 +51,7 @@ Set(CMAKE_SHARED_LINKER_FLAGS_RELEASE
 # ------------------------------------------------------------------
 # Link libraries.
 # ------------------------------------------------------------------
-Set(EVENTSCRIPTS_LINK_LIBRARIES
+Set(SOURCEPYTHON_LINK_LIBRARIES
     ${SOURCESDK_LIB}/public/tier0.lib
     ${SOURCESDK_LIB}/public/tier1.lib
     ${SOURCESDK_LIB}/public/tier2.lib
@@ -64,7 +64,7 @@ Set(EVENTSCRIPTS_LINK_LIBRARIES
 # ------------------------------------------------------------------
 # Debug link libraries
 # ------------------------------------------------------------------
-Set(EVENTSCRIPTS_LINK_LIBRARIES_DEBUG 
+Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG 
     debug ${PYTHONSDK_LIB}/python33_d.lib 
     debug ${BOOSTSDK_LIB}/libboost_python-vc-mt-gyd-1_50.lib
 )
@@ -72,7 +72,7 @@ Set(EVENTSCRIPTS_LINK_LIBRARIES_DEBUG
 # ------------------------------------------------------------------
 # Release link libraries
 # ------------------------------------------------------------------
-Set(EVENTSCRIPTS_LINK_LIBRARIES_RELEASE 
+Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE 
     optimized ${PYTHONSDK_LIB}/python33.lib 
     optimized ${BOOSTSDK_LIB}/libboost_python-vc-mt-y-1_50.lib
 )

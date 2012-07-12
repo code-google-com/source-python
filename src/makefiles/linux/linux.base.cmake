@@ -33,7 +33,7 @@ Include_Directories(
 # ------------------------------------------------------------------
 # Link libraries.
 # ------------------------------------------------------------------
-Set(EVENTSCRIPTS_LINK_LIBRARIES
+Set(SOURCEPYTHON_LINK_LIBRARIES
     pthread dl util
     ${SOURCESDK_LIB}/linux/mathlib_i486.a
     ${SOURCESDK_LIB}/linux/interfaces_i486.a
@@ -68,13 +68,13 @@ EndIf()
 # Stub these out because cmake doesn't set debug/release libraries
 # correctly...
 # ------------------------------------------------------------------
-Set(EVENTSCRIPTS_LINK_LIBRARIES_RELEASE
+Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
     ${PYTHONSDK_LIB}/libpython3.3m.a
     ${BOOSTSDK_LIB}/libboost_python.a
     ${PYTHONSDK_LIB}/libpython3.3m.so.1.0    
 )
 
-Set(EVENTSCRIPTS_LINK_LIBRARIES_DEBUG
+Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
     ${PYTHONSDK_LIB}/libpython3.3dm.a
     ${BOOSTSDK_LIB}/libboost_python_d.a
     ${PYTHONSDK_LIB}/libpython3.3dm.so.1.0

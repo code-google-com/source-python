@@ -18,13 +18,13 @@ EndIf()
 # Setup include paths.
 # Note that ${GAME} here is passed on the command line.
 # ------------------------------------------------------------------
-Set(SOURCESDKS_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/sdks)
+Set(SOURCESDK_DIR        ${CMAKE_CURRENT_SOURCE_DIR}/sdks)
 Set(THIRDPARTY_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
 
 # ------------------------------------------------------------------
 # SDK Directories.
 # ------------------------------------------------------------------
-Set(SOURCESDK            ${SOURCESDKS_DIR}/hl2sdk-${GAME})
+Set(SOURCESDK            ${SOURCESDK_DIR}/hl2sdk-${GAME})
 Set(SOURCESDK_LIB        ${SOURCESDK}/lib)
 
 # ------------------------------------------------------------------
@@ -57,7 +57,7 @@ Add_Definitions(
 # ------------------------------------------------------------------
 # The project.
 # ------------------------------------------------------------------
-Project(Eventscripts C CXX)
+Project(SourcePython C CXX)
 
 # ------------------------------------------------------------------
 # Get rid of the library prefix for all distributions.

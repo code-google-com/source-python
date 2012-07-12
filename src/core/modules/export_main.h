@@ -1,7 +1,7 @@
 /**
 * =============================================================================
-* Eventscripts
-* Copyright (C) 2012 Eventscripts Development Team.  All rights reserved.
+* Source Python
+* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -16,7 +16,7 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Eventscripts Development Team gives you permission 
+* As a special exception, the Source Python Team gives you permission 
 * to link the code of this program (as well as its derivative works) to 
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
@@ -45,7 +45,7 @@ typedef void (*ModuleInitFn)( void );
 //---------------------------------------------------------------------------------
 // This declares an eventscripts module.
 //---------------------------------------------------------------------------------
-#define DECLARE_ES_MODULE( name ) \
+#define DECLARE_sp_MODULE( name ) \
 	void PyInit_##name( void ); \
 	static CESModule g_##name##_Init(XSTRINGIFY(name), &PyInit_##name); \
 	void PyInit_##name( void )
@@ -91,6 +91,6 @@ class CESModule
 //---------------------------------------------------------------------------------
 // Exports everything we're exposing from boost to python.
 //---------------------------------------------------------------------------------
-extern void modules_init( void );
+extern void modulsp_init( void );
 
 #endif // _EXPORT_MAIN_H

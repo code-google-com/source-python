@@ -1,7 +1,7 @@
 /**
 * =============================================================================
-* Eventscripts
-* Copyright (C) 2012 Eventscripts Development Team.  All rights reserved.
+* Source Python
+* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -16,7 +16,7 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Eventscripts Development Team gives you permission 
+* As a special exception, the Source Python Team gives you permission 
 * to link the code of this program (as well as its derivative works) to 
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
@@ -28,7 +28,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "export_main.h"
-#include "core/es_python.h"
+#include "core/sp_python.h"
 #include "utility/wrap_macros.h"
 #include "eiface.h"
 
@@ -44,7 +44,7 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 // Wraps player related structures.
 //---------------------------------------------------------------------------------
-DECLARE_ES_MODULE(entity)
+DECLARE_sp_MODULE(entity)
 {
 	
 }
