@@ -35,11 +35,11 @@
 //---------------------------------------------------------------------------------
 // Purpose: a sample 3rd party plugin class
 //---------------------------------------------------------------------------------
-class CEventscriptsPlugin: public IServerPluginCallbacks, public IGameEventListener2
+class CSourcePython: public IServerPluginCallbacks, public IGameEventListener2
 {
 public:
-	CEventscriptsPlugin();
-	~CEventscriptsPlugin();
+	CSourcePython();
+	~CSourcePython();
 
 	// IServerPluginCallbacks methods
 	virtual bool			Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory );

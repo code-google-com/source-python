@@ -49,6 +49,12 @@ using namespace boost::python;
 		return __VA_ARGS__; \
 	}
 
+#define END_BOOST_PY_NORET( ... ) \
+	} catch( ... ) { \
+		PyErr_Print(); \
+		PyErr_Clear(); \
+	}
+
 //---------------------------------------------------------------------------------
 // This macro will turn input into a string.
 //---------------------------------------------------------------------------------

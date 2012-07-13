@@ -53,6 +53,7 @@ class CAddonManager
 		// Addon functionality.
 		bool LoadAddon( char* szName );
 		bool UnloadAddon( char* szName );
+		bool ReloadAddon( char* szName );
 		void PrintAddons( void );
 
 		// Required by IGameEventListener2.

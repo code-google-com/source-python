@@ -49,9 +49,7 @@ CAddonManager g_AddonManager;
 //---------------------------------------------------------------------------------
 CAddonManager::CAddonManager( void )
 {
-	// Import the core file.
-	DevMsg(1, "[SP] Importing sp.py..");
-	m_SpPy = boost::python::import("sp");
+
 }
 
 //---------------------------------------------------------------------------------
@@ -67,7 +65,13 @@ CAddonManager::~CAddonManager( void )
 //---------------------------------------------------------------------------------
 void CAddonManager::FireGameEvent( IGameEvent* event )
 {
-	
+	// Pass that on to python.
+	python::object mainFile = g_PythonManager.GetGlobals();
+
+	// Execute addon_load.
+	BEGIN_BOOST_PY()
+		mainFile["event_fire"](python::ptr(event));
+	END_BOOST_PY();
 }
 
 //---------------------------------------------------------------------------------
@@ -75,7 +79,14 @@ void CAddonManager::FireGameEvent( IGameEvent* event )
 //---------------------------------------------------------------------------------
 bool CAddonManager::LoadAddon( char* szName )
 {
-	return true;
+	// Pass that on to python.
+	python::object mainFile = g_PythonManager.GetGlobals();
+
+	// Execute addon_load.
+	// TODO: Add error handling.
+	BEGIN_BOOST_PY()
+		mainFile["addon_load"](szName);
+	END_BOOST_PY(true);
 }
 
 //---------------------------------------------------------------------------------
@@ -83,15 +94,29 @@ bool CAddonManager::LoadAddon( char* szName )
 //---------------------------------------------------------------------------------
 bool CAddonManager::UnloadAddon( char* szName )
 {
-	return true;
+	// Pass that on to python.
+	python::object mainFile = g_PythonManager.GetGlobals();
+
+	// Execute addon_load.
+	// TODO: Add error handling.
+	BEGIN_BOOST_PY()
+		mainFile["addon_unload"](szName);
+	END_BOOST_PY(true);
 }
 
 //---------------------------------------------------------------------------------
-// Prints out addon information.
+// Reloads an addon.
 //---------------------------------------------------------------------------------
-void CAddonManager::PrintAddons( void )
+bool CAddonManager::ReloadAddon( char* szName )
 {
-	
+	// Pass that on to python.
+	python::object mainFile = g_PythonManager.GetGlobals();
+
+	// Execute addon_load.
+	// TODO: Add error handling.
+	BEGIN_BOOST_PY()
+		mainFile["addon_reload"](szName);
+	END_BOOST_PY(true);
 }
 
 //---------------------------------------------------------------------------------
@@ -99,7 +124,12 @@ void CAddonManager::PrintAddons( void )
 //---------------------------------------------------------------------------------
 CON_COMMAND(sp_load, "Loads a python addon.")
 {
-	
+	if( args.ArgC() < 2 ) {
+		g_AddonManager.LoadAddon("");
+		return;
+	}
+
+	g_AddonManager.LoadAddon((char *)args.Arg(1));
 }
 
 //---------------------------------------------------------------------------------
@@ -107,5 +137,23 @@ CON_COMMAND(sp_load, "Loads a python addon.")
 //---------------------------------------------------------------------------------
 CON_COMMAND(sp_unload, "Unloads a python addon.")
 {
-	
+	if( args.ArgC() < 2 ) {
+		Msg("Usage: sp_unload <addon-name>\n");
+		return;
+	}
+
+	g_AddonManager.UnloadAddon((char *)args.Arg(1));
+}
+
+//---------------------------------------------------------------------------------
+// Console command to reload an addon.
+//---------------------------------------------------------------------------------
+CON_COMMAND(sp_reload, "Reloads a python addon.")
+{
+	if( args.ArgC() < 2 ) {
+		Msg("Usage: sp_reload <addon-name>\n");
+		return;
+	}
+
+	g_AddonManager.ReloadAddon((char *)args.Arg(1));
 }

@@ -50,26 +50,26 @@ ICvar* g_pCVar = NULL; // This is required for linux linking..
 // 
 // The plugin is a static singleton that is exported as an interface
 //
-CEventscriptsPlugin g_EmtpyServerPlugin;
-EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CEventscriptsPlugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_EmtpyServerPlugin );
+CSourcePython g_EmtpyServerPlugin;
+EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSourcePython, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_EmtpyServerPlugin );
 
 //---------------------------------------------------------------------------------
 // Purpose: constructor/destructor
 //---------------------------------------------------------------------------------
-CEventscriptsPlugin::CEventscriptsPlugin()
+CSourcePython::CSourcePython()
 {
 	m_iClientCommandIndex = 0;
 	m_pCore = NULL;
 }
 
-CEventscriptsPlugin::~CEventscriptsPlugin()
+CSourcePython::~CSourcePython()
 {
 }
 
 //---------------------------------------------------------------------------------
 // Purpose: called when the plugin is loaded, load the interface we need from the engine
 //---------------------------------------------------------------------------------
-bool CEventscriptsPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
+bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
 	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 
@@ -142,7 +142,7 @@ bool CEventscriptsPlugin::Load(	CreateInterfaceFn interfaceFactory, CreateInterf
 //---------------------------------------------------------------------------------
 // Purpose: called when the plugin is unloaded (turned off)
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::Unload( void )
+void CSourcePython::Unload( void )
 {
 	m_pCorePlugin->Unload();
 }
@@ -150,7 +150,7 @@ void CEventscriptsPlugin::Unload( void )
 //---------------------------------------------------------------------------------
 // Purpose: called when the plugin is paused (i.e should stop running but isn't unloaded)
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::Pause( void )
+void CSourcePython::Pause( void )
 {
 	m_pCorePlugin->Pause();
 }
@@ -158,7 +158,7 @@ void CEventscriptsPlugin::Pause( void )
 //---------------------------------------------------------------------------------
 // Purpose: called when the plugin is unpaused (i.e should start executing again)
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::UnPause( void )
+void CSourcePython::UnPause( void )
 {
 	m_pCorePlugin->UnPause();
 }
@@ -166,7 +166,7 @@ void CEventscriptsPlugin::UnPause( void )
 //---------------------------------------------------------------------------------
 // Purpose: the name of this plugin, returned in "plugin_print" command
 //---------------------------------------------------------------------------------
-const char *CEventscriptsPlugin::GetPluginDescription( void )
+const char *CSourcePython::GetPluginDescription( void )
 {
 	return m_pCorePlugin->GetPluginDescription();
 }
@@ -174,7 +174,7 @@ const char *CEventscriptsPlugin::GetPluginDescription( void )
 //---------------------------------------------------------------------------------
 // Purpose: called on level start
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::LevelInit( char const *pMapName )
+void CSourcePython::LevelInit( char const *pMapName )
 {
 	m_pCorePlugin->LevelInit(pMapName);
 }
@@ -183,7 +183,7 @@ void CEventscriptsPlugin::LevelInit( char const *pMapName )
 // Purpose: called on level start, when the server is ready to accept client connections
 //		edictCount is the number of entities in the level, clientMax is the max client count
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
+void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
 	m_pCorePlugin->ServerActivate(pEdictList, edictCount, clientMax);
 }
@@ -191,7 +191,7 @@ void CEventscriptsPlugin::ServerActivate( edict_t *pEdictList, int edictCount, i
 //---------------------------------------------------------------------------------
 // Purpose: called once per server frame, do recurring work here (like checking for timeouts)
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::GameFrame( bool simulating )
+void CSourcePython::GameFrame( bool simulating )
 {
 	m_pCorePlugin->GameFrame(simulating);
 }
@@ -199,7 +199,7 @@ void CEventscriptsPlugin::GameFrame( bool simulating )
 //---------------------------------------------------------------------------------
 // Purpose: called on level end (as the server is shutting down or going to a new map)
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::LevelShutdown( void ) // !!!!this can get called multiple times per map change
+void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple times per map change
 {
 	m_pCorePlugin->LevelShutdown();
 }
@@ -207,7 +207,7 @@ void CEventscriptsPlugin::LevelShutdown( void ) // !!!!this can get called multi
 //---------------------------------------------------------------------------------
 // Purpose: called when a client spawns into a server (i.e as they begin to play)
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::ClientActive( edict_t *pEntity )
+void CSourcePython::ClientActive( edict_t *pEntity )
 {
 	m_pCorePlugin->ClientActive(pEntity);
 }
@@ -215,7 +215,7 @@ void CEventscriptsPlugin::ClientActive( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 // Purpose: called when a client leaves a server (or is timed out)
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::ClientDisconnect( edict_t *pEntity )
+void CSourcePython::ClientDisconnect( edict_t *pEntity )
 {
 	m_pCorePlugin->ClientDisconnect(pEntity);
 }
@@ -223,7 +223,7 @@ void CEventscriptsPlugin::ClientDisconnect( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 // Purpose: called on 
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::ClientPutInServer( edict_t *pEntity, char const *playername )
+void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
 	m_pCorePlugin->ClientPutInServer(pEntity, playername);
 }
@@ -231,7 +231,7 @@ void CEventscriptsPlugin::ClientPutInServer( edict_t *pEntity, char const *playe
 //---------------------------------------------------------------------------------
 // Purpose: called on level start
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::SetCommandClient( int index )
+void CSourcePython::SetCommandClient( int index )
 {
 	m_pCorePlugin->SetCommandClient(index);
 }
@@ -239,7 +239,7 @@ void CEventscriptsPlugin::SetCommandClient( int index )
 //---------------------------------------------------------------------------------
 // Purpose: called on level start
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::ClientSettingsChanged( edict_t *pEdict )
+void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 {
 	m_pCorePlugin->ClientSettingsChanged(pEdict);
 }
@@ -247,7 +247,7 @@ void CEventscriptsPlugin::ClientSettingsChanged( edict_t *pEdict )
 //---------------------------------------------------------------------------------
 // Purpose: called when a client joins a server
 //---------------------------------------------------------------------------------
-PLUGIN_RESULT CEventscriptsPlugin::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
+PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
 	return m_pCorePlugin->ClientConnect(bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
 }
@@ -255,7 +255,7 @@ PLUGIN_RESULT CEventscriptsPlugin::ClientConnect( bool *bAllowConnect, edict_t *
 //---------------------------------------------------------------------------------
 // Purpose: called when a client is authenticated
 //---------------------------------------------------------------------------------
-PLUGIN_RESULT CEventscriptsPlugin::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
+PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
 	return m_pCorePlugin->NetworkIDValidated(pszUserName, pszNetworkID);
 }
@@ -263,7 +263,7 @@ PLUGIN_RESULT CEventscriptsPlugin::NetworkIDValidated( const char *pszUserName, 
 //---------------------------------------------------------------------------------
 // Purpose: called when a cvar value query is finished
 //---------------------------------------------------------------------------------
-void CEventscriptsPlugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, 
+void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, 
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
 	m_pCorePlugin->OnQueryCvarValueFinished(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
@@ -273,9 +273,9 @@ void CEventscriptsPlugin::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, e
 // Orangebox.
 //---------------------------------------------------------------------------------
 #if(SOURCE_ENGINE >= 1)
-PLUGIN_RESULT CEventscriptsPlugin::ClientCommand( edict_t *pEntity, const CCommand &args )
+PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
 #else
-PLUGIN_RESULT CEventscriptsPlugin::ClientCommand( edict_t* pEntity )
+PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
 #endif
 {
 	return m_pCorePlugin->ClientCommand(pEntity, args);
@@ -285,17 +285,17 @@ PLUGIN_RESULT CEventscriptsPlugin::ClientCommand( edict_t* pEntity )
 // Alien Swarm.
 //---------------------------------------------------------------------------------
 #if(SOURCE_ENGINE >= 3)
-void CEventscriptsPlugin::ClientFullyConnect( edict_t *pEntity )
+void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
 	m_pCorePlugin->ClientFullyConnect(pEntity);
 }
 
-void CEventscriptsPlugin::OnEdictAllocated( edict_t *edict )
+void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
 	m_pCorePlugin->OnEdictAllocated(edict);
 }
 
-void CEventscriptsPlugin::OnEdictFreed( const edict_t *edict )
+void CSourcePython::OnEdictFreed( const edict_t *edict )
 {
 	m_pCorePlugin->OnEdictFreed(edict);
 }
