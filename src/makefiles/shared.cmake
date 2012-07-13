@@ -57,7 +57,7 @@ Add_Definitions(
 # ------------------------------------------------------------------
 # The project.
 # ------------------------------------------------------------------
-Project(SourcePython C CXX)
+Project(source-python C CXX)
 
 # ------------------------------------------------------------------
 # Get rid of the library prefix for all distributions.

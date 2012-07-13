@@ -23,72 +23,45 @@
 * all respects for all other code used.  Additionally, the Eventscripts
 * Development Team grants this exception to all derivative works.  
 */
+#ifndef _sp_ADDON_H
+#define _sp_ADDON_H
 
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "boost/python.hpp"
-#include "export_main.h"
-#include "tier0/dbg.h"
+#include "core/sp_python.h"
+#include "utllinkedlist.h"
+#include "igameevents.h"
 
 //---------------------------------------------------------------------------------
-// Namespaces to use
+// Defines
 //---------------------------------------------------------------------------------
-using namespace boost::python;
+#define MAX_ADDON_NAME 64
 
 //---------------------------------------------------------------------------------
-// Global module definition array.
+// Addon manager.
 //---------------------------------------------------------------------------------
-EventscriptsModule_t g_EventscriptsModules[MAX_EVENTSCRIPTS_MODULES];
-
-//---------------------------------------------------------------------------------
-// Static variable initializer.
-//---------------------------------------------------------------------------------
-int CESModule::nextFreeModule = 0;
-
-//---------------------------------------------------------------------------------
-// The ES module. Never remove this function as we need it in order to be able
-// to execute 'import sp; from sp import event'.
-//---------------------------------------------------------------------------------
-BOOST_PYTHON_MODULE(sp)
+class CAddonManager
 {
+	private:
+		python::object m_SpPy;
 
-}
+	public:
+		CAddonManager( void );
+		~CAddonManager( void );
+
+		// Addon functionality.
+		bool LoadAddon( char* szName );
+		bool UnloadAddon( char* szName );
+		void PrintAddons( void );
+
+		// Required by IGameEventListener2.
+		void FireGameEvent( IGameEvent* event );
+};
 
 //---------------------------------------------------------------------------------
-// Initializes all python modules
+// Static singleton.
 //---------------------------------------------------------------------------------
-void modulsp_init( void )
-{
-	// Get the Eventscripts module
-	object esmodule(borrowed(PyImport_AddModule("sp")));
+extern CAddonManager g_AddonManager;
 
-	// Now iterate through all submodules and add them.
-	for( int i = 0; i < MAX_EVENTSCRIPTS_MODULES; i++ ) {
-		// Break out if we are at the end.
-		if( !g_EventscriptsModules[i].szName ) {
-			return;
-		}
-
-		// Get the module name.
-		char* szModuleName = g_EventscriptsModules[i].szName;
-
-		// Debug info.
-		DevMsg(1, "[SP] Initializing %s submodule\n", szModuleName);
-
-		// Set the new module as the current scope.
-		object newmodule(borrowed(PyImport_AddModule(szModuleName)));
-		
-		// Add the module to the es module.
-		esmodule.attr(szModuleName) = newmodule;
-
-		// We're now working with the submodule.
-		scope moduleScope = newmodule;
-
-		// Run the module's init function.
-		g_EventscriptsModules[i].initFunc();
-
-		// Add the module to the import table.
-		// PyImport_AppendInittab(g_EventscriptsModules[i].szName, g_EventscriptsModules[i].initFunc);
-	}
-}
+#endif // _sp_ADDON_H

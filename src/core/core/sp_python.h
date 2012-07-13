@@ -23,72 +23,40 @@
 * all respects for all other code used.  Additionally, the Eventscripts
 * Development Team grants this exception to all derivative works.  
 */
+#ifndef _sp_PYTHON_H
+#define _sp_PYTHON_H
 
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
+#include "boost/python/detail/wrap_python.hpp"
 #include "boost/python.hpp"
-#include "export_main.h"
-#include "tier0/dbg.h"
 
 //---------------------------------------------------------------------------------
-// Namespaces to use
+// Namespaces
 //---------------------------------------------------------------------------------
-using namespace boost::python;
+using namespace boost;
 
 //---------------------------------------------------------------------------------
-// Global module definition array.
+// This is the python manager class.
 //---------------------------------------------------------------------------------
-EventscriptsModule_t g_EventscriptsModules[MAX_EVENTSCRIPTS_MODULES];
-
-//---------------------------------------------------------------------------------
-// Static variable initializer.
-//---------------------------------------------------------------------------------
-int CESModule::nextFreeModule = 0;
-
-//---------------------------------------------------------------------------------
-// The ES module. Never remove this function as we need it in order to be able
-// to execute 'import sp; from sp import event'.
-//---------------------------------------------------------------------------------
-BOOST_PYTHON_MODULE(sp)
+class CPythonManager
 {
+	private:
+		python::object m_MainModule;
+		python::object m_MainNameSpace;
 
-}
+	public:
+		bool Initialize( void );
+		bool Shutdown( void );
+
+		python::object& GetGlobals( void ) { return m_MainNameSpace; }
+		python::object& GetLocals( void ) { return m_MainModule; }
+};
 
 //---------------------------------------------------------------------------------
-// Initializes all python modules
+// The singleton.
 //---------------------------------------------------------------------------------
-void modulsp_init( void )
-{
-	// Get the Eventscripts module
-	object esmodule(borrowed(PyImport_AddModule("sp")));
+extern CPythonManager g_PythonManager;
 
-	// Now iterate through all submodules and add them.
-	for( int i = 0; i < MAX_EVENTSCRIPTS_MODULES; i++ ) {
-		// Break out if we are at the end.
-		if( !g_EventscriptsModules[i].szName ) {
-			return;
-		}
-
-		// Get the module name.
-		char* szModuleName = g_EventscriptsModules[i].szName;
-
-		// Debug info.
-		DevMsg(1, "[SP] Initializing %s submodule\n", szModuleName);
-
-		// Set the new module as the current scope.
-		object newmodule(borrowed(PyImport_AddModule(szModuleName)));
-		
-		// Add the module to the es module.
-		esmodule.attr(szModuleName) = newmodule;
-
-		// We're now working with the submodule.
-		scope moduleScope = newmodule;
-
-		// Run the module's init function.
-		g_EventscriptsModules[i].initFunc();
-
-		// Add the module to the import table.
-		// PyImport_AppendInittab(g_EventscriptsModules[i].szName, g_EventscriptsModules[i].initFunc);
-	}
-}
+#endif // _sp_PYTHON_H

@@ -27,68 +27,55 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "boost/python.hpp"
-#include "export_main.h"
-#include "tier0/dbg.h"
+#include "sp_gamedir.h"
+#include "eiface.h"
+#include "strtools.h"
 
 //---------------------------------------------------------------------------------
-// Namespaces to use
+// External variables we need.
 //---------------------------------------------------------------------------------
-using namespace boost::python;
+extern IVEngineServer* engine;
 
 //---------------------------------------------------------------------------------
-// Global module definition array.
+// Static singleton
 //---------------------------------------------------------------------------------
-EventscriptsModule_t g_EventscriptsModules[MAX_EVENTSCRIPTS_MODULES];
+CGamePaths g_GamePaths;
 
 //---------------------------------------------------------------------------------
-// Static variable initializer.
+// Initializes game paths.
 //---------------------------------------------------------------------------------
-int CESModule::nextFreeModule = 0;
-
-//---------------------------------------------------------------------------------
-// The ES module. Never remove this function as we need it in order to be able
-// to execute 'import sp; from sp import event'.
-//---------------------------------------------------------------------------------
-BOOST_PYTHON_MODULE(sp)
+bool CGamePaths::Initialize( void )
 {
+	if( !engine ) {
+		Msg("[SP] Could not initialize game paths! Engine pointer was invalid.\n");
+		return false;
+	}
 
+	engine->GetGameDir(m_szGameDir, MAX_GAME_PATH);
+	V_snprintf(m_szESDir, MAX_GAME_PATH, "%s%s", m_szGameDir, sp_ADDON_BASE);
+
+	// Fix slashes
+	V_FixSlashes(m_szGameDir);
+	V_FixSlashes(m_szESDir);
+
+	DevMsg(1, "[SP] Game directory is %s\n", m_szGameDir);
+	DevMsg(1, "[SP] Source-Python directory is %s\n", m_szESDir);
+
+	return true;
 }
 
 //---------------------------------------------------------------------------------
-// Initializes all python modules
+// Returns the path to the game directory.
 //---------------------------------------------------------------------------------
-void modulsp_init( void )
+char* CGamePaths::GetGameDir( void )
 {
-	// Get the Eventscripts module
-	object esmodule(borrowed(PyImport_AddModule("sp")));
+	return m_szGameDir;
+}
 
-	// Now iterate through all submodules and add them.
-	for( int i = 0; i < MAX_EVENTSCRIPTS_MODULES; i++ ) {
-		// Break out if we are at the end.
-		if( !g_EventscriptsModules[i].szName ) {
-			return;
-		}
-
-		// Get the module name.
-		char* szModuleName = g_EventscriptsModules[i].szName;
-
-		// Debug info.
-		DevMsg(1, "[SP] Initializing %s submodule\n", szModuleName);
-
-		// Set the new module as the current scope.
-		object newmodule(borrowed(PyImport_AddModule(szModuleName)));
-		
-		// Add the module to the es module.
-		esmodule.attr(szModuleName) = newmodule;
-
-		// We're now working with the submodule.
-		scope moduleScope = newmodule;
-
-		// Run the module's init function.
-		g_EventscriptsModules[i].initFunc();
-
-		// Add the module to the import table.
-		// PyImport_AppendInittab(g_EventscriptsModules[i].szName, g_EventscriptsModules[i].initFunc);
-	}
+//---------------------------------------------------------------------------------
+// Returns the path to the eventscripts addon directory.
+//---------------------------------------------------------------------------------
+char* CGamePaths::GetESDir( void )
+{
+	return m_szESDir;
 }

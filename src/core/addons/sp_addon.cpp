@@ -27,68 +27,85 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "boost/python.hpp"
-#include "export_main.h"
-#include "tier0/dbg.h"
+#include "sp_addon.h"
+#include "strtools.h"
+#include "convar.h"
+#include "filesystem.h"
+#include "core/sp_gamedir.h"
+#include "utility/wrap_macros.h"
 
 //---------------------------------------------------------------------------------
-// Namespaces to use
+// External variables
 //---------------------------------------------------------------------------------
-using namespace boost::python;
+extern IFileSystem* filesystem;
 
 //---------------------------------------------------------------------------------
-// Global module definition array.
+// Static singleton.
 //---------------------------------------------------------------------------------
-EventscriptsModule_t g_EventscriptsModules[MAX_EVENTSCRIPTS_MODULES];
+CAddonManager g_AddonManager;
 
 //---------------------------------------------------------------------------------
-// Static variable initializer.
+// Constructor
 //---------------------------------------------------------------------------------
-int CESModule::nextFreeModule = 0;
-
-//---------------------------------------------------------------------------------
-// The ES module. Never remove this function as we need it in order to be able
-// to execute 'import sp; from sp import event'.
-//---------------------------------------------------------------------------------
-BOOST_PYTHON_MODULE(sp)
+CAddonManager::CAddonManager( void )
 {
-
+	// Import the core file.
+	DevMsg(1, "[SP] Importing sp.py..");
+	m_SpPy = boost::python::import("sp");
 }
 
 //---------------------------------------------------------------------------------
-// Initializes all python modules
+// Destructor
 //---------------------------------------------------------------------------------
-void modulsp_init( void )
+CAddonManager::~CAddonManager( void )
 {
-	// Get the Eventscripts module
-	object esmodule(borrowed(PyImport_AddModule("sp")));
+	
+}
 
-	// Now iterate through all submodules and add them.
-	for( int i = 0; i < MAX_EVENTSCRIPTS_MODULES; i++ ) {
-		// Break out if we are at the end.
-		if( !g_EventscriptsModules[i].szName ) {
-			return;
-		}
+//---------------------------------------------------------------------------------
+// Fires game event.
+//---------------------------------------------------------------------------------
+void CAddonManager::FireGameEvent( IGameEvent* event )
+{
+	
+}
 
-		// Get the module name.
-		char* szModuleName = g_EventscriptsModules[i].szName;
+//---------------------------------------------------------------------------------
+// Loads an addon.
+//---------------------------------------------------------------------------------
+bool CAddonManager::LoadAddon( char* szName )
+{
+	return true;
+}
 
-		// Debug info.
-		DevMsg(1, "[SP] Initializing %s submodule\n", szModuleName);
+//---------------------------------------------------------------------------------
+// Unloads an addon
+//---------------------------------------------------------------------------------
+bool CAddonManager::UnloadAddon( char* szName )
+{
+	return true;
+}
 
-		// Set the new module as the current scope.
-		object newmodule(borrowed(PyImport_AddModule(szModuleName)));
-		
-		// Add the module to the es module.
-		esmodule.attr(szModuleName) = newmodule;
+//---------------------------------------------------------------------------------
+// Prints out addon information.
+//---------------------------------------------------------------------------------
+void CAddonManager::PrintAddons( void )
+{
+	
+}
 
-		// We're now working with the submodule.
-		scope moduleScope = newmodule;
+//---------------------------------------------------------------------------------
+// Console command to load an addon
+//---------------------------------------------------------------------------------
+CON_COMMAND(sp_load, "Loads a python addon.")
+{
+	
+}
 
-		// Run the module's init function.
-		g_EventscriptsModules[i].initFunc();
-
-		// Add the module to the import table.
-		// PyImport_AppendInittab(g_EventscriptsModules[i].szName, g_EventscriptsModules[i].initFunc);
-	}
+//---------------------------------------------------------------------------------
+// Console command to unload an addon
+//---------------------------------------------------------------------------------
+CON_COMMAND(sp_unload, "Unloads a python addon.")
+{
+	
 }

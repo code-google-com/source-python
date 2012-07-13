@@ -194,17 +194,18 @@ DECLARE_sp_MODULE(engine)
 			"Returns the number of used edict slots."
 		)
 
-		CLASS_METHOD(IVEngineServer,
-			GetPlayerNetInfo,
-			"Returns stats info interface for a client netchannel.",
-			args("playerIndex"),
-			reference_existing_object_policy()
-		)
+// 		CLASS_METHOD(IVEngineServer,
+// 			GetPlayerNetInfo,
+// 			"Returns stats info interface for a client netchannel.",
+// 			args("playerIndex"),
+// 			reference_existing_object_policy()
+// 		)
 
 		CLASS_METHOD(IVEngineServer,
 			CreateEdict,
 			"Creates an edict. If iForceEdictIndex is not -1, then it return the edict with that index.",
-			args("iForceEdictIndex")
+			args("iForceEdictIndex"),
+			reference_existing_object_policy()
 		)
 
 		CLASS_METHOD(IVEngineServer,

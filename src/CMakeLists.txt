@@ -137,22 +137,22 @@ Source_Group("Source Files\\Util"    FILES ${SOURCEPYTHON_UTIL_SOURCES})
 # attributes like Target_Link_Libraries need to be declared after 
 # this line.
 # ------------------------------------------------------------------
-Add_Library(Core SHARED 
+Add_Library(core SHARED 
 	${SOURCEPYTHON_CORE_FILES}
     ${SOURCEPYTHON_ADDON_FILES}
     ${SOURCEPYTHON_MODULE_FILES}
     ${SOURCEPYTHON_UTIL_FILES}
 )
 
-Add_Library(SourcePython SHARED
+Add_Library(source-python SHARED
     ${SOURCEPYTHON_LOADER_FILES}
 )
 
 # ------------------------------------------------------------------
 # Setup link libraries for this project.
 # ------------------------------------------------------------------
-Target_Link_Libraries(Core          ${SOURCEPYTHON_LINK_LIBRARIES})
-Target_Link_Libraries(SourcePython  ${SOURCEPYTHON_LINK_LIBRARIES})
+Target_Link_Libraries(core          ${SOURCEPYTHON_LINK_LIBRARIES})
+Target_Link_Libraries(source-python ${SOURCEPYTHON_LINK_LIBRARIES})
 
 # ------------------------------------------------------------------
 # This is a hack for linux which doesn't seem to have proper
@@ -160,12 +160,12 @@ Target_Link_Libraries(SourcePython  ${SOURCEPYTHON_LINK_LIBRARIES})
 # ------------------------------------------------------------------
 If(UNIX)
     If(CMAKE_BUILD_TYPE MATCHES Debug)
-        Target_Link_Libraries(Core ${SOURCEPYTHON_LINK_LIBRARIES_DEBUG})
+        Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_DEBUG})
     Else()
-        Target_Link_Libraries(Core ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE})
+        Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE})
     EndIf()
 Else()
     # Do it the correct way.
-    Target_Link_Libraries(Core ${SOURCEPYTHON_LINK_LIBRARIES_DEBUG})
-    Target_Link_Libraries(Core ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE})
+    Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_DEBUG})
+    Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE})
 EndIf()

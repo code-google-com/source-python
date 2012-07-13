@@ -23,72 +23,46 @@
 * all respects for all other code used.  Additionally, the Eventscripts
 * Development Team grants this exception to all derivative works.  
 */
+#ifndef _sp_GAMEDIR_H
+#define _sp_GAMEDIR_H
 
 //---------------------------------------------------------------------------------
-// Includes
+// Purpose: This file contains the CGamePaths class. This class is responsible
+// for constructing frequently used paths and caching them so they don't have to
+// be constantly reconstructed via engine->GameDir and the like. You must
+// initialize this class before anything else in the Core or else you will crash!
 //---------------------------------------------------------------------------------
-#include "boost/python.hpp"
-#include "export_main.h"
-#include "tier0/dbg.h"
 
 //---------------------------------------------------------------------------------
-// Namespaces to use
+// Defines
 //---------------------------------------------------------------------------------
-using namespace boost::python;
+#define MAX_GAME_PATH 1024
 
 //---------------------------------------------------------------------------------
-// Global module definition array.
+// Note, we are using '/' here as the path separator. We will later call v_fixslashes
+// which will replace it with '\\' on Win32 systems.
 //---------------------------------------------------------------------------------
-EventscriptsModule_t g_EventscriptsModules[MAX_EVENTSCRIPTS_MODULES];
+#define sp_ADDON_BASE "/addons/source-python"
 
 //---------------------------------------------------------------------------------
-// Static variable initializer.
+// The CGamePaths class.
 //---------------------------------------------------------------------------------
-int CESModule::nextFreeModule = 0;
-
-//---------------------------------------------------------------------------------
-// The ES module. Never remove this function as we need it in order to be able
-// to execute 'import sp; from sp import event'.
-//---------------------------------------------------------------------------------
-BOOST_PYTHON_MODULE(sp)
+class CGamePaths
 {
+	private:
+		char m_szGameDir[MAX_GAME_PATH];
+		char m_szESDir[MAX_GAME_PATH];
 
-}
-
-//---------------------------------------------------------------------------------
-// Initializes all python modules
-//---------------------------------------------------------------------------------
-void modulsp_init( void )
-{
-	// Get the Eventscripts module
-	object esmodule(borrowed(PyImport_AddModule("sp")));
-
-	// Now iterate through all submodules and add them.
-	for( int i = 0; i < MAX_EVENTSCRIPTS_MODULES; i++ ) {
-		// Break out if we are at the end.
-		if( !g_EventscriptsModules[i].szName ) {
-			return;
-		}
-
-		// Get the module name.
-		char* szModuleName = g_EventscriptsModules[i].szName;
-
-		// Debug info.
-		DevMsg(1, "[SP] Initializing %s submodule\n", szModuleName);
-
-		// Set the new module as the current scope.
-		object newmodule(borrowed(PyImport_AddModule(szModuleName)));
+	public:
+		bool Initialize( void );
 		
-		// Add the module to the es module.
-		esmodule.attr(szModuleName) = newmodule;
+		char* GetGameDir( void );
+		char* GetESDir( void );
+};
 
-		// We're now working with the submodule.
-		scope moduleScope = newmodule;
+//---------------------------------------------------------------------------------
+// Static singleton.
+//---------------------------------------------------------------------------------
+extern CGamePaths g_GamePaths;
 
-		// Run the module's init function.
-		g_EventscriptsModules[i].initFunc();
-
-		// Add the module to the import table.
-		// PyImport_AppendInittab(g_EventscriptsModules[i].szName, g_EventscriptsModules[i].initFunc);
-	}
-}
+#endif // _sp_GAMEDIR_H
