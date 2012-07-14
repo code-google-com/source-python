@@ -135,9 +135,6 @@ CON_COMMAND(sp_load, "Loads a python addon.")
 		return;
 	}
 
-	PyRun_SimpleString("import sp");
-	PyRun_SimpleString("print(sp.__dict__)");
-
 	g_AddonManager.LoadAddon((char *)args.Arg(1));
 }
 
