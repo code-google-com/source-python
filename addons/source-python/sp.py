@@ -29,6 +29,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+from addons.info import AddonInfo
 from addons.manager import AddonManager
 from events.manager import EventRegistry
 
@@ -36,21 +37,45 @@ from events.manager import EventRegistry
 # =============================================================================
 # >> CORE FUNCTIONS
 # =============================================================================
-def addon_load(addon_name=None):
+def addon_load(addon_name):
     ''' Called when a user executes sp_load. '''
 
     # Is an addon being loaded?
-    if addon_name is None:
+    if not addon_name:
 
         # Print start message for loaded addons
         print('[SP] Loaded Addons:')
-        print('======================================')
+        print('======================================\n')
 
         # Loop through all loaded addons
         for addon in AddonManager:
 
             # Print a message about the loaded addon
-            print('[SP] ' + addon)
+            print(addon + ':')
+
+            # Loop through the addon's globals
+            for instance in AddonManager[addon].globals:
+
+                # Get the instance's object
+                info = AddonManager[addon].globals[instance]
+
+                # Is the current instance an AddonInfo instance?
+                if not isinstance(info, AddonInfo):
+
+                    # If not, continue the loop
+                    continue
+
+                # Loop through all items in the AddonInfo instance
+                for item in info:
+
+                    # Print the item's name
+                    print('\t%s:' % item)
+
+                    # Print the item's value
+                    print('\t\t%s' % info[item])
+
+            # Print a blank Line between addons
+            print('\n')
 
         # Print closing message for loaded addons
         print('======================================')

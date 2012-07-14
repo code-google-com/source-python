@@ -135,12 +135,6 @@ class _LoadedAddon(object):
         # Loop through all items in the instance's dictionary
         for item in dict(instance.__dict__):
 
-            # Is the current item a magic method?
-            if item.startswith('__'):
-
-                # If so, simply continue the loop
-                continue
-
             # Get the object's module
             module += '.' + item
 
