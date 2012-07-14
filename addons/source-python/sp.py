@@ -111,7 +111,12 @@ def addon_unload(addon_name):
 
 def addon_reload(addon_name):
     ''' Called when a user executes sp_reload. '''
-    pass
+
+    # Unload the addon
+    addon_unload(addon_name)
+
+    # Load the addon
+    addon_load(addon_name)
 
 
 def event_fire(game_event):
