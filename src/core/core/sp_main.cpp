@@ -273,7 +273,7 @@ void CSourcePython::UnPause( void )
 //---------------------------------------------------------------------------------
 const char *CSourcePython::GetPluginDescription( void )
 {
-	return "Eventscripts, The Eventscripts Development Team";
+	return "Source Python, (C) 2012, Source Python Team.";
 }
 
 //---------------------------------------------------------------------------------
