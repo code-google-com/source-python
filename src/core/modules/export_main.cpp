@@ -28,6 +28,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "boost/python.hpp"
+#include "core/sp_python.h"
 #include "export_main.h"
 #include "tier0/dbg.h"
 
@@ -50,10 +51,10 @@ int CESModule::nextFreeModule = 0;
 // The ES module. Never remove this function as we need it in order to be able
 // to execute 'import sp; from sp import event'.
 //---------------------------------------------------------------------------------
-BOOST_PYTHON_MODULE(sp)
-{
-
-}
+// BOOST_PYTHON_MODULE(sp)
+// {
+// 
+// }
 
 //---------------------------------------------------------------------------------
 // Initializes all python modules
@@ -61,7 +62,8 @@ BOOST_PYTHON_MODULE(sp)
 void modulsp_init( void )
 {
 	// Get the Eventscripts module
-	object esmodule(borrowed(PyImport_AddModule("sp")));
+	// object esmodule(borrowed(PyImport_AddModule("sp")));
+	object esmodule(g_PythonManager.GetSP());
 
 	// Now iterate through all submodules and add them.
 	for( int i = 0; i < MAX_EVENTSCRIPTS_MODULES; i++ ) {

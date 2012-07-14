@@ -50,7 +50,7 @@ CPythonManager g_PythonManager;
 // This is externed because we need to manually import ES's core library into the
 // python namespace.
 //---------------------------------------------------------------------------------
-PyMODINIT_FUNC PyInit_sp( void );
+// PyMODINIT_FUNC PyInit_sp( void );
 
 //---------------------------------------------------------------------------------
 // Initializes python.
@@ -68,7 +68,7 @@ bool CPythonManager::Initialize( void )
 	V_strtowcs(szPythonHome, -1, wszPythonHome, 1024);
 
 	// Always add es as a module.
-	PyImport_AppendInittab("sp", &PyInit_sp);
+	// PyImport_AppendInittab("sp", &PyInit_sp);
 
 	// Set that as the python home directory.
  	Py_SetPythonHome(wszPythonHome);
@@ -112,9 +112,10 @@ bool CPythonManager::Initialize( void )
 // 	m_MainNameSpace = m_MainModule.attr("__dict__");
 	
 	// Import the main module file.
-	BEGIN_BOOST_PY()
-		m_MainModule = python::import("sp");
-	END_BOOST_PY_NORET() // Noret because we have more stuff to do after this import.
+	Msg("[SP] Importing main module..\n");
+ 	BEGIN_BOOST_PY()
+ 		m_SpPy = python::import("sp");
+ 	END_BOOST_PY_NORET(); // Noret because we have more stuff to do after this import.
 
 	// Initialize all submodules
 	modulsp_init();

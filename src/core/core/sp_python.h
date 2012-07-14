@@ -43,15 +43,15 @@ using namespace boost;
 class CPythonManager
 {
 	private:
-		python::object m_MainModule;
+		python::object m_SpPy;
 		python::object m_MainNameSpace;
 
 	public:
 		bool Initialize( void );
 		bool Shutdown( void );
 
-		python::object& GetGlobals( void ) { return m_MainNameSpace; }
-		python::object& GetLocals( void ) { return m_MainModule; }
+		// Returns the dict for sp.py.
+		python::object GetSP( void ) { return m_SpPy; }
 };
 
 //---------------------------------------------------------------------------------
