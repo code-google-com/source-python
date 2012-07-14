@@ -1,3 +1,4 @@
+# ../sp.py
 #
 # =============================================================================
 # Source Python
@@ -25,24 +26,96 @@
 #
 
 # =============================================================================
-# Imports
+# >> IMPORTS
 # =============================================================================
+# Source.Python Imports
+from addons.manager import AddonManager
+from events.manager import EventRegistry
+
 
 # =============================================================================
-# Core functions.
+# >> CORE FUNCTIONS
 # =============================================================================
-def addon_load( addon_name ):
+def addon_load(addon_name=None):
     ''' Called when a user executes sp_load. '''
-    pass
-    
-def addon_unload( addon_name ):
+
+    # Is an addon being loaded?
+    if addon_name is None:
+
+        # Print start message for loaded addons
+        print('[SP] Loaded Addons:')
+        print('======================================')
+
+        # Loop through all loaded addons
+        for addon in AddonManager:
+
+            # Print a message about the loaded addon
+            print('[SP] ' + addon)
+
+        # Print closing message for loaded addons
+        print('======================================')
+
+        # No need to go further
+        return
+
+    # Is the addon already loaded?
+    if addon_name in AddonManager:
+
+        # Print message that the addon is already loaded
+        print('[SP] Addon "%s" is already loaded.' % addon_name)
+
+        # No need to go further
+        return
+
+    # Get the addon's instance
+    addon = AddonManager[addon_name]
+
+    # Is the addon loaded?
+    if addon is None:
+
+        # If not, go no further
+        return
+
+    # Does the addon have a load function?
+    if 'load' in addon.globals:
+
+        # Call the addon's load function
+        addon.globals['load']()
+
+
+def addon_unload(addon_name):
     ''' Called when a user executes sp_unload. '''
-    pass
-    
-def addon_reload( addon_name ):
+
+    # Is the loaded?
+    if not addon_name in AddonManager:
+
+        # Print message that the addon is not loaded
+        print('[SP] Addon "%s" cannot ' % addon_name +
+            'be unloaded.  It is not currently loaded.')
+
+        # No need to go further
+        return
+
+    # Get the addon's instance
+    addon = AddonManager[addon_name]
+
+    # Does the addon have an unload function?
+    if 'unload' in addon.globals:
+
+        # Call the addon's unload function
+        addon.globals['unload']()
+
+    # Remove the addon from the AddonManager
+    del AddonManager[addon_name]
+
+
+def addon_reload(addon_name):
     ''' Called when a user executes sp_reload. '''
     pass
-    
-def event_fire( game_event ):
+
+
+def event_fire(game_event):
     ''' Called when the core catches an event. '''
-    pass
+
+    # Call the event within the registry
+    EventRegistry.call_event_callbacks(game_event)

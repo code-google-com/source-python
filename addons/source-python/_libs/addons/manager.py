@@ -5,6 +5,7 @@
 # =============================================================================
 # Python Imports
 import os
+import sys
 
 # Source.Python Imports
 from paths import addon_path
@@ -17,7 +18,9 @@ class _AddonManagementDictionary(dict):
     def __getitem__(self, addon):
         if addon in self:
             return super(_AddonManagementDictionary, self).__getitem__(addon)
-        value = self[addon] = _LoadedAddon(addon)
+        value = _LoadedAddon(addon)
+        if not value is None:
+            self[addon] = value
         return value
 
     def __delitem__(self, addon_name):
@@ -27,7 +30,7 @@ class _AddonManagementDictionary(dict):
         addon_import = addon_name + '.' + addon_name
         if addon_import in sys.modules:
             del sys.modules[addon_import]
-        super(_AddonManagementDictionary, self).__delitem__(addon)
+        super(_AddonManagementDictionary, self).__delitem__(addon_name)
 
 AddonManager = _AddonManagementDictionary()
 
@@ -43,6 +46,6 @@ class _LoadedAddon(object):
         print('[SP] Loaded "%s"' % addon_name)
         try:
             addon = __import__(addon_name + '.' + addon_name)
-            self.globals = dict(addon.__dict__)
+            self.globals = addon.__dict__[addon_name].__dict__
         except ImportError as error:
             raise
