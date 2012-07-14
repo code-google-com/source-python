@@ -63,34 +63,36 @@ void modulsp_init( void )
 {
 	// Get the Eventscripts module
 	// object esmodule(borrowed(PyImport_AddModule("sp")));
-	object esmodule(g_PythonManager.GetSP());
+	BEGIN_BOOST_PY()
+		object esmodule(g_PythonManager.GetSP());
 
-	// Now iterate through all submodules and add them.
-	for( int i = 0; i < MAX_EVENTSCRIPTS_MODULES; i++ ) {
-		// Break out if we are at the end.
-		if( !g_EventscriptsModules[i].szName ) {
-			return;
-		}
+		// Now iterate through all submodules and add them.
+		for( int i = 0; i < MAX_EVENTSCRIPTS_MODULES; i++ ) {
+			// Break out if we are at the end.
+			if( !g_EventscriptsModules[i].szName ) {
+				return;
+			}
 
-		// Get the module name.
-		char* szModuleName = g_EventscriptsModules[i].szName;
+			// Get the module name.
+			char* szModuleName = g_EventscriptsModules[i].szName;
 
-		// Debug info.
-		DevMsg(1, "[SP] Initializing %s submodule\n", szModuleName);
+			// Debug info.
+			DevMsg(1, "[SP] Initializing %s submodule\n", szModuleName);
 
-		// Set the new module as the current scope.
-		object newmodule(borrowed(PyImport_AddModule(szModuleName)));
+			// Set the new module as the current scope.
+			object newmodule(borrowed(PyImport_AddModule(szModuleName)));
 		
-		// Add the module to the es module.
-		esmodule.attr(szModuleName) = newmodule;
+			// Add the module to the es module.
+			esmodule.attr(szModuleName) = newmodule;
 
-		// We're now working with the submodule.
-		scope moduleScope = newmodule;
+			// We're now working with the submodule.
+			scope moduleScope = newmodule;
 
-		// Run the module's init function.
-		g_EventscriptsModules[i].initFunc();
+			// Run the module's init function.
+			g_EventscriptsModules[i].initFunc();
 
-		// Add the module to the import table.
-		// PyImport_AppendInittab(g_EventscriptsModules[i].szName, g_EventscriptsModules[i].initFunc);
-	}
+			// Add the module to the import table.
+			// PyImport_AppendInittab(g_EventscriptsModules[i].szName, g_EventscriptsModules[i].initFunc);
+		}
+	END_BOOST_PY_NORET()
 }
