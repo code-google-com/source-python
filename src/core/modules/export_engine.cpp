@@ -61,8 +61,107 @@ DECLARE_CLASS_METHOD_OVERLOAD(IVEngineServer, PrecacheGeneric, 1, 2);
 //---------------------------------------------------------------------------------
 // Wraps game events related structures.
 //---------------------------------------------------------------------------------
-DECLARE_sp_MODULE(engine)
-{	
+DECLARE_SP_MODULE(engine)
+{
+	// ----------------------------------------------------------
+	// CBaseHandle
+	// ----------------------------------------------------------
+	typedef bool (CBaseHandle::*BaseHandleFn)(const CBaseHandle&) const;
+	
+	BaseHandleFn BaseHandleEq = &CBaseHandle::operator ==;
+	BaseHandleFn BaseHandleNEq = &CBaseHandle::operator !=;
+	BaseHandleFn BaseHandleLt = &CBaseHandle::operator <;
+
+	BOOST_ABSTRACT_CLASS(CBaseHandle)
+
+		CLASS_METHOD(CBaseHandle,
+			IsValid,
+			"Returns true if the handle has been initted with any values"
+		)
+
+		CLASS_METHOD(CBaseHandle,
+			IsValid,
+			"Returns true if the handle has been initted with any values"
+		)
+
+		CLASS_METHOD_SPECIAL_TYPEDEF(
+			"__eq__",
+			BaseHandleEq,
+			"Returns true if the given CBaseHandle points to the same entity."
+		)
+
+		CLASS_METHOD_SPECIAL_TYPEDEF(
+			"__ne__",
+			BaseHandleNEq,
+			"Returns true if the given CBaseHandle is not equal to this handle."
+		)
+
+		CLASS_METHOD_SPECIAL_TYPEDEF(
+			"__lt__",
+			BaseHandleLt,
+			"Returns true if the given CBaseHandle is less than this handle."
+		)
+
+	BOOST_END_CLASS()
+
+	// ----------------------------------------------------------
+	// IHandleEntity.
+	// ----------------------------------------------------------
+	BOOST_ABSTRACT_CLASS(IHandleEntity)
+		CLASS_METHOD(IHandleEntity,
+			GetRefEHandle,
+			"Returns the CBaseHandle instance for this entity.",
+			reference_existing_object_policy()
+		)
+	BOOST_END_CLASS()
+
+
+	// ----------------------------------------------------------
+	// INetworkable interface.
+	// ----------------------------------------------------------
+	BOOST_ABSTRACT_CLASS(IServerNetworkable)
+		
+		CLASS_METHOD(IServerNetworkable,
+			GetEntityHandle,
+			"Returns the entity handle associated with the collideable.",
+			reference_existing_object_policy()
+		)
+
+		CLASS_METHOD(IServerNetworkable,
+			GetEdict,
+			"Returns the edict for this entity.",
+			reference_existing_object_policy()
+		)
+		
+		CLASS_METHOD(IServerNetworkable,
+			GetClassName,
+			"Returns the class ",
+			reference_existing_object_policy()
+		)
+
+	BOOST_END_CLASS()
+
+
+	// ----------------------------------------------------------
+	// IServerUnknown
+	// ----------------------------------------------------------
+	BOOST_ABSTRACT_CLASS_INHERITED(IServerUnknown, IHandleEntity)
+
+		CLASS_METHOD(IServerUnknown,
+			GetCollideable,
+			"Returns the ICollideable object for this entity.",
+			reference_existing_object_policy()
+		)
+
+		CLASS_METHOD(IServerUnknown,
+			GetNetworkable,
+			"Returns the IServerNetworkable object for this entity.",
+			reference_existing_object_policy()
+		)
+
+	BOOST_END_CLASS()
+	
+
 	// ----------------------------------------------------------
 	// The engine interface.
 	// ----------------------------------------------------------

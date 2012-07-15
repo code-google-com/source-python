@@ -45,7 +45,7 @@ extern IVEngineServer* engine;
 //---------------------------------------------------------------------------------
 // Wraps player related structures.
 //---------------------------------------------------------------------------------
-DECLARE_sp_MODULE(player)
+DECLARE_SP_MODULE(player)
 {
 
 }
