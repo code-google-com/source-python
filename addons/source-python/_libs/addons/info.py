@@ -8,7 +8,7 @@ class AddonInfo(dict):
     '''Stores information for an addon'''
 
     def __init__(self):
-        '''Creates an empty keylist to be used for iteration'''
+        '''Creates an empty keylist to be used for ordered iteration'''
 
         # Create an empty keylist
         self._keylist = []
@@ -20,7 +20,7 @@ class AddonInfo(dict):
         return self[attribute]
 
     def __setattr__(self, attribute, value):
-        '''Sets an item and adds it to the keylist'''
+        '''Redirects to __setitem__ for valid attributes'''
 
         # Is the attribute private?
         if attribute.startswith('_'):
@@ -28,17 +28,23 @@ class AddonInfo(dict):
             # Set the attribute
             super(AddonInfo, self).__setattr__(attribute, value)
 
-            # No need to go further
-            return
+        # Is the attribute not private?
+        else:
+
+            # Add the item to the dictionary with its value
+            self[attribute] = value
+
+    def __setitem__(self, item, value):
+        '''Sets an item and adds it to the keylist'''
 
         # Has the item been added to the keylist?
-        if not attribute in self._keylist:
+        if not item in self._keylist:
 
             # Add the item to the keylist
-            self._keylist.append(attribute)
+            self._keylist.append(item)
 
-        # Set the item's value
-        self[attribute] = value
+        # Add the item to the dictionary
+        super(AddonInfo, self).__setitem__(item, value)
 
     def __iter__(self):
         '''Loops through all the items in the keylist'''
