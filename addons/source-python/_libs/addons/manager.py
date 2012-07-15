@@ -4,7 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   OS
 from os.path import isfile
+#   Sys
 import sys
 
 # Source.Python Imports
@@ -30,14 +32,20 @@ class _AddonManagementDictionary(dict):
             # Return the addon's instance
             return super(_AddonManagementDictionary, self).__getitem__(addon)
 
-        # Get the addon's instance
-        value = _LoadedAddon(addon)
+        # Try to get the addon's instance
+        try:
 
-        # Was the addon loaded?
-        if not value is None:
+            # Get the addon's instance
+            value = _LoadedAddon(addon)
 
-            # Add the addon to the dictionary with its instance
-            self[addon] = value
+        # Was an error was encountered?
+        except:
+
+            # Return None as the value to show the addon was not loaded
+            return None
+
+        # Add the addon to the dictionary with its instance
+        self[addon] = value
 
         # Return the given value
         return value
@@ -99,8 +107,9 @@ class _LoadedAddon(object):
                 '[SP] Unable to load "%s", missing file ' % addon_name +
                 '../addons/source-python/%s/%s.py' % (addon_name, addon_name))
 
-            # Return None, so that the addon is not added to the AddonManager
-            return None
+            # Raise an error, so that the addon
+            # is not added to the AddonManager
+            raise
 
         # Try to import the addon
         try:
@@ -118,7 +127,7 @@ class _LoadedAddon(object):
             print('[SP] Unable to load "%s": %s' % (addon_name, error))
 
             # Return None, so that the addon is not added to the AddonManager
-            return None
+            raise
 
         # Print message that the addon successfully loaded
         print('[SP] Loaded "%s"' % addon_name)
@@ -127,7 +136,7 @@ class _LoadedAddon(object):
         '''Removes all events from the registry for the addon'''
 
         # Does the current object have a __dict__?
-        if hasattr(instance, '__dict__'):
+        if not hasattr(instance, '__dict__'):
 
             # If not, simply return
             return
@@ -135,20 +144,14 @@ class _LoadedAddon(object):
         # Loop through all items in the instance's dictionary
         for item in dict(instance.__dict__):
 
-            # Is the current item a magic method?
-            if item.startswith('__'):
-
-                # If so, simply continue the loop
-                continue
-
             # Get the object's module
-            module += '.' + item
+            new_module = module + '.' + item
 
             # Does the module exist in sys.modules?
-            if module in sys.modules:
+            if new_module in sys.modules:
 
                 # Loop through all items in the module
-                self._remove_events(instance.__dict__[item], module)
+                self._remove_events(instance.__dict__[item], new_module)
 
             # Is the item's instance an "event" instance?
             elif isinstance(instance.__dict__[item], event):

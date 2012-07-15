@@ -3,7 +3,8 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Source.Python Imports
+#   Events
 from events.manager import EventRegistry
 
 
