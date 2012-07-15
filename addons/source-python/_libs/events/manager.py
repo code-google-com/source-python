@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Traceback
 import traceback
 
 
@@ -53,6 +54,7 @@ class _EventRegistry(dict):
             # Call each callback for the current event
             self[event_name]._call_event(game_event)
 
+# Get the _EventRegistry instance
 EventRegistry = _EventRegistry()
 
 
