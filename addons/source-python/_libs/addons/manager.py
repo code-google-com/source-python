@@ -5,15 +5,17 @@
 # =============================================================================
 # Python Imports
 #   OS
+from os import sep
 from os.path import isfile
 #   Sys
 import sys
+from traceback import format_exception
 
 # Source.Python Imports
 from paths import addon_path
+from paths import game_path
 #   Events
 from events.decorator import event
-from events.manager import EventRegistry
 
 
 # =============================================================================
@@ -60,7 +62,7 @@ class _AddonManagementDictionary(dict):
             return
 
         # Print message about unloading the addon
-        print('[SP] Unloading "%s"' % addon_name)
+        print('[SP] Unloading "%s"...' % addon_name)
 
         # Get the addon's module
         addon_import = addon_name + '.' + addon_name
@@ -96,6 +98,9 @@ class _LoadedAddon(object):
     def __init__(self, addon_name):
         '''Called when an addon's instance is initialized'''
 
+        # Print message that the addon is going to be loaded
+        print('[SP] Loading "%s"...' % addon_name)
+
         # Get the addon's main file
         file_path = '%s/%s/%s.py' % (addon_path, addon_name, addon_name)
 
@@ -120,17 +125,42 @@ class _LoadedAddon(object):
             # Store the globals for the addon
             self.globals = addon.__dict__[addon_name].__dict__
 
-        # Was an ImportError raised?
-        except ImportError as error:
+        # Was an error raised?
+        except:
+
+            # Get the error
+            error = sys.exc_info()
+
+            # Format the exception
+            format_error = format_exception(*error)
+
+            # Print an empty line to separate the console
+            print('\n========================================')
 
             # Print message as to why the addon could not be loaded
-            print('[SP] Unable to load "%s": %s' % (addon_name, error))
+            print('[SP] Unable to load "%s":' % addon_name)
+
+            # Loop through each line in the exception
+            for line in format_error:
+
+                # Remove any lines pertaining to importlib in the exception
+                if 'importlib' in line:
+                    continue
+
+                # Strip the ending \n from the exception
+                line = line.rstrip()
+
+                # Strip the game_path to make the exception shorter
+                line = line.replace(game_path, '..%s' % sep)
+
+                # Print the current line
+                print(line)
+
+            # Print an empty line to separate the console
+            print('========================================\n')
 
             # Return None, so that the addon is not added to the AddonManager
             raise
-
-        # Print message that the addon successfully loaded
-        print('[SP] Loaded "%s"' % addon_name)
 
     def _remove_events(self, instance, module):
         '''Removes all events from the registry for the addon'''

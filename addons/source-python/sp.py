@@ -110,6 +110,9 @@ def addon_load(addon_name):
         # Call the addon's load function
         addon.globals['load']()
 
+    # Print message that the addon successfully loaded
+    print('[SP] Successfully loaded "%s"' % addon_name)
+
 
 def addon_unload(addon_name):
     '''Called when a user executes sp_unload.'''
@@ -135,6 +138,9 @@ def addon_unload(addon_name):
 
     # Remove the addon from the AddonManager
     del AddonManager[addon_name]
+
+    # Print message that the addon successfully unloaded
+    print('[SP] Successfully unloaded "%s"' % addon_name)
 
 
 def addon_reload(addon_name):
