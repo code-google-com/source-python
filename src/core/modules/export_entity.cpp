@@ -114,7 +114,7 @@ DECLARE_SP_MODULE(entity)
 		)
 
 		CLASS_MEMBER(CBaseEdict,
-			m_fStateFlags,
+			m_fStateFlags
 		)
 
 		CLASS_MEMBER(CBaseEdict,
