@@ -45,7 +45,7 @@ typedef void (*ModuleInitFn)( void );
 //---------------------------------------------------------------------------------
 // This declares an eventscripts module.
 //---------------------------------------------------------------------------------
-#define DECLARE_sp_MODULE( name ) \
+#define DECLARE_SP_MODULE( name ) \
 	void PyInit_##name( void ); \
 	static CESModule g_##name##_Init(XSTRINGIFY(name), &PyInit_##name); \
 	void PyInit_##name( void )

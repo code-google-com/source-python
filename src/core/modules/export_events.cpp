@@ -70,7 +70,7 @@ DECLARE_CLASS_METHOD_OVERLOAD(IGameEventManager2, FireEvent, 1, 2)
 //---------------------------------------------------------------------------------
 // Wraps game events related structures.
 //---------------------------------------------------------------------------------
-DECLARE_sp_MODULE(event)
+DECLARE_SP_MODULE(event)
 {
 	// ----------------------------------------------------------
 	// do the submodule handling here.
