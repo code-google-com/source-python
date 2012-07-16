@@ -41,3 +41,6 @@ class event(object):
 
         # Unregister the event
         EventRegistry.UnregisterForEvent(self.callback.__name__, self.callback)
+
+        # Delete the object from memory
+        super(event, self).__del__()

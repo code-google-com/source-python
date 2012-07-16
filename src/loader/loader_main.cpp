@@ -20,7 +20,7 @@
 * to link the code of this program (as well as its derivative works) to 
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
-* all respects for all other code used.  Additionally, the Eventscripts
+* all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.  
 */
 
@@ -82,7 +82,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	char szPythonEngine[1024];
 	char szEventscripts[1024];
 
-	// Load all of the Eventscripts dependencies first.
+	// Load all of the Source.Python dependencies first.
 	V_snprintf(szPythonHome, 1024, "%s/addons/source-python/engines", szGameDir);
 	V_snprintf(szEventscripts, sizeof(szEventscripts), "%s/addons/source-python/%s", szGameDir, CORE_NAME);
 	V_snprintf(szPythonEngine, sizeof(szPythonEngine), "%s/%s", szPythonHome, PYLIB_NAME);
@@ -113,7 +113,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
-	// Load the eventscripts core.
+	// Load the Source.Python core.
 	m_pCore = new CDllDemandLoader(szEventscripts);
 
 	if( !m_pCore->GetFactory() ) {

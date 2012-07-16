@@ -20,7 +20,7 @@
 * to link the code of this program (as well as its derivative works) to 
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
-* all respects for all other code used.  Additionally, the Eventscripts
+* all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.  
 */
 #ifndef _WRAP_MACROS_H
