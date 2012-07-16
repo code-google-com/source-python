@@ -135,8 +135,7 @@ DECLARE_SP_MODULE(engine)
 		
 		CLASS_METHOD(IServerNetworkable,
 			GetClassName,
-			"Returns the class ",
-			reference_existing_object_policy()
+			"Returns the classname for this object."
 		)
 
 	BOOST_END_CLASS()
