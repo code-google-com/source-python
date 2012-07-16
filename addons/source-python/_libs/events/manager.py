@@ -15,7 +15,7 @@ class _EventRegistry(dict):
     '''Dictionary object used to hold Event names with all registered callbacks
     '''
 
-    def register_for_event(self, event, callback):
+    def RegisterForEvent(self, event, callback):
         '''Registers the callback for the given event'''
 
         # Does the dictionary contain the event?
@@ -27,7 +27,7 @@ class _EventRegistry(dict):
         # Add the callback to the event's registered callback list
         self[event].append(callback)
 
-    def unregister_for_event(self, event, callback):
+    def UnregisterForEvent(self, event, callback):
         '''Unregisters the callback for the given event'''
 
         # Does the dictionary contain the event?
@@ -42,7 +42,7 @@ class _EventRegistry(dict):
             # Remove the event from the dictionary
             del self[event]
 
-    def call_event_callbacks(self, game_event):
+    def CallEventCallbacks(self, game_event):
         '''Calls all callbacks for the current event if any are registered'''
 
         # Get the event's name
@@ -52,7 +52,7 @@ class _EventRegistry(dict):
         if event_name in self:
 
             # Call each callback for the current event
-            self[event_name]._call_event(game_event)
+            self[event_name]._CallEvent(game_event)
 
 # Get the _EventRegistry instance
 EventRegistry = _EventRegistry()
@@ -81,7 +81,7 @@ class _EventManager(list):
             # Remove the callback from the list
             super(_EventManager, self).remove(callback)
 
-    def _call_event(self, game_event):
+    def _CallEvent(self, game_event):
         '''Loops through all callbacks for an event and calls them'''
 
         # Loop through each callback in the event's list

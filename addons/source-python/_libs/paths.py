@@ -13,10 +13,10 @@ from os.path import join
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the game's base path
-game_path = dirname(__file__).rsplit('addons', 1)[0]
+GAME_PATH = dirname(__file__).rsplit('addons', 1)[0]
 
 # Get the addon's base path
-addon_path = join(game_path, 'addons', 'source-python')
+ADDON_PATH = join(GAME_PATH, 'addons', 'source-python')
 
 # Get the cfg's base path
-cfg_path = join(game_path, 'cfg', 'source-python')
+CFG_PATH = join(GAME_PATH, 'cfg', 'source-python')

@@ -12,8 +12,8 @@ import sys
 from traceback import format_exception
 
 # Source.Python Imports
-from paths import addon_path
-from paths import game_path
+from paths import ADDON_PATH
+from paths import GAME_PATH
 #   Events
 from events.decorator import event
 
@@ -74,7 +74,7 @@ class _AddonManagementDictionary(dict):
             addon = __import__(addon_import)
 
             # Remove all events from the addon
-            self[addon_name]._remove_events(addon, addon_name)
+            self[addon_name]._RemoveEvents(addon, addon_name)
 
             # Loop through all loaded modules
             for module in list(sys.modules):
@@ -102,7 +102,7 @@ class _LoadedAddon(object):
         print('[SP] Loading "%s"...' % addon_name)
 
         # Get the addon's main file
-        file_path = '%s/%s/%s.py' % (addon_path, addon_name, addon_name)
+        file_path = '%s/%s/%s.py' % (ADDON_PATH, addon_name, addon_name)
 
         # Does the addon's main file exist?
         if not isfile(file_path):
@@ -150,8 +150,8 @@ class _LoadedAddon(object):
                 # Strip the ending \n from the exception
                 line = line.rstrip()
 
-                # Strip the game_path to make the exception shorter
-                line = line.replace(game_path, '..%s' % sep)
+                # Strip the GAME_PATH to make the exception shorter
+                line = line.replace(GAME_PATH, '..%s' % sep)
 
                 # Print the current line
                 print(line)
@@ -162,7 +162,7 @@ class _LoadedAddon(object):
             # Return None, so that the addon is not added to the AddonManager
             raise
 
-    def _remove_events(self, instance, module):
+    def _RemoveEvents(self, instance, module):
         '''Removes all events from the registry for the addon'''
 
         # Does the current object have a __dict__?
@@ -181,7 +181,7 @@ class _LoadedAddon(object):
             if new_module in sys.modules:
 
                 # Loop through all items in the module
-                self._remove_events(instance.__dict__[item], new_module)
+                self._RemoveEvents(instance.__dict__[item], new_module)
 
             # Is the item's instance an "event" instance?
             elif isinstance(instance.__dict__[item], event):

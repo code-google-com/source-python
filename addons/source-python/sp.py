@@ -157,4 +157,4 @@ def event_fire(game_event):
     '''Called when the core catches an event.'''
 
     # Call the event within the registry
-    EventRegistry.call_event_callbacks(game_event)
+    EventRegistry.CallEventCallbacks(game_event)

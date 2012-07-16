@@ -28,7 +28,7 @@ class event(object):
         self.callback = callback
 
         # Register the event
-        EventRegistry.register_for_event(self.callback.__name__, self.callback)
+        EventRegistry.RegisterForEvent(self.callback.__name__, self.callback)
 
     def __call__(self, game_event):
         '''Calls the callback for the event'''
@@ -40,5 +40,4 @@ class event(object):
         '''Called when the object is deleted from memory'''
 
         # Unregister the event
-        EventRegistry.unregister_for_event(
-            self.callback.__name__, self.callback)
+        EventRegistry.UnregisterForEvent(self.callback.__name__, self.callback)
