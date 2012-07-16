@@ -101,6 +101,9 @@ def addon_load(addon_name):
     # Is the addon loaded?
     if addon is None:
 
+        # Print a message that the addon was not able to be loaded
+        print('[SP] Addon "%s" was unable to be loaded.' % addon_name)
+
         # If not, go no further
         return
 
