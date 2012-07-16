@@ -30,14 +30,33 @@ class _ExceptHooks(list):
             # Add the callback to the list
             super(_ExceptHooks, self).append(callback)
 
-    def PrintException(self, exctype, value, trace_back):
+    def PrintException(self, exctype, value, trace_back, callbacks=True):
         '''Called when an exception is raised'''
 
-        # Loop through all callbacks in the list
-        for callback in self:
+        # Do all of the callbacks need looped through?
+        if callbacks:
 
-            # Call the callback with the exception arguments
-            callback(exctype, value, trace_back)
+            # Loop through all callbacks in the list
+            for callback in self:
+
+                # Try to call the callback
+                # Without this try/except, if a callback encounters
+                # an error, it could cause an infinite loop.
+                try:
+
+                    # Call the callback with the exception arguments
+                    callback(exctype, value, trace_back)
+
+                # Was an exception raised?
+                except:
+
+                    # Get the new exception
+                    error = sys.exc_info()
+
+                    # Re-call PrintException with the new error.
+                    # Pass False for callbacks, so that
+                    # it does not cause an infinite loop.
+                    self.PrintException(*error, callbacks=False)
 
         # Format the exception
         format_error = format_exception(exctype, value, trace_back)
