@@ -13,7 +13,7 @@ from traceback import format_exception
 # Source.Python Imports
 from paths import ADDON_PATH
 #   Core
-from core.excepthook import PrintException
+from core.excepthook import ExceptHooks
 #   Events
 from events.decorator import event
 
@@ -54,7 +54,7 @@ class _AddonManagementDictionary(dict):
             error = sys.exc_info()
 
             # Print the exception to the console
-            PrintException(*error)
+            ExceptHooks.PrintException(*error)
 
             # Return None as the value to show the addon was not loaded
             return None
