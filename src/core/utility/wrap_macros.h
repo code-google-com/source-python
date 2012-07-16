@@ -68,6 +68,12 @@ using namespace boost::python;
 	class_<classname, boost::noncopyable>(XSTRINGIFY(classname), no_init)
 
 //---------------------------------------------------------------------------------
+// Use this to begin wrapping an abstract class that inherits.
+//---------------------------------------------------------------------------------
+#define BOOST_ABSTRACT_CLASS_INHERITED( classname, baseclass ) \
+	class_<classname, bases<baseclass>, boost::noncopyable>(XSTRINGIFY(classname), no_init)
+
+//---------------------------------------------------------------------------------
 // Use this to wrap a class that inherits a base class.
 //---------------------------------------------------------------------------------
 #define BOOST_INHERITED_CLASS( classname, baseclass ) \
@@ -91,6 +97,33 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define CLASS_METHOD( classname, methodname, ... ) \
 	.def(XSTRINGIFY(methodname), &classname::methodname, ##__VA_ARGS__)
+
+//---------------------------------------------------------------------------------
+// Use this macro to bind class functions to "special" functions in python such
+// as __eq__ or __len__.
+//---------------------------------------------------------------------------------
+#define CLASS_METHOD_SPECIAL( classname, pymethod, methodname, ... ) \
+	.def(pymethod, &classname::methodname, ##__VA_ARGS__)
+
+//---------------------------------------------------------------------------------
+// Use this for class methods that you've had to typedef out (because they were
+// overloaded etc etc).
+//---------------------------------------------------------------------------------
+#define CLASS_METHOD_TYPEDEF( methodname, function, ... ) \
+	.def(XSTRINGIFY(methodname), function, ##__VA_ARGS__)
+
+//---------------------------------------------------------------------------------
+// Use this for spcial class methods that you've had to typedef out (because they 
+// were overloaded etc etc)
+//---------------------------------------------------------------------------------
+#define CLASS_METHOD_SPECIAL_TYPEDEF( pymethod, function, ... ) \
+	.def(pymethod, function, ##__VA_ARGS__)
+
+//---------------------------------------------------------------------------------
+// Use this to wrap a writable class member.
+//---------------------------------------------------------------------------------
+#define CLASS_MEMBER( classname, varname, ... ) \
+	.def_readwrite(XSTRINGIFY(varname), &classname::varname, ##__VA_ARGS__)
 
 //---------------------------------------------------------------------------------
 // Use this to wrap a method that returns an interface.
@@ -119,6 +152,12 @@ using namespace boost::python;
 #define CLASS_METHOD_OVERLOAD_RET( classname, methodname, docstring, args, retpol ) \
 	.def(XSTRINGIFY(methodname), &classname::methodname, \
 	     classname##_##methodname( args, docstring )[retpol])
+
+//---------------------------------------------------------------------------------
+// Use this macro to define a value (like a const).
+//---------------------------------------------------------------------------------
+#define BOOST_GLOBAL_DEFINE( varName ) \
+	scope().attr(XSTRINGIFY(varName)) = varName;
 
 //---------------------------------------------------------------------------------
 // These typedefs save some typing. Use this policy for any functions that return
