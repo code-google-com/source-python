@@ -16,6 +16,7 @@ from paths import ADDON_PATH
 from core.excepthook import ExceptHooks
 #   Events
 from events.decorator import event
+from events.manager import EventRegistry
 
 
 # =============================================================================
@@ -147,18 +148,21 @@ class _LoadedAddon(object):
         # Loop through all items in the instance's dictionary
         for item in dict(instance.__dict__):
 
+            # Get the new object's instance
+            new_instance = instance.__dict__[item]
+
             # Get the object's module
             new_module = module + '.' + item
 
+            # Is the item an "event" instance?
+            if isinstance(new_instance, event):
+
+                # Unregister the event
+                EventRegistry.UnregisterForEvent(
+                    new_instance.callback.__name__, new_instance.callback)
+
             # Does the module exist in sys.modules?
-            if new_module in sys.modules:
+            elif new_module in sys.modules:
 
                 # Loop through all items in the module
-                self._RemoveEvents(instance.__dict__[item], new_module)
-
-            # Is the item's instance an "event" instance?
-            elif isinstance(instance.__dict__[item], event):
-
-                # Remove the object from memory
-                # This will also remove the object from the EventRegistry
-                del instance.__dict__[item]
+                self._RemoveEvents(new_instance, new_module)
