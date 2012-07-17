@@ -4,8 +4,12 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   Traceback
-import traceback
+#   Sys
+import sys
+
+# Source.Python Imports
+#   Core
+from core.excepthook import ExceptHooks
 
 
 # =============================================================================
@@ -42,17 +46,17 @@ class _EventRegistry(dict):
             # Remove the event from the dictionary
             del self[event]
 
-    def CallEventCallbacks(self, game_event):
+    def CallEventCallbacks(self, GameEvent):
         '''Calls all callbacks for the current event if any are registered'''
 
         # Get the event's name
-        event_name = game_event.GetName()
+        event_name = GameEvent.GetName()
 
         # Does the dictionary contain the event?
         if event_name in self:
 
             # Call each callback for the current event
-            self[event_name]._CallEvent(game_event)
+            self[event_name]._CallEvent(GameEvent)
 
 # Get the _EventRegistry instance
 EventRegistry = _EventRegistry()
@@ -81,7 +85,7 @@ class _EventManager(list):
             # Remove the callback from the list
             super(_EventManager, self).remove(callback)
 
-    def _CallEvent(self, game_event):
+    def _CallEvent(self, GameEvent):
         '''Loops through all callbacks for an event and calls them'''
 
         # Loop through each callback in the event's list
@@ -91,10 +95,13 @@ class _EventManager(list):
             try:
 
                 # Call the callback
-                callback(game_event)
+                callback(GameEvent)
 
             # Was an error encountered?
             except:
 
-                # Print the Traceback
-                traceback.print_exc()
+                # Get the error
+                error = sys.exc_info()
+
+                # Print the exception to the console
+                ExceptHooks.PrintException(*error)

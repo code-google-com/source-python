@@ -156,8 +156,8 @@ def addon_reload(addon_name):
     addon_load(addon_name)
 
 
-def event_fire(game_event):
+def event_fire(GameEvent):
     '''Called when the core catches an event.'''
 
     # Call the event within the registry
-    EventRegistry.CallEventCallbacks(game_event)
+    EventRegistry.CallEventCallbacks(GameEvent)
