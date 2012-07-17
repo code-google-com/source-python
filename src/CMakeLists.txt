@@ -4,27 +4,6 @@
 CMake_Minimum_Required(VERSION 2.8)
 
 # ------------------------------------------------------------------
-# Include the base makefile.
-# ------------------------------------------------------------------
-If(WIN32)
-	include("makefiles/win32/win32.base.cmake")
-Else()
-	include("makefiles/linux/linux.base.cmake")
-EndIf()
-
-# ------------------------------------------------------------------
-# Include the game makefile.
-# ------------------------------------------------------------------
-include("makefiles/game/${GAME}.cmake")
-
-# ------------------------------------------------------------------
-# Definitions
-# ------------------------------------------------------------------
-Add_Definitions(
-	-DSOURCE_ENGINE=${SOURCE_ENGINE}
-)
-
-# ------------------------------------------------------------------
 # Loader
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LOADER_HEADERS
@@ -146,6 +125,27 @@ Add_Library(core SHARED
 
 Add_Library(source-python SHARED
     ${SOURCEPYTHON_LOADER_FILES}
+)
+
+# ------------------------------------------------------------------
+# Include the base makefile.
+# ------------------------------------------------------------------
+If(WIN32)
+	include("makefiles/win32/win32.base.cmake")
+Else()
+	include("makefiles/linux/linux.base.cmake")
+EndIf()
+
+# ------------------------------------------------------------------
+# Include the game makefile.
+# ------------------------------------------------------------------
+include("makefiles/game/${GAME}.cmake")
+
+# ------------------------------------------------------------------
+# Definitions
+# ------------------------------------------------------------------
+Add_Definitions(
+	-DSOURCE_ENGINE=${SOURCE_ENGINE}
 )
 
 # ------------------------------------------------------------------

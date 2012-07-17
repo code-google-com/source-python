@@ -20,7 +20,7 @@
 * to link the code of this program (as well as its derivative works) to 
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
-* all respects for all other code used.  Additionally, the Source.Python
+* all respects for all other code used.  Additionally, the Eventscripts
 * Development Team grants this exception to all derivative works.  
 */
 
@@ -31,6 +31,9 @@
 #include "interface.h"
 #include "eiface.h"
 #include "strtools.h"
+#ifdef _WIN32
+#	include <windows.h>
+#endif
 
 //---------------------------------------------------------------------------------
 // Disable warnings.
@@ -69,7 +72,7 @@ CSourcePython::~CSourcePython()
 //---------------------------------------------------------------------------------
 // Purpose: called when the plugin is loaded, load the interface we need from the engine
 //---------------------------------------------------------------------------------
-bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
+bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
 	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 
@@ -81,16 +84,49 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	char szPythonHome[1024];
 	char szPythonEngine[1024];
 	char szEventscripts[1024];
+#ifdef _WIN32
+	char szMsvcrt[1024];
+	char szMsvcp[1024];
+#endif
 
-	// Load all of the Source.Python dependencies first.
+	// Load all of the Eventscripts dependencies first.
 	V_snprintf(szPythonHome, 1024, "%s/addons/source-python/engines", szGameDir);
 	V_snprintf(szEventscripts, sizeof(szEventscripts), "%s/addons/source-python/%s", szGameDir, CORE_NAME);
 	V_snprintf(szPythonEngine, sizeof(szPythonEngine), "%s/%s", szPythonHome, PYLIB_NAME);
+#ifdef _WIN32
+	V_snprintf(szMsvcrt, sizeof(szMsvcrt), "%s/%s", szPythonHome, MSVCRT_LIB);
+	V_snprintf(szMsvcp, sizeof(szMsvcp), "%s/%s", szPythonHome, MSVCP_LIB);
+#endif
 
 	// Fixup the paths with the correct slashes.
 	V_FixSlashes(szPythonHome);
 	V_FixSlashes(szEventscripts);
 	V_FixSlashes(szPythonEngine);
+#ifdef _WIN32
+	V_FixSlashes(szMsvcrt);
+	V_FixSlashes(szMsvcp);
+#endif
+
+	// We gotta load the visual studio runtime libraries before anything else.
+#ifdef _WIN32
+	Msg("===========================================\n");
+	Msg("[SP-LOADER] Loading %s\n", szMsvcrt);
+	Msg("===========================================\n");
+	HMODULE hMsvcrt = LoadLibrary(szMsvcrt);
+	if( !hMsvcrt ) {
+		Msg("[SP-LOADER] Could not load visual studio runtime! Aborting load..\n");
+		return false;
+	}
+
+	Msg("===========================================\n");
+	Msg("[SP-LOADER] Loading %s\n", szMsvcp);
+	Msg("===========================================\n");
+	HMODULE hMsvcp = LoadLibrary(szMsvcp);
+	if( !hMsvcp ) {
+		Msg("[SP-LOADER] Could not load visual studio runtime libraries! Aborting load..\n");
+		return false;
+	}
+#endif
 
 	// Load python as the core depends on it.
 	Msg("[SP-LOADER] Loading %s\n", szPythonEngine);
@@ -113,7 +149,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
-	// Load the Source.Python core.
+	// Load the eventscripts core.
 	m_pCore = new CDllDemandLoader(szEventscripts);
 
 	if( !m_pCore->GetFactory() ) {

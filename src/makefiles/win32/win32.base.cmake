@@ -35,18 +35,19 @@ Set(CMAKE_CXX_FLAGS_DEBUG   "/DDEBUG /DBOOST_DEBUG_PYTHON /MDd")
 Set(CMAKE_CXX_FLAGS_RELEASE "/D_NDEBUG /MD")
 
 # ------------------------------------------------------------------
-# CMake sets the wrong version of the runtime libraries.
-# Set the correct ones here.
-# See: http://msdn.microsoft.com/en-us/library/aa278396(v=VS.60).aspx
-#      http://msdn.microsoft.com/en-us/library/2kzt1wy3(v=VS.71).aspx
+# The loader should not link to msvcrt libraries. Those will be
+# delay loaded in.
 # ------------------------------------------------------------------
-Set(CMAKE_SHARED_LINKER_FLAGS_DEBUG  
-    "${CMAKE_SHARED_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:libcmt.lib"
+Set_Target_Properties(source-python PROPERTIES
+    LINK_FLAGS_DEBUG "/NODEFAULTLIB:msvcrtd.lib"
+    LINK_FLAGS_RELEASE "/NODEFAULTLIB:msvcrt.lib"
 )
 
-Set(CMAKE_SHARED_LINKER_FLAGS_RELEASE
-    "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /NODEFAULTLIB:libcmtd.lib"
+Set_Target_Properties(core PROPERTIES
+    LINK_FLAGS_DEBUG   "/NODEFAULTLIB:libcmt.lib"
+    LINK_FLAGS_RELEASE "/NODEFAULTLIB:libcmtd.lib"
 )
+
 
 # ------------------------------------------------------------------
 # Link libraries.

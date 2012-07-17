@@ -20,7 +20,7 @@
 * to link the code of this program (as well as its derivative works) to 
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
-* all respects for all other code used.  Additionally, the Source.Python
+* all respects for all other code used.  Additionally, the Eventscripts
 * Development Team grants this exception to all derivative works.  
 */
 #ifndef _LOADER_MAIN_H
@@ -44,15 +44,19 @@
 #define CORE_NAME_LINUX				"bin/core.so"
 
 #if defined(_WIN32)
-#	define CORE_NAME CORE_NAME_WIN32
+#	define CORE_NAME  CORE_NAME_WIN32
 #else
-#	define CORE_NAME CORE_NAME_LINUX
+#	define CORE_NAME  CORE_NAME_LINUX
 #endif
 
 #if defined(_WIN32) && defined(DEBUG)
 #	define PYLIB_NAME PYLIB_NAME_WIN32_DEBUG
+#	define MSVCRT_LIB "plat-win\\msvcr100d.dll"
+#	define MSVCP_LIB  "plat-win\\msvcp100d.dll"
 #elif defined(_WIN32) && !defined(DEBUG)
 #	define PYLIB_NAME PYLIB_NAME_WIN32_RELEASE
+#	define MSVCRT_LIB "plat-win\\msvcr100.dll"
+#	define MSVCP_LIB  "plat-win\\msvcp100.dll"
 #elif defined(LINUX) && defined(DEBUG)
 #	define PYLIB_NAME PYLIB_NAME_LINUX_DEBUG
 #elif defined(LINUX) && !defined(DEBUG)
