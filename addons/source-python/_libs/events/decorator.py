@@ -30,8 +30,8 @@ class event(object):
         # Register the event
         EventRegistry.RegisterForEvent(self.callback.__name__, self.callback)
 
-    def __call__(self, game_event):
+    def __call__(self, GameEvent):
         '''Calls the callback for the event'''
 
         # Call the callback
-        return self.callback(game_event)
+        return self.callback(GameEvent)
