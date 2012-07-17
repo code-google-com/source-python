@@ -35,12 +35,3 @@ class event(object):
 
         # Call the callback
         return self.callback(game_event)
-
-    def __del__(self):
-        '''Called when the object is deleted from memory'''
-
-        # Unregister the event
-        EventRegistry.UnregisterForEvent(self.callback.__name__, self.callback)
-
-        # Delete the object from memory
-        super(event, self).__del__()
