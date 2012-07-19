@@ -53,8 +53,8 @@ def addon_load(addon_name):
         # Loop through all loaded addons
         for addon in AddonManager:
 
-            # Print a message about the loaded addon
-            print(addon + ':')
+            # Set info as None in case no AddonInfo instance is found
+            info = None
 
             # Loop through the addon's globals
             for object_name in AddonManager[addon].globals:
@@ -63,19 +63,34 @@ def addon_load(addon_name):
                 instance = AddonManager[addon].globals[object_name]
 
                 # Is the current instance an AddonInfo instance?
-                if not isinstance(instance, AddonInfo):
+                if isinstance(instance, AddonInfo):
 
-                    # If not, continue the loop
-                    continue
+                    # Set info to the instance
+                    info = instance
+
+                    # Break the loop
+                    break
+
+            # Does the addon have an AddonInfo instance?
+            if not info is None:
+
+                # Print the addon's name
+                print(addon + ':')
 
                 # Loop through all items in the AddonInfo instance
-                for item in instance:
+                for item in info:
 
                     # Print the item's name
                     print('\t%s:' % item)
 
                     # Print the item's value
-                    print('\t\t%s' % instance[item])
+                    print('\t\t%s' % info[item])
+
+            # Does the addon not have an AddonInfo instance?
+            else:
+
+                # Print the addon's name
+                print(addon)
 
             # Print a blank line between addons
             print('\n')
@@ -126,12 +141,6 @@ def addon_unload(addon_name):
 
     # Get the addon's instance
     addon = AddonManager[addon_name]
-
-    # Does the addon have an unload function?
-    if 'unload' in addon.globals:
-
-        # Call the addon's unload function
-        addon.globals['unload']()
 
     # Remove the addon from the AddonManager
     del AddonManager[addon_name]
