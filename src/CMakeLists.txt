@@ -24,9 +24,11 @@ Set(SOURCEPYTHON_LOADER_FILES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_UTIL_HEADERS
     core/utility/wrap_macros.h
+	core/utility/mrecipientfilter.h
 )
 
 Set(SOURCEPYTHON_UTIL_SOURCES
+	core/utility/mrecipientfilter.cpp
 )
 
 Set(SOURCEPYTHON_UTIL_FILES
@@ -83,6 +85,7 @@ Set(SOURCEPYTHON_MODULE_SOURCES
     core/modules/export_main.cpp
 	core/modules/export_player.cpp
 	core/modules/export_entity.cpp
+	core/modules/export_usermsg.cpp
 )
 
 Set(SOURCEPYTHON_MODULE_FILES

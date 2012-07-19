@@ -28,6 +28,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "export_main.h"
+#include "utility/sp_util.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
 #include "eiface.h"
@@ -321,7 +322,28 @@ DECLARE_SP_MODULE(engine)
 
 		CLASS_METHOD(IVEngineServer,
 			ServerExecute,
-			"Executes any commands currently in the command parser immediately (instead of once per frame)."
+			"Executes any commands currently in the command parser immediately (instead of once per frame).",
+			args("command")
+		)
+
+		CLASS_METHOD(IVEngineServer,
+			UserMessageBegin,
+			"Begin a message from the server to the client.dll",
+			args("filter", "msg_type", "msgname"),
+			reference_existing_object_policy()
+		)
+
+		CLASS_METHOD(IVEngineServer,
+			EntityMessageBegin,
+			"Creates a usermessage using an entity as the source.",
+			args("entindex", "ent_serverclass", "isReliable"),
+			reference_existing_object_policy()
+		)
+
+		CLASS_METHOD(IVEngineServer,
+			MessageEnd,
+			"Finish entity or user message and dispatch it.",
+			reference_existing_object_policy()
 		)
 
 	BOOST_END_CLASS()
@@ -330,4 +352,13 @@ DECLARE_SP_MODULE(engine)
 	// Expose the global interface to the event manager.
 	// ----------------------------------------------------------
 	BOOST_FUNCTION(GetEngine, reference_existing_object_policy());
+
+
+	// ----------------------------------------------------------
+	// Expose some entity functions
+	// ----------------------------------------------------------
+	BOOST_FUNCTION(PEntityOfEntIndex, 
+		"Returns the edict for an entity index.", 
+		reference_existing_object_policy()
+	);
 }

@@ -80,10 +80,29 @@ using namespace boost::python;
 	class_<classname, bases<baseclass> >(XSTRINGIFY(classname))
 
 //---------------------------------------------------------------------------------
+// Use this to wrap an inherited class that shouldn't be copied.
+//---------------------------------------------------------------------------------
+#define BOOST_INHERITED_CLASS_NOCOPY( classname, baseclass ) \
+	class_<classname, bases<baseclass>, boost::noncopyable>(XSTRINGIFY(classname))
+
+//---------------------------------------------------------------------------------
 // Use this to wrap a regular class.
 //---------------------------------------------------------------------------------
 #define BOOST_CLASS( classname ) \
 	class_<classname>(XSTRINGIFY(classname))
+
+//---------------------------------------------------------------------------------
+// Use this to wrap a class that should be instantiatable from python, but
+// should never be copied.
+//---------------------------------------------------------------------------------
+#define BOOST_CLASS_NOCOPY( classname ) \
+	class_<classname, boost::noncopyable>(XSTRINGIFY(classname))
+
+//---------------------------------------------------------------------------------
+// Use this to add a constructor to a class.
+//---------------------------------------------------------------------------------
+#define CLASS_CONSTRUCTOR( ... ) \
+	.def(init< ##__VA_ARGS__ >())
 
 //---------------------------------------------------------------------------------
 // This finishes off a boost -> python object wrapping.
