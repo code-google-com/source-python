@@ -38,6 +38,9 @@ Set(BOOSTSDK_LIB         ${BOOSTSDK}/lib)
 # Include directories
 # ------------------------------------------------------------------
 Include_Directories(
+    ${SOURCESDK}
+    ${SOURCESDK}/game/shared
+    ${SOURCESDK}/game/server
     ${SOURCESDK}/public
     ${SOURCESDK}/public/tier0
     ${SOURCESDK}/public/tier1
