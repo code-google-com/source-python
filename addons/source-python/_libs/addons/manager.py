@@ -58,6 +58,9 @@ class _AddonManagementDictionary(dict):
             # Print the exception to the console
             ExceptHooks.PrintException(*error)
 
+            # Remove all modules from sys.modules
+            self._RemoveModules(addon_name)
+
             # Return None as the value to show the addon was not loaded
             return None
 
@@ -98,29 +101,68 @@ class _AddonManagementDictionary(dict):
                 # allow the addon to still be unloaded
                 ExceptHooks.PrintException(*error)
 
+        # Remove all modules from sys.modules
+        self._RemoveModules(addon_name)
+
+        # Remove the addon from the dictionary
+        super(_AddonManagementDictionary, self).__delitem__(addon_name)
+
+    def _RemoveModules(self, addon_name):
+
         # Get the addon's module
         addon_import = addon_name + '.' + addon_name
 
         # Is the addon's module loaded?
-        if addon_import in sys.modules:
+        if not addon_import in sys.modules:
 
-            # Get the addon's instance
-            addon = __import__(addon_import)
+            # If not, simply return
+            return
 
-            # Remove all events from the addon
-            self[addon_name]._RemoveEvents(addon, addon_name)
+        # Get the addon's instance
+        addon = __import__(addon_import)
 
-            # Loop through all loaded modules
-            for module in list(sys.modules):
+        # Remove all events from the addon
+        self._RemoveEvents(addon, addon_name)
 
-                # Is the current module part of the given addon?
-                if module.startswith(addon_name):
+        # Loop through all loaded modules
+        for module in list(sys.modules):
 
-                    # Remove the module from memory
-                    del sys.modules[module]
+            # Is the current module part of the given addon?
+            if module.startswith(addon_name):
 
-        # Remove the addon from the dictionary
-        super(_AddonManagementDictionary, self).__delitem__(addon_name)
+                # Remove the module from memory
+                del sys.modules[module]
+
+    def _RemoveEvents(self, instance, module):
+        '''Removes all events from the registry for the addon'''
+
+        # Does the current object have a __dict__?
+        if not hasattr(instance, '__dict__'):
+
+            # If not, simply return
+            return
+
+        # Loop through all items in the instance's dictionary
+        for item in dict(instance.__dict__):
+
+            # Get the new object's instance
+            new_instance = instance.__dict__[item]
+
+            # Get the object's module
+            new_module = module + '.' + item
+
+            # Is the item an "event" instance?
+            if isinstance(new_instance, event):
+
+                # Unregister the event
+                EventRegistry.UnregisterForEvent(
+                    new_instance.callback.__name__, new_instance.callback)
+
+            # Does the module exist in sys.modules?
+            elif new_module in sys.modules:
+
+                # Loop through all items in the module
+                self._RemoveEvents(new_instance, new_module)
 
 # Get the _AddonManagementDictionary instance
 AddonManager = _AddonManagementDictionary()
@@ -160,35 +202,4 @@ class _LoadedAddon(object):
         if 'load' in self.globals:
 
             # Call the addon's load function
-            addon.globals['load']()
-
-    def _RemoveEvents(self, instance, module):
-        '''Removes all events from the registry for the addon'''
-
-        # Does the current object have a __dict__?
-        if not hasattr(instance, '__dict__'):
-
-            # If not, simply return
-            return
-
-        # Loop through all items in the instance's dictionary
-        for item in dict(instance.__dict__):
-
-            # Get the new object's instance
-            new_instance = instance.__dict__[item]
-
-            # Get the object's module
-            new_module = module + '.' + item
-
-            # Is the item an "event" instance?
-            if isinstance(new_instance, event):
-
-                # Unregister the event
-                EventRegistry.UnregisterForEvent(
-                    new_instance.callback.__name__, new_instance.callback)
-
-            # Does the module exist in sys.modules?
-            elif new_module in sys.modules:
-
-                # Loop through all items in the module
-                self._RemoveEvents(new_instance, new_module)
+            self.globals['load']()
