@@ -107,12 +107,6 @@ def addon_load(addon_name):
         # If not, go no further
         return
 
-    # Does the addon have a load function?
-    if 'load' in addon.globals:
-
-        # Call the addon's load function
-        addon.globals['load']()
-
     # Print message that the addon successfully loaded
     print('[SP] Successfully loaded "%s"' % addon_name)
 
