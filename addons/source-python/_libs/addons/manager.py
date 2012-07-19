@@ -25,21 +25,22 @@ from events.manager import EventRegistry
 class _AddonManagementDictionary(dict):
     '''Stores addon's and their instances'''
 
-    def __getitem__(self, addon):
+    def __getitem__(self, addon_name):
         '''Returns an addon's instance and tries to
             load it if it is not already loaded'''
 
         # Does the addon already exist in the dictionary?
-        if addon in self:
+        if addon_name in self:
 
             # Return the addon's instance
-            return super(_AddonManagementDictionary, self).__getitem__(addon)
+            return super(
+                _AddonManagementDictionary, self).__getitem__(addon_name)
 
         # Try to get the addon's instance
         try:
 
             # Get the addon's instance
-            value = _LoadedAddon(addon)
+            instance = _LoadedAddon(addon_name)
 
         # Was the file not found?
         # We use this check because we already printed the error to console
@@ -61,10 +62,10 @@ class _AddonManagementDictionary(dict):
             return None
 
         # Add the addon to the dictionary with its instance
-        self[addon] = value
+        self[addon_name] = instance
 
         # Return the given value
-        return value
+        return instance
 
     def __delitem__(self, addon_name):
         '''Removes an addon from the manager'''
@@ -77,6 +78,25 @@ class _AddonManagementDictionary(dict):
 
         # Print message about unloading the addon
         print('[SP] Unloading "%s"...' % addon_name)
+
+        # Does the addon have an unload function?
+        if 'unload' in self[addon_name].globals:
+
+            # Use a try/except here to still allow the addon to be unloaded
+            try:
+
+                # Call the addon's unload function
+                self[addon_name].globals['unload']()
+
+            # Was an exception raised?
+            except:
+
+                # Get the error
+                error = sys.exc_info()
+
+                # Print the error to console, but
+                # allow the addon to still be unloaded
+                ExceptHooks.PrintException(*error)
 
         # Get the addon's module
         addon_import = addon_name + '.' + addon_name
@@ -135,6 +155,12 @@ class _LoadedAddon(object):
 
         # Store the globals for the addon
         self.globals = addon.__dict__[addon_name].__dict__
+
+        # Does the addon have a load function?
+        if 'load' in self.globals:
+
+            # Call the addon's load function
+            addon.globals['load']()
 
     def _RemoveEvents(self, instance, module):
         '''Removes all events from the registry for the addon'''
