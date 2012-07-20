@@ -85,7 +85,7 @@ Set(SOURCEPYTHON_MODULE_SOURCES
     core/modules/export_main.cpp
 	core/modules/export_player.cpp
 	core/modules/export_entity.cpp
-	core/modules/export_usermsg.cpp
+	core/modules/export_shared.cpp
 )
 
 Set(SOURCEPYTHON_MODULE_FILES

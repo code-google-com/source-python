@@ -51,20 +51,20 @@ int CESModule::nextFreeModule = 0;
 // The ES module. Never remove this function as we need it in order to be able
 // to execute 'import sp; from sp import event'.
 //---------------------------------------------------------------------------------
-// BOOST_PYTHON_MODULE(sp)
-// {
-// 
-// }
+BOOST_PYTHON_MODULE(Source)
+{
+ 
+}
 
 //---------------------------------------------------------------------------------
 // Initializes all python modules
 //---------------------------------------------------------------------------------
 void modulsp_init( void )
 {
-	// Get the Source.Python module
-	// object esmodule(borrowed(PyImport_AddModule("sp")));
 	BEGIN_BOOST_PY()
-		object esmodule(g_PythonManager.GetSP());
+		// Get the Source.Python module
+		object esmodule(borrowed(PyImport_AddModule("Source")));
+		// object esmodule(g_PythonManager.GetSP());
 
 		// Now iterate through all submodules and add them.
 		for( int i = 0; i < MAX_EVENTSCRIPTS_MODULES; i++ ) {
