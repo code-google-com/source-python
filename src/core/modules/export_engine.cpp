@@ -62,7 +62,7 @@ DECLARE_CLASS_METHOD_OVERLOAD(IVEngineServer, PrecacheGeneric, 1, 2);
 //---------------------------------------------------------------------------------
 // Wraps game events related structures.
 //---------------------------------------------------------------------------------
-DECLARE_SP_MODULE(engine)
+DECLARE_SP_MODULE(Engine)
 {
 	// ----------------------------------------------------------
 	// CBaseHandle
@@ -352,7 +352,6 @@ DECLARE_SP_MODULE(engine)
 	// Expose the global interface to the event manager.
 	// ----------------------------------------------------------
 	BOOST_FUNCTION(GetEngine, reference_existing_object_policy());
-
 
 	// ----------------------------------------------------------
 	// Expose some entity functions

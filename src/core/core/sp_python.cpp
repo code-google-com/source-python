@@ -108,9 +108,6 @@ bool CPythonManager::Initialize( void )
 	V_snprintf(szAddonsCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", g_GamePaths.GetESDir());
 	PyRun_SimpleString(szAddonsCmd);
 
-// 	m_MainModule = python::import("__main__");
-// 	m_MainNameSpace = m_MainModule.attr("__dict__");
-	
 	// Import the main module file.
 	Msg("[SP] Importing main module..\n");
  	BEGIN_BOOST_PY()
