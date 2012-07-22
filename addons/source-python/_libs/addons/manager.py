@@ -13,9 +13,9 @@ from traceback import format_exception
 # Source.Python Imports
 from paths import ADDON_PATH
 #   Core
+from core.decorators import BaseDecorator
 from core.excepthook import ExceptHooks
 #   Events
-from events.decorator import event
 from events.manager import EventRegistry
 
 
@@ -25,16 +25,8 @@ from events.manager import EventRegistry
 class _AddonManagementDictionary(dict):
     '''Stores addon's and their instances'''
 
-    def __getitem__(self, addon_name):
-        '''Returns an addon's instance and tries to
-            load it if it is not already loaded'''
-
-        # Does the addon already exist in the dictionary?
-        if addon_name in self:
-
-            # Return the addon's instance
-            return super(
-                _AddonManagementDictionary, self).__getitem__(addon_name)
+    def __missing__(self, addon_name):
+        '''Tries to load an addon that is not loaded'''
 
         # Try to get the addon's instance
         try:
@@ -55,11 +47,23 @@ class _AddonManagementDictionary(dict):
             # Get the error
             error = sys.exc_info()
 
-            # Print the exception to the console
-            ExceptHooks.PrintException(*error)
+            # Is the error due to "No module named '<addon>.<addon>'?
+            if (error[1].msg ==
+              "No module named '%s.%s'" % (addon_name, addon_name)):
 
-            # Remove all modules from sys.modules
-            self._RemoveModules(addon_name)
+                # Print a message about not using built-in module names
+                # We already know the path exists, so the only way this error
+                # could occur is if it shares its name with a built-in module
+                print('[SP] Addon name cannot use name of a built-in module')
+
+            # Otherwise
+            else:
+
+                # Print the exception to the console
+                ExceptHooks.PrintException(*error)
+
+                # Remove all modules from sys.modules
+                self._RemoveModules(addon_name)
 
             # Return None as the value to show the addon was not loaded
             return None
@@ -122,7 +126,7 @@ class _AddonManagementDictionary(dict):
         addon = __import__(addon_import)
 
         # Remove all events from the addon
-        self._RemoveEvents(addon, addon_name)
+        self._RemoveDecorators(addon, addon_name)
 
         # Loop through all loaded modules
         for module in list(sys.modules):
@@ -133,8 +137,10 @@ class _AddonManagementDictionary(dict):
                 # Remove the module from memory
                 del sys.modules[module]
 
-    def _RemoveEvents(self, instance, module):
-        '''Removes all events from the registry for the addon'''
+    def _RemoveDecorators(self, instance, module):
+        '''
+            Removes all BaseDecorator instances from the registry for the addon
+        '''
 
         # Does the current object have a __dict__?
         if not hasattr(instance, '__dict__'):
@@ -151,18 +157,17 @@ class _AddonManagementDictionary(dict):
             # Get the object's module
             new_module = module + '.' + item
 
-            # Is the item an "event" instance?
-            if isinstance(new_instance, event):
+            # Is the item an "BaseDecorator" instance?
+            if isinstance(new_instance, BaseDecorator):
 
-                # Unregister the event
-                EventRegistry.UnregisterForEvent(
-                    new_instance.callback.__name__, new_instance.callback)
+                # Unregister the Decorator
+                new_instance._UnregisterDecorator()
 
             # Does the module exist in sys.modules?
             elif new_module in sys.modules:
 
                 # Loop through all items in the module
-                self._RemoveEvents(new_instance, new_module)
+                self._RemoveDecorators(new_instance, new_module)
 
 # Get the _AddonManagementDictionary instance
 AddonManager = _AddonManagementDictionary()
