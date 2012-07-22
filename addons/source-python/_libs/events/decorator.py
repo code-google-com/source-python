@@ -4,6 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Core
+from core.decorators import BaseDecorator
 #   Events
 from events.manager import EventRegistry
 
@@ -11,7 +13,7 @@ from events.manager import EventRegistry
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class event(object):
+class Event(BaseDecorator):
     '''Event decorator class'''
 
     def __init__(self, callback):
@@ -31,7 +33,13 @@ class event(object):
         EventRegistry.RegisterForEvent(self.callback.__name__, self.callback)
 
     def __call__(self, GameEvent):
-        '''Calls the callback for the event'''
+        '''Calls the Event callback with the GameEvent instance'''
 
-        # Call the callback
+        # Call the Event callback
         return self.callback(GameEvent)
+
+    def _UnregisterDecorator(self):
+        '''Unregisters the event'''
+
+        # Unregister the event
+        EventRegistry.UnregisterForEvent(self.callback.__name__, self.callback)
