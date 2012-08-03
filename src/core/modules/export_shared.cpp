@@ -33,6 +33,7 @@
 #include "utility/wrap_macros.h"
 #include "utility/mrecipientfilter.h"
 #include "eiface.h"
+#include "Color.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
@@ -44,6 +45,15 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 DECLARE_SP_MODULE(Shared)
 {
+	// ----------------------------------------------------------
+	// Simple structs.
+	// ----------------------------------------------------------
+	BOOST_CLASS(Vector)
+		BOOST_CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t)
+		
+		CLASS_METHOD(Vector, Init)
+	BOOST_END_CLASS()
+
 	// ----------------------------------------------------------
 	// Wrap the recipient filter class which is used for
 	// usermessages as well as effects.

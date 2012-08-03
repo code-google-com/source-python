@@ -86,6 +86,7 @@ Set(SOURCEPYTHON_MODULE_SOURCES
 	core/modules/export_player.cpp
 	core/modules/export_entity.cpp
 	core/modules/export_shared.cpp
+	core/modules/export_cvar.cpp
 )
 
 Set(SOURCEPYTHON_MODULE_FILES

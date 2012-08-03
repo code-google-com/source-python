@@ -85,20 +85,20 @@ DECLARE_SP_MODULE(Engine)
 			"Returns true if the handle has been initted with any values"
 		)
 
-		CLASS_METHOD_SPECIAL_TYPEDEF(
-			"__eq__",
+		CLASS_METHOD_TYPEDEF(
+			__eq__,
 			BaseHandleEq,
 			"Returns true if the given CBaseHandle points to the same entity."
 		)
 
-		CLASS_METHOD_SPECIAL_TYPEDEF(
-			"__ne__",
+		CLASS_METHOD_TYPEDEF(
+			__ne__,
 			BaseHandleNEq,
 			"Returns true if the given CBaseHandle is not equal to this handle."
 		)
 
-		CLASS_METHOD_SPECIAL_TYPEDEF(
-			"__lt__",
+		CLASS_METHOD_TYPEDEF(
+			__lt__,
 			BaseHandleLt,
 			"Returns true if the given CBaseHandle is less than this handle."
 		)

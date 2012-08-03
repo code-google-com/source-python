@@ -82,14 +82,20 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 // Use this to wrap an inherited class that shouldn't be copied.
 //---------------------------------------------------------------------------------
-#define BOOST_INHERITED_CLASS_NOCOPY( classname, baseclass ) \
-	class_<classname, bases<baseclass>, boost::noncopyable>(XSTRINGIFY(classname))
+#define BOOST_INHERITED_CLASS_NOCOPY( classname, baseclass, ... ) \
+	class_<classname, bases<baseclass>, boost::noncopyable>(XSTRINGIFY(classname), ##__VA_ARGS__)
 
 //---------------------------------------------------------------------------------
 // Use this to wrap a regular class.
 //---------------------------------------------------------------------------------
 #define BOOST_CLASS( classname ) \
 	class_<classname>(XSTRINGIFY(classname))
+
+//---------------------------------------------------------------------------------
+// Use this to add a constructor.
+//---------------------------------------------------------------------------------
+#define BOOST_CLASS_CONSTRUCTOR( ... ) \
+	.def(init< ##__VA_ARGS__ >())
 
 //---------------------------------------------------------------------------------
 // Use this to wrap a class that should be instantiatable from python, but
@@ -130,13 +136,6 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define CLASS_METHOD_TYPEDEF( methodname, function, ... ) \
 	.def(XSTRINGIFY(methodname), function, ##__VA_ARGS__)
-
-//---------------------------------------------------------------------------------
-// Use this for spcial class methods that you've had to typedef out (because they 
-// were overloaded etc etc)
-//---------------------------------------------------------------------------------
-#define CLASS_METHOD_SPECIAL_TYPEDEF( pymethod, function, ... ) \
-	.def(pymethod, function, ##__VA_ARGS__)
 
 //---------------------------------------------------------------------------------
 // Use this to wrap a writable class member.
