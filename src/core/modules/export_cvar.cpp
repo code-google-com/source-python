@@ -93,7 +93,7 @@ DECLARE_SP_MODULE(Cvar)
 	// Console variable/command base.
 	// ----------------------------------------------------------
 	BOOST_CLASS( ConCommandBase )
-		BOOST_CLASS_CONSTRUCTOR(const char*, const char*, int)
+		CLASS_CONSTRUCTOR(const char*, const char*, int)
 
 		CLASS_METHOD(ConCommandBase,
 			IsCommand,

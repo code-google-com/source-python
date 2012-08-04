@@ -31,6 +31,7 @@
 #include "utility/sp_util.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
+#include "irecipientfilter.h"
 #include "eiface.h"
 
 //---------------------------------------------------------------------------------
@@ -330,13 +331,6 @@ DECLARE_SP_MODULE(Engine)
 			UserMessageBegin,
 			"Begin a message from the server to the client.dll",
 			args("filter", "msg_type", "msgname"),
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD(IVEngineServer,
-			EntityMessageBegin,
-			"Creates a usermessage using an entity as the source.",
-			args("entindex", "ent_serverclass", "isReliable"),
 			reference_existing_object_policy()
 		)
 

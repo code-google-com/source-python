@@ -31,6 +31,7 @@
 #include "export_main.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
+#include "irecipientfilter.h"
 #include "utility/mrecipientfilter.h"
 #include "eiface.h"
 #include "Color.h"
@@ -49,7 +50,7 @@ DECLARE_SP_MODULE(Shared)
 	// Simple structs.
 	// ----------------------------------------------------------
 	BOOST_CLASS(Vector)
-		BOOST_CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t)
+		CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t)
 		
 		CLASS_METHOD(Vector, Init)
 	BOOST_END_CLASS()

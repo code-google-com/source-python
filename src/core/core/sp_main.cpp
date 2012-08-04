@@ -41,10 +41,11 @@
 #include "engine/IEngineTrace.h"
 #include "tier2/tier2.h"
 #include "game/server/iplayerinfo.h"
+#include "../utility/wrap_macros.h"
 
-// --------------------------------------------------------
+//---------------------------------------------------------------------------------
 // Disable warnings.
-// --------------------------------------------------------
+//---------------------------------------------------------------------------------
 #if defined(_WIN32)
 #    pragma warning( disable : 4005 )
 #endif
@@ -68,6 +69,12 @@ IFileSystem*		  filesystem		= NULL;
 //---------------------------------------------------------------------------------
 CSourcePython g_EventscriptsPlugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSourcePython, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_EventscriptsPlugin );
+
+//---------------------------------------------------------------------------------
+// Helper console variable to tell scripters what engine version we are running
+// on.
+//---------------------------------------------------------------------------------
+ConVar sp_engine_ver("sp_engine_ver", XSTRINGIFY(SOURCE_ENGINE), 0, "Version of the engine SP is running on");
 
 //---------------------------------------------------------------------------------
 // Interface helper class.
