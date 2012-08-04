@@ -92,12 +92,6 @@ using namespace boost::python;
 	class_<classname>(XSTRINGIFY(classname))
 
 //---------------------------------------------------------------------------------
-// Use this to add a constructor.
-//---------------------------------------------------------------------------------
-#define BOOST_CLASS_CONSTRUCTOR( ... ) \
-	.def(init< ##__VA_ARGS__ >())
-
-//---------------------------------------------------------------------------------
 // Use this to wrap a class that should be instantiatable from python, but
 // should never be copied.
 //---------------------------------------------------------------------------------
@@ -107,8 +101,8 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 // Use this to add a constructor to a class.
 //---------------------------------------------------------------------------------
-#define CLASS_CONSTRUCTOR( ... ) \
-	.def(init< ##__VA_ARGS__ >())
+#define CLASS_CONSTRUCTOR( type, ... )	  \
+	.def(init< type, ##__VA_ARGS__ >())
 
 //---------------------------------------------------------------------------------
 // This finishes off a boost -> python object wrapping.
