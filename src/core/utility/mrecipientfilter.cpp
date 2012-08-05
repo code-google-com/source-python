@@ -74,8 +74,17 @@ void MRecipientFilter::AddAllPlayers()
 	{
 		edict_t *pPlayer = PEntityOfEntIndex(i);
 
-		if(!pPlayer || pPlayer->IsFree())
+		// Skip invalid entities.
+		if( !pPlayer || pPlayer->IsFree() ) {
 			continue;
+		}
+
+		// Get and compare the classnames. Skip non-player
+		// entities.
+		const char* classname = pPlayer->GetClassName();
+		if( strcmp(classname, "player") != 0 ) {
+			continue;
+		}
 
 		m_Recipients.AddToTail(i);
 	}
