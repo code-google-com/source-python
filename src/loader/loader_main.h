@@ -40,8 +40,8 @@
 #define PYLIB_NAME_LINUX_RELEASE	"plat-linux/libpython3.3m.so.1.0"
 #define PYLIB_NAME_LINUX_DEBUG		"plat-linux/libpython3.3dm.so.1.0"
 
-#define CORE_NAME_WIN32				"bin\\core.dll"
-#define CORE_NAME_LINUX				"bin/core.so"
+#define CORE_NAME_WIN32				"core\\core.dll"
+#define CORE_NAME_LINUX				"core/core.so"
 
 #if defined(_WIN32)
 #	define CORE_NAME  CORE_NAME_WIN32
