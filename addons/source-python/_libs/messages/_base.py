@@ -11,7 +11,7 @@ from os.path import join
 from configobj import ConfigObj
 
 # Source.Python Imports
-from core.base import GAME_NAME
+from core import GAME_NAME
 from paths import CFG_PATH
 
 

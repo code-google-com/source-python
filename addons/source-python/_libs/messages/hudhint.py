@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from core.base import GameEngine
+from core import GameEngine
 #   Filters
 from filters.recipients import RecipientFilter
 #   Messages
