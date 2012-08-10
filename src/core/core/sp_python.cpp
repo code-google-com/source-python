@@ -117,14 +117,14 @@ bool CPythonManager::Initialize( void )
 	V_snprintf(szAddonsCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", g_GamePaths.GetESDir());
 	PyRun_SimpleString(szAddonsCmd);
 
+	// Initialize all submodules
+	modulsp_init();
+
 	// Import the main module file.
 	Msg("[SP] Importing main module..\n");
  	BEGIN_BOOST_PY()
  		m_SpPy = python::import("sp");
  	END_BOOST_PY_NORET(); // Noret because we have more stuff to do after this import.
-
-	// Initialize all submodules
-	modulsp_init();
 
 	return true;
 }
