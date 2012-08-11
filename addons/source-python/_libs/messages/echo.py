@@ -6,7 +6,7 @@
 # Source.Python Imports
 from core import GameEngine
 #   Filters
-from filters.recipients import RecipientFilter
+from filters.recipients import GetRecipients
 #   Messages
 from messages._base import MessageTypes
 
@@ -25,7 +25,7 @@ def Echo(users, message):
     '''Sends an echo message to the given players' console'''
 
     # Get a RecipientFilter for the given users
-    Recipients = RecipientFilter.GetRecipients(users)
+    Recipients = GetRecipients(users)
 
     # Create the UserMessage
     UserMessage = GameEngine.UserMessageBegin(Recipients, _MessageType, None)

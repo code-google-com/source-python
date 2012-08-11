@@ -19,7 +19,7 @@ import sys
 _basepath = dirname(__file__)
 
 # Get the current module
-_basemodule = sys.modules[__package__ + '.' + __package__]
+_basemodule = sys.modules[__package__]
 
 # Loop through all files in the directory
 for _filename in listdir(_basepath):
@@ -49,10 +49,17 @@ for _filename in listdir(_basepath):
                 continue
 
             # Is the current item a function?
-            if type(_module.__dict__[item]).__name__ == 'function':
+            if type(_module.__dict__[item]).__name__ != 'function':
+
+                # If not, do not import this item
+                continue
+
+            # Is the current item native to the current module?
+            if _module.__dict__[item].__module__ == _module.__name__:
 
                 # Add the function as a global object for this module
                 _basemodule.__dict__[item] = _module.__dict__[item]
+
     # Was an error encountered?
     except:
 
