@@ -6,7 +6,7 @@
 # Source.Python Imports
 from core import GameEngine
 #   Filters
-from filters.recipients import RecipientFilter
+from filters.recipients import GetRecipients
 #   Messages
 from messages._base import MessageTypes
 
@@ -27,7 +27,7 @@ def Fade(users, fade_type, fade_time, hold_time, red, green, blue, alpha=255):
     '''
 
     # Get a RecipientFilter for the given users
-    Recipients = RecipientFilter.GetRecipients(users)
+    Recipients = GetRecipients(users)
 
     # Create the UserMessage
     UserMessage = GameEngine.UserMessageBegin(Recipients, _MessageType, None)
