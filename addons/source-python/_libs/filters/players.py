@@ -48,6 +48,10 @@ class PlayerIter(_IterObject):
 # =============================================================================
 # >> FILTER FUNCTIONS
 # =============================================================================
+def _IsPlayer(index):
+    return True
+
+
 def _PlayerIsBot(index):
     return True
 
@@ -56,6 +60,7 @@ def _PlayerIsHuman(index):
     return True
 
 # Register the filter functions
+PlayerIterManager.RegisterFilter('all', _IsPlayer)
 PlayerIterManager.RegisterFilter('bot', _PlayerIsBot)
 PlayerIterManager.RegisterFilter('human', _PlayerIsHuman)
 

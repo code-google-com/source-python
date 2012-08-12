@@ -21,8 +21,10 @@ class _BaseFilterManager(object):
         '''Called on class initialization'''
 
         # Store filter/return type dictionaries
-        self._filters = _BaseRegistry('filter', FilterError)
-        self._return_types = _BaseRegistry('return type', ReturnTypeError)
+        self._filters = _BaseRegistry(
+            'filter', FilterError, self.__qualname__)
+        self._return_types = _BaseRegistry(
+            'return type', ReturnTypeError, self.__qualname__)
 
     def RegisterFilter(self, filter_name, function):
         '''Registers the given filter to the class'''
