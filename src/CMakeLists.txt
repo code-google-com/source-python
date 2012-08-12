@@ -25,6 +25,7 @@ Set(SOURCEPYTHON_LOADER_FILES
 Set(SOURCEPYTHON_UTIL_HEADERS
     core/utility/wrap_macros.h
 	core/utility/mrecipientfilter.h
+  core/utility/ipythongenerator.h
 )
 
 Set(SOURCEPYTHON_UTIL_SOURCES
@@ -77,6 +78,8 @@ Set(SOURCEPYTHON_ADDON_FILES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_HEADERS
     core/modules/export_main.h
+    core/modules/export_player.h
+    core/modules/export_entity.h
 )
 
 Set(SOURCEPYTHON_MODULE_SOURCES
