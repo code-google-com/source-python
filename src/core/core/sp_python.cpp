@@ -103,19 +103,28 @@ bool CPythonManager::Initialize( void )
 	V_snprintf(szPlatCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", szPlatDir);
 	PyRun_SimpleString(szPlatCmd);
 
+    // Add the site packages directory.
+	char szSitePackages[MAX_GAME_PATH];
+	V_snprintf(szSitePackages, MAX_GAME_PATH, "%s/engines/site-packages", g_GamePaths.GetESDir());
+	V_FixSlashes(szSitePackages);
+    
+    char szSitePackagesCmd[MAX_GAME_PATH];
+    V_snprintf(szSitePackagesCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", szSitePackages);
+    PyRun_SimpleString(szSitePackagesCmd);
+    
 	// Add the addons directory too.
 	char szAddonsCmd[MAX_GAME_PATH];
 	V_snprintf(szAddonsCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", g_GamePaths.GetESDir());
 	PyRun_SimpleString(szAddonsCmd);
+
+	// Initialize all submodules
+	modulsp_init();
 
 	// Import the main module file.
 	Msg("[SP] Importing main module..\n");
  	BEGIN_BOOST_PY()
  		m_SpPy = python::import("sp");
  	END_BOOST_PY_NORET(); // Noret because we have more stuff to do after this import.
-
-	// Initialize all submodules
-	modulsp_init();
 
 	return true;
 }
