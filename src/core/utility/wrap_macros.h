@@ -172,6 +172,12 @@ using namespace boost::python;
 	scope().attr(attrName) = attrValue;
 
 //---------------------------------------------------------------------------------
+// Use this macro to raise a Python exception.
+//---------------------------------------------------------------------------------
+#define BOOST_RAISE_EXCEPTION( exceptionName ) \
+	PyErr_NewException(XSTRINGIFY(exceptionNAme), NULL, NULL);
+
+//---------------------------------------------------------------------------------
 // These typedefs save some typing. Use this policy for any functions that return
 // a newly allocated instance of a class which you need to delete yourself.
 //---------------------------------------------------------------------------------

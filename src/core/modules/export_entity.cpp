@@ -28,14 +28,64 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "export_main.h"
+#include "export_entity.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
+#include "utility/sp_util.h"
 #include "eiface.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
 //---------------------------------------------------------------------------------
 using namespace boost::python;
+
+//---------------------------------------------------------------------------------
+// Entities Constructor (default).
+//---------------------------------------------------------------------------------
+Entities::Entities():
+	m_szClassName(NULL),
+	m_uiClassNameLen(0),
+	m_iEntityIndex(0)
+{
+}
+
+//---------------------------------------------------------------------------------
+// Entities Constructor (takes a filter string).
+//---------------------------------------------------------------------------------
+Entities::Entities(const char* szClassName):
+	m_szClassName(szClassName),
+	m_uiClassNameLen(strlen(szClassName)),
+	m_iEntityIndex(0)
+{
+}
+
+//---------------------------------------------------------------------------------
+// Entities Destructor.
+//---------------------------------------------------------------------------------
+Entities::~Entities()
+{
+}
+
+//---------------------------------------------------------------------------------
+// Returns the next valid edict_t instance, or NULL if reached maxEntities.
+//---------------------------------------------------------------------------------
+edict_t* Entities::getNext()
+{
+	edict_t* pEDict = NULL;
+	while(m_iEntityIndex < gpGlobals->maxEntities && !pEDict)
+	{
+		m_iEntityIndex++;
+		pEDict = PEntityOfEntIndex(m_iEntityIndex);
+
+		//If the filter string is set, then only allow edict_t instances which begin with the filter string
+		if (m_szClassName && strncmp(pEDict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
+		{
+			pEDict = NULL;
+		}
+	}
+
+	return pEDict;
+}
 
 //---------------------------------------------------------------------------------
 // Wraps player related structures.
@@ -136,5 +186,12 @@ DECLARE_SP_MODULE(Entity)
 			"Returns the ICollideable instance for this entity.",
 			reference_existing_object_policy()
 		)
+	BOOST_END_CLASS()
+
+	// ----------------------------------------------------------
+	// Entities (Generator)
+	// ----------------------------------------------------------
+	BOOST_GENERATOR_CLASS(Entities)
+		CLASS_CONSTRUCTOR(const char*)
 	BOOST_END_CLASS()
 }
