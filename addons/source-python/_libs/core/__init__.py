@@ -120,9 +120,39 @@ class ServerVar(object):
             # Set value as a string
             self.ConVar.SetString(cvarValue)
 
+    def __coerce__(self, other):
+        '''Used to coerce values when making comparisons'''
+
+        # Is the other value a string?
+        if isinstance(other, str):
+
+            # Return the string value of the cvar
+            return (self.ConVar.GetString(), other)
+
+        # Is the other value a float?
+        if isinstance(other, float):
+
+            # Return the float value of the cvar
+            return (self.ConVar.GetFloat(), other)
+
+        # Is the other value an integer?
+        if isinstance(other, int):
+
+            # Return the integer value of the cvar
+            return (self.ConVar.GetInt(), other)
+
+        # Is the other value a boolean?
+        if isinstance(other, bool):
+
+            # Return the boolean value of the cvar
+            return (self.ConVar.GetBool(), other)
+
+        # An invalid type is being compared, so return None
+        return None
+
     def MakePublic(self):
         '''Sets the notify flag for the cvar.'''
-        self.ConVar.AddFlags(1<<8)
+        self.ConVar.AddFlags(Cvar.FCVAR_NOTIFY)
 
     def _get_notify(self):
         '''Returns whether the Notify flag is set'''
