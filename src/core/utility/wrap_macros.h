@@ -166,10 +166,10 @@ using namespace boost::python;
 	     classname##_##methodname( args, docstring )[retpol])
 
 //---------------------------------------------------------------------------------
-// Use this macro to define a value (like a const).
+// Use this macro to define a global attribute
 //---------------------------------------------------------------------------------
-#define BOOST_GLOBAL_DEFINE( varName ) \
-	scope().attr(XSTRINGIFY(varName)) = varName;
+#define BOOST_GLOBAL_ATTRIBUTE( attrName, attrValue ) \
+	scope().attr(attrName) = attrValue;
 
 //---------------------------------------------------------------------------------
 // Use this macro to raise a Python exception.

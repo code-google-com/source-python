@@ -20,3 +20,6 @@ ADDON_PATH = join(GAME_PATH, 'addons', 'source-python')
 
 # Get the cfg's base path
 CFG_PATH = join(GAME_PATH, 'cfg', 'source-python')
+
+# Get the log's base path
+LOG_PATH = join(GAME_PATH, 'logs', 'source-python')
