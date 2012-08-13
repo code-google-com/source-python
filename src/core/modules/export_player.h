@@ -39,15 +39,18 @@ class IPlayerInfo;
 //---------------------------------------------------------------------------------
 // Declare a generator class to help iterate over the active players.
 //---------------------------------------------------------------------------------
-class Players: public IPythonGenerator<IPlayerInfo, Players>
+class Players: public IPythonGenerator<IPlayerInfo>
 {
 public:
-	Players();
+	Players(PyObject* self);
+	Players(PyObject* self, const Players& rhs);
 	virtual ~Players();
 protected:
 	virtual IPlayerInfo* getNext();
 private:
 	int m_iEntityIndex;
 };
+
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(Players)
 
 #endif // _EXPORT_PLAYER_H

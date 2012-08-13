@@ -178,6 +178,16 @@ using namespace boost::python;
 	PyErr_NewException(XSTRINGIFY(exceptionNAme), NULL, NULL);
 
 //---------------------------------------------------------------------------------
+// Use this macro to add a specialization for a class to hold back-references.
+//---------------------------------------------------------------------------------
+#define BOOST_SPECIALIZE_HAS_BACK_REFERENCE( classname ) \
+	namespace boost { namespace python { \
+		template<> \
+		struct has_back_reference<classname> : mpl::true_ \
+		{}; \
+	}}
+
+//---------------------------------------------------------------------------------
 // These typedefs save some typing. Use this policy for any functions that return
 // a newly allocated instance of a class which you need to delete yourself.
 //---------------------------------------------------------------------------------
