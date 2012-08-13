@@ -244,7 +244,7 @@ DECLARE_SP_MODULE(Player)
 
 		CLASS_METHOD(IPlayerInfo,
 			IsDead,
-			"Returns true if the player is alive."
+			"Returns true if the player is dead."
 		)
 
 		CLASS_METHOD(IPlayerInfo,
