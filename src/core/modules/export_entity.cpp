@@ -40,9 +40,10 @@
 using namespace boost::python;
 
 //---------------------------------------------------------------------------------
-// Entities Constructor (default).
+// Entities Constructor.
 //---------------------------------------------------------------------------------
-Entities::Entities():
+Entities::Entities(PyObject* self):
+	IPythonGenerator(self),
 	m_szClassName(NULL),
 	m_uiClassNameLen(0),
 	m_iEntityIndex(0)
@@ -50,9 +51,21 @@ Entities::Entities():
 }
 
 //---------------------------------------------------------------------------------
+// Entities Copy-Contstructor.
+//---------------------------------------------------------------------------------
+Entities::Entities(PyObject* self, const Entities& rhs):
+	IPythonGenerator(self),
+	m_szClassName(rhs.m_szClassName),
+	m_uiClassNameLen(rhs.m_uiClassNameLen),
+	m_iEntityIndex(rhs.m_iEntityIndex)
+{
+}
+
+//---------------------------------------------------------------------------------
 // Entities Constructor (takes a filter string).
 //---------------------------------------------------------------------------------
-Entities::Entities(const char* szClassName):
+Entities::Entities(PyObject* self, const char* szClassName):
+	IPythonGenerator(self),
 	m_szClassName(szClassName),
 	m_uiClassNameLen(strlen(szClassName)),
 	m_iEntityIndex(0)
