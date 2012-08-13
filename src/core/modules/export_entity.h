@@ -39,11 +39,12 @@ struct edict_t;
 //---------------------------------------------------------------------------------
 // Declare a generator class to help iterate over the active entities.
 //---------------------------------------------------------------------------------
-class Entities: public IPythonGenerator<edict_t, Entities>
+class Entities: public IPythonGenerator<edict_t>
 {
 public:
-	Entities(const char* szClassName);
-	Entities();
+	Entities(PyObject* self);
+	Entities(PyObject* self, const Entities& rhs);
+	Entities(PyObject* self, const char* szClassName);
 	virtual ~Entities();
 protected:
 	virtual edict_t* getNext();
@@ -52,5 +53,7 @@ private:
 	unsigned int m_uiClassNameLen;
 	int m_iEntityIndex;
 };
+
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(Entities)
 
 #endif // _EXPORT_ENTITY_H
