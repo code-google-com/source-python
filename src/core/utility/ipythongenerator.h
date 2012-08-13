@@ -100,8 +100,10 @@ T* IPythonGenerator<T>::next()
 	T* pValue = getNext();
 	if (!pValue)
 	{
-		BOOST_RAISE_EXCEPTION(StopIteration);
+		BOOST_RAISE_EXCEPTION(PyExc_StopIteration, "Iteration stops here.");
+		return NULL;
 	}
+
 	return pValue;
 }
 
