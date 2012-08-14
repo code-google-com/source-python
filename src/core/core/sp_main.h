@@ -23,8 +23,8 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.  
 */
-#ifndef _EVENTSCRIPTS_MAIN_H
-#define _EVENTSCRIPTS_MAIN_H
+#ifndef _SOURCEPYTHON_MAIN_H
+#define _SOURCEPYTHON_MAIN_H
 
 //---------------------------------------------------------------------------------
 // Includes
@@ -97,4 +97,4 @@ private:
 };
 
 
-#endif // _EVENTSCRIPTS_MAIN_H
+#endif // _SOURCEPYTHON_MAIN_H

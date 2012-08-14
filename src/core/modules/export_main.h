@@ -35,7 +35,7 @@
 //---------------------------------------------------------------------------------
 // Maximum number of modules we can have.
 //---------------------------------------------------------------------------------
-#define MAX_EVENTSCRIPTS_MODULES 64
+#define MAX_SOURCEPYTHON_MODULES 64
 
 //---------------------------------------------------------------------------------
 // Python init function typedef.
@@ -47,7 +47,7 @@ typedef void (*ModuleInitFn)( void );
 //---------------------------------------------------------------------------------
 #define DECLARE_SP_MODULE( name ) \
 	void PyInit_##name( void ); \
-	static CESModule g_##name##_Init(XSTRINGIFY(name), &PyInit_##name); \
+	static CSPModule g_##name##_Init(XSTRINGIFY(name), &PyInit_##name); \
 	void PyInit_##name( void )
 
 //---------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ typedef void (*ModuleInitFn)( void );
 // work is you declare a module via BOOST_PYTHON_MODULE. Then the CPythonManager
 // class will iterate over the module list and add it to the import table.
 //---------------------------------------------------------------------------------
-struct EventscriptsModule_t
+struct SourcePythonModule_t
 {
 	char*		 szName;
 	ModuleInitFn initFunc;
@@ -64,26 +64,26 @@ struct EventscriptsModule_t
 //---------------------------------------------------------------------------------
 // Global module array.
 //---------------------------------------------------------------------------------
-extern EventscriptsModule_t g_EventscriptsModules[];
+extern SourcePythonModule_t g_SourcePythonModules[];
 
 //---------------------------------------------------------------------------------
 // This helper class will do some static initialization.
 //---------------------------------------------------------------------------------
-class CESModule
+class CSPModule
 {
 	public:
 		static int nextFreeModule;
 
 	public:
-		CESModule(char* szName, ModuleInitFn initFunc) {
-			if( nextFreeModule < MAX_EVENTSCRIPTS_MODULES ) {
-				g_EventscriptsModules[nextFreeModule].initFunc = (ModuleInitFn)initFunc;
-				g_EventscriptsModules[nextFreeModule].szName = szName;
+		CSPModule(char* szName, ModuleInitFn initFunc) {
+			if( nextFreeModule < MAX_SOURCEPYTHON_MODULES ) {
+				g_SourcePythonModules[nextFreeModule].initFunc = (ModuleInitFn)initFunc;
+				g_SourcePythonModules[nextFreeModule].szName = szName;
 				
 				nextFreeModule++;
 
-				g_EventscriptsModules[nextFreeModule].initFunc = NULL;
-				g_EventscriptsModules[nextFreeModule].szName = NULL;
+				g_SourcePythonModules[nextFreeModule].initFunc = NULL;
+				g_SourcePythonModules[nextFreeModule].szName = NULL;
 			}
 		}
 };

@@ -67,8 +67,8 @@ IFileSystem*		  filesystem		= NULL;
 //---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
 //---------------------------------------------------------------------------------
-CSourcePython g_EventscriptsPlugin;
-EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSourcePython, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_EventscriptsPlugin );
+CSourcePython g_SourcePythonPlugin;
+EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSourcePython, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_SourcePythonPlugin );
 
 //---------------------------------------------------------------------------------
 // Helper console variable to tell scripters what engine version we are running
@@ -151,7 +151,7 @@ bool AddEventsFromFile( const char* szRelativePath )
 	int count = 0;
 	while( pCurrent ) {
 		DevMsg(1, " %d. %s\n", count, pCurrent->GetName());
-		gameeventmanager->AddListener(&g_EventscriptsPlugin, pCurrent->GetName(), true);
+		gameeventmanager->AddListener(&g_SourcePythonPlugin, pCurrent->GetName(), true);
 		pCurrent = pCurrent->GetNextKey();
 		count++;
 	}

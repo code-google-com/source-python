@@ -51,7 +51,7 @@ class CGamePaths
 {
 	private:
 		char m_szGameDir[MAX_GAME_PATH];
-		char m_szESDir[MAX_GAME_PATH];
+		char m_szSPDir[MAX_GAME_PATH];
 
 	public:
 		bool Initialize( void );
