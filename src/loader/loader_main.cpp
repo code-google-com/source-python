@@ -20,7 +20,7 @@
 * to link the code of this program (as well as its derivative works) to 
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
-* all respects for all other code used.  Additionally, the Eventscripts
+* all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.  
 */
 
@@ -83,15 +83,15 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// Build path to python engines directory.
 	char szPythonHome[1024];
 	char szPythonEngine[1024];
-	char szEventscripts[1024];
+	char szSourcePython[1024];
 #ifdef _WIN32
 	char szMsvcrt[1024];
 	char szMsvcp[1024];
 #endif
 
-	// Load all of the Eventscripts dependencies first.
+	// Load all of the Source.Python dependencies first.
 	V_snprintf(szPythonHome, 1024, "%s/addons/source-python/engines", szGameDir);
-	V_snprintf(szEventscripts, sizeof(szEventscripts), "%s/addons/source-python/%s", szGameDir, CORE_NAME);
+	V_snprintf(szSourcePython, sizeof(szSourcePython), "%s/addons/source-python/%s", szGameDir, CORE_NAME);
 	V_snprintf(szPythonEngine, sizeof(szPythonEngine), "%s/%s", szPythonHome, PYLIB_NAME);
 #ifdef _WIN32
 	V_snprintf(szMsvcrt, sizeof(szMsvcrt), "%s/%s", szPythonHome, MSVCRT_LIB);
@@ -100,7 +100,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	// Fixup the paths with the correct slashes.
 	V_FixSlashes(szPythonHome);
-	V_FixSlashes(szEventscripts);
+	V_FixSlashes(szSourcePython);
 	V_FixSlashes(szPythonEngine);
 #ifdef _WIN32
 	V_FixSlashes(szMsvcrt);
@@ -149,12 +149,12 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
-	// Load the eventscripts core.
-	m_pCore = new CDllDemandLoader(szEventscripts);
+	// Load the Source.Python core.
+	m_pCore = new CDllDemandLoader(szSourcePython);
 
 	if( !m_pCore->GetFactory() ) {
 		Warning("===========================================\n");
-		Warning("[SP-LOADER] Could not load the %s!\n", szEventscripts);
+		Warning("[SP-LOADER] Could not load the %s!\n", szSourcePython);
 		Warning("===========================================\n");
 		return false;
 	}

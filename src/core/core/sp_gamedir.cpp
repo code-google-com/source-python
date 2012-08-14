@@ -52,14 +52,14 @@ bool CGamePaths::Initialize( void )
 	}
 
 	engine->GetGameDir(m_szGameDir, MAX_GAME_PATH);
-	V_snprintf(m_szESDir, MAX_GAME_PATH, "%s%s", m_szGameDir, sp_ADDON_BASE);
+	V_snprintf(m_szSPDir, MAX_GAME_PATH, "%s%s", m_szGameDir, sp_ADDON_BASE);
 
 	// Fix slashes
 	V_FixSlashes(m_szGameDir);
-	V_FixSlashes(m_szESDir);
+	V_FixSlashes(m_szSPDir);
 
 	DevMsg(1, "[SP] Game directory is %s\n", m_szGameDir);
-	DevMsg(1, "[SP] Source-Python directory is %s\n", m_szESDir);
+	DevMsg(1, "[SP] Source-Python directory is %s\n", m_szSPDir);
 
 	return true;
 }
@@ -77,5 +77,5 @@ char* CGamePaths::GetGameDir( void )
 //---------------------------------------------------------------------------------
 char* CGamePaths::GetESDir( void )
 {
-	return m_szESDir;
+	return m_szSPDir;
 }
