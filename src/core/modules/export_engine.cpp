@@ -354,4 +354,9 @@ DECLARE_SP_MODULE(Engine)
 		"Returns the edict for an entity index.", 
 		reference_existing_object_policy()
 	);
+
+	BOOST_FUNCTION(IndexOfEdict,
+        "Returns the index of an entity edict",
+        args("edict")
+    );
 }
