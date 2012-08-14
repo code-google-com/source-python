@@ -48,7 +48,7 @@ class _AddonManagementDictionary(dict):
             error = sys.exc_info()
 
             # Is the error due to "No module named '<addon>.<addon>'?
-            if (error[1].args[0] ==
+            if (len(error[1].args) and error[1].args[0] ==
               "No module named '%s.%s'" % (addon_name, addon_name)):
 
                 # Print a message about not using built-in module names
