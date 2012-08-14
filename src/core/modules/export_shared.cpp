@@ -35,6 +35,7 @@
 #include "utility/mrecipientfilter.h"
 #include "eiface.h"
 #include "Color.h"
+#include "mathlib/vector.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
@@ -51,8 +52,36 @@ DECLARE_SP_MODULE(Shared)
 	// ----------------------------------------------------------
 	BOOST_CLASS(Vector)
 		CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t)
-		
+
+        // ----------------------------------------------------------
+        // Class Methods
+        // ----------------------------------------------------------
 		CLASS_METHOD(Vector, Init)
+
+        CLASS_METHOD(Vector,
+            DistTo,
+            "Returns the distance from one Vector to the class Vector",
+            args("vOther")
+        )
+
+        // ----------------------------------------------------------
+        // Class Attributes
+        // ----------------------------------------------------------
+        CLASS_MEMBER(Vector,
+            x,
+            "Read/write value of the x coordinate for the vector."
+        )
+
+        CLASS_MEMBER(Vector,
+            y,
+            "Read/write value of the y coordinate for the vector."
+        )
+
+        CLASS_MEMBER(Vector,
+            z,
+            "Read/write value of the z coordinate for the vector."
+        )
+
 	BOOST_END_CLASS()
 
 	// ----------------------------------------------------------
