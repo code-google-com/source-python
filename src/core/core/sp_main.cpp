@@ -122,7 +122,7 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 
 		// If it's not valid, bail out.
 		if( *pGlobal ) {
-			Msg("[SP] Interface %s at %x\n", pInterface->szInterface, *pGlobal);
+			DevMsg(1, "[SP] Interface %s at %x\n", pInterface->szInterface, *pGlobal);
 		} else {
 			Warning("[SP] Could not retrieve interface %s\n", pInterface->szInterface);
 			return false;

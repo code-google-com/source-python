@@ -74,6 +74,8 @@ CSourcePython::~CSourcePython()
 //---------------------------------------------------------------------------------
 bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
+    Msg("[Source.Python] Loading...\n");
+
 	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 
 	// Get path to game directory.
@@ -109,18 +111,18 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	// We gotta load the visual studio runtime libraries before anything else.
 #ifdef _WIN32
-	Msg("===========================================\n");
-	Msg("[SP-LOADER] Loading %s\n", szMsvcrt);
-	Msg("===========================================\n");
+	DevMsg(1, "===========================================\n");
+	DevMsg(1, "[SP-LOADER] Loading %s\n", szMsvcrt);
+	DevMsg(1, "===========================================\n");
 	HMODULE hMsvcrt = LoadLibrary(szMsvcrt);
 	if( !hMsvcrt ) {
 		Msg("[SP-LOADER] Could not load visual studio runtime! Aborting load..\n");
 		return false;
 	}
 
-	Msg("===========================================\n");
-	Msg("[SP-LOADER] Loading %s\n", szMsvcp);
-	Msg("===========================================\n");
+	DevMsg(1, "===========================================\n");
+	DevMsg(1, "[SP-LOADER] Loading %s\n", szMsvcp);
+	DevMsg(1, "===========================================\n");
 	HMODULE hMsvcp = LoadLibrary(szMsvcp);
 	if( !hMsvcp ) {
 		Msg("[SP-LOADER] Could not load visual studio runtime libraries! Aborting load..\n");
@@ -129,7 +131,9 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 #endif
 
 	// Load python as the core depends on it.
-	Msg("[SP-LOADER] Loading %s\n", szPythonEngine);
+	DevMsg(1, "===========================================\n");
+	DevMsg(1, "[SP-LOADER] Loading %s\n", szPythonEngine);
+	DevMsg(1, "===========================================\n");
 
 #ifdef _WIN32
 	m_pPython = Sys_LoadModule(szPythonEngine);
