@@ -96,7 +96,7 @@ edict_t* Entities::getNext()
 		pEDict = PEntityOfEntIndex(m_iEntityIndex);
 
 		//If the filter string is set, then only allow edict_t instances which begin with the filter string
-		if (m_szClassName && pEDict && strncmp(pEDict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
+		if (m_szClassName && pEDict && !pEDict->IsFree() && strncmp(pEDict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
 		{
 			pEDict = NULL;
 		}

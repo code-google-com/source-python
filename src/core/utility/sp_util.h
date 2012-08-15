@@ -30,12 +30,14 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "eiface.h"
+#include "public/game/server/iplayerinfo.h"
 
 //---------------------------------------------------------------------------------
 // Globals
 //---------------------------------------------------------------------------------
 extern IVEngineServer* engine;
 extern CGlobalVars*	   gpGlobals;
+extern IPlayerInfoManager* playerinfomanager;
 
 //---------------------------------------------------------------------------------
 // Returns the index of an entity.
@@ -50,6 +52,60 @@ inline edict_t* PEntityOfEntIndex(int iEntIndex)
 	if(iEntIndex >= 0 && iEntIndex < gpGlobals->maxEntities) 
 	{
 		return (edict_t *)(gpGlobals->pEdicts + iEntIndex);	
+	}
+
+	return NULL;
+}
+
+//---------------------------------------------------------------------------------
+// Returns the edict instance given a userid
+//---------------------------------------------------------------------------------
+inline edict_t* EdictOfUserid(int userid)
+{
+	edict_t* pEdict;
+	for(int i=1; i <= gpGlobals->maxClients; ++i)
+	{
+		pEdict = PEntityOfEntIndex(i);
+		if (pEdict && !pEdict->IsFree() &&
+			strcmp(pEdict->GetClassName(), "player") == 0 &&
+			engine->GetPlayerUserId(pEdict) == userid)
+		{
+			return pEdict;
+		}
+	}
+
+	return NULL;
+}
+
+//---------------------------------------------------------------------------------
+// Returns the playerinfo instance given a userid
+//---------------------------------------------------------------------------------
+inline IPlayerInfo* PlayerOfUserid(int userid)
+{
+	edict_t* pEdict = EdictOfUserid(userid);
+	if (!pEdict)
+	{
+		return NULL;
+	}
+
+	return playerinfomanager->GetPlayerInfo(pEdict);
+}
+
+//---------------------------------------------------------------------------------
+// Returns the playerinfo instance given a player(entity) index
+//---------------------------------------------------------------------------------
+inline IPlayerInfo* PlayerOfIndex(int index)
+{
+	if (index < 1 || index > gpGlobals->maxClients)
+	{
+		return NULL;
+	}
+
+	edict_t* pEdict = PEntityOfEntIndex(index);
+	if (pEdict && !pEdict->IsFree() &&
+		strcmp(pEdict->GetClassName(), "player") == 0)
+	{
+		return playerinfomanager->GetPlayerInfo(pEdict);
 	}
 
 	return NULL;

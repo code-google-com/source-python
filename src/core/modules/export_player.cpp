@@ -55,6 +55,9 @@ IPlayerInfoManager* GetPlayerInfoManager( void )
 	return playerinfomanager;
 }
 
+//---------------------------------------------------------------------------------
+// Returns the botmanager instance.
+//---------------------------------------------------------------------------------
 IBotManager* GetBotManager( void )
 {
 	return botmanager;
@@ -421,4 +424,25 @@ DECLARE_SP_MODULE(Player)
 	// Expose the global interface to the botmanager.
 	// ----------------------------------------------------------
 	BOOST_FUNCTION(GetBotManager, reference_existing_object_policy());
+
+	// ----------------------------------------------------------
+	// Expose some player functions
+	// ----------------------------------------------------------
+	BOOST_FUNCTION(EdictOfUserid, 
+		"Returns the edict for a userid.", 
+		args("userid"),
+		reference_existing_object_policy()
+	);
+
+	BOOST_FUNCTION(PlayerOfUserid,
+        "Returns the IPlayerInfo instance for a userid.",
+        args("userid"),
+		reference_existing_object_policy()
+    );
+
+	BOOST_FUNCTION(PlayerOfIndex,
+        "Returns the IPlayerInfo instance for a player index.",
+        args("index"),
+		reference_existing_object_policy()
+    );
 }
