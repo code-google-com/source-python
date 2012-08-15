@@ -41,6 +41,7 @@
 #include "engine/IEngineTrace.h"
 #include "tier2/tier2.h"
 #include "game/server/iplayerinfo.h"
+#include "game/shared/IEffects.h"
 #include "../utility/wrap_macros.h"
 
 //---------------------------------------------------------------------------------
@@ -63,6 +64,7 @@ IUniformRandomStream* randomStr         = NULL;
 IEngineTrace*         enginetrace       = NULL;
 CGlobalVars*          gpGlobals         = NULL;
 IFileSystem*		  filesystem		= NULL;
+IEffects*			  effects			= NULL;
 
 //---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -102,6 +104,7 @@ InterfaceHelper_t gEngineInterfaces[] = {
 InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_PLAYERINFOMANAGER, (void **)&playerinfomanager},
 	{INTERFACEVERSION_PLAYERBOTMANAGER, (void **)&botmanager},
+	{IEFFECTS_INTERFACE_VERSION, (void **)&effects},
 
 	{NULL, NULL}
 };
@@ -119,6 +122,8 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 
 		// Get the interface from the given factory.
 		*pGlobal = factory(pInterface->szInterface, NULL);
+
+		printf("%p", *pGlobal);
 
 		// If it's not valid, bail out.
 		if( *pGlobal ) {

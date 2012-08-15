@@ -90,6 +90,7 @@ Set(SOURCEPYTHON_MODULE_SOURCES
 	core/modules/export_entity.cpp
 	core/modules/export_shared.cpp
 	core/modules/export_cvar.cpp
+    core/modules/export_misc.cpp
 )
 
 Set(SOURCEPYTHON_MODULE_FILES
@@ -153,6 +154,7 @@ include("makefiles/game/${GAME}.cmake")
 # ------------------------------------------------------------------
 Add_Definitions(
 	-DSOURCE_ENGINE=${SOURCE_ENGINE}
+    -DBOOST_PYTHON_MAX_ARITY=16
 )
 
 # ------------------------------------------------------------------
