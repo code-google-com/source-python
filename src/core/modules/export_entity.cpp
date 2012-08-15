@@ -55,10 +55,12 @@ Entities::Entities(PyObject* self):
 //---------------------------------------------------------------------------------
 Entities::Entities(PyObject* self, const Entities& rhs):
 	IPythonGenerator(self),
-	m_szClassName(rhs.m_szClassName),
 	m_uiClassNameLen(rhs.m_uiClassNameLen),
 	m_iEntityIndex(rhs.m_iEntityIndex)
 {
+	char* szClassNameCopy = new char[m_uiClassNameLen];
+	memcpy(szClassNameCopy, rhs.m_szClassName, m_uiClassNameLen);
+	m_szClassName = szClassNameCopy;
 }
 
 //---------------------------------------------------------------------------------
@@ -66,10 +68,12 @@ Entities::Entities(PyObject* self, const Entities& rhs):
 //---------------------------------------------------------------------------------
 Entities::Entities(PyObject* self, const char* szClassName):
 	IPythonGenerator(self),
-	m_szClassName(szClassName),
 	m_uiClassNameLen(strlen(szClassName)),
 	m_iEntityIndex(0)
 {
+	char* szClassNameCopy = new char[m_uiClassNameLen];
+	memcpy(szClassNameCopy, szClassName, m_uiClassNameLen);
+	m_szClassName = szClassNameCopy;
 }
 
 //---------------------------------------------------------------------------------
@@ -77,6 +81,7 @@ Entities::Entities(PyObject* self, const char* szClassName):
 //---------------------------------------------------------------------------------
 Entities::~Entities()
 {
+	delete[] m_szClassName;
 }
 
 //---------------------------------------------------------------------------------
@@ -91,7 +96,7 @@ edict_t* Entities::getNext()
 		pEDict = PEntityOfEntIndex(m_iEntityIndex);
 
 		//If the filter string is set, then only allow edict_t instances which begin with the filter string
-		if (m_szClassName && strncmp(pEDict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
+		if (m_szClassName && pEDict && strncmp(pEDict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
 		{
 			pEDict = NULL;
 		}
