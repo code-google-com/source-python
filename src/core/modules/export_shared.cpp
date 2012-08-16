@@ -36,6 +36,7 @@
 #include "eiface.h"
 #include "Color.h"
 #include "mathlib/vector.h"
+#include "IEffects.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
@@ -43,26 +44,190 @@
 using namespace boost::python;
 
 //---------------------------------------------------------------------------------
+// Class method overloads
+//---------------------------------------------------------------------------------
+DECLARE_CLASS_METHOD_OVERLOAD(Vector, IsZero, 0, 1)
+
+//---------------------------------------------------------------------------------
 // Usermsg module.
 //---------------------------------------------------------------------------------
 DECLARE_SP_MODULE(Shared)
 {
 	// ----------------------------------------------------------
+	// Required for vector operators.
+	// ----------------------------------------------------------
+	typedef Vector (Vector::*VectorROperatorFn)(const Vector& v) const;
+	typedef Vector& (Vector::*VectorIOperatorFn)(const Vector& v);
+	
+	typedef Vector (Vector::*VectorROperatorFn2)(float) const;
+	typedef Vector& (Vector::*VectorIOperatorFn2)(float);
+	
+	// r* operators.
+	VectorROperatorFn	vecAdd = &Vector::operator+;
+	VectorROperatorFn	vecSub = &Vector::operator-;
+	VectorROperatorFn	vecMul = &Vector::operator*;
+	VectorROperatorFn	vecDiv = &Vector::operator/;
+	
+	VectorROperatorFn2	vecDivScalar = &Vector::operator/;
+	VectorROperatorFn2	vecMulScalar = &Vector::operator*;
+
+	// i* operators.
+	VectorIOperatorFn	vecPlusEqual = &Vector::operator+=;
+	VectorIOperatorFn	vecMinusEqual = &Vector::operator-=;
+	VectorIOperatorFn	vecTimesEqual = &Vector::operator*=;
+	VectorIOperatorFn	vecDivEqual = &Vector::operator/=;
+
+	VectorIOperatorFn2	vecTimesFloat = &Vector::operator*=;
+	VectorIOperatorFn2	vecDivFloat = &Vector::operator/=;
+	VectorIOperatorFn2	vecPlusFloat = &Vector::operator+=;
+	VectorIOperatorFn2	vecMinusFloat = &Vector::operator-=;
+
+	// ----------------------------------------------------------
 	// Simple structs.
 	// ----------------------------------------------------------
 	BOOST_CLASS(Vector)
+		
+		// ----------------------------------------------------------
+		// Constructors
+		// ----------------------------------------------------------
 		CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t)
 
         // ----------------------------------------------------------
         // Class Methods
         // ----------------------------------------------------------
-		CLASS_METHOD(Vector, Init)
+		CLASS_METHOD(Vector,
+			Init,
+			"Vector initialization",
+			args("ix", "iy", "iz")
+		)
 
-        CLASS_METHOD(Vector,
-            DistTo,
-            "Returns the distance from one Vector to the class Vector",
-            args("vOther")
-        )
+		CLASS_METHOD(Vector,
+			IsValid,
+			"Returns true if the vector is not equal to NaN"
+		)
+
+		CLASS_METHOD(Vector,
+			Zero,
+			"Zeros out a vector."
+		)
+
+		CLASS_METHOD(Vector,
+			Negate,
+			"Negates a vector's components."
+		)
+
+		CLASS_METHOD(Vector,
+			Length,
+			"Returns the magnitude of the vector"
+		)
+
+		CLASS_METHOD(Vector,
+			LengthSqr,
+			"Returns the vector's magnitude squared."
+		)
+
+		CLASS_METHOD(Vector,
+			LengthRecipFast,
+			"Get one over the vector's length via fast hardware approximation"
+		)
+
+		CLASS_METHOD_OVERLOAD(Vector, 
+			IsZero,
+			"Returns true if this vector is (0,0,0) within tolerance",
+			args("tolerance")
+		)
+		
+		CLASS_METHOD(Vector,
+			IsZeroFast,
+			"Returns true if this vector is exactly (0,0,0) -- only fast if vector is coming from memory, not registers"
+		)
+
+		CLASS_METHOD(Vector,
+			NormalizeInPlace,
+			"Normalizes the vector"
+		)
+
+		CLASS_METHOD(Vector,
+			Normalized,
+			"Returns a normalized vector based on this object."
+		)
+
+		CLASS_METHOD(Vector,
+			IsLengthGreaterThan,
+			"Returns true if length() is greater than val",
+			args("val")
+		)
+
+		CLASS_METHOD(Vector,
+			IsLengthLessThan,
+			"Returns true if length() is less than val",
+			args("val")
+		)
+
+		CLASS_METHOD(Vector,
+			WithinAABox,
+			"Returns true if the vector is within the box defined by two other vectors",
+			args("boxmin", "boxmax")
+		)
+
+		CLASS_METHOD(Vector,
+			DistTo,
+			"Returns the distance from one Vector to the class Vector",
+			args("vOther")
+		)
+
+		CLASS_METHOD(Vector,
+			DistToSqr,
+			"Gets the distance from this vector to the other one squared",
+			args("vOther")
+		)
+
+		CLASS_METHOD(Vector,
+			MulAdd,
+			"Multiply, add, and assign to this vector (this = a + b * scalar).",
+			args("a", "b", "scalar")
+		)
+
+		CLASS_METHOD(Vector,
+			Dot,
+			"Does the dot product of this vector",
+			args("vOther")
+		)
+
+		CLASS_METHOD(Vector,
+			Length2D,
+			"Returns the length of the vector in 2D space"
+		)
+
+		CLASS_METHOD(Vector,
+			Length2DSqr,
+			"Returns the length of the vector in 2D space squared."
+		)
+
+		// ----------------------------------------------------------
+		// Class operators
+		// ----------------------------------------------------------
+		.def(self == self)
+		.def(self != self)
+
+		.def(self += self)
+		.def(self -= self)
+
+		.def(self *= self)
+		.def(self *= float())
+
+		.def(self /= self)
+		.def(self /= float())
+
+		.def(self += float())
+		.def(self -= float())
+
+		.def(self + self)
+		.def(self - self)
+		.def(self * self)
+		.def(self / self)
+		.def(self * float())
+		.def(self / float())
 
         // ----------------------------------------------------------
         // Class Attributes
