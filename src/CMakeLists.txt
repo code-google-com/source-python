@@ -103,6 +103,16 @@ Set(SOURCEPYTHON_MODULE_ENGINE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Cvar module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_MODULE_CVAR_SOURCES
+    core/modules/cvar/cvar_concommandbase.cpp
+    core/modules/cvar/cvar_convar.cpp
+    core/modules/cvar/cvar_flags.cpp
+    core/modules/cvar/cvar_icvar.cpp
+)
+
+# ------------------------------------------------------------------
 # All module fiels
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -110,6 +120,7 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_MODULE_SOURCES}
     
     ${SOURCEPYTHON_MODULE_ENGINE_SOURCES}
+    ${SOURCEPYTHON_MODULE_CVAR_SOURCES}
 )
 
 # ------------------------------------------------------------------
