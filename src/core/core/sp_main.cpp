@@ -43,6 +43,8 @@
 #include "game/server/iplayerinfo.h"
 #include "game/shared/IEffects.h"
 #include "../utility/wrap_macros.h"
+#include "engine/IEngineSound.h"
+#include "engine/IEngineTrace.h"
 
 //---------------------------------------------------------------------------------
 // Disable warnings.
@@ -62,6 +64,7 @@ IBotManager*	 	  botmanager		= NULL; // game dll interface to interact with bots
 IServerPluginHelpers* helpers			= NULL; // special 3rd party plugin helpers from the engine
 IUniformRandomStream* randomStr         = NULL;
 IEngineTrace*         enginetrace       = NULL;
+IEngineSound*		  enginesound		= NULL;
 CGlobalVars*          gpGlobals         = NULL;
 IFileSystem*		  filesystem		= NULL;
 IEffects*			  effects			= NULL;
@@ -95,6 +98,7 @@ InterfaceHelper_t gEngineInterfaces[] = {
 	{INTERFACEVERSION_GAMEEVENTSMANAGER2, (void **)&gameeventmanager},
 	{INTERFACEVERSION_ISERVERPLUGINHELPERS, (void **)&helpers},
 	{INTERFACEVERSION_ENGINETRACE_SERVER, (void **)&enginetrace},
+	{IENGINESOUND_SERVER_INTERFACE_VERSION, (void **)&enginesound},
 	{VENGINE_SERVER_RANDOM_INTERFACE_VERSION, (void **)&randomStr},
 	{FILESYSTEM_INTERFACE_VERSION, (void **)&filesystem},
 
