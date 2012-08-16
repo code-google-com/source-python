@@ -54,35 +54,6 @@ DECLARE_CLASS_METHOD_OVERLOAD(Vector, IsZero, 0, 1)
 DECLARE_SP_MODULE(Shared)
 {
 	// ----------------------------------------------------------
-	// Required for vector operators.
-	// ----------------------------------------------------------
-	typedef Vector (Vector::*VectorROperatorFn)(const Vector& v) const;
-	typedef Vector& (Vector::*VectorIOperatorFn)(const Vector& v);
-	
-	typedef Vector (Vector::*VectorROperatorFn2)(float) const;
-	typedef Vector& (Vector::*VectorIOperatorFn2)(float);
-	
-	// r* operators.
-	VectorROperatorFn	vecAdd = &Vector::operator+;
-	VectorROperatorFn	vecSub = &Vector::operator-;
-	VectorROperatorFn	vecMul = &Vector::operator*;
-	VectorROperatorFn	vecDiv = &Vector::operator/;
-	
-	VectorROperatorFn2	vecDivScalar = &Vector::operator/;
-	VectorROperatorFn2	vecMulScalar = &Vector::operator*;
-
-	// i* operators.
-	VectorIOperatorFn	vecPlusEqual = &Vector::operator+=;
-	VectorIOperatorFn	vecMinusEqual = &Vector::operator-=;
-	VectorIOperatorFn	vecTimesEqual = &Vector::operator*=;
-	VectorIOperatorFn	vecDivEqual = &Vector::operator/=;
-
-	VectorIOperatorFn2	vecTimesFloat = &Vector::operator*=;
-	VectorIOperatorFn2	vecDivFloat = &Vector::operator/=;
-	VectorIOperatorFn2	vecPlusFloat = &Vector::operator+=;
-	VectorIOperatorFn2	vecMinusFloat = &Vector::operator-=;
-
-	// ----------------------------------------------------------
 	// Simple structs.
 	// ----------------------------------------------------------
 	BOOST_CLASS(Vector)
