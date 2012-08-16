@@ -109,7 +109,7 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define BOOST_END_CLASS() \
 	;
-	
+
 //---------------------------------------------------------------------------------
 // Use this to wrap a method. Variable arg is for any return value policies
 // you might have. Since we're in the namespace, we have access to the class.

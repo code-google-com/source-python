@@ -84,7 +84,6 @@ Set(SOURCEPYTHON_MODULE_HEADERS
 
 Set(SOURCEPYTHON_MODULE_SOURCES
     core/modules/export_events.cpp
-    core/modules/export_engine.cpp
     core/modules/export_main.cpp
 	core/modules/export_player.cpp
 	core/modules/export_entity.cpp
@@ -93,9 +92,24 @@ Set(SOURCEPYTHON_MODULE_SOURCES
     core/modules/export_misc.cpp
 )
 
+# ------------------------------------------------------------------
+# Engine module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_MODULE_ENGINE_SOURCES
+    core/modules/engine/engine_main.cpp
+    core/modules/engine/engine_server.cpp
+    core/modules/engine/engine_basehandle.cpp
+    core/modules/engine/engine_misc.cpp
+)
+
+# ------------------------------------------------------------------
+# All module fiels
+# ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_MODULE_HEADERS}
     ${SOURCEPYTHON_MODULE_SOURCES}
+    
+    ${SOURCEPYTHON_MODULE_ENGINE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -110,6 +124,9 @@ Source_Group("Source Files\\Core"    FILES ${SOURCEPYTHON_CORE_SOURCES})
 
 Source_Group("Header Files\\Modules" FILES ${SOURCEPYTHON_MODULE_HEADERS})
 Source_Group("Source Files\\Modules" FILES ${SOURCEPYTHON_MODULE_SOURCES})
+
+Source_Group("Header Files\\Modules\\Engine" FILES ${SOURCEPYTHON_MODULE_ENGINE_HEADERS})
+Source_Group("Source Files\\Modules\\Engine" FILES ${SOURCEPYTHON_MODULE_ENGINE_SOURCES})
 
 Source_Group("Header Files\\Util"    FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Source Files\\Util"    FILES ${SOURCEPYTHON_UTIL_SOURCES})

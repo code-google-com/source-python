@@ -27,12 +27,14 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "export_main.h"
-#include "utility/sp_util.h"
-#include "core/sp_python.h"
-#include "utility/wrap_macros.h"
+#include "../export_main.h"
 #include "irecipientfilter.h"
 #include "eiface.h"
+#include "utility/wrap_macros.h"
+#include "utility/sp_util.h"
+#include "core/sp_python.h"
+#include "engine/IEngineSound.h"
+#include "engine/IEngineTrace.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
@@ -53,6 +55,14 @@ IVEngineServer* GetEngine( void )
 }
 
 //---------------------------------------------------------------------------------
+// This is required because we can't wrap variadic functions with boost.
+//---------------------------------------------------------------------------------
+void Engine_ClientCommand( edict_t* pEdict, const char* szMsg ) 
+{
+	engine->ClientCommand(pEdict, szMsg);
+}
+
+//---------------------------------------------------------------------------------
 // IVEngineServer overloads
 //---------------------------------------------------------------------------------
 DECLARE_CLASS_METHOD_OVERLOAD(IVEngineServer, PrecacheModel, 1, 2);
@@ -61,114 +71,16 @@ DECLARE_CLASS_METHOD_OVERLOAD(IVEngineServer, PrecacheDecal, 1, 2);
 DECLARE_CLASS_METHOD_OVERLOAD(IVEngineServer, PrecacheGeneric, 1, 2);
 
 //---------------------------------------------------------------------------------
-// Wraps game events related structures.
+// This function exports engine IVEngineServer
 //---------------------------------------------------------------------------------
-DECLARE_SP_MODULE(Engine)
+void Export_IVEngineServer( void )
 {
-	// ----------------------------------------------------------
-	// CBaseHandle
-	// ----------------------------------------------------------
-	typedef bool (CBaseHandle::*BaseHandleFn)(const CBaseHandle&) const;
-	
-	BaseHandleFn BaseHandleEq = &CBaseHandle::operator ==;
-	BaseHandleFn BaseHandleNEq = &CBaseHandle::operator !=;
-	BaseHandleFn BaseHandleLt = &CBaseHandle::operator <;
-
-	BOOST_ABSTRACT_CLASS(CBaseHandle)
-
-		CLASS_METHOD(CBaseHandle,
-			IsValid,
-			"Returns true if the handle has been initted with any values"
-		)
-
-		CLASS_METHOD(CBaseHandle,
-			IsValid,
-			"Returns true if the handle has been initted with any values"
-		)
-
-		CLASS_METHOD_TYPEDEF(
-			__eq__,
-			BaseHandleEq,
-			"Returns true if the given CBaseHandle points to the same entity."
-		)
-
-		CLASS_METHOD_TYPEDEF(
-			__ne__,
-			BaseHandleNEq,
-			"Returns true if the given CBaseHandle is not equal to this handle."
-		)
-
-		CLASS_METHOD_TYPEDEF(
-			__lt__,
-			BaseHandleLt,
-			"Returns true if the given CBaseHandle is less than this handle."
-		)
-
-	BOOST_END_CLASS()
-
-	// ----------------------------------------------------------
-	// IHandleEntity.
-	// ----------------------------------------------------------
-	BOOST_ABSTRACT_CLASS(IHandleEntity)
-		CLASS_METHOD(IHandleEntity,
-			GetRefEHandle,
-			"Returns the CBaseHandle instance for this entity.",
-			reference_existing_object_policy()
-		)
-	BOOST_END_CLASS()
-
-
-	// ----------------------------------------------------------
-	// INetworkable interface.
-	// ----------------------------------------------------------
-	BOOST_ABSTRACT_CLASS(IServerNetworkable)
-		
-		CLASS_METHOD(IServerNetworkable,
-			GetEntityHandle,
-			"Returns the entity handle associated with the collideable.",
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD(IServerNetworkable,
-			GetEdict,
-			"Returns the edict for this entity.",
-			reference_existing_object_policy()
-		)
-		
-		CLASS_METHOD(IServerNetworkable,
-			GetClassName,
-			"Returns the classname for this object."
-		)
-
-	BOOST_END_CLASS()
-
-
-	// ----------------------------------------------------------
-	// IServerUnknown
-	// ----------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(IServerUnknown, IHandleEntity)
-
-		CLASS_METHOD(IServerUnknown,
-			GetCollideable,
-			"Returns the ICollideable object for this entity.",
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD(IServerUnknown,
-			GetNetworkable,
-			"Returns the IServerNetworkable object for this entity.",
-			reference_existing_object_policy()
-		)
-
-	BOOST_END_CLASS()
-	
-
 	// ----------------------------------------------------------
 	// The engine interface.
 	// ----------------------------------------------------------
 	BOOST_ABSTRACT_CLASS( IVEngineServer )
-		
-		CLASS_METHOD(IVEngineServer,
+
+		CLASS_METHOD(IVEngineServer, 
 			ChangeLevel,
 			"Tells the engine to change the level. If s2 is None, the engine will execute a \
 			changelevel command. If s2 is a valid map, the engine will execute a changelevel2 \
@@ -176,30 +88,30 @@ DECLARE_SP_MODULE(Engine)
 			args("s1", "s2")
 		)
 
-		CLASS_METHOD(IVEngineServer,
-			IsMapValid,
-			"Returns true if filename refers to a valid map.",
+		CLASS_METHOD(IVEngineServer, 
+			IsMapValid, 
+			"Returns true if filename refers to a valid map.", 
 			args("filename")
 		)
 
-		CLASS_METHOD(IVEngineServer,
-			IsDedicatedServer,
+		CLASS_METHOD(IVEngineServer, 
+			IsDedicatedServer, 
 			"Returns true if the engine is running in dedicated mode."
 		)
-
-		CLASS_METHOD(IVEngineServer,
-			IsInEditMode,
+		
+		CLASS_METHOD(IVEngineServer, 
+			IsInEditMode, 
 			"Returns false if the engine is not in hammer editing mode."
 		)
 
-		CLASS_METHOD(IVEngineServer,
-			GetLaunchOptions,
+		CLASS_METHOD(IVEngineServer, 
+			GetLaunchOptions, 
 			"Returns a keyvalues structure containing launch options for srcds.",
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD_OVERLOAD(IVEngineServer,
-			PrecacheModel,
+		CLASS_METHOD_OVERLOAD(IVEngineServer, 
+			PrecacheModel, 
 			"Precaches a model and returns an integer containing its index.",
 			args("s", "preload")
 		)
@@ -294,12 +206,12 @@ DECLARE_SP_MODULE(Engine)
 			"Returns the number of used edict slots."
 		)
 
-// 		CLASS_METHOD(IVEngineServer,
-// 			GetPlayerNetInfo,
-// 			"Returns stats info interface for a client netchannel.",
-// 			args("playerIndex"),
-// 			reference_existing_object_policy()
-// 		)
+		// 		CLASS_METHOD(IVEngineServer,
+		// 			GetPlayerNetInfo,
+		// 			"Returns stats info interface for a client netchannel.",
+		// 			args("playerIndex"),
+		// 			reference_existing_object_policy()
+		// 		)
 
 		CLASS_METHOD(IVEngineServer,
 			CreateEdict,
@@ -314,7 +226,6 @@ DECLARE_SP_MODULE(Engine)
 			args("edictInstance")
 		)
 
-		// For stephen
 		CLASS_METHOD(IVEngineServer,
 			ServerCommand,
 			"Issues a command to the command parser as if it was typed at the server console.",
@@ -327,12 +238,33 @@ DECLARE_SP_MODULE(Engine)
 			args("command")
 		)
 
+		// Note: This is requierd because we can't wrap variadic functions correctly.
+		CLASS_METHOD_TYPEDEF("ClientCommand",
+			Engine_ClientCommand,
+			"Runs a command on the client.",
+			args("pEdict", "szCmd")
+		)
+
+		CLASS_METHOD(IVEngineServer,
+			LightStyle,
+			"Set the lightstyle to the specified value and network the change to any connected clients.",
+			args("style", "val")
+		)
+
+		CLASS_METHOD(IVEngineServer,
+			StaticDecal,
+			"Project a static decal onto the specified entity / model (for level placed decals in the .bsp)",
+			args("originInEntitySpace", "decalIndex", "entityIndex", "modelIndex", "bLowPriority")
+		)
+
+		// TODO: Message_DetermineMulticastRecipients
+
 		CLASS_METHOD(IVEngineServer,
 			UserMessageBegin,
 			"Begin a message from the server to the client.dll",
 			args("filter", "msg_type", "msgname"),
 			reference_existing_object_policy()
-		)
+			)
 
 		CLASS_METHOD(IVEngineServer,
 			MessageEnd,
@@ -340,23 +272,11 @@ DECLARE_SP_MODULE(Engine)
 			reference_existing_object_policy()
 		)
 
+		CLASS_METHOD(IVEngineServer,
+			ClientPrintf,
+			"Prints the message to the console of the given client.",
+			args("pEdict", "szMsg")
+		)
+
 	BOOST_END_CLASS()
-
-	// ----------------------------------------------------------
-	// Expose the global interface to the event manager.
-	// ----------------------------------------------------------
-	BOOST_FUNCTION(GetEngine, reference_existing_object_policy());
-
-	// ----------------------------------------------------------
-	// Expose some entity functions
-	// ----------------------------------------------------------
-	BOOST_FUNCTION(PEntityOfEntIndex, 
-		"Returns the edict for an entity index.", 
-		reference_existing_object_policy()
-	);
-
-	BOOST_FUNCTION(IndexOfEdict,
-        "Returns the index of an entity edict",
-        args("edict")
-    );
 }
