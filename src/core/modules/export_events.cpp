@@ -54,7 +54,6 @@ IGameEventManager2* GetGameEventManager( void )
 // IGameEvent overloads.
 //---------------------------------------------------------------------------------
 DECLARE_CLASS_METHOD_OVERLOAD(IGameEvent, IsEmpty, 0, 1)
-
 DECLARE_CLASS_METHOD_OVERLOAD(IGameEvent, GetBool, 0, 2)
 DECLARE_CLASS_METHOD_OVERLOAD(IGameEvent, GetInt, 0, 2)
 DECLARE_CLASS_METHOD_OVERLOAD(IGameEvent, GetUint64, 0, 2)
