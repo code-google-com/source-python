@@ -45,13 +45,16 @@ public:
 	Entities(PyObject* self);
 	Entities(PyObject* self, const Entities& rhs);
 	Entities(PyObject* self, const char* szClassName);
+	Entities(PyObject* self, const char* szClassName, bool exactMatch);
 	virtual ~Entities();
 protected:
 	virtual edict_t* getNext();
 private:
+	void makeStringCopy(const char* szClassName, unsigned int uiClassNameLen);
 	const char* m_szClassName;
 	unsigned int m_uiClassNameLen;
 	int m_iEntityIndex;
+	bool m_bExactMatch;
 };
 
 BOOST_SPECIALIZE_HAS_BACK_REFERENCE(Entities)
