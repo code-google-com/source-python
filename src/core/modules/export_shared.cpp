@@ -36,7 +36,6 @@
 #include "eiface.h"
 #include "Color.h"
 #include "mathlib/vector.h"
-#include "IEffects.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.

@@ -27,67 +27,25 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "utility/sp_util.h"
-#include "core/sp_python.h"
+#include "../export_main.h"
 #include "utility/wrap_macros.h"
-#include "icvar.h"
+#include "core/sp_python.h"
 
 //---------------------------------------------------------------------------------
-// Namespaces to use.
+// All external functions to export the cvars and related functions.
 //---------------------------------------------------------------------------------
-using namespace boost::python;
+extern void Export_ICvar( void );
+extern void Export_ConCommandBase( void );
+extern void Export_CvarFlags( void );
+extern void Export_ConVar( void );
 
 //---------------------------------------------------------------------------------
-// External variables to use.
+// Wraps game events related structures.
 //---------------------------------------------------------------------------------
-extern ICvar* cvar;
-
-//---------------------------------------------------------------------------------
-// Accessor for the convar interface.
-//---------------------------------------------------------------------------------
-ICvar* GetCvar( void ) 
+DECLARE_SP_MODULE(Cvar)
 {
-	return cvar;
-}
-
-//---------------------------------------------------------------------------------
-// Wraps the ICvar class.
-//---------------------------------------------------------------------------------
-void Export_ICvar( void )
-{
-	// ----------------------------------------------------------
-	// The ICvar interface.
-	// ----------------------------------------------------------
-	typedef ConVar*		(ICvar::*FindVarFn)(const char*);
-	typedef ConCommand* (ICvar::*FindCommandFn)(const char*);
-
-	FindVarFn		ICvar_FindVar = &ICvar::FindVar;
-	FindCommandFn	ICvar_FindCommand = &ICvar::FindCommand;
-
-	// ----------------------------------------------------------
-	// The ICvar class.
-	// ----------------------------------------------------------
-	BOOST_ABSTRACT_CLASS( ICvar )
-
-		// ----------------------------------------------------------
-		// Methods
-		// ----------------------------------------------------------
-		CLASS_METHOD_TYPEDEF(
-			FindVar,
-			ICvar_FindVar,
-			"Returns a ConVar instance based on the given name. Returns None if not found.",
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD_TYPEDEF(
-			FindCommand,
-			ICvar_FindCommand,
-			"Returns a ConCommand instance based on the given name. Returns None if not found.",
-			reference_existing_object_policy()
-		)
-
-	BOOST_END_CLASS()
-
-	// Global ICvar accessor.
-	BOOST_FUNCTION(GetCvar, reference_existing_object_policy());
+	Export_CvarFlags();
+	Export_ConCommandBase();
+	Export_ConVar();
+	Export_ICvar();
 }

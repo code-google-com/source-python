@@ -31,6 +31,7 @@
 #include "core/sp_python.h"
 #include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
+#include "shake.h"
 #include "game/shared/IEffects.h"
 
 //---------------------------------------------------------------------------------
