@@ -46,7 +46,7 @@ class IPythonGenerator
 public:
 	IPythonGenerator(PyObject* self);
 	virtual ~IPythonGenerator() = 0;
-	typename handle<> iter();
+	handle<> iter();
 	T* next();
 protected:
 	virtual T* getNext() = 0;
@@ -85,7 +85,7 @@ IPythonGenerator<T>::~IPythonGenerator()
 // Maps to __iter__(). Just returns itself.
 //---------------------------------------------------------------------------------
 template<class T>
-typename handle<> IPythonGenerator<T>::iter()
+handle<> IPythonGenerator<T>::iter()
 {
 	return handle<>(borrowed(m_pSelf));
 }
