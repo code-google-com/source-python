@@ -46,7 +46,8 @@ Entities::Entities(PyObject* self):
 	IPythonGenerator<edict_t>(self),
 	m_szClassName(NULL),
 	m_uiClassNameLen(0),
-	m_iEntityIndex(0)
+	m_iEntityIndex(0),
+	m_bExactMatch(false)
 {
 }
 
@@ -56,11 +57,10 @@ Entities::Entities(PyObject* self):
 Entities::Entities(PyObject* self, const Entities& rhs):
 	IPythonGenerator<edict_t>(self),
 	m_uiClassNameLen(rhs.m_uiClassNameLen),
-	m_iEntityIndex(rhs.m_iEntityIndex)
+	m_iEntityIndex(rhs.m_iEntityIndex),
+	m_bExactMatch(rhs.m_bExactMatch)
 {
-	char* szClassNameCopy = new char[m_uiClassNameLen];
-	memcpy(szClassNameCopy, rhs.m_szClassName, m_uiClassNameLen);
-	m_szClassName = szClassNameCopy;
+	makeStringCopy(rhs.m_szClassName, m_uiClassNameLen);
 }
 
 //---------------------------------------------------------------------------------
@@ -69,11 +69,24 @@ Entities::Entities(PyObject* self, const Entities& rhs):
 Entities::Entities(PyObject* self, const char* szClassName):
 	IPythonGenerator<edict_t>(self),
 	m_uiClassNameLen(strlen(szClassName)),
-	m_iEntityIndex(0)
+	m_iEntityIndex(0),
+	m_bExactMatch(false)
 {
-	char* szClassNameCopy = new char[m_uiClassNameLen];
-	memcpy(szClassNameCopy, szClassName, m_uiClassNameLen);
-	m_szClassName = szClassNameCopy;
+	makeStringCopy(szClassName, m_uiClassNameLen);
+	printf("C'tor A\n");
+}
+
+//---------------------------------------------------------------------------------
+// Entities Constructor (takes a filter string and a boolean flag).
+//---------------------------------------------------------------------------------
+Entities::Entities(PyObject* self, const char* szClassName, bool bExactMatch):
+	IPythonGenerator<edict_t>(self),
+	m_uiClassNameLen(strlen(szClassName)),
+	m_iEntityIndex(0),
+	m_bExactMatch(bExactMatch)
+{
+	makeStringCopy(szClassName, m_uiClassNameLen);
+	printf("C'tor B\n");
 }
 
 //---------------------------------------------------------------------------------
@@ -90,19 +103,46 @@ Entities::~Entities()
 edict_t* Entities::getNext()
 {
 	edict_t* pEDict = NULL;
-	while(m_iEntityIndex < gpGlobals->maxEntities && !pEDict)
+	while(m_iEntityIndex < gpGlobals->maxEntities && (!pEDict || pEDict->IsFree()))
 	{
 		m_iEntityIndex++;
 		pEDict = PEntityOfEntIndex(m_iEntityIndex);
 
-		//If the filter string is set, then only allow edict_t instances which begin with the filter string
-		if (m_szClassName && pEDict && !pEDict->IsFree() && strncmp(pEDict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
+		//If the filter string is set, then only allow edict_t instances which either:
+		//- Begin with the filter string if m_bExactMatch is false
+		//- An exact match with the filter string if m_bExactMatch is true
+		if (m_uiClassNameLen && m_szClassName && pEDict && !pEDict->IsFree())
 		{
-			pEDict = NULL;
+			if (!m_bExactMatch && strncmp(pEDict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
+			{
+				pEDict = NULL;
+			}
+			else if (m_bExactMatch && strcmp(pEDict->GetClassName(), m_szClassName) != 0)
+			{
+				pEDict = NULL;
+			}
 		}
 	}
 
 	return pEDict;
+}
+
+//---------------------------------------------------------------------------------
+// Private function, creates a copy of the class name string.
+//---------------------------------------------------------------------------------
+void Entities::makeStringCopy(const char* szClassName, unsigned int uiClassNameLen)
+{
+	if (uiClassNameLen > 0)
+	{
+		char* szClassNameCopy = new char[uiClassNameLen + 1];
+		memcpy(szClassNameCopy, szClassName, uiClassNameLen);
+		szClassNameCopy[uiClassNameLen] = 0;
+		m_szClassName = szClassNameCopy;
+	}
+	else
+	{
+		m_szClassName = NULL;
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -211,5 +251,6 @@ DECLARE_SP_MODULE(Entity)
 	// ----------------------------------------------------------
 	BOOST_GENERATOR_CLASS(Entities)
 		CLASS_CONSTRUCTOR(const char*)
+		CLASS_CONSTRUCTOR(const char*, bool)
 	BOOST_END_CLASS()
 }
