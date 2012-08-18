@@ -279,4 +279,7 @@ void Export_IVEngineServer( void )
 		)
 
 	BOOST_END_CLASS()
+
+	// Functions
+	BOOST_FUNCTION(GetEngine, reference_existing_object_policy());
 }

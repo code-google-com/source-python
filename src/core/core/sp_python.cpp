@@ -53,6 +53,19 @@ CPythonManager g_PythonManager;
 // PyMODINIT_FUNC PyInit_sp( void );
 
 //---------------------------------------------------------------------------------
+// Adds a path to sys.path (relative to g_GamePaths.GetESDir()).
+//---------------------------------------------------------------------------------
+void AddToSysPath( const char* path )
+{	
+	char szFolderPath[MAX_GAME_PATH];
+	V_snprintf(szFolderPath, MAX_GAME_PATH, "sys.path.insert(1, r\"%s/%s\")", g_GamePaths.GetESDir(), path);
+	V_FixSlashes(szFolderPath);
+	
+	DevMsg(1, "[SP] Adding %s to path\n", szFolderPath);
+	PyRun_SimpleString(szFolderPath);
+}
+
+//---------------------------------------------------------------------------------
 // Initializes python.
 //---------------------------------------------------------------------------------
 bool CPythonManager::Initialize( void )
@@ -81,6 +94,22 @@ bool CPythonManager::Initialize( void )
 	// Print some information
 	DevMsg(1, "Python version %s initialized!\n", Py_GetVersion());
 
+	// Make sure sys is imported.
+	PyRun_SimpleString("import sys");
+
+	// Add paths..
+	AddToSysPath("_libs");
+
+#if defined(WIN32)
+	AddToSysPath("/engines/plat-win");
+#else
+	AddToSysPath("/engine/plat-linux");
+#endif
+
+	AddToSysPath("/engines/site-packages");
+	AddToSysPath(".");
+
+#if 0
 	// Add _libs to the library path.
 	char szLibsPath[MAX_GAME_PATH];
 	V_snprintf(szLibsPath, MAX_GAME_PATH, "%s/_libs", g_GamePaths.GetESDir());
@@ -109,13 +138,14 @@ bool CPythonManager::Initialize( void )
 	V_FixSlashes(szSitePackages);
     
     char szSitePackagesCmd[MAX_GAME_PATH];
-    V_snprintf(szSitePackagesCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", szSitePackages);
+    V_snprintf(szSitePackagesCmd, MAX_GAME_PATH, "sys.path.insert(1, r\"%s\")", szSitePackages);
     PyRun_SimpleString(szSitePackagesCmd);
     
 	// Add the addons directory too.
 	char szAddonsCmd[MAX_GAME_PATH];
 	V_snprintf(szAddonsCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", g_GamePaths.GetESDir());
 	PyRun_SimpleString(szAddonsCmd);
+#endif
 
 	// Initialize all submodules
 	modulsp_init();
