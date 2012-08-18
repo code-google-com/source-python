@@ -28,10 +28,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "../export_main.h"
-#include "irecipientfilter.h"
-#include "eiface.h"
 #include "utility/wrap_macros.h"
-#include "utility/sp_util.h"
 #include "core/sp_python.h"
 
 //---------------------------------------------------------------------------------

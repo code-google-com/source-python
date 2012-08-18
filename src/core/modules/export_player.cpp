@@ -67,7 +67,7 @@ IBotManager* GetBotManager( void )
 // Players Constructor.
 //---------------------------------------------------------------------------------
 Players::Players(PyObject* self):
-	IPythonGenerator(self),
+	IPythonGenerator<IPlayerInfo>(self),
 	m_iEntityIndex(0)
 {
 }
@@ -76,7 +76,7 @@ Players::Players(PyObject* self):
 // Players Copy-Constructor.
 //---------------------------------------------------------------------------------
 Players::Players(PyObject* self, const Players& rhs):
-	IPythonGenerator(self),
+	IPythonGenerator<IPlayerInfo>(self),
 	m_iEntityIndex(rhs.m_iEntityIndex)
 {
 }
