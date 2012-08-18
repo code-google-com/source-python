@@ -73,7 +73,6 @@ Entities::Entities(PyObject* self, const char* szClassName):
 	m_bExactMatch(false)
 {
 	makeStringCopy(szClassName, m_uiClassNameLen);
-	printf("C'tor A\n");
 }
 
 //---------------------------------------------------------------------------------
@@ -86,7 +85,6 @@ Entities::Entities(PyObject* self, const char* szClassName, bool bExactMatch):
 	m_bExactMatch(bExactMatch)
 {
 	makeStringCopy(szClassName, m_uiClassNameLen);
-	printf("C'tor B\n");
 }
 
 //---------------------------------------------------------------------------------
