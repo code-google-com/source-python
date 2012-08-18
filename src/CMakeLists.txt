@@ -88,7 +88,6 @@ Set(SOURCEPYTHON_MODULE_SOURCES
 	core/modules/export_player.cpp
 	core/modules/export_entity.cpp
 	core/modules/export_shared.cpp
-	core/modules/export_cvar.cpp
     core/modules/export_misc.cpp
 )
 
@@ -110,6 +109,7 @@ Set(SOURCEPYTHON_MODULE_CVAR_SOURCES
     core/modules/cvar/cvar_convar.cpp
     core/modules/cvar/cvar_flags.cpp
     core/modules/cvar/cvar_icvar.cpp
+    core/modules/cvar/cvar_main.cpp
 )
 
 # ------------------------------------------------------------------
@@ -136,8 +136,8 @@ Source_Group("Source Files\\Core"    FILES ${SOURCEPYTHON_CORE_SOURCES})
 Source_Group("Header Files\\Modules" FILES ${SOURCEPYTHON_MODULE_HEADERS})
 Source_Group("Source Files\\Modules" FILES ${SOURCEPYTHON_MODULE_SOURCES})
 
-Source_Group("Header Files\\Modules\\Engine" FILES ${SOURCEPYTHON_MODULE_ENGINE_HEADERS})
 Source_Group("Source Files\\Modules\\Engine" FILES ${SOURCEPYTHON_MODULE_ENGINE_SOURCES})
+Source_Group("Source Files\\Modules\\Cvar" FILES ${SOURCEPYTHON_MODULE_CVAR_SOURCES})
 
 Source_Group("Header Files\\Util"    FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Source Files\\Util"    FILES ${SOURCEPYTHON_UTIL_SOURCES})
