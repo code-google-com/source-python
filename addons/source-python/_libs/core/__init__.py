@@ -93,62 +93,32 @@ class ServerVar(object):
         '''Returns string value of ConVar instance.'''
         return self.ConVar.GetString()
 
-    def Set(self, cvarValue):
+    def Set(self, value):
         '''Sets the value of the ConVar instance based on the input type.'''
 
         # Is the given value an integer?
-        if type(cvarValue) == int:
+        if type(value) == int:
 
             # Set the value as an integer
-            self.ConVar.SetInt(cvarValue)
+            self.ConVar.SetInt(value)
 
         # Is the given value a float?
-        elif type(cvarValue) == float:
+        elif type(value) == float:
 
             # Set the value as a float
-            self.ConVar.SetFloat(cvarValue)
+            self.ConVar.SetFloat(value)
 
         # Is the given value a bool?
-        elif type(cvarValue) == bool:
+        elif type(value) == bool:
 
             # Set the value as a bool
-            self.ConVar.SetInt(int(cvarValue))
+            self.ConVar.SetInt(int(value))
 
         # All other cases
         else:
 
             # Set value as a string
-            self.ConVar.SetString(cvarValue)
-
-    def __coerce__(self, other):
-        '''Used to coerce values when making comparisons'''
-
-        # Is the other value a string?
-        if isinstance(other, str):
-
-            # Return the string value of the cvar
-            return (self.ConVar.GetString(), other)
-
-        # Is the other value a float?
-        if isinstance(other, float):
-
-            # Return the float value of the cvar
-            return (self.ConVar.GetFloat(), other)
-
-        # Is the other value an integer?
-        if isinstance(other, int):
-
-            # Return the integer value of the cvar
-            return (self.ConVar.GetInt(), other)
-
-        # Is the other value a boolean?
-        if isinstance(other, bool):
-
-            # Return the boolean value of the cvar
-            return (self.ConVar.GetBool(), other)
-
-        # An invalid type is being compared, so return None
-        return None
+            self.ConVar.SetString(value)
 
     def MakePublic(self):
         '''Sets the notify flag for the cvar.'''
