@@ -30,7 +30,7 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "MRecipientFilter.h"
+#include "mrecipientfilter.h"
 #include "interface.h"
 #include "filesystem.h"
 #include "engine/iserverplugin.h"
