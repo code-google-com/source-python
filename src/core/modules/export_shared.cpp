@@ -46,15 +46,30 @@ using namespace boost::python;
 // Class method overloads
 //---------------------------------------------------------------------------------
 DECLARE_CLASS_METHOD_OVERLOAD(Vector, IsZero, 0, 1)
+DECLARE_CLASS_METHOD_OVERLOAD(Quaternion, Init, 0, 4)
+DECLARE_CLASS_METHOD_OVERLOAD(RadianEuler, Init, 0, 3)
+DECLARE_CLASS_METHOD_OVERLOAD(QAngle, Init, 0, 3)
+
+//---------------------------------------------------------------------------------
+// Helper template methods for __getitem__ and __setitem__
+//---------------------------------------------------------------------------------
+template<class T, class U>
+U GetItemIndexer(const T* self, const int i)
+{
+	return (*self)[i];
+}
+
+template<class T, class U>
+void SetItemIndexer(T* self, const int i, const U& value)
+{
+	(*self)[i] = value;
+}
 
 //---------------------------------------------------------------------------------
 // Usermsg module.
 //---------------------------------------------------------------------------------
 DECLARE_SP_MODULE(Shared)
 {
-	// ----------------------------------------------------------
-	// Simple structs.
-	// ----------------------------------------------------------
 	BOOST_CLASS(Vector)
 		
 		// ----------------------------------------------------------
@@ -198,6 +213,8 @@ DECLARE_SP_MODULE(Shared)
 		.def(self / self)
 		.def(self * float())
 		.def(self / float())
+		.def("__getitem__", &GetItemIndexer<Vector, vec_t>, "Returns the vector element at the given index.", args("i"))
+		.def("__setitem__", &SetItemIndexer<Vector, vec_t>, "Sets the vector element at the given index.", args("i", "value"))
 
         // ----------------------------------------------------------
         // Class Attributes
@@ -217,6 +234,211 @@ DECLARE_SP_MODULE(Shared)
             "Read/write value of the z coordinate for the vector."
         )
 
+	BOOST_END_CLASS()
+
+	// ----------------------------------------------------------
+	// Exposes Quaternion class.
+	// ----------------------------------------------------------
+	BOOST_CLASS(Quaternion)		
+		// ----------------------------------------------------------
+		// Constructors
+		// ----------------------------------------------------------
+		CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t, vec_t)
+		CLASS_CONSTRUCTOR(RadianEuler const&)
+
+        // ----------------------------------------------------------
+        // Class Methods
+        // ----------------------------------------------------------
+		CLASS_METHOD_OVERLOAD(Quaternion,
+			Init,
+			"Quaternion initialization",
+			args("ix", "iy", "iz", "iw")
+		)
+
+		CLASS_METHOD(Quaternion,
+			IsValid,
+			"Returns true if the Quaternion is not equal to NaN"
+		)
+
+		CLASS_METHOD(Quaternion,
+			Invalidate,
+			"Invalidates a Quaternion."
+		)
+
+		// ----------------------------------------------------------
+		// Class operators
+		// ----------------------------------------------------------
+		.def(self == self)
+		.def(self != self)
+		.def("__getitem__", &GetItemIndexer<Quaternion, vec_t>, "Returns the Quaternion element at the given index.", args("i"))
+		.def("__setitem__", &SetItemIndexer<Quaternion, vec_t>, "Sets the Quaternion element at the given index.", args("i", "value"))
+
+        // ----------------------------------------------------------
+        // Class Attributes
+        // ----------------------------------------------------------
+        CLASS_MEMBER(Quaternion,
+            x,
+            "Read/write value of the x member for the Quaternion."
+        )
+
+        CLASS_MEMBER(Quaternion,
+            y,
+            "Read/write value of the y member for the Quaternion."
+        )
+
+        CLASS_MEMBER(Quaternion,
+            z,
+            "Read/write value of the z member for the Quaternion."
+        )
+
+        CLASS_MEMBER(Quaternion,
+            w,
+            "Read/write value of the z member for the Quaternion."
+        )
+	BOOST_END_CLASS()
+
+	// ----------------------------------------------------------
+	// Exposes RadianEuler class.
+	// ----------------------------------------------------------
+	typedef vec_t (RadianEuler::*RadianEulerIndexerFn)(int) const;
+	RadianEulerIndexerFn fnRadianEulerIndexer = &RadianEuler::operator[];
+
+	BOOST_CLASS(RadianEuler)		
+		// ----------------------------------------------------------
+		// Constructors
+		// ----------------------------------------------------------
+		CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t)
+		CLASS_CONSTRUCTOR(Quaternion const&)
+		CLASS_CONSTRUCTOR(QAngle const&)
+
+        // ----------------------------------------------------------
+        // Class Methods
+        // ----------------------------------------------------------
+		CLASS_METHOD_OVERLOAD(RadianEuler,
+			Init,
+			"RadianEuler initialization",
+			args("ix", "iy", "iz")
+		)
+
+		CLASS_METHOD(RadianEuler,
+			ToQAngle,
+			"Returns a QAngle representation of this RadianEuler."
+		)
+
+		CLASS_METHOD(RadianEuler,
+			IsValid,
+			"Returns true if the RadianEuler is not equal to NaN"
+		)
+
+		CLASS_METHOD(RadianEuler,
+			Invalidate,
+			"Invalidates a RadianEuler."
+		)
+
+		// ----------------------------------------------------------
+		// Class operators
+		// ----------------------------------------------------------
+		.def("__getitem__", &GetItemIndexer<RadianEuler, vec_t>, "Returns the RadianEuler element at the given index.", args("i"))
+		.def("__setitem__", &SetItemIndexer<RadianEuler, vec_t>, "Sets the RadianEuler element at the given index.", args("i", "value"))
+
+        // ----------------------------------------------------------
+        // Class Attributes
+        // ----------------------------------------------------------
+        CLASS_MEMBER(RadianEuler,
+            x,
+            "Read/write value of the x member for the Quaternion."
+        )
+
+        CLASS_MEMBER(RadianEuler,
+            y,
+            "Read/write value of the y member for the Quaternion."
+        )
+
+        CLASS_MEMBER(RadianEuler,
+            z,
+            "Read/write value of the z member for the Quaternion."
+        )
+	BOOST_END_CLASS()
+
+	// ----------------------------------------------------------
+	// Exposes QAngle class.
+	// ----------------------------------------------------------
+	typedef vec_t (QAngle::*QAngleIndexerFn)(int) const;
+	QAngleIndexerFn fnQAngleIndexer = &QAngle::operator[];
+
+	BOOST_CLASS(QAngle)		
+		// ----------------------------------------------------------
+		// Constructors
+		// ----------------------------------------------------------
+		CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t)
+
+        // ----------------------------------------------------------
+        // Class Methods
+        // ----------------------------------------------------------
+		CLASS_METHOD_OVERLOAD(QAngle,
+			Init,
+			"QAngle initialization",
+			args("ix", "iy", "iz")
+		)
+
+		CLASS_METHOD(QAngle, 
+			Random,
+			"QAngle initialization with random values",
+			args("minVal", "maxVal")
+		)
+
+		CLASS_METHOD(QAngle,
+			IsValid,
+			"Returns true if the QAngle is not equal to NaN"
+		)
+
+		CLASS_METHOD(QAngle,
+			Invalidate,
+			"Invalidates a QAngle."
+		)
+
+		CLASS_METHOD(QAngle,
+			Length,
+			"Returns the length of the QAngle's magnitude."
+		)
+
+		CLASS_METHOD(QAngle,
+			LengthSqr,
+			"Returns the length of the QAngle's magnitude squared."
+		)
+
+		// ----------------------------------------------------------
+		// Class operators
+		// ----------------------------------------------------------
+		.def(self == self)
+		.def(self != self)
+
+		.def(self += self)
+		.def(self -= self)
+
+		.def(self *= float())
+		.def(self /= float())
+
+		.def("__getitem__", &GetItemIndexer<QAngle, vec_t>, "Returns the QAngle element at the given index.", args("i"))
+		.def("__setitem__", &SetItemIndexer<QAngle, vec_t>, "Sets the QAngle element at the given index.", args("i", "value"))
+
+        // ----------------------------------------------------------
+        // Class Attributes
+        // ----------------------------------------------------------
+        CLASS_MEMBER(QAngle,
+            x,
+            "Read/write value of the x coordinate for the QAngle."
+        )
+
+        CLASS_MEMBER(QAngle,
+            y,
+            "Read/write value of the y coordinate for the QAngle."
+        )
+
+        CLASS_MEMBER(QAngle,
+            z,
+            "Read/write value of the z coordinate for the QAngle."
+        )
 	BOOST_END_CLASS()
 
 	// ----------------------------------------------------------

@@ -27,7 +27,7 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "export_main.h"
+#include "../export_main.h"
 #include "core/sp_python.h"
 #include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
@@ -53,16 +53,14 @@ IEffects* GetEffects( void )
 }
 
 //---------------------------------------------------------------------------------
-// Wraps all miscellaneous classes, structures, etc.
-// It is highly suggested that code in this module *will* be moved into a more
-// permanent location in the future. Use of this module should be temporary.
+// Wraps IEffects.
 //---------------------------------------------------------------------------------
 
 //Declare method overloads to allow for default parameter options
 DECLARE_CLASS_METHOD_OVERLOAD(IEffects, Sparks, 1, 4);
 DECLARE_CLASS_METHOD_OVERLOAD(IEffects, EnergySplash, 2, 3);
 
-DECLARE_SP_MODULE(Misc)
+void Export_Effects( void )
 {
 	// ----------------------------------------------------------
 	// IEffects class
