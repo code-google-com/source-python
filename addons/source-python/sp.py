@@ -164,3 +164,7 @@ def event_fire(GameEvent):
 
     # Call the event within the registry
     EventRegistry.CallEventCallbacks(GameEvent)
+
+
+def tick_listener():
+    pass
