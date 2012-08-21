@@ -128,6 +128,8 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 		// Get the interface from the given factory.
 		*pGlobal = factory(pInterface->szInterface, NULL);
 
+		printf("%p", *pGlobal);
+
 		// If it's not valid, bail out.
 		if( *pGlobal ) {
 			DevMsg(1, "[SP] Interface %s at %x\n", pInterface->szInterface, *pGlobal);
@@ -312,7 +314,7 @@ void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int cli
 //---------------------------------------------------------------------------------
 void CSourcePython::GameFrame( bool simulating )
 {
-
+    g_AddonManager.GameFrame();
 }
 
 //---------------------------------------------------------------------------------
