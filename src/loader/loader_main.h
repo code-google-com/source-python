@@ -35,12 +35,12 @@
 //---------------------------------------------------------------------------------
 // Definitions
 //---------------------------------------------------------------------------------
-#define PYLIB_NAME_WIN32_RELEASE	"plat-win\\python33.dll"
-#define PYLIB_NAME_WIN32_DEBUG		"plat-win\\python33_d.dll"
-#define PYLIB_NAME_LINUX_RELEASE	"plat-linux/libpython3.3m.so.1.0"
-#define PYLIB_NAME_LINUX_DEBUG		"plat-linux/libpython3.3dm.so.1.0"
+#define PYLIB_NAME_WIN32_RELEASE	"engines/plat-win/python33.dll"
+#define PYLIB_NAME_WIN32_DEBUG		"engines/plat-win/python33_d.dll"
+#define PYLIB_NAME_LINUX_RELEASE	"engines/plat-linux/libpython3.3m.so.1.0"
+#define PYLIB_NAME_LINUX_DEBUG		"engines/plat-linux/libpython3.3dm.so.1.0"
 
-#define CORE_NAME_WIN32				"core\\core.dll"
+#define CORE_NAME_WIN32				"core/core.dll"
 #define CORE_NAME_LINUX				"core/core.so"
 
 #if defined(_WIN32)
@@ -51,12 +51,12 @@
 
 #if defined(_WIN32) && defined(DEBUG)
 #	define PYLIB_NAME PYLIB_NAME_WIN32_DEBUG
-#	define MSVCRT_LIB "plat-win\\msvcr100d.dll"
-#	define MSVCP_LIB  "plat-win\\msvcp100d.dll"
+#	define MSVCRT_LIB "engines/plat-win/msvcr100d.dll"
+#	define MSVCP_LIB  "engines/plat-win/msvcp100d.dll"
 #elif defined(_WIN32) && !defined(DEBUG)
 #	define PYLIB_NAME PYLIB_NAME_WIN32_RELEASE
-#	define MSVCRT_LIB "plat-win\\msvcr100.dll"
-#	define MSVCP_LIB  "plat-win\\msvcp100.dll"
+#	define MSVCRT_LIB "engines/plat-win/msvcr100.dll"
+#	define MSVCP_LIB  "engines/plat-win/msvcp100.dll"
 #elif defined(LINUX) && defined(DEBUG)
 #	define PYLIB_NAME PYLIB_NAME_LINUX_DEBUG
 #elif defined(LINUX) && !defined(DEBUG)
