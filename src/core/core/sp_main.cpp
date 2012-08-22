@@ -312,7 +312,7 @@ void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int cli
 //---------------------------------------------------------------------------------
 void CSourcePython::GameFrame( bool simulating )
 {
-
+    g_AddonManager.GameFrame();
 }
 
 //---------------------------------------------------------------------------------

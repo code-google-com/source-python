@@ -58,6 +58,8 @@ class CAddonManager
 
 		// Required by IGameEventListener2.
 		void FireGameEvent( IGameEvent* event );
+
+		void GameFrame();
 };
 
 //---------------------------------------------------------------------------------
