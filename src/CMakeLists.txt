@@ -98,6 +98,7 @@ Set(SOURCEPYTHON_MODULE_ENGINE_SOURCES
     core/modules/engine/engine_server.cpp
     core/modules/engine/engine_basehandle.cpp
     core/modules/engine/engine_misc.cpp
+    core/modules/engine/engine_sound.cpp
 )
 
 # ------------------------------------------------------------------
@@ -191,7 +192,7 @@ include("makefiles/game/${GAME}.cmake")
 # ------------------------------------------------------------------
 Add_Definitions(
 	-DSOURCE_ENGINE=${SOURCE_ENGINE}
-    -DBOOST_PYTHON_MAX_ARITY=16
+    -DBOOST_PYTHON_MAX_ARITY=18
 )
 
 # ------------------------------------------------------------------

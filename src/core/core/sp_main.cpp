@@ -102,6 +102,7 @@ InterfaceHelper_t gEngineInterfaces[] = {
 	{IENGINESOUND_SERVER_INTERFACE_VERSION, (void **)&enginesound},
 	{VENGINE_SERVER_RANDOM_INTERFACE_VERSION, (void **)&randomStr},
 	{FILESYSTEM_INTERFACE_VERSION, (void **)&filesystem},
+	{IENGINESOUND_SERVER_INTERFACE_VERSION, (void **)&enginesound},
 
 	{NULL, NULL}
 };
