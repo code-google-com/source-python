@@ -70,6 +70,36 @@ CSourcePython::~CSourcePython()
 }
 
 //---------------------------------------------------------------------------------
+// This function will load libraries and return true if they load successfully.
+// 
+//---------------------------------------------------------------------------------
+void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
+{
+	char szFullPath[1024];
+	char szGamePath[1024];
+	engine->GetGameDir(szGamePath, 1024);
+
+	V_snprintf(szFullPath, sizeof(szFullPath), "%s/addons/source-python/%s", 
+		szGamePath, libraryPath);
+
+	// Fix up the slahes.
+	V_FixSlashes(szFullPath);
+
+#if defined(_WIN32)
+	void* hModule = (void *)LoadLibrary(szFullPath);
+#else
+	void* hModule = (void *)dlopen(szPythonEngine, RTLD_NOW | RTLD_GLOBAL);
+#endif
+
+	if( !hModule ) {
+		Msg("[SP-LOADER] Could not load library: %s\n", libraryPath);
+		return hModule;
+	}
+
+	return hModule;
+}
+
+//---------------------------------------------------------------------------------
 // Purpose: called when the plugin is loaded, load the interface we need from the engine
 //---------------------------------------------------------------------------------
 bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
@@ -78,63 +108,45 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 
-	// Get path to game directory.
-	char szGameDir[1024];
-	engine->GetGameDir(szGameDir, 1024);
-
+	// ------------------------------------------------------------------
 	// Build path to python engines directory.
+	// ------------------------------------------------------------------
+	char szGameDir[1024];
 	char szPythonHome[1024];
 	char szPythonEngine[1024];
 	char szSourcePython[1024];
-#ifdef _WIN32
-	char szMsvcrt[1024];
-	char szMsvcp[1024];
+
+	// ------------------------------------------------------------------
+	// Get the game directory.
+	// ------------------------------------------------------------------
+	engine->GetGameDir(szGameDir, 1024);
+
+	// ------------------------------------------------------------------
+	// Load windows dependencies.
+	// ------------------------------------------------------------------
+#if defined(_WIN32)
+	if( SPLoadLibrary(engine, MSVCRT_LIB) == NULL ) {
+		return false;
+	}
+
+	if( SPLoadLibrary(engine, MSVCP_LIB) == NULL ) {
+		return false;
+	}
 #endif
 
-	// Load all of the Source.Python dependencies first.
-	V_snprintf(szPythonHome, 1024, "%s/addons/source-python/engines", szGameDir);
-	V_snprintf(szSourcePython, sizeof(szSourcePython), "%s/addons/source-python/%s", szGameDir, CORE_NAME);
+	// ------------------------------------------------------------------
+	// Construct paths to python and the core.
+	// ------------------------------------------------------------------
+	V_snprintf(szPythonHome, 1024, "%s/addons/source-python", szGameDir);
+	V_snprintf(szSourcePython, sizeof(szSourcePython), "%s/%s", szPythonHome, CORE_NAME);
 	V_snprintf(szPythonEngine, sizeof(szPythonEngine), "%s/%s", szPythonHome, PYLIB_NAME);
-#ifdef _WIN32
-	V_snprintf(szMsvcrt, sizeof(szMsvcrt), "%s/%s", szPythonHome, MSVCRT_LIB);
-	V_snprintf(szMsvcp, sizeof(szMsvcp), "%s/%s", szPythonHome, MSVCP_LIB);
-#endif
 
-	// Fixup the paths with the correct slashes.
-	V_FixSlashes(szPythonHome);
 	V_FixSlashes(szSourcePython);
 	V_FixSlashes(szPythonEngine);
-#ifdef _WIN32
-	V_FixSlashes(szMsvcrt);
-	V_FixSlashes(szMsvcp);
-#endif
-
-	// We gotta load the visual studio runtime libraries before anything else.
-#ifdef _WIN32
-	DevMsg(1, "===========================================\n");
-	DevMsg(1, "[SP-LOADER] Loading %s\n", szMsvcrt);
-	DevMsg(1, "===========================================\n");
-	HMODULE hMsvcrt = LoadLibrary(szMsvcrt);
-	if( !hMsvcrt ) {
-		Msg("[SP-LOADER] Could not load visual studio runtime! Aborting load..\n");
-		return false;
-	}
-
-	DevMsg(1, "===========================================\n");
-	DevMsg(1, "[SP-LOADER] Loading %s\n", szMsvcp);
-	DevMsg(1, "===========================================\n");
-	HMODULE hMsvcp = LoadLibrary(szMsvcp);
-	if( !hMsvcp ) {
-		Msg("[SP-LOADER] Could not load visual studio runtime libraries! Aborting load..\n");
-		return false;
-	}
-#endif
-
-	// Load python as the core depends on it.
-	DevMsg(1, "===========================================\n");
-	DevMsg(1, "[SP-LOADER] Loading %s\n", szPythonEngine);
-	DevMsg(1, "===========================================\n");
-
+	
+	// ------------------------------------------------------------------
+	// Load python.
+	// ------------------------------------------------------------------
 #ifdef _WIN32
 	m_pPython = Sys_LoadModule(szPythonEngine);
 #else
@@ -145,7 +157,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// Long story short, we need RTLD_NOW coupled with RTLD_GLOBAL.
 	m_pPython = (CSysModule *)dlopen(szPythonEngine, RTLD_NOW | RTLD_GLOBAL);
 #endif
-	
+
 	if( !m_pPython ) {
 		Warning("===========================================\n");
 		Warning("[SP-LOADER] Could not load %s!\n", szPythonEngine);
@@ -153,7 +165,9 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
+	// ------------------------------------------------------------------
 	// Load the Source.Python core.
+	// ------------------------------------------------------------------
 	m_pCore = new CDllDemandLoader(szSourcePython);
 
 	if( !m_pCore->GetFactory() ) {
@@ -166,7 +180,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// Get the interface from it.
 	m_pCorePlugin = reinterpret_cast<IServerPluginCallbacks*>(
 		m_pCore->GetFactory()(INTERFACEVERSION_ISERVERPLUGINCALLBACKS, NULL)
-	);
+		);
 
 	if( !m_pCorePlugin ) {
 		Warning("=========================================================================\n");
@@ -174,6 +188,13 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		Warning("=========================================================================\n");
 		return false;
 	}
+
+
+	SPLoadLibrary(engine, "engines/plat-win/tcl85g.dll");
+	SPLoadLibrary(engine, "engines/plat-win/tcldel13g.dll");
+	SPLoadLibrary(engine, "engines/plat-win/tclpip85g.dll");
+	SPLoadLibrary(engine, "engines/plat-win/tclreg12g.dll");
+	SPLoadLibrary(engine, "engines/plat-win/tk85g.dll");
 
 	// Pass it on.
 	return m_pCorePlugin->Load(interfaceFactory, gameServerFactory);
