@@ -75,6 +75,20 @@ void CAddonManager::FireGameEvent( IGameEvent* event )
 }
 
 //---------------------------------------------------------------------------------
+// Calls tick listener.
+//---------------------------------------------------------------------------------
+void CAddonManager::GameFrame()
+{
+    // Pass that on to python.
+    python::object mainFile = g_PythonManager.GetSP();
+
+    // Execute tick_listener.
+    BEGIN_BOOST_PY()
+        mainFile.attr("tick_listener")();
+    END_BOOST_PY();
+}
+
+//---------------------------------------------------------------------------------
 // Loads an addon.
 //---------------------------------------------------------------------------------
 bool CAddonManager::LoadAddon( const char* szName )
