@@ -445,4 +445,10 @@ DECLARE_SP_MODULE(Player)
         args("index"),
 		reference_existing_object_policy()
     );
+
+	BOOST_FUNCTION(EdictOfPlayer,
+		"Returns the edict for a IPlayerInfo instance.",
+		args("playerInfo"),
+		reference_existing_object_policy()
+	);
 }
