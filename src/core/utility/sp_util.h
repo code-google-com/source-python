@@ -111,4 +111,12 @@ inline IPlayerInfo* PlayerOfIndex(int index)
 	return NULL;
 }
 
+//---------------------------------------------------------------------------------
+// Returns the edict instance given a playerinfo instance
+//---------------------------------------------------------------------------------
+inline edict_t* EdictOfPlayer(IPlayerInfo* playerInfo)
+{
+	return EdictOfUserid(playerInfo->GetUserID());
+}
+
 #endif

@@ -69,6 +69,7 @@ IEngineSound*		  enginesound		= NULL;
 CGlobalVars*          gpGlobals         = NULL;
 IFileSystem*		  filesystem		= NULL;
 IEffects*			  effects			= NULL;
+IServerGameDLL*		  servergamedll		= NULL;
 
 //---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -111,6 +112,7 @@ InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_PLAYERINFOMANAGER, (void **)&playerinfomanager},
 	{INTERFACEVERSION_PLAYERBOTMANAGER, (void **)&botmanager},
 	{IEFFECTS_INTERFACE_VERSION, (void **)&effects},
+	{INTERFACEVERSION_SERVERGAMEDLL, (void **)&servergamedll},
 
 	{NULL, NULL}
 };

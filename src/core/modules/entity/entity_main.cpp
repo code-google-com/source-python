@@ -23,40 +23,29 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.  
 */
-#ifndef _EXPORT_ENTITY_H
-#define _EXPORT_ENTITY_H
 
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "utility/ipythongenerator.h"
+#include "../export_main.h"
+#include "utility/wrap_macros.h"
+#include "core/sp_python.h"
 
 //---------------------------------------------------------------------------------
-// Forward-declare IPlayerInfo.
+// All external functions to export misc classes and functions.
 //---------------------------------------------------------------------------------
-struct edict_t;
+extern void Export_EntityGenerator( void );
+extern void Export_Props( void );
+extern void Export_Edict( void );
 
 //---------------------------------------------------------------------------------
-// Declare a generator class to help iterate over the active entities.
+// Wraps all miscellaneous classes, structures, etc.
+// It is highly suggested that code in this module *will* be moved into a more
+// permanent location in the future. Use of this module should be temporary.
 //---------------------------------------------------------------------------------
-class Entities: public IPythonGenerator<edict_t>
+DECLARE_SP_MODULE(Entity)
 {
-public:
-	Entities(PyObject* self);
-	Entities(PyObject* self, const Entities& rhs);
-	Entities(PyObject* self, const char* szClassName);
-	Entities(PyObject* self, const char* szClassName, bool exactMatch);
-	virtual ~Entities();
-protected:
-	virtual edict_t* getNext();
-private:
-	void makeStringCopy(const char* szClassName, unsigned int uiClassNameLen);
-	const char* m_szClassName;
-	unsigned int m_uiClassNameLen;
-	int m_iEntityIndex;
-	bool m_bExactMatch;
-};
-
-BOOST_SPECIALIZE_HAS_BACK_REFERENCE(Entities)
-
-#endif // _EXPORT_ENTITY_H
+	Export_EntityGenerator();
+	Export_Props();
+	Export_Edict();
+}

@@ -27,17 +27,25 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "export_main.h"
-#include "export_entity.h"
+#include "../export_main.h"
+#include "entity_generator.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
 #include "utility/sp_util.h"
 #include "eiface.h"
+#include "dt_common.h"
+#include "dt_send.h"
+#include "server_class.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
 //---------------------------------------------------------------------------------
 using namespace boost::python;
+
+//---------------------------------------------------------------------------------
+// External variables to use.
+//---------------------------------------------------------------------------------
+extern IServerGameDLL* servergamedll;
 
 //---------------------------------------------------------------------------------
 // Entities Constructor.
@@ -144,106 +152,10 @@ void Entities::makeStringCopy(const char* szClassName, unsigned int uiClassNameL
 }
 
 //---------------------------------------------------------------------------------
-// Wraps player related structures.
+// This function exports a generator for iterating over entities
 //---------------------------------------------------------------------------------
-DECLARE_SP_MODULE(Entity)
+void Export_EntityGenerator()
 {
-	// ----------------------------------------------------------
-	// Entity flags
-	// ----------------------------------------------------------
-	BOOST_GLOBAL_ATTRIBUTE("FL_EDICT_CHANGED", FL_EDICT_CHANGED);
-	BOOST_GLOBAL_ATTRIBUTE("FL_EDICT_FREE", FL_EDICT_FREE);
-	BOOST_GLOBAL_ATTRIBUTE("FL_EDICT_FULL", FL_EDICT_FULL);
-	BOOST_GLOBAL_ATTRIBUTE("FL_EDICT_FULLCHECK", FL_EDICT_FULLCHECK);
-	BOOST_GLOBAL_ATTRIBUTE("FL_EDICT_ALWAYS", FL_EDICT_ALWAYS);
-	BOOST_GLOBAL_ATTRIBUTE("FL_EDICT_DONTSEND", FL_EDICT_DONTSEND);
-	BOOST_GLOBAL_ATTRIBUTE("FL_EDICT_PVSCHECK", FL_EDICT_PVSCHECK);
-	BOOST_GLOBAL_ATTRIBUTE("FL_EDICT_PENDING_DORMANT_CHECK", FL_EDICT_PENDING_DORMANT_CHECK);
-	BOOST_GLOBAL_ATTRIBUTE("FL_EDICT_DIRTY_PVS_INFORMATION", FL_EDICT_DIRTY_PVS_INFORMATION);
-	BOOST_GLOBAL_ATTRIBUTE("FL_FULL_EDICT_CHANGED", FL_FULL_EDICT_CHANGED);
-
-	// ----------------------------------------------------------
-	// CBaseEdict
-	// ----------------------------------------------------------
-	typedef IServerEntity* (CBaseEdict::*ServerEntityFn)();
-	ServerEntityFn fnGetIServerEntity = &CBaseEdict::GetIServerEntity;
-
-	
-	BOOST_ABSTRACT_CLASS(CBaseEdict)
-		CLASS_METHOD_TYPEDEF(GetIServerEntity,
-			fnGetIServerEntity,
-			"Returns an IServerEntity if FL_FULLEDICT is set or NULL if this \
-			is a lightweight networking entity.",
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD(CBaseEdict,
-			GetNetworkable,
-			"Returns an IServerNetworkable instance for this entity.",
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD(CBaseEdict,
-			GetUnknown,
-			"Returns an IServerUnknown instance for this entity.",
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD(CBaseEdict,
-			SetEdict,
-			"Set when initting an entity. If it's only a networkable, bFullEdict is false.",
-			args("pUnk", "bFullEdict")
-		)
-
-		CLASS_METHOD(CBaseEdict,
-			AreaNum
-		)
-
-		CLASS_METHOD(CBaseEdict,
-			GetClassName,
-			"Returns the classname of this entity"
-		)
-
-		CLASS_METHOD(CBaseEdict,
-			IsFree,
-			"Returns true if this entity has the FL_EDICT_FREE flag."
-		)
-
-		CLASS_METHOD(CBaseEdict,
-			SetFree,
-			"Frees the edict. USE AT YOUR OWN RISK."
-		)
-
-		CLASS_METHOD(CBaseEdict,
-			ClearFree,
-			"Clears the free flags."
-		)
-
-		CLASS_MEMBER(CBaseEdict,
-			m_fStateFlags
-		)
-
-		CLASS_MEMBER(CBaseEdict,
-			m_pNetworkable
-		)
-
-		CLASS_MEMBER(CBaseEdict,
-			m_NetworkSerialNumber
-		)
-
-	BOOST_END_CLASS()
-
-	// ----------------------------------------------------------
-	// Wrap edict_t.
-	// ----------------------------------------------------------
-	BOOST_INHERITED_CLASS(edict_t, CBaseEdict)
-		CLASS_METHOD(edict_t,
-			GetCollideable,
-			"Returns the ICollideable instance for this entity.",
-			reference_existing_object_policy()
-		)
-	BOOST_END_CLASS()
-
 	// ----------------------------------------------------------
 	// Entities (Generator)
 	// ----------------------------------------------------------
@@ -252,3 +164,4 @@ DECLARE_SP_MODULE(Entity)
 		CLASS_CONSTRUCTOR(const char*, bool)
 	BOOST_END_CLASS()
 }
+

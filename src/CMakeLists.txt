@@ -79,14 +79,14 @@ Set(SOURCEPYTHON_ADDON_FILES
 Set(SOURCEPYTHON_MODULE_HEADERS
     core/modules/export_main.h
     core/modules/export_player.h
-    core/modules/export_entity.h
+    core/modules/entity/entity_generator.h
+    core/modules/entity/entity_props.h
 )
 
 Set(SOURCEPYTHON_MODULE_SOURCES
     core/modules/export_events.cpp
     core/modules/export_main.cpp
 	core/modules/export_player.cpp
-	core/modules/export_entity.cpp
 	core/modules/export_shared.cpp
 )
 
@@ -121,6 +121,16 @@ Set(SOURCEPYTHON_MODULE_MISC_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Entity module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_MODULE_ENTITY_SOURCES
+    core/modules/entity/entity_main.cpp
+    core/modules/entity/entity_edict.cpp
+    core/modules/entity/entity_generator.cpp
+    core/modules/entity/entity_props.cpp
+)
+
+# ------------------------------------------------------------------
 # All module fiels
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -130,6 +140,7 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_MODULE_ENGINE_SOURCES}
     ${SOURCEPYTHON_MODULE_CVAR_SOURCES}
     ${SOURCEPYTHON_MODULE_MISC_SOURCES}
+    ${SOURCEPYTHON_MODULE_ENTITY_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -148,6 +159,7 @@ Source_Group("Source Files\\Modules" FILES ${SOURCEPYTHON_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Engine" FILES ${SOURCEPYTHON_MODULE_ENGINE_SOURCES})
 Source_Group("Source Files\\Modules\\Cvar" FILES ${SOURCEPYTHON_MODULE_CVAR_SOURCES})
 Source_Group("Source Files\\Modules\\Misc" FILES ${SOURCEPYTHON_MODULE_MISC_SOURCES})
+Source_Group("Source Files\\Modules\\Entity" FILES ${SOURCEPYTHON_MODULE_ENTITY_SOURCES})
 
 Source_Group("Header Files\\Util"    FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Source Files\\Util"    FILES ${SOURCEPYTHON_UTIL_SOURCES})
