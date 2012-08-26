@@ -88,7 +88,7 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 #if defined(_WIN32)
 	void* hModule = (void *)LoadLibrary(szFullPath);
 #else
-	void* hModule = (void *)dlopen(szPythonEngine, RTLD_NOW | RTLD_GLOBAL);
+	void* hModule = (void *)dlopen(szFullPath, RTLD_NOW | RTLD_GLOBAL);
 #endif
 
 	if( !hModule ) {
@@ -188,13 +188,6 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		Warning("=========================================================================\n");
 		return false;
 	}
-
-
-	SPLoadLibrary(engine, "engines/plat-win/tcl85g.dll");
-	SPLoadLibrary(engine, "engines/plat-win/tcldel13g.dll");
-	SPLoadLibrary(engine, "engines/plat-win/tclpip85g.dll");
-	SPLoadLibrary(engine, "engines/plat-win/tclreg12g.dll");
-	SPLoadLibrary(engine, "engines/plat-win/tk85g.dll");
 
 	// Pass it on.
 	return m_pCorePlugin->Load(interfaceFactory, gameServerFactory);
