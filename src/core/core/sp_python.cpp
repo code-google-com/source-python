@@ -72,7 +72,7 @@ bool CPythonManager::Initialize( void )
 {
 	// Construct a path to the python engine directory.
 	char szPythonHome[MAX_GAME_PATH];
-	V_snprintf(szPythonHome, MAX_GAME_PATH, "%s/engines", g_GamePaths.GetESDir());
+	V_snprintf(szPythonHome, MAX_GAME_PATH, "%s/_engines", g_GamePaths.GetESDir());
 	V_FixSlashes(szPythonHome);
 	DevMsg(1, "[SP] Python home path set to %s\n", szPythonHome);
 
@@ -101,12 +101,12 @@ bool CPythonManager::Initialize( void )
 	AddToSysPath("_libs");
 
 #if defined(WIN32)
-	AddToSysPath("/engines/plat-win");
+	AddToSysPath("/_engines/plat-win");
 #else
-	AddToSysPath("/engine/plat-linux");
+	AddToSysPath("/_engines/plat-linux");
 #endif
 
-	AddToSysPath("/engines/site-packages");
+	AddToSysPath("/_engines/site-packages");
 	AddToSysPath(".");
 
 #if 0
@@ -124,9 +124,9 @@ bool CPythonManager::Initialize( void )
 	char szPlatDir[MAX_GAME_PATH];
 	char szPlatCmd[MAX_GAME_PATH];
 #if defined(_WIN32)
-	V_snprintf(szPlatDir, MAX_GAME_PATH, "%s/engines/plat-win", g_GamePaths.GetESDir());
+	V_snprintf(szPlatDir, MAX_GAME_PATH, "%s/_engines/plat-win", g_GamePaths.GetESDir());
 #else
-	V_snprintf(szPlatDir, MAX_GAME_PATH, "%s/engines/plat-linux", g_GamePaths.GetESDir());
+	V_snprintf(szPlatDir, MAX_GAME_PATH, "%s/_engines/plat-linux", g_GamePaths.GetESDir());
 #endif
 	V_FixSlashes(szPlatDir);
 	V_snprintf(szPlatCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", szPlatDir);
@@ -134,7 +134,7 @@ bool CPythonManager::Initialize( void )
 
     // Add the site packages directory.
 	char szSitePackages[MAX_GAME_PATH];
-	V_snprintf(szSitePackages, MAX_GAME_PATH, "%s/engines/site-packages", g_GamePaths.GetESDir());
+	V_snprintf(szSitePackages, MAX_GAME_PATH, "%s/_engines/site-packages", g_GamePaths.GetESDir());
 	V_FixSlashes(szSitePackages);
     
     char szSitePackagesCmd[MAX_GAME_PATH];
