@@ -35,6 +35,8 @@ from addons.info import AddonInfo
 from addons.manager import AddonManager
 #   Events
 from events.manager import EventRegistry
+#   Listeners
+from listeners.tick import TickListeners
 
 
 # =============================================================================
@@ -167,4 +169,7 @@ def event_fire(GameEvent):
 
 
 def tick_listener():
-    pass
+    '''Called every tick'''
+
+    # Call all tick listeners
+    TickListeners.CallTickListeners()
