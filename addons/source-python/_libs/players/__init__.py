@@ -1,15 +1,41 @@
-from Source import Entity
-from Source import Player
-from configparser import RawConfigParser
-from core import GAME_NAME
+# ../_libs/players/__init__.py
+
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
+#   OS
 from os import path
 
+#   configparser
+from configparser import RawConfigParser
+
+# Source.Python Imports
+from Source import Engine
+from Source import Entity
+from Source import Player
+from core import GAME_NAME
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the prop definitions file directory
 prop_defs_dir = path.join(path.dirname(path.abspath(__file__)), '_definitions')
+
+# Get the prop definitions file name complete with path
 prop_defs_file = path.normpath(prop_defs_dir + '/%s.ini' % GAME_NAME)
 
+# RawConfigParser
 prop_ini = RawConfigParser()
+
+# Read the Parser
 prop_ini.read(prop_defs_file)
 
+
+# =============================================================================
+# >> CLASSES
+# =============================================================================
 class EasyPlayer(object):
     '''EasyPlayer class wrapper for providing easier access to players.'''
     
@@ -112,7 +138,7 @@ class EasyPlayer(object):
                 # Raise error
                 raise ValueError('"%s" is not a recognized steamid.')
             
-        # Get the 
+        # Get the Entity 
         self.Entity = Player.EdictOfPlayer(self.Player)
         
     def __getattr__(self, name):
@@ -255,6 +281,11 @@ class EasyPlayer(object):
         return self.Player.GetUserID()
         
     @property
+    def index(self):
+        '''Returns the index for the player'''
+        return Engine.IndexOfEdict(self.Player)
+
+    @property
     def steamid(self):
         '''Returns the player's SteamID'''
         return self.Player.GetNetworkIDString()
@@ -274,6 +305,10 @@ class EasyPlayer(object):
         '''Returns the last user input from this player'''
         return self.Player.GetLastUserCommand()
         
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
 def DumpDefinitions():
 	'''
 		Dumps all property definitions from the appropriate ini file into
