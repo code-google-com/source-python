@@ -183,7 +183,7 @@ class _LoadedAddon(object):
         print('[SP] Loading "%s"...' % addon_name)
 
         # Get the addon's main file
-        file_path = '%s/%s/%s.py' % (ADDON_PATH, addon_name, addon_name)
+        file_path = ADDON_PATH.join(addon_name, addon_name + '.py')
 
         # Does the addon's main file exist?
         if not isfile(file_path):
