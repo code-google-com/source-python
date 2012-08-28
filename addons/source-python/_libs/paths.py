@@ -4,22 +4,24 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   OS
-from os.path import dirname
-from os.path import join
+#   Path
+from path import path
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the game's base path
-GAME_PATH = dirname(__file__).rsplit('addons', 1)[0]
+GAME_PATH = path(path(__file__).rsplit('addons', 1)[0])
 
 # Get the addon's base path
-ADDON_PATH = join(GAME_PATH, 'addons', 'source-python')
+ADDON_PATH = GAME_PATH.join('addons', 'source-python')
 
 # Get the cfg's base path
-CFG_PATH = join(GAME_PATH, 'cfg', 'source-python')
+CFG_PATH = GAME_PATH.join('cfg', 'source-python')
 
 # Get the log's base path
-LOG_PATH = join(GAME_PATH, 'logs', 'source-python')
+LOG_PATH = GAME_PATH.join('logs', 'source-python')
+
+# Get the data's base path
+DATA_PATH = ADDON_PATH.join('_libs', '_data')

@@ -4,9 +4,6 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   OS
-from os import path
-
 #   configparser
 from configparser import RawConfigParser
 
@@ -15,16 +12,14 @@ from Source import Engine
 from Source import Entity
 from Source import Player
 from core import GAME_NAME
+from paths import DATA_PATH
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the prop definitions file directory
-prop_defs_dir = path.join(path.dirname(path.abspath(__file__)), '_definitions')
-
 # Get the prop definitions file name complete with path
-prop_defs_file = path.normpath(prop_defs_dir + '/%s.ini' % GAME_NAME)
+prop_defs_file = DATA_PATH.join('players', GAME_NAME + '.ini')
 
 # RawConfigParser
 prop_ini = RawConfigParser()
