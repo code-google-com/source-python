@@ -1,4 +1,4 @@
-# ../_libs/listeners/decorators.py
+# ../_libs/events/__init__.py
 
 # =============================================================================
 # >> IMPORTS
@@ -6,18 +6,18 @@
 # Source.Python Imports
 #   Core
 from core.decorators import BaseDecorator
-#   Listeners
-from listeners.tick import TickListeners
+#   Events
+from events.manager import EventRegistry
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Tick(BaseDecorator):
-    ''''''
+class Event(BaseDecorator):
+    '''Event decorator class'''
 
     def __init__(self, callback):
-        '''Store the callback and register the tick listener'''
+        '''Store the callback and register the event'''
 
         # Is the callback callable?
         if not callable(callback):
@@ -29,17 +29,17 @@ class Tick(BaseDecorator):
         # Store the callback
         self.callback = callback
 
-        # Register the tick listener
-        TickListeners.RegisterTickListener(self.callback)
+        # Register the event
+        EventRegistry.RegisterForEvent(self.callback.__name__, self.callback)
 
-    def __call__(self):
-        '''Calls the tick listener'''
+    def __call__(self, GameEvent):
+        '''Calls the Event callback with the GameEvent instance'''
 
-        # Call the listener
-        return self.callback()
+        # Call the Event callback
+        return self.callback(GameEvent)
 
     def _UnregisterDecorator(self):
-        '''Unregisters the tick listener'''
+        '''Unregisters the event'''
 
-        # Unregister the tick listener
-        TickListeners.UnregisterTickListener(self.callback)
+        # Unregister the event
+        EventRegistry.UnregisterForEvent(self.callback.__name__, self.callback)
