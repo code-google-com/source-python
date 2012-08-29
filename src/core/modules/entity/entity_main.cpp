@@ -37,6 +37,7 @@
 extern void Export_EntityGenerator( void );
 extern void Export_Props( void );
 extern void Export_Edict( void );
+extern void Export_EntityFactory( void );
 
 //---------------------------------------------------------------------------------
 // Wraps all miscellaneous classes, structures, etc.
@@ -47,5 +48,6 @@ DECLARE_SP_MODULE(Entity)
 {
 	Export_EntityGenerator();
 	Export_Props();
+	Export_EntityFactory();
 	Export_Edict();
 }

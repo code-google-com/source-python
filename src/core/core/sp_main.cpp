@@ -46,6 +46,7 @@
 #include "../utility/wrap_macros.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
+#include "public/toolframework/itoolentity.h"
 
 //---------------------------------------------------------------------------------
 // Disable warnings.
@@ -70,6 +71,7 @@ CGlobalVars*          gpGlobals         = NULL;
 IFileSystem*		  filesystem		= NULL;
 IEffects*			  effects			= NULL;
 IServerGameDLL*		  servergamedll		= NULL;
+IServerTools*		  servertools		= NULL;
 
 //---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -113,6 +115,7 @@ InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_PLAYERBOTMANAGER, (void **)&botmanager},
 	{IEFFECTS_INTERFACE_VERSION, (void **)&effects},
 	{INTERFACEVERSION_SERVERGAMEDLL, (void **)&servergamedll},
+	{VSERVERTOOLS_INTERFACE_VERSION, (void **)&servertools},
 
 	{NULL, NULL}
 };

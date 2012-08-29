@@ -42,6 +42,16 @@
 using namespace boost::python;
 
 //---------------------------------------------------------------------------------
+//  All external functions for creating entities & managing their keyvalues.
+//---------------------------------------------------------------------------------
+extern const char* GetKeyValue(edict_t* pEdict, const char* szKeyName);
+extern void SetKeyValueInt(edict_t* pEdict, const char* szKeyName, int iValue);
+extern void SetKeyValueString(edict_t* pEdict, const char* szKeyName, const char* szValue);
+extern void SetKeyValueFloat(edict_t* pEdict, const char* szKeyName, float fValue);
+extern void SetKeyValueVector(edict_t* pEdict, const char* szKeyName, Vector value);
+extern void DispatchSpawn(edict_t* pEdict);
+
+//---------------------------------------------------------------------------------
 // This function exports CBaseEdict and edict_t
 //---------------------------------------------------------------------------------
 void Export_Edict()	
@@ -145,32 +155,32 @@ void Export_Edict()
 		// Expose methods for getting the values of network props
 		// of entities.
 		// ----------------------------------------------------------
-		.def("GetPropInt",
+		CLASS_METHOD_TYPEDEF(GetPropInt,
 			&GetPropValue<int, DPT_Int>,
 			"Returns the value (as an integer) of a network prop name.",
 			args("szFullPath")
 		)
-		.def("GetPropFloat",
+		CLASS_METHOD_TYPEDEF(GetPropFloat,
 			&GetPropValue<float, DPT_Float>,
 			"Returns the value (as a float) of a network prop name.",
 			args("szFullPath")
 		)
-		.def("GetPropVector",
+		CLASS_METHOD_TYPEDEF(GetPropVector,
 			&GetPropValue<Vector, DPT_Vector>,
 			"Returns the value (as a Vector) of a network prop name.",
 			args("szFullPath")
 		)
-		.def("GetPropVectorXY",
+		CLASS_METHOD_TYPEDEF(GetPropVectorXY,
 			&GetPropValue<Vector, DPT_VectorXY>,
 			"Returns the value (as an Vector, with only the X and Y elements set) of a network prop name.",
 			args("szFullPath")
 		)
-		.def("GetPropString",
+		CLASS_METHOD_TYPEDEF(GetPropString,
 			&GetPropValue<const char*, DPT_String>,
 			"Returns the value (as a string) of a network prop name.",
 			args("szFullPath")
 		)
-		.def("GetPropLong",
+		CLASS_METHOD_TYPEDEF(GetPropLong,
 			&GetPropValue<long long, DPT_Int64>,
 			"Returns the value (as a long long) of a network prop name.",
 			args("szFullPath")
@@ -180,35 +190,69 @@ void Export_Edict()
 		// Expose methods for setting the values of network props
 		// of entities.
 		// ----------------------------------------------------------
-		.def("SetPropInt",
+		CLASS_METHOD_TYPEDEF(SetPropInt,
 			&SetPropValue<int, DPT_Int>,
 			"Sets the value (as an integer) of a network prop name.",
 			args("szFullPath", "propValue")
 		)
-		.def("SetPropFloat",
+		CLASS_METHOD_TYPEDEF(SetPropFloat,
 			&SetPropValue<float, DPT_Float>,
 			"Sets the value (as a float) of a network prop name.",
 			args("szFullPath", "propValue")
 		)
-		.def("SetPropVector",
+		CLASS_METHOD_TYPEDEF(SetPropVector,
 			&SetPropValue<Vector, DPT_Vector>,
 			"Sets the value (as a Vector) of a network prop name.",
 			args("szFullPath", "propValue")
 		)
-		.def("SetPropVectorXY",
+		CLASS_METHOD_TYPEDEF(SetPropVectorXY,
 			&SetPropValue<Vector, DPT_VectorXY>,
 			"Sets the value (as an Vector, with only the X and Y elements set) of a network prop name.",
 			args("szFullPath", "propValue")
 		)
-		.def("SetPropString",
+		CLASS_METHOD_TYPEDEF(SetPropString,
 			&SetPropValue<const char*, DPT_String>,
 			"Sets the value (as a string) of a network prop name.",
 			args("szFullPath", "propValue")
 		)
-		.def("SetPropLong",
+		CLASS_METHOD_TYPEDEF(SetPropLong,
 			&SetPropValue<long long, DPT_Int64>,
 			"Sets the value (as a long long) of a network prop name.",
 			args("szFullPath", "propValue")
+		)
+
+		// ----------------------------------------------------------
+		// Expose methods for access keyvalues of entities, and also
+		// to spawn entities.
+		// ----------------------------------------------------------
+		CLASS_METHOD_TYPEDEF(GetKeyValue,
+			&GetKeyValue,
+			"Returns the key value of an entity.",
+			args("szKeyName")
+		)
+		CLASS_METHOD_TYPEDEF(SetKeyValueInt,
+			&SetKeyValueInt,
+			"Sets the key value (as an integer) of an entity.",
+			args("szKeyName", "szValue")
+		)
+		CLASS_METHOD_TYPEDEF(SetKeyValueString,
+			&SetKeyValueString,
+			"Sets the key value (as a string) of an entity.",
+			args("szKeyName", "szValue")
+		)
+		CLASS_METHOD_TYPEDEF(SetKeyValueFloat,
+			&SetKeyValueFloat,
+			"Sets the key value (as a float) of an entity.",
+			args("szKeyName", "fValue")
+		)
+		CLASS_METHOD_TYPEDEF(SetKeyValueVector,
+			&SetKeyValueVector,
+			"Sets the key value (as a Vector) of an entity.",
+			args("szKeyName", "value")
+		)
+		CLASS_METHOD_TYPEDEF(DispatchSpawn,
+			&DispatchSpawn,
+			"Dispatches a message to spawn the entity."
 		)
 	BOOST_END_CLASS()
 }

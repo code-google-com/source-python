@@ -128,6 +128,7 @@ Set(SOURCEPYTHON_MODULE_ENTITY_SOURCES
     core/modules/entity/entity_edict.cpp
     core/modules/entity/entity_generator.cpp
     core/modules/entity/entity_props.cpp
+    core/modules/entity/entity_factory.cpp
 )
 
 # ------------------------------------------------------------------
