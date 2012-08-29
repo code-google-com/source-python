@@ -89,91 +89,25 @@ void CAddonManager::GameFrame()
 }
 
 //---------------------------------------------------------------------------------
-// Loads an addon.
+// Runs a sp console command.
 //---------------------------------------------------------------------------------
-bool CAddonManager::LoadAddon( const char* szName )
+bool CAddonManager::SpCommand( const char* szArgs )
 {
 	// Pass that on to python.
 	python::object mainFile = g_PythonManager.GetSP();
 
-	// Execute addon_load.
-	// TODO: Add error handling.
+	// Execute command
 	BEGIN_BOOST_PY()
-		mainFile.attr("addon_load")(szName);
+		mainFile.attr("sp_command")(szArgs);
 	END_BOOST_PY(true);
 
 	return true;
 }
 
 //---------------------------------------------------------------------------------
-// Unloads an addon
+// Main console command 
 //---------------------------------------------------------------------------------
-bool CAddonManager::UnloadAddon( const char* szName )
+CON_COMMAND(sp, "Main source python command.")
 {
-	// Pass that on to python.
-	python::object mainFile = g_PythonManager.GetSP();
-
-	// Execute addon_load.
-	// TODO: Add error handling.
-	BEGIN_BOOST_PY()
-		mainFile.attr("addon_unload")(szName);
-	END_BOOST_PY(true);
-
-	return true;
-}
-
-//---------------------------------------------------------------------------------
-// Reloads an addon.
-//---------------------------------------------------------------------------------
-bool CAddonManager::ReloadAddon( const char* szName )
-{
-	// Pass that on to python.
-	python::object mainFile = g_PythonManager.GetSP();
-
-	// Execute addon_load.
-	// TODO: Add error handling.
-	BEGIN_BOOST_PY()
-		mainFile.attr("addon_reload")(szName);
-	END_BOOST_PY(true);
-
-	return true;
-}
-
-//---------------------------------------------------------------------------------
-// Console command to load an addon
-//---------------------------------------------------------------------------------
-CON_COMMAND(sp_load, "Loads a python addon.")
-{
-	if( args.ArgC() < 2 ) {
-		g_AddonManager.LoadAddon("");
-		return;
-	}
-
-	g_AddonManager.LoadAddon((char *)args.Arg(1));
-}
-
-//---------------------------------------------------------------------------------
-// Console command to unload an addon
-//---------------------------------------------------------------------------------
-CON_COMMAND(sp_unload, "Unloads a python addon.")
-{
-	if( args.ArgC() < 2 ) {
-		Msg("Usage: sp_unload <addon-name>\n");
-		return;
-	}
-
-	g_AddonManager.UnloadAddon(args.Arg(1));
-}
-
-//---------------------------------------------------------------------------------
-// Console command to reload an addon.
-//---------------------------------------------------------------------------------
-CON_COMMAND(sp_reload, "Reloads a python addon.")
-{
-	if( args.ArgC() < 2 ) {
-		Msg("Usage: sp_reload <addon-name>\n");
-		return;
-	}
-
-	g_AddonManager.ReloadAddon(args.Arg(1));
+	g_AddonManager.SpCommand(args.ArgS());
 }
