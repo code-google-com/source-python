@@ -304,7 +304,7 @@ class EasyPlayer(object):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def DumpDefinitions():
+def DumpDefinitions(return_dict=False):
 	'''
 		Dumps all property definitions from the appropriate ini file into
 		console.
@@ -312,6 +312,12 @@ def DumpDefinitions():
 	
 	# Dictionary from config
 	dic_dump = prop_ini._sections
+    
+    # Return nested dictionary instead of printing to console?
+    if return_dict:
+        
+        # Return dictionary
+        return dic_dump
 	
 	# Print header
 	print('')	
