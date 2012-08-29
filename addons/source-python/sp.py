@@ -37,130 +37,13 @@ from addons.manager import AddonManager
 from events.manager import EventRegistry
 #   Listeners
 from listeners.tick import TickListeners
+#   Game Engine
+from core import GameEngine
 
 
 # =============================================================================
 # >> CORE FUNCTIONS
 # =============================================================================
-def addon_load(addon_name):
-    '''Called when a user executes sp_load.'''
-
-    # Is an addon being loaded?
-    if not addon_name:
-
-        # Print start message for loaded addons
-        print('[SP] Loaded Addons:')
-        print('======================================\n')
-
-        # Loop through all loaded addons
-        for addon in AddonManager:
-
-            # Set info as None in case no AddonInfo instance is found
-            info = None
-
-            # Loop through the addon's globals
-            for object_name in AddonManager[addon].globals:
-
-                # Get the object's instance
-                instance = AddonManager[addon].globals[object_name]
-
-                # Is the current instance an AddonInfo instance?
-                if isinstance(instance, AddonInfo):
-
-                    # Set info to the instance
-                    info = instance
-
-                    # Break the loop
-                    break
-
-            # Does the addon have an AddonInfo instance?
-            if not info is None:
-
-                # Print the addon's name
-                print(addon + ':')
-
-                # Loop through all items in the AddonInfo instance
-                for item in info:
-
-                    # Print the item's name
-                    print('\t%s:' % item)
-
-                    # Print the item's value
-                    print('\t\t%s' % info[item])
-
-            # Does the addon not have an AddonInfo instance?
-            else:
-
-                # Print the addon's name
-                print(addon)
-
-            # Print a blank line between addons
-            print('\n')
-
-        # Print closing message for loaded addons
-        print('======================================')
-
-        # No need to go further
-        return
-
-    # Is the addon already loaded?
-    if addon_name in AddonManager:
-
-        # Print message that the addon is already loaded
-        print('[SP] Addon "%s" is already loaded.' % addon_name)
-
-        # No need to go further
-        return
-
-    # Get the addon's instance
-    addon = AddonManager[addon_name]
-
-    # Is the addon loaded?
-    if addon is None:
-
-        # Print a message that the addon was not able to be loaded
-        print('[SP] Addon "%s" was unable to be loaded.' % addon_name)
-
-        # If not, go no further
-        return
-
-    # Print message that the addon successfully loaded
-    print('[SP] Successfully loaded "%s"' % addon_name)
-
-
-def addon_unload(addon_name):
-    '''Called when a user executes sp_unload.'''
-
-    # Is the loaded?
-    if not addon_name in AddonManager:
-
-        # Print message that the addon is not loaded
-        print('[SP] Addon "%s" cannot ' % addon_name +
-            'be unloaded.  It is not currently loaded.')
-
-        # No need to go further
-        return
-
-    # Get the addon's instance
-    addon = AddonManager[addon_name]
-
-    # Remove the addon from the AddonManager
-    del AddonManager[addon_name]
-
-    # Print message that the addon successfully unloaded
-    print('[SP] Successfully unloaded "%s"' % addon_name)
-
-
-def addon_reload(addon_name):
-    '''Called when a user executes sp_reload.'''
-
-    # Unload the addon
-    addon_unload(addon_name)
-
-    # Load the addon
-    addon_load(addon_name)
-
-
 def event_fire(GameEvent):
     '''Called when the core catches an event.'''
 
@@ -173,3 +56,294 @@ def tick_listener():
 
     # Call all tick listeners
     TickListeners.CallTickListeners()
+
+
+# =============================================================================
+# >> ADDON RELATED FUNCTIONS
+# =============================================================================
+def addon_load(addon_name):
+    '''Called when a user executes sp load.'''
+
+    # Is the addon already loaded?
+    if addon_name in AddonManager:
+
+        # Echo message that the addon is already loaded
+        sp_echo('Addon "%s" is already loaded.' % addon_name)
+
+        # No need to go further
+        return
+
+    # Get the addon's instance
+    addon = AddonManager[addon_name]
+
+    # Is the addon loaded?
+    if addon is None:
+
+        # Echo a message that the addon was not able to be loaded
+        sp_echo('Addon "%s" was unable to be loaded.' % addon_name)
+
+        # If not, go no further
+        return
+
+    # Echo message that the addon successfully loaded
+    sp_echo('Successfully loaded "%s"' % addon_name)
+
+
+def addon_unload(addon_name):
+    '''Called when a user executes sp unload.'''
+
+    # Is the loaded?
+    if not addon_name in AddonManager:
+
+        # Echo message that the addon is not loaded
+        sp_echo('Addon "%s" cannot ' % addon_name +
+            'be unloaded.  It is not currently loaded.')
+
+        # No need to go further
+        return
+
+    # Get the addon's instance
+    addon = AddonManager[addon_name]
+
+    # Remove the addon from the AddonManager
+    del AddonManager[addon_name]
+
+    # Echo message that the addon successfully unloaded
+    sp_echo('Successfully unloaded "%s"' % addon_name)
+
+
+def addon_reload(addon_name):
+    '''Called when a user executes sp reload.'''
+
+    # Unload the addon
+    addon_unload(addon_name)
+
+    # Load the addon
+    addon_load(addon_name)
+    
+
+# =============================================================================
+# >> SP CONSOLE COMMAND & RELATED FUNCTIONS
+# =============================================================================
+def sp_command(arg_string):
+    '''Called when a user executes sp'''
+    
+    # Command
+    command = arg_string.strip().split(' ')[0].lower()
+    
+    # Arguments
+    arguments = arg_string.replace(command, '').strip().lower()
+    
+    # Is the first argument "load"
+    if command == 'load':
+        
+        # Load addon
+        if arguments:
+            addon_load(arguments)
+        
+        # No arguments supplied
+        else:
+            
+            # Error message
+            sp_echo('Usage: sp load <addon>')
+            sp_echo('Please specify a valid addon name ' + 
+                            'to be loaded, or type \'sp help\'')
+    
+    # Is the first argument "unload"
+    elif command == 'unload':
+        
+        # Unload addon
+        if arguments:
+            addon_unload(arguments)
+        
+        # No arguments supplied
+        else:
+            
+            # Error message
+            sp_echo('Usage: sp unload <addon>')
+            sp_echo('Please specify a valid addon name ' + 
+                            'to be unloaded, or type \'sp help\'')
+    
+    # Is the first argument "reload"
+    elif command == 'reload':
+        
+        # Reload addon
+        if arguments:
+            addon_reload(arguments)
+        
+        # No arguments supplied
+        else:
+            
+            # Error message
+            sp_echo('Usage: sp reload <addon>')
+            sp_echo('Please specify a valid addon name ' + 
+                            'to be reloaded, or type \'sp help\'')
+        
+    # Is the first argument "print" or "list"
+    elif command in ('list', 'print'):
+        
+        # Echo the addon list
+        sp_list()
+        
+    # Is the first argument "version"
+    elif command == 'version':
+        
+        # Echo version information
+        sp_version()
+    
+    elif command == 'credits':
+    	
+    	# Echo credits
+    	sp_credits()
+	
+	# Catch-all (help)
+    else:
+        
+        # Display error if not help
+        if command not in ('help', ''):
+            
+            # Echo error
+            sp_echo('\'%s\' is not a valid command.' % command)
+            sp_echo('')
+        
+        # Echo help
+        sp_help()
+        
+
+def sp_credits():
+	'''Display SP project contribors'''
+	
+	# Header
+	sp_echo_header('Source.Python Credits')
+	
+	# Project Leaders
+	sp_echo('Project Leaders:')
+	sp_echo('\tAshley Muncaster\t[ashbash1987]')
+	sp_echo('\tDeniz Sezen\t[your-name-here]')
+	sp_echo('\tLuke Robinson\t[Monday]')
+	sp_echo('\tStephen Toon\t[satoon101]')
+	
+	# Contributors
+	sp_echo('Contributors:')
+	sp_echo('\tComming soon...')
+	
+	# Special thanks
+	sp_echo('Special Thanks:')
+	sp_echo('\tComming soon...')
+
+
+def sp_version():
+    '''Display version information'''
+    
+    # Header
+    sp_echo_header('Source.Python')
+    
+    # Base version
+    sp_echo('Version: %s' % 'Someday, important information will be here.')
+    
+    # Core version
+    sp_echo('\tSP Core Version: %s' % 'A billion internets.')
+    
+    # Library version
+    sp_echo('\tSP Library Version: %s' % 'We\'re bringing sexy back.')
+
+
+def sp_help():
+    '''Displays sp commands, and offers help on each command'''
+    
+    # Echo header
+    sp_echo_header('Source.Python Command Help')
+    
+    # Echo help body
+    sp_echo('sp load <addon> \t\'Loads an addon by name.\'')
+    sp_echo('sp unload <addon> \t\'Unloads an addon by name.\'')
+    sp_echo('sp reload <addon> \t\'Reloads an addon by name.\'')
+    sp_echo('sp list \t\t\'Lists all currently loaded addons.\'')
+    sp_echo('sp credits \t\t\'Lists the names of the developers.\'')
+    sp_echo('sp version \t\t\'Displays Source.Python version information.\'')
+    sp_echo('sp help \t\t\'Looks like you figured this one out.\'')
+    sp_echo('\n\n')
+ 
+   
+def sp_echo(string):
+    '''Calls the server command "echo" with a SP prefix'''
+    GameEngine.ServerCommand('echo "# [SP] >>  %s"\n' % string)
+
+
+def sp_echo_header(string):
+    '''Calls the server command "echo" with a SP prefix'''
+    
+	# Print line
+	GameEngine.ServerCommand('echo "# [SP] >> ' + '='*40 + '"\n')
+    
+	# Print header title
+	GameEngine.ServerCommand('echo "# [SP] >> \t%s"\n' % string)      
+    
+	# Print line
+	GameEngine.ServerCommand('echo "# [SP] >> ' + '='*40 + '"\n')
+    
+	# Print blank line
+	GameEngine.ServerCommand('echo "# [SP] >>"\n') 
+      
+
+def sp_list():
+    '''Displays a list of currently loaded addons'''
+    
+    # Display header
+    sp_echo_header('Source.Python Running Addons')
+
+    # No addons are loaded?
+    if len(AddonManager) == 0:
+    
+        # Echo no addons message
+        sp_echo('No addons are currently loaded!')
+        sp_echo('')
+        return        
+    
+    # Loop through all loaded addons
+    for addon in AddonManager:
+    
+        # Set info as None in case no AddonInfo instance is found
+        info = None
+    
+        # Loop through the addon's globals
+        for object_name in AddonManager[addon].globals:
+    
+            # Get the object's instance
+            instance = AddonManager[addon].globals[object_name]
+    
+            # Is the current instance an AddonInfo instance?
+            if isinstance(instance, AddonInfo):
+    
+                # Set info to the instance
+                info = instance
+    
+                # Break the loop
+                break
+    
+        # Does the addon have an AddonInfo instance?
+        if not info is None:
+    
+            # Echo the addon's name
+            sp_echo(addon + ':')
+    
+            # Loop through all items in the AddonInfo instance
+            for item in info:
+    
+                # Echo the item's name
+                sp_echo('\t%s:' % item)
+    
+                # Echo the item's value
+                sp_echo('\t\t%s' % info[item])
+    
+        # Does the addon not have an AddonInfo instance?
+        else:
+    
+            # Echo the addon's name
+            sp_echo(addon)
+    
+        # Echo a blank line between addons
+        sp_echo('')
+    
+    # Echo closing message for loaded addons
+    sp_echo('='*40)
