@@ -192,11 +192,11 @@ def sp_command(arg_string):
         sp_version()
     
     elif command == 'credits':
-    	
-    	# Echo credits
-    	sp_credits()
-	
-	# Catch-all (help)
+        
+        # Echo credits
+        sp_credits()
+    
+    # Catch-all (help)
     else:
         
         # Display error if not help
@@ -211,25 +211,25 @@ def sp_command(arg_string):
         
 
 def sp_credits():
-	'''Display SP project contribors'''
-	
-	# Header
-	sp_echo_header('Source.Python Credits')
-	
-	# Project Leaders
-	sp_echo('Project Leaders:')
-	sp_echo('\tAshley Muncaster\t[ashbash1987]')
-	sp_echo('\tDeniz Sezen\t[your-name-here]')
-	sp_echo('\tLuke Robinson\t[Monday]')
-	sp_echo('\tStephen Toon\t[satoon101]')
-	
-	# Contributors
-	sp_echo('Contributors:')
-	sp_echo('\tComming soon...')
-	
-	# Special thanks
-	sp_echo('Special Thanks:')
-	sp_echo('\tComming soon...')
+    '''Display SP project contribors'''
+    
+    # Header
+    sp_echo_header('Source.Python Credits')
+    
+    # Project Leaders
+    sp_echo('Project Leaders:')
+    sp_echo('\tAshley Muncaster\t[ashbash1987]')
+    sp_echo('\tDeniz Sezen\t[your-name-here]')
+    sp_echo('\tLuke Robinson\t[Monday]')
+    sp_echo('\tStephen Toon\t[satoon101]')
+    
+    # Contributors
+    sp_echo('Contributors:')
+    sp_echo('\tComming soon...')
+    
+    # Special thanks
+    sp_echo('Special Thanks:')
+    sp_echo('\tComming soon...')
 
 
 def sp_version():
@@ -273,17 +273,17 @@ def sp_echo(string):
 def sp_echo_header(string):
     '''Calls the server command "echo" with a SP prefix'''
     
-	# Print line
-	GameEngine.ServerCommand('echo "# [SP] >> ' + '='*40 + '"\n')
+    # Print line
+    GameEngine.ServerCommand('echo "# [SP] >> ' + '='*40 + '"\n')
     
-	# Print header title
-	GameEngine.ServerCommand('echo "# [SP] >> \t%s"\n' % string)      
+    # Print header title
+    GameEngine.ServerCommand('echo "# [SP] >> \t%s"\n' % string)
     
-	# Print line
-	GameEngine.ServerCommand('echo "# [SP] >> ' + '='*40 + '"\n')
+    # Print line
+    GameEngine.ServerCommand('echo "# [SP] >> ' + '='*40 + '"\n')
     
-	# Print blank line
-	GameEngine.ServerCommand('echo "# [SP] >>"\n') 
+    # Print blank line
+    GameEngine.ServerCommand('echo "# [SP] >>"\n') 
       
 
 def sp_list():
