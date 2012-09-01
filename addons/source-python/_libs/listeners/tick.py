@@ -25,7 +25,8 @@ class _TickListeners(list):
         if callback in self:
 
             # If so, raise an error that it cannot be registered
-            raise NameError('Cannot register tick-listener "' +
+            raise NameError(
+                'Cannot register tick-listener "' +
                 '%s", callback is already registered.' % callback.__name__)
 
         # Is the listener callable?
@@ -45,7 +46,8 @@ class _TickListeners(list):
         if not callback in self:
 
             # If not, raise an error that the listener cannot be unregistered
-            raise NameError('Cannot unregister tick-listener "' +
+            raise NameError(
+                'Cannot unregister tick-listener "' +
                 '%s", callback is not registered.' % callback.__name__)
 
         # Remove the listener from the list

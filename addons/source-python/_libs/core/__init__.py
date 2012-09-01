@@ -67,11 +67,11 @@ class ServerVar(object):
                 args[i] = default_types[i](args[i])
 
             # Create the new ConVar using the constructor
-            self.ConVar = Cvar.ConVar(*args)             
+            self.ConVar = Cvar.ConVar(*args)
 
     def __getattr__(self, name):
         '''Runs missing attributes and methods against ConVar instance'''
-        return getattr(self.ConVar, name)       
+        return getattr(self.ConVar, name)
 
     def __str__(self):
         '''Returns string value of ConVar instance.'''

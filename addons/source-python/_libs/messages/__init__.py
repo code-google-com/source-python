@@ -4,10 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   OS
-from os.path import dirname
-from os.path import join
-from os import listdir
+#   Path
+from path import path
 #   Sys
 import sys
 
@@ -15,23 +13,20 @@ import sys
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the current directory
-_basepath = dirname(__file__)
-
 # Get the current module
 _basemodule = sys.modules[__package__]
 
 # Loop through all files in the directory
-for _filename in listdir(_basepath):
+for _filepath in path(__file__).parent.walkfiles('*.py'):
+
+    # Get the file's name
+    _filename = _filepath.namebase
 
     # Is the file private?
     if _filename.startswith('_'):
 
         # If so, skip this file
         continue
-
-    # Get the filename without the extension
-    _filename = _filename[:-3]
 
     # Try to import the module and get its globals
     try:

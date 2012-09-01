@@ -10,7 +10,7 @@ from filters.players import PlayerIter
 
 
 # =============================================================================
-# >> CLASSES
+# >> FUNCTIONS
 # =============================================================================
 def GetRecipients(*users):
     '''Returns a RecipientFilter for the given users'''

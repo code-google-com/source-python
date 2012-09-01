@@ -224,7 +224,7 @@ def _ReturnWeapon(IPlayerInfo):
 
 #def _ReturnLanguage(IPlayerInfo):
 #    '''Returns the player's language'''
-#    return 
+#    return
 
 
 def _ReturnTeam(IPlayerInfo):

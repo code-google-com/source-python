@@ -19,11 +19,12 @@ from paths import DATA_PATH
 _file_path = DATA_PATH.join('messages', GAME_NAME + '.ini')
 
 # Does the file exist?
-if not _file_path.isfile()
+if not _file_path.isfile():
 
     # If not, raise an error that the Messaging libraries are not set for game
-    raise NotImplementedError('Source.Python messaging ' +
-        'library does not currently support "%s"' % GAME_NAME)
+    raise NotImplementedError(
+        'Source.Python messaging library does ' +
+        'not currently support "%s"' % GAME_NAME)
 
 # Get the message types for the current game
 MessageTypes = ConfigObj(_file_path, unrepr=True)
