@@ -49,7 +49,7 @@ class _AddonManagementDictionary(dict):
 
             # Is the error due to "No module named '<addon>.<addon>'?
             if (len(error[1].args) and error[1].args[0] ==
-              "No module named '%s.%s'" % (addon_name, addon_name)):
+                    "No module named '%s.%s'" % (addon_name, addon_name)):
 
                 # Print a message about not using built-in module names
                 # We already know the path exists, so the only way this error
