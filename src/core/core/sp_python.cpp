@@ -97,55 +97,24 @@ bool CPythonManager::Initialize( void )
 	// Make sure sys is imported.
 	PyRun_SimpleString("import sys");
 
-	// Add paths..
+	// Add the library path.
 	AddToSysPath("_libs");
 
+	// Add operating system specific paths.
 #if defined(WIN32)
 	AddToSysPath("/_engines/plat-win");
 #else
 	AddToSysPath("/_engines/plat-linux");
+
+	// We've got a bunch of linux shared objects here we need to load.
+	AddToSysPath("/_engines/lib-dynload");
 #endif
 
+	// Site packages for any extra packages...
 	AddToSysPath("/_engines/site-packages");
+
+	// And of course, the addons directory for script imports.
 	AddToSysPath(".");
-
-#if 0
-	// Add _libs to the library path.
-	char szLibsPath[MAX_GAME_PATH];
-	V_snprintf(szLibsPath, MAX_GAME_PATH, "%s/_libs", g_GamePaths.GetESDir());
-	V_FixSlashes(szLibsPath);
-	
-	PyRun_SimpleString("import sys");
-	char szLibsCmd[MAX_GAME_PATH];
-	V_snprintf(szLibsCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", szLibsPath);
-	PyRun_SimpleString(szLibsCmd);
-	
-	// Add the platform specific directory to the path.
-	char szPlatDir[MAX_GAME_PATH];
-	char szPlatCmd[MAX_GAME_PATH];
-#if defined(_WIN32)
-	V_snprintf(szPlatDir, MAX_GAME_PATH, "%s/_engines/plat-win", g_GamePaths.GetESDir());
-#else
-	V_snprintf(szPlatDir, MAX_GAME_PATH, "%s/_engines/plat-linux", g_GamePaths.GetESDir());
-#endif
-	V_FixSlashes(szPlatDir);
-	V_snprintf(szPlatCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", szPlatDir);
-	PyRun_SimpleString(szPlatCmd);
-
-    // Add the site packages directory.
-	char szSitePackages[MAX_GAME_PATH];
-	V_snprintf(szSitePackages, MAX_GAME_PATH, "%s/_engines/site-packages", g_GamePaths.GetESDir());
-	V_FixSlashes(szSitePackages);
-    
-    char szSitePackagesCmd[MAX_GAME_PATH];
-    V_snprintf(szSitePackagesCmd, MAX_GAME_PATH, "sys.path.insert(1, r\"%s\")", szSitePackages);
-    PyRun_SimpleString(szSitePackagesCmd);
-    
-	// Add the addons directory too.
-	char szAddonsCmd[MAX_GAME_PATH];
-	V_snprintf(szAddonsCmd, MAX_GAME_PATH, "sys.path.append(r\"%s\")", g_GamePaths.GetESDir());
-	PyRun_SimpleString(szAddonsCmd);
-#endif
 
 	// Initialize all submodules
 	modulsp_init();
