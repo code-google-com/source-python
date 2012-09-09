@@ -37,6 +37,7 @@
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
 #include "binutils_scanner.h"
+#include "tier1/interface.h"
 #include "tier0/dbg.h"
 
 #if defined(_WIN32)
@@ -57,17 +58,22 @@ moduledata_t* find_moduledata(const char* szBinary)
 
 #if defined(_WIN32)
 	sprintf_s(szModulePath, MAX_MODULE_PATH, "%s.dll", szBinary);
-	HMODULE hModule = LoadLibrary(szModulePath);
+#endif
 
-	if( !hModule ) 
+	// Load the library.
+	CreateInterfaceFn fnCreateIface = Sys_GetFactory(szBinary);
+	void* baseAddress = reinterpret_cast<void*>(fnCreateIface);
+
+	if( !baseAddress )
 	{
-		Msg("[SP] Could not load %s!\n", szModulePath);
+		Msg("[SP] Could not get interface factory for %s!\n", szBinary);
 		return NULL;
 	}
 
+#if defined(_WIN32)
 	// Get memory information about the module.
 	MEMORY_BASIC_INFORMATION memInfo;
-	if(!VirtualQuery(hModule, &memInfo, sizeof(MEMORY_BASIC_INFORMATION)))
+	if(!VirtualQuery(baseAddress, &memInfo, sizeof(MEMORY_BASIC_INFORMATION)))
 	{
 		Msg("[SP] VirtualQuery failed on %s!\n", szModulePath);
 		return NULL;
@@ -77,16 +83,9 @@ moduledata_t* find_moduledata(const char* szBinary)
 	IMAGE_DOS_HEADER* dosHeader = (IMAGE_DOS_HEADER*)memInfo.AllocationBase;
 	IMAGE_NT_HEADERS* ntHeader = reinterpret_cast<IMAGE_NT_HEADERS*>(dosHeader + dosHeader->e_lfanew);
 
-	// Make sure we have a valid pe file.
-	if( ntHeader->Signature != IMAGE_NT_SIGNATURE )
-	{
-		Msg("[SP] %s is not a valid pe file!\n", szModulePath);
-		return NULL;
-	}
-
 	// Create the memory data struct.
 	moduledata_t* pData = new moduledata_t;
-	pData->baseAddress = memInfo.AllocationBase;
+	pData->baseAddress = (unsigned long)memInfo.AllocationBase;
 	pData->size = ntHeader->OptionalHeader.SizeOfImage;
 #endif
 
@@ -96,40 +95,59 @@ moduledata_t* find_moduledata(const char* szBinary)
 //---------------------------------------------------------------------------------
 // Returns the address of a signature.
 //---------------------------------------------------------------------------------
-unsigned long find_signature( moduledata_t* pData, const char* szSignature, int length )
+unsigned long find_signature( moduledata_t* pData, object signature, int length )
 {
 	if( !pData ) 
 	{
-		Msg("[SP] Invalid module data passed for %s!\n", szSignature);
+		Msg("[SP] find_signature got invalid pData!\n");
 		return NULL;
 	}
 
-	unsigned char*	start	= reinterpret_cast<unsigned char*>(pData->baseAddress);
-	unsigned char*	end		= reinterpret_cast<unsigned char*>(start + pData->size);
+	// This is required because there's no straight way to get a string from a python
+	// object from boost (without using the stl).
+	unsigned char* sig = NULL;
+	PyArg_Parse(signature.ptr(), "y", &sig);
+
+	// Ugly casts but these can't be helped.
+	unsigned char*	base	= (unsigned char*)(pData->baseAddress);
+	unsigned char*	end		= (unsigned char*)(base + pData->size);
+	int				i		= 0;
+
+	unsigned char* mystring = (unsigned char*)"\x55\x8B\xEC\x8B";
+	for( int k = 0; k < 4; k++ )
+	{
+		printf("mystring[%d]: %d\n", k, mystring[k]);
+	}
+
+	for( int k = 0; k < length; k++ )
+	{
+		printf("sig[%d]: %d\n", k, sig[k]);
+	}
 
 	// Scan the entire module.
-	while( start < end )
+	while( base < end )
 	{
 		// Scan in chunks of length.
-		for( int i = 0; i < length; i++ )
+		for( i = 0; i < length; i++ )
 		{
 			// If the current signature character is x2A, ignore it.
-			if( szSignature[i] == '\x2A' )
-				continue;
-
-			// Break out if we have a mismatch.
-			if( szSignature[i] != start[i] )
+			if( sig[i] == '\x2A' ) 
 			{
-				// Increment start. Note, we already checked the current
-				// character, hence the +1 to get the next one.
-				start += (i + 1);
-				break;
+				Msg("ignoring character at %d\n", i);
+				continue;
 			}
 
-			// Did we find the signature?
-			if( i == length ) 
-				return reinterpret_cast<unsigned long>(start);
+			// Break out if we have a mismatch.
+			if( sig[i] != base[i] )
+				break;
 		}
+
+		// Did we find the signature?
+		if( i == length ) 
+			return reinterpret_cast<unsigned long>(base);
+
+		// Increment the base pointer.
+		base++;
 	}
 
 	// Didn't find the signature :(

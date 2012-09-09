@@ -45,8 +45,8 @@
 //---------------------------------------------------------------------------------
 struct moduledata_t
 {
-	void*			baseAddress;
-	unsigned long	size;
+	unsigned long baseAddress;
+	unsigned long size;
 };
 
 //---------------------------------------------------------------------------------
@@ -60,6 +60,6 @@ moduledata_t* find_moduledata(const char* szBinary);
 //---------------------------------------------------------------------------------
 // Finds a signature in a given module.
 //---------------------------------------------------------------------------------
-unsigned long find_signature( moduledata_t* pData, const char* szSignature, int length );
+unsigned long find_signature( moduledata_t* pData, object signature, int length );
 
 #endif 
