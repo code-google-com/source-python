@@ -38,6 +38,7 @@ extern void Export_IVEngineServer( void );
 extern void Export_CBaseHandle( void );
 extern void Export_EngineMisc( void );
 extern void Export_EngineSound( void );
+extern void Export_EngineTrace( void );
 
 //---------------------------------------------------------------------------------
 // Wraps game events related structures.
@@ -48,4 +49,5 @@ DECLARE_SP_MODULE(Engine)
 	Export_CBaseHandle();
 	Export_EngineMisc();
 	Export_EngineSound();
+	Export_EngineTrace();
 }

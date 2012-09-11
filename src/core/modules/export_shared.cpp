@@ -236,6 +236,25 @@ DECLARE_SP_MODULE(Shared)
 
 	BOOST_END_CLASS()
 
+	BOOST_CLASS(cplane_t)
+		CLASS_MEMBER(cplane_t,
+			normal,
+			"The normal to the plane."
+		)
+		CLASS_MEMBER(cplane_t,
+			dist,
+			"The distance of the plane."
+		)
+		CLASS_MEMBER(cplane_t,
+			type,
+			"The type of the plane."
+		)
+		CLASS_MEMBER(cplane_t,
+			signbits,
+			"The sign bits of the plane."
+		)
+	BOOST_END_CLASS()
+
 	// ----------------------------------------------------------
 	// Exposes Quaternion class.
 	// ----------------------------------------------------------

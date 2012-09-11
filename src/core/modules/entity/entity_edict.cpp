@@ -75,7 +75,6 @@ void Export_Edict()
 	// ----------------------------------------------------------
 	typedef IServerEntity* (CBaseEdict::*ServerEntityFn)();
 	ServerEntityFn fnGetIServerEntity = &CBaseEdict::GetIServerEntity;
-
 	
 	BOOST_ABSTRACT_CLASS(CBaseEdict)
 		CLASS_METHOD_TYPEDEF(GetIServerEntity,

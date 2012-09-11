@@ -85,6 +85,20 @@ void Export_EngineMisc( void )
 	BOOST_END_CLASS()
 
 	// ----------------------------------------------------------
+	// IServerEntity
+	// ----------------------------------------------------------
+	BOOST_ABSTRACT_CLASS_INHERITED(IServerEntity, IServerUnknown)
+		CLASS_METHOD(IServerEntity,
+			GetModelIndex,
+			"Gets the model index used by the server entity."
+		)
+		CLASS_METHOD(IServerEntity,
+			SetModelIndex,
+			"Sets the model index used by the server entity."
+		)
+	BOOST_END_CLASS()
+
+	// ----------------------------------------------------------
 	// Expose some entity functions
 	// ----------------------------------------------------------
 	BOOST_FUNCTION(PEntityOfEntIndex, "Returns the edict for an entity index.", reference_existing_object_policy());
