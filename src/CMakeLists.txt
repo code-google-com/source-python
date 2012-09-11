@@ -79,6 +79,7 @@ Set(SOURCEPYTHON_ADDON_FILES
 Set(SOURCEPYTHON_MODULE_HEADERS
     core/modules/export_main.h
     core/modules/export_player.h
+    core/modules/engine/engine_trace.h
 )
 
 Set(SOURCEPYTHON_MODULE_SOURCES
@@ -97,6 +98,7 @@ Set(SOURCEPYTHON_MODULE_ENGINE_SOURCES
     core/modules/engine/engine_basehandle.cpp
     core/modules/engine/engine_misc.cpp
     core/modules/engine/engine_sound.cpp
+    core/modules/engine/engine_trace.cpp
 )
 
 # ------------------------------------------------------------------

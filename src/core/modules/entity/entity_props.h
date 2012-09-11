@@ -117,4 +117,4 @@ void SetPropValue(edict_t* pEdict, const char* szFullPath, T propValue)
 	*pPropValue = propValue;
 }
 
-#endif _ENTITY_PROPS_H
+#endif // _ENTITY_PROPS_H

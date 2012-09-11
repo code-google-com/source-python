@@ -47,6 +47,9 @@ inline int IndexOfEdict(const edict_t* pEdict)
 	return (int)(pEdict - gpGlobals->pEdicts);
 }
 
+//---------------------------------------------------------------------------------
+// Returns the entity of an entity index.
+//---------------------------------------------------------------------------------
 inline edict_t* PEntityOfEntIndex(int iEntIndex)
 {
 	if(iEntIndex >= 0 && iEntIndex < gpGlobals->maxEntities) 
@@ -58,7 +61,7 @@ inline edict_t* PEntityOfEntIndex(int iEntIndex)
 }
 
 //---------------------------------------------------------------------------------
-// Returns the edict instance given a userid
+// Returns the edict instance given a userid.
 //---------------------------------------------------------------------------------
 inline edict_t* EdictOfUserid(int userid)
 {
@@ -78,7 +81,7 @@ inline edict_t* EdictOfUserid(int userid)
 }
 
 //---------------------------------------------------------------------------------
-// Returns the playerinfo instance given a userid
+// Returns the playerinfo instance given a userid.
 //---------------------------------------------------------------------------------
 inline IPlayerInfo* PlayerOfUserid(int userid)
 {
@@ -92,7 +95,7 @@ inline IPlayerInfo* PlayerOfUserid(int userid)
 }
 
 //---------------------------------------------------------------------------------
-// Returns the playerinfo instance given a player(entity) index
+// Returns the playerinfo instance given a player(entity) index.
 //---------------------------------------------------------------------------------
 inline IPlayerInfo* PlayerOfIndex(int index)
 {
@@ -112,10 +115,14 @@ inline IPlayerInfo* PlayerOfIndex(int index)
 }
 
 //---------------------------------------------------------------------------------
-// Returns the edict instance given a playerinfo instance
+// Returns the edict instance given a playerinfo instance.
 //---------------------------------------------------------------------------------
 inline edict_t* EdictOfPlayer(IPlayerInfo* playerInfo)
 {
+	if (!playerInfo)
+	{
+		return NULL;
+	}
 	return EdictOfUserid(playerInfo->GetUserID());
 }
 
