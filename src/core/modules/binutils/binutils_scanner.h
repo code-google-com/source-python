@@ -47,6 +47,18 @@ struct moduledata_t
 {
 	unsigned long baseAddress;
 	unsigned long size;
+
+	// Lame hack but linux requires this for find_symbol.
+#if defined(__linux__)
+	void* handle;
+
+	~moduledata_t( void )
+	{
+		if( handle ) {
+			dlclose(handle);
+		}
+	}
+#endif
 };
 
 //---------------------------------------------------------------------------------
@@ -61,5 +73,10 @@ moduledata_t* find_moduledata(const char* szBinary);
 // Finds a signature in a given module.
 //---------------------------------------------------------------------------------
 unsigned long find_signature( moduledata_t* pData, object signature, int length );
+
+//---------------------------------------------------------------------------------
+// Finds a symbol in a given module.
+//---------------------------------------------------------------------------------
+unsigned long find_symbol( moduledata_t* pData, char* symbol );
 
 #endif 
