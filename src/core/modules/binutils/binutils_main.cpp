@@ -54,4 +54,9 @@ DECLARE_SP_MODULE(Binutils)
 		"Returns the address of a signature found in memory",
 		args("moduleData", "signature", "length")
 	);
+
+	BOOST_FUNCTION(find_symbol,
+        "Returns the address of a symbol found in memory",
+	    args("moduleData", "symbol")
+    );
 }
