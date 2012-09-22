@@ -23,31 +23,45 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.  
 */
+#ifndef _CVAR_CONCOMMAND_H
+#define _CVAR_CONCOMMAND_H
 
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "../export_main.h"
-#include "utility/wrap_macros.h"
+#include "boost/unordered_map.hpp"
+#include <vector>
+
+#include "utility/sp_util.h"
 #include "core/sp_python.h"
+#include "utility/wrap_macros.h"
+#include "convar.h"
 
 //---------------------------------------------------------------------------------
-// All external functions to export the cvars and related functions.
+// Namespaces to use.
 //---------------------------------------------------------------------------------
-extern void Export_ICvar( void );
-extern void Export_ConCommandBase( void );
-extern void Export_CvarFlags( void );
-extern void Export_ConVar( void );
-extern void Export_ConCommand( void );
+using namespace boost::python;
 
 //---------------------------------------------------------------------------------
-// Wraps game events related structures.
+// ConCommandManager class
 //---------------------------------------------------------------------------------
-DECLARE_SP_MODULE(Cvar)
+class ConCommandManager: public ConCommand
 {
-	Export_CvarFlags();
-	Export_ConCommandBase();
-	Export_ConCommand();
-	Export_ConVar();
-	Export_ICvar();
-}
+public:
+	static ConCommandManager* Create(const char* pName, const char* pHelpString = 0, int flags = 0);
+	~ConCommandManager();
+	virtual void Init();
+
+	void AddToStart(PyObject* pCallable);
+	void AddToEnd(PyObject* pCallable);
+	void Remove(PyObject* pCallable);
+protected:
+	virtual void Dispatch(const CCommand &command);
+private:
+	ConCommandManager(ConCommand* pGameCommand, const char* pName, const char* pHelpString = 0, int flags = 0);
+	std::vector<PyObject*> m_vecCallables;
+	ConCommand* m_pGameCommand;
+	unsigned int m_uiGameCommandIndex;
+};
+
+#endif // _CVAR_CONCOMMAND_H
