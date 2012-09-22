@@ -80,6 +80,7 @@ Set(SOURCEPYTHON_MODULE_HEADERS
     core/modules/export_main.h
     core/modules/export_player.h
     core/modules/engine/engine_trace.h
+    core/modules/cvar/cvar_concommand.h
 )
 
 Set(SOURCEPYTHON_MODULE_SOURCES
@@ -106,6 +107,7 @@ Set(SOURCEPYTHON_MODULE_ENGINE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_CVAR_SOURCES
     core/modules/cvar/cvar_concommandbase.cpp
+    core/modules/cvar/cvar_concommand.cpp
     core/modules/cvar/cvar_convar.cpp
     core/modules/cvar/cvar_flags.cpp
     core/modules/cvar/cvar_icvar.cpp

@@ -74,6 +74,12 @@ IServerGameDLL*		  servergamedll		= NULL;
 IServerTools*		  servertools		= NULL;
 
 //---------------------------------------------------------------------------------
+// Extern functions
+//---------------------------------------------------------------------------------
+extern void InitCVars();
+extern void ClearCommandQueues();
+
+//---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
 //---------------------------------------------------------------------------------
 CSourcePython g_SourcePythonPlugin;
@@ -213,7 +219,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	gpGlobals = playerinfomanager->GetGlobalVars();
 
 	MathLib_Init( 2.2f, 2.2f, 0.0f, 2.0f );
-	ConVar_Register( 0 );
+	InitCVars();
 
 	// Initialize game paths.
 	if( !g_GamePaths.Initialize() ) {
@@ -263,6 +269,8 @@ void CSourcePython::Unload( void )
 {
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
 	ConVar_Unregister( );
+
+	ClearCommandQueues();
 
 	g_PythonManager.Shutdown();
 

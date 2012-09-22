@@ -63,7 +63,7 @@ public:
 	SendPropType m_type;
 };
 
-typedef boost::unordered_map<const char*, OffsetDefinition> OffsetMap;
+typedef boost::unordered_map<std::string, OffsetDefinition> OffsetMap;
 OffsetMap g_OffsetMap;
 
 //---------------------------------------------------------------------------------
