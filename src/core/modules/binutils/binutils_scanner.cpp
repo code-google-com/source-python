@@ -36,20 +36,19 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
+#if defined(_WIN32)
+#	include <windows.h>
+#else
+#   include <fcntl.h>
+#   include <link.h>
+#   include <sys/mman.h>
+#endif
 #include "../export_main.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
 #include "binutils_scanner.h"
 #include "tier1/interface.h"
 #include "tier0/dbg.h"
-
-#if defined(_WIN32)
-#	include <windows.h>
-#else
-#	include <sys/types.h>
-#	include <sys/stat.h>
-#	include <dlfcn.h>
-#endif
 
 //---------------------------------------------------------------------------------
 // Constants
@@ -65,19 +64,11 @@ moduledata_t* find_moduledata(const char* szBinary)
 
 #if defined(_WIN32)
 	sprintf_s(szModulePath, MAX_MODULE_PATH, "%s.dll", szBinary);
+	void* baseAddress = (void *)LoadLibrary(szModulePath);
 #else
 	sprintf(szModulePath, "%s.so", szBinary);
+	void* baseAddress = (void *)dlopen(szModulePath, RTLD_NOW);
 #endif
-
-	// Load the library.
-	CreateInterfaceFn fnCreateIface = Sys_GetFactory(szBinary);
-	void* baseAddress = reinterpret_cast<void*>(fnCreateIface);
-
-	if( !baseAddress )
-	{
-		Msg("[SP] Could not get interface factory for %s!\n", szBinary);
-		return NULL;
-	}
 
 #if defined(_WIN32)
 	// Get memory information about the module.
@@ -94,16 +85,11 @@ moduledata_t* find_moduledata(const char* szBinary)
 
 	// Create the memory data struct.
 	moduledata_t* pData = new moduledata_t;
-	pData->baseAddress = (unsigned long)memInfo.AllocationBase;
-	pData->size = ntHeader->OptionalHeader.SizeOfImage;
+	pData->handle		= memInfo.AllocationBase;
+	pData->size			= ntHeader->OptionalHeader.SizeOfImage;
 #else
 	Dl_info		info;
 	struct stat	buf;
-
-	Msg("[SP] %s\n", szModulePath);
-
-	// Open a handle to the library.
-	void* handle = dlopen(szModulePath, RTLD_GLOBAL | RTLD_NOW);
 
 	// Attempt to get information about the module based on the address
 	// of its interface creation function.
@@ -121,10 +107,9 @@ moduledata_t* find_moduledata(const char* szBinary)
 	}
 
 	// Construct the required memory information.
-	moduledata_t* pData = new moduledata_t;
-	pData->baseAddress = (unsigned long)info.dli_fbase;
-	pData->size = buf.st_size;
-	pData->handle = handle;
+	moduledata_t* pData		= new moduledata_t;
+	pData->handle			= baseAddress;
+	pData->size				= buf.st_size;
 #endif
 
 	return pData;
@@ -147,7 +132,7 @@ unsigned long find_signature( moduledata_t* pData, object signature, int length 
 	PyArg_Parse(signature.ptr(), "y", &sig);
 
 	// Ugly casts but these can't be helped.
-	unsigned char*	base	= (unsigned char*)(pData->baseAddress);
+	unsigned char*	base	= (unsigned char*)(pData->handle);
 	unsigned char*	end		= (unsigned char*)(base + pData->size);
 	int				i		= 0;
 
