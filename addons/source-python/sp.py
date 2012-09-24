@@ -128,11 +128,27 @@ def addon_reload(addon_name):
 def sp_command(arg_string):
     '''Called when a user executes sp'''
 
-    # Command
-    command = arg_string.strip().split(' ')[0].lower()
+    # Use try to split, in case there is nothing to split
+    try:
 
-    # Arguments
-    arguments = arg_string.replace(command, '').strip().lower()
+        # Get the arguments and the command
+        command, arguments = arg_string.split(maxsplit=1)
+
+    # Was an exception raise?
+    except:
+
+        # Set the commands as the text, since there
+        # are either 1 or 0 arguments in the string
+        command = arg_string.strip()
+
+        # Set the arguments to an empty string
+        arguments = ''
+
+    # Get the arguments as a list
+    arguments = arguments.split()
+
+    # Make the command lower-case for comparison
+    command = command.lower()
 
     # Is the first argument "load"
     if command == 'load':
