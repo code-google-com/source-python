@@ -37,10 +37,8 @@
 //---------------------------------------------------------------------------------
 DECLARE_SP_MODULE(Binutils)
 {
-	// Expose the module data class.
+	// Expose the module data class as an opaque pointer.
 	BOOST_CLASS(moduledata_t)
-		CLASS_MEMBER(moduledata_t, baseAddress)
-		CLASS_MEMBER(moduledata_t, size)
 	BOOST_END_CLASS()
 
 	// Expose the functions for binutils.

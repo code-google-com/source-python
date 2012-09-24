@@ -38,6 +38,11 @@
 #include "../export_main.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
+#if defined(__linux__)
+#	include <dlfcn.h>
+#else
+#	include <windows.h>
+#endif
 
 //---------------------------------------------------------------------------------
 // In order to perform signature scanning, we need to have the base address and
@@ -45,20 +50,20 @@
 //---------------------------------------------------------------------------------
 struct moduledata_t
 {
-	unsigned long baseAddress;
-	unsigned long size;
+	void*			handle;
+	unsigned long	size;
 
-	// Lame hack but linux requires this for find_symbol.
-#if defined(__linux__)
-	void* handle;
-
+	// Free the handle.
 	~moduledata_t( void )
 	{
 		if( handle ) {
+#if defined(_WIN32)
+			FreeLibrary((HMODULE)handle);
+#else
 			dlclose(handle);
+#endif
 		}
 	}
-#endif
 };
 
 //---------------------------------------------------------------------------------
@@ -67,7 +72,7 @@ struct moduledata_t
 // binary in the srcds/bin folder, you are REQUIRED to give a FULL PATH. You don't
 // have to use an extension, the function will place the correct one on.
 //---------------------------------------------------------------------------------
-moduledata_t* find_moduledata(const char* szBinary);
+moduledata_t* find_moduledata( const char* szBinary );
 
 //---------------------------------------------------------------------------------
 // Finds a signature in a given module.
