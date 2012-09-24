@@ -35,6 +35,7 @@
 #include "core/sp_python.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
+#include "inetchannelinfo.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
@@ -206,12 +207,12 @@ void Export_IVEngineServer( void )
 			"Returns the number of used edict slots."
 		)
 
-		// 		CLASS_METHOD(IVEngineServer,
-		// 			GetPlayerNetInfo,
-		// 			"Returns stats info interface for a client netchannel.",
-		// 			args("playerIndex"),
-		// 			reference_existing_object_policy()
-		// 		)
+		CLASS_METHOD(IVEngineServer,
+			GetPlayerNetInfo,
+			"Returns stats info interface for a client netchannel.",
+			args("playerIndex"),
+			reference_existing_object_policy()
+		)
 
 		CLASS_METHOD(IVEngineServer,
 			CreateEdict,
@@ -279,6 +280,19 @@ void Export_IVEngineServer( void )
 		)
 
 	BOOST_END_CLASS()
+
+    BOOST_ABSTRACT_CLASS(INetChannelInfo)
+        CLASS_METHOD(INetChannelInfo,
+            GetAddress,
+            "Returns the IP address as a string."
+        )
+
+        CLASS_METHOD(INetChannelInfo,
+            GetTimeConnected,
+            "Returns the connection time (in seconds)."
+        )
+
+    BOOST_END_CLASS()
 
 	// Functions
 	BOOST_FUNCTION(GetEngine, reference_existing_object_policy());

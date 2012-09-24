@@ -59,8 +59,6 @@ class _BaseRegistry(dict):
         # Is the given item valid?
         if not item in self:
 
-            print(dir(self._error))
-
             # Raise an error
             raise self._error('Invalid %s "%s"' % (self._name, item))
 
