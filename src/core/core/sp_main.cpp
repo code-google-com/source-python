@@ -77,7 +77,7 @@ IServerTools*		  servertools		= NULL;
 // Extern functions
 //---------------------------------------------------------------------------------
 extern void InitCVars();
-extern void ClearCommandQueues();
+extern void ClearAllCommands();
 
 //---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -270,7 +270,7 @@ void CSourcePython::Unload( void )
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
 	ConVar_Unregister( );
 
-	ClearCommandQueues();
+	ClearAllCommands();
 
 	g_PythonManager.Shutdown();
 
