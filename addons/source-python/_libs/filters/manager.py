@@ -5,9 +5,8 @@
 # =============================================================================
 # Source.Python Imports
 #   Filters
-from filters.errors import FilterError
-from filters.errors import ReturnTypeError
-from filters.registry import _BaseRegistry
+from filters.registry import _FilterRegistry
+from filters.registry import _ReturnTypeRegistry
 
 
 # =============================================================================
@@ -21,10 +20,8 @@ class _BaseFilterManager(object):
         '''Called on class initialization'''
 
         # Store filter/return type dictionaries
-        self._filters = _BaseRegistry(
-            'filter', FilterError, self.__qualname__)
-        self._return_types = _BaseRegistry(
-            'return type', ReturnTypeError, self.__qualname__)
+        self._filters = _FilterRegistry(self.__qualname__)
+        self._return_types = _ReturnTypeRegistry(self.__qualname__)
 
     def RegisterFilter(self, filter_name, function):
         '''Registers the given filter to the class'''

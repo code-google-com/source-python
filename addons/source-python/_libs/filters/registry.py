@@ -1,18 +1,24 @@
 # ../_libs/filters/registry.py
 
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Filters
+from filters.errors import FilterError
+from filters.errors import ReturnTypeError
+
 
 # =============================================================================
-# >> CLASSES
+# >> BASE REGISTRY CLASS
 # =============================================================================
 class _BaseRegistry(dict):
     '''Class that stores a registry of items'''
 
-    def __init__(self, name, error, class_name):
+    def __init__(self, class_name):
         '''Stores the name and error type on initialization'''
 
-        # Store the name, error type, and registering class' name
-        self._name = name
-        self._error = error
+        # Store the registering class' name
         self._class_name = class_name
 
     def Register(self, item, function):
@@ -52,6 +58,16 @@ class _BaseRegistry(dict):
         # Remove the item from the dictionary
         del self[item]
 
+
+# =============================================================================
+# >> REGISTRATION CLASSES
+# =============================================================================
+class _FilterRegistry(_BaseRegistry):
+    '''Class used to register filters'''
+
+    # Set the _name attribute for filter registry
+    _name = 'filter'
+
     def __getitem__(self, item):
         '''Override __getitem__ to call the correct
             error when an invalid item is used'''
@@ -60,7 +76,27 @@ class _BaseRegistry(dict):
         if not item in self:
 
             # Raise an error
-            raise self._error('Invalid %s "%s"' % (self._name, item))
+            raise FilterError('Invalid %s "%s"' % (self._name, item))
 
         # Return the callable
-        return super(_BaseRegistry, self).__getitem__(item)
+        return super(_FilterRegistry, self).__getitem__(item)
+
+
+class _ReturnTypeRegistry(_BaseRegistry):
+    '''Class used to register return types'''
+
+    # Set the _name attribute for return type registry
+    _name = 'return type'
+
+    def __getitem__(self, item):
+        '''Override __getitem__ to call the correct
+            error when an invalid item is used'''
+
+        # Is the given item valid?
+        if not item in self:
+
+            # Raise an error
+            raise ReturnTypeError('Invalid %s "%s"' % (self._name, item))
+
+        # Return the callable
+        return super(_ReturnTypeRegistry, self).__getitem__(item)

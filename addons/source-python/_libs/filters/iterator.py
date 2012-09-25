@@ -20,7 +20,7 @@ class _IterObject(object):
         if isinstance(not_filters, str):
 
             # Store the "not" filters as a list
-            is_filters = [not_filters]
+            not_filters = [not_filters]
 
         # Store the filters and return types
         self._is_filters = is_filters
