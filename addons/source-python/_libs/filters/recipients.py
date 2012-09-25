@@ -1,4 +1,4 @@
-# ./_libs/filters/recipients.py
+# ../_libs/filters/recipients.py
 
 # =============================================================================
 # >> IMPORTS
