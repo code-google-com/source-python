@@ -440,6 +440,11 @@ DECLARE_SP_MODULE(Player)
 		reference_existing_object_policy()
     );
 
+    BOOST_FUNCTION(IndexOfUserid,
+        "Returns the index of a userid.",
+        args("userid")
+    );
+
 	BOOST_FUNCTION(PlayerOfIndex,
         "Returns the IPlayerInfo instance for a player index.",
         args("index"),
