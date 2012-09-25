@@ -48,7 +48,6 @@ Set_Target_Properties(core PROPERTIES
     LINK_FLAGS_RELEASE "/NODEFAULTLIB:libcmtd.lib"
 )
 
-
 # ------------------------------------------------------------------
 # Link libraries.
 # ------------------------------------------------------------------
@@ -60,6 +59,9 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
     ${SOURCESDK_LIB}/public/vstdlib.lib
     ${SOURCESDK_LIB}/public/mathlib.lib
     ${SOURCESDK_LIB}/public/interfaces.lib
+    ${DYNCALLSDK_LIB}/libdyncall_s.lib
+    ${DYNCALLSDK_LIB}/libdyncallback_s.lib
+    ${DYNCALLSDK_LIB}/libdynload_s.lib
 )
 
 # ------------------------------------------------------------------
