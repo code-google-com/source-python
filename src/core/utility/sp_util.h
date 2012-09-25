@@ -95,6 +95,20 @@ inline IPlayerInfo* PlayerOfUserid(int userid)
 }
 
 //---------------------------------------------------------------------------------
+// Returns the index of a userid.
+//---------------------------------------------------------------------------------
+inline int IndexOfUserid(int userid)
+{
+    edict_t* pEdict = EdictOfUserid(userid);
+    if (!pEdict)
+    {
+        return NULL;
+    }
+
+    return IndexOfEdict(pEdict);
+}
+
+//---------------------------------------------------------------------------------
 // Returns the playerinfo instance given a player(entity) index.
 //---------------------------------------------------------------------------------
 inline IPlayerInfo* PlayerOfIndex(int index)
