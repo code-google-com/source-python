@@ -279,6 +279,12 @@ void Export_IVEngineServer( void )
 			args("pEdict", "szMsg")
 		)
 
+        CLASS_METHOD(IVEngineServer,
+            GetClientConVarValue,
+            "Get a convar keyvalue for a specific client",
+            args("clientIndex", "name")
+        )
+
 	BOOST_END_CLASS()
 
     BOOST_ABSTRACT_CLASS(INetChannelInfo)
