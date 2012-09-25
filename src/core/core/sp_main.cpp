@@ -47,6 +47,7 @@
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 #include "public/toolframework/itoolentity.h"
+#include "dyncall.h"
 
 //---------------------------------------------------------------------------------
 // Disable warnings.
@@ -58,7 +59,9 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+//---------------------------------------------------------------------------------
 // Interfaces from the engine
+//---------------------------------------------------------------------------------
 IVEngineServer*		  engine			= NULL; // helper functions (messaging clients, loading content, making entities, running commands, etc)
 IGameEventManager2*	  gameeventmanager	= NULL; // game events interface
 IPlayerInfoManager*	  playerinfomanager	= NULL; // game dll interface to interact with players
@@ -72,6 +75,11 @@ IFileSystem*		  filesystem		= NULL;
 IEffects*			  effects			= NULL;
 IServerGameDLL*		  servergamedll		= NULL;
 IServerTools*		  servertools		= NULL;
+
+//---------------------------------------------------------------------------------
+// External globals
+//---------------------------------------------------------------------------------
+extern DCCallVM* g_pCallVM;
 
 //---------------------------------------------------------------------------------
 // Extern functions
@@ -259,6 +267,9 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
+	// Allocate dyncall vm.
+	g_pCallVM = dcNewCallVM(2048);
+
 	return true;
 }
 
@@ -281,6 +292,12 @@ void CSourcePython::Unload( void )
 	DisconnectTier2Libraries( );
 	DisconnectTier1Libraries( );
 #endif
+
+	// Remove the dyncall vm.
+	if( g_pCallVM ) {
+		dcFree(g_pCallVM);
+		g_pCallVM = NULL;
+	}
 }
 
 //---------------------------------------------------------------------------------

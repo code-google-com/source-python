@@ -35,6 +35,13 @@ Set(BOOSTSDK_INCLUDE     ${BOOSTSDK}) # ..needed to allow #include <boost/xx.hpp
 Set(BOOSTSDK_LIB         ${BOOSTSDK}/lib)
 
 # ------------------------------------------------------------------
+# Dyncall specific.
+# ------------------------------------------------------------------
+Set(DYNCALLSDK           ${THIRDPARTY_DIR}/dyncall)
+Set(DYNCALLSDK_INCLUDE   ${DYNCALLSDK}/include)
+Set(DYNCALLSDK_LIB       ${DYNCALLSDK}/lib)
+
+# ------------------------------------------------------------------
 # Include directories
 # ------------------------------------------------------------------
 Include_Directories(
@@ -44,6 +51,7 @@ Include_Directories(
     ${SOURCESDK}/public
     ${SOURCESDK}/public/tier0
     ${SOURCESDK}/public/tier1
+    ${DYNCALLSDK_INCLUDE}
     ${BOOSTSDK_INCLUDE}
     ${CMAKE_CURRENT_SOURCE_DIR}/core # Hack but required.
 )

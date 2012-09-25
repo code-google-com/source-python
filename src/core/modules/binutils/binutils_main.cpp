@@ -33,6 +33,11 @@
 #include "binutils_scanner.h"
 
 //---------------------------------------------------------------------------------
+// Other wrapping functions.
+//---------------------------------------------------------------------------------
+extern void Export_DynCall( void );
+
+//---------------------------------------------------------------------------------
 // Exports the binutils module.
 //---------------------------------------------------------------------------------
 DECLARE_SP_MODULE(Binutils)
@@ -57,4 +62,7 @@ DECLARE_SP_MODULE(Binutils)
         "Returns the address of a symbol found in memory",
 	    args("moduleData", "symbol")
     );
+
+	// Export dyncall library.
+	Export_DynCall();
 }
