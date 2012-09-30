@@ -40,7 +40,7 @@
 
 #define DC_BOOL         int
 #define DC_LONG_LONG    long long
-#define DC_POINTER      void*
+#define DC_POINTER      unsigned long
 
 #endif /* DYNCALL_CONFIG_H */
 

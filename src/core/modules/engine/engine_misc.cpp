@@ -34,10 +34,29 @@
 #include "core/sp_python.h"
 
 //---------------------------------------------------------------------------------
+// Required because cbaseentity isn't defined.
+//---------------------------------------------------------------------------------
+class CBaseEntity {};
+
+//---------------------------------------------------------------------------------
+// This is required because boost::python hates void pointers..
+//---------------------------------------------------------------------------------
+unsigned long GetBaseEntity(IServerUnknown* pUnk)
+{
+	return (unsigned long)(pUnk->GetBaseEntity());
+}
+
+//---------------------------------------------------------------------------------
 // Wraps misc engine classes.
 //---------------------------------------------------------------------------------
 void Export_EngineMisc( void )
 {
+	// ----------------------------------------------------------
+	// Dummy CBaseEntity.
+	// ----------------------------------------------------------
+	BOOST_ABSTRACT_CLASS(CBaseEntity)
+	BOOST_END_CLASS()
+
 	// ----------------------------------------------------------
 	// INetworkable interface.
 	// ----------------------------------------------------------
@@ -81,6 +100,8 @@ void Export_EngineMisc( void )
 		CLASS_METHOD(IServerUnknown, GetNetworkable, "Returns the IServerNetworkable object for this entity.", 
 			reference_existing_object_policy()
 		)
+
+		CLASS_METHOD_TYPEDEF(GetBaseEntity, GetBaseEntity, "Returns the CBaseEntity object for this entity.")
 
 	BOOST_END_CLASS()
 
