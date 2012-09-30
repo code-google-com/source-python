@@ -153,6 +153,7 @@ Set(SOURCEPYTHON_MODULE_BINUTILS_HEADERS
 Set(SOURCEPYTHON_MODULE_BINUTILS_SOURCES
     core/modules/binutils/binutils_scanner.cpp
     core/modules/binutils/binutils_main.cpp
+	core/modules/binutils/binutils_dyncall.cpp
 )
 
 # ------------------------------------------------------------------

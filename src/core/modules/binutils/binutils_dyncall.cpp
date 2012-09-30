@@ -33,7 +33,7 @@
 #include "utility/wrap_macros.h"
 #include "dyncall.h"
 #include "dyncall_callvm.h"
-#include <memory>
+#include "dbg.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
@@ -51,16 +51,6 @@ DCCallVM* g_pCallVM = NULL;
 DCCallVM* dcGetVM( void )
 {
 	return g_pCallVM;
-}
-
-//---------------------------------------------------------------------------------
-// We need to wrap this explicitly because boost python can't handle void pointers.
-//---------------------------------------------------------------------------------
-PyObject* dcCallPointer(DCCallVM* vm, unsigned long functionAddr)
-{
-	DCpointer pFunction = (DCpointer)functionAddr;
-	DCpointer pResult = dcCallPointer(vm, pFunction);
-	return Py_BuildValue("p", pResult);
 }
 
 //---------------------------------------------------------------------------------
@@ -118,6 +108,7 @@ void Export_DynCall( void )
 	BOOST_FUNCTION(dcArgDouble);
 	BOOST_FUNCTION(dcArgPointer);
 	BOOST_FUNCTION(dcArgStruct);
+	BOOST_FUNCTION(dcArgPointer);
 
 	// Dyncall virtual machine functions for calling functions.
 	BOOST_FUNCTION(dcCallVoid);
@@ -129,35 +120,6 @@ void Export_DynCall( void )
 	BOOST_FUNCTION(dcCallLongLong);
 	BOOST_FUNCTION(dcCallFloat);
 	BOOST_FUNCTION(dcCallDouble);
-	dcCallPointer()
-	// BOOST_FUNCTION(dcCallPointer, reference_existing_object_policy());
 	BOOST_FUNCTION(dcCallStruct);
-
-	// Dyncall struct related functions. Not implemented yet because no way to handle
-	// the RTTI information from boost.
-#if defined(STRUCT_TODO)
-	BOOST_FUNCTION(dcNewStruct,
-		"Creates a struct descriptor in dyncall and returns it. Must be freed " \
-		"with dcFreeStruct! You must call dcCloseStruct when you are done " \
-		"creating this object!",
-		args("variableCount", "alignment"),
-		reference_existing_object_policy()
-	)
-
-	BOOST_FUNCTION(dcFreeStruct, 
-		"Frees a struct created by dcNewStruct",
-		args("structObject")
-	);
-
-	BOOST_FUNCTION(dcCloseStruct,
-		"Closes off the struct. After you call this function, you cannot add more " \
-		"variables to it.",
-		args("structObject")
-	);
-
-	// Methods for building out structs.
-	BOOST_FUNCTION(dcStructField,
-		"Adds a field to the given struct.",
-		args("structObject", )
-#endif
+	BOOST_FUNCTION(dcCallPointer);
 }
