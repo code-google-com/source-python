@@ -47,18 +47,18 @@ DECLARE_SP_MODULE(Binutils)
 	BOOST_END_CLASS()
 
 	// Expose the functions for binutils.
-	BOOST_FUNCTION(find_moduledata,
+	BOOST_FUNCTION(FindModuleData,
 		"Returns a moduledata struct for the given module.",
 		args("szModulePath"),
 		manage_new_object_policy()
 	);
 
-	BOOST_FUNCTION(find_signature,
+	BOOST_FUNCTION(FindSignature,
 		"Returns the address of a signature found in memory",
 		args("moduleData", "signature", "length")
 	);
 
-	BOOST_FUNCTION(find_symbol,
+	BOOST_FUNCTION(FindSymbol,
         "Returns the address of a symbol found in memory",
 	    args("moduleData", "symbol")
     );
