@@ -72,16 +72,16 @@ struct moduledata_t
 // binary in the srcds/bin folder, you are REQUIRED to give a FULL PATH. You don't
 // have to use an extension, the function will place the correct one on.
 //---------------------------------------------------------------------------------
-moduledata_t* find_moduledata( const char* szBinary );
+moduledata_t* FindModuleData( const char* szBinary );
 
 //---------------------------------------------------------------------------------
 // Finds a signature in a given module.
 //---------------------------------------------------------------------------------
-unsigned long find_signature( moduledata_t* pData, object signature, int length );
+unsigned long FindSignature( moduledata_t* pData, object signature, int length );
 
 //---------------------------------------------------------------------------------
 // Finds a symbol in a given module.
 //---------------------------------------------------------------------------------
-unsigned long find_symbol( moduledata_t* pData, char* symbol );
+unsigned long FindSymbol( moduledata_t* pData, char* symbol );
 
 #endif 

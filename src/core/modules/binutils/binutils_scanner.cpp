@@ -58,7 +58,7 @@
 //---------------------------------------------------------------------------------
 // Returns module data.
 //---------------------------------------------------------------------------------
-moduledata_t* find_moduledata(const char* szBinary)
+moduledata_t* FindModuleData(const char* szBinary)
 {
 	char szModulePath[MAX_MODULE_PATH];
 
@@ -118,7 +118,7 @@ moduledata_t* find_moduledata(const char* szBinary)
 //---------------------------------------------------------------------------------
 // Returns the address of a signature.
 //---------------------------------------------------------------------------------
-unsigned long find_signature( moduledata_t* pData, object signature, int length )
+unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 {
 	if( !pData ) 
 	{
@@ -167,7 +167,7 @@ unsigned long find_signature( moduledata_t* pData, object signature, int length 
 //---------------------------------------------------------------------------------
 // Finds a symbol in a given module.
 //---------------------------------------------------------------------------------
-unsigned long find_symbol( moduledata_t* pData, char* symbol )
+unsigned long FindSymbol( moduledata_t* pData, char* symbol )
 {
 	if( !pData )
 	{
