@@ -242,29 +242,30 @@ def _PrintCredits():
     '''Lists all credits for Source.Python.'''
 
     # Print header messages
-    EchoConsole('[SP] Credits:')
-    EchoConsole('=' * 61 + '\n')
+    print('[SP] Credits:')
+    print('=' * 61 + '\n')
 
     # Get the credits information
-    groups = ConfigObj(DATA_PATH.join('credits.ini'))
+    groups = ConfigObj(
+        DATA_PATH.join('credits.ini'), encoding='unicode_escape')
 
     # Loop through all groups in the credits
     for group in groups:
 
         # Print the current group's name
-        EchoConsole('\t' + group + ':')
+        print('\t' + group + ':')
 
         # Loop through all names in the current group
         for name in groups[group].values():
 
             # Print the current name
-            EchoConsole('\t\t' + name.replace('\\t', '\t'))
+            print('\t\t' + name.replace('\\t', '\t'))
 
         # Print 1 blank line between groups
-        EchoConsole('')
+        print('')
 
     # Print the ending message
-    EchoConsole('=' * 61 + '\n')
+    print('=' * 61 + '\n')
 
 # Get the _SPCommands instance
 SPCommands = _SPCommands()
