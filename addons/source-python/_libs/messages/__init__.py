@@ -17,7 +17,7 @@ import sys
 _basemodule = sys.modules[__package__]
 
 # Loop through all files in the directory
-for _filepath in path(__file__).parent.walkfiles('*.py'):
+for _filepath in path(__file__).parent.files('*.py'):
 
     # Get the file's name
     _filename = _filepath.namebase

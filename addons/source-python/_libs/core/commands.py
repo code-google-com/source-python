@@ -12,4 +12,10 @@ from core import GameEngine
 # >> FUNCTIONS
 # =============================================================================
 def EchoConsole(text):
-    GameEngine.ServerCommand('echo "%s"\n' % text.replace('"', "'"))
+    '''Echos a message to the server's console'''
+
+    # Loop through each line in the text
+    for line in text.split('\n'):
+
+        # Echo the message
+        GameEngine.ServerCommand('echo "%s"\n' % line.replace('"', "'"))

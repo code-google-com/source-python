@@ -13,6 +13,8 @@ from traceback import format_exception
 
 # Source.Python Imports
 from paths import GAME_PATH
+#   Core
+from core.commands import EchoConsole
 
 
 # =============================================================================
@@ -65,7 +67,7 @@ class _ExceptHooks(list):
         format_error.insert(-1, '')
 
         # Print the leading line of the exception
-        print('\n[SP] caught an exception:')
+        EchoConsole('\n[SP] caught an exception:')
 
         # Loop through each line in the exception
         for line in format_error:
@@ -81,10 +83,10 @@ class _ExceptHooks(list):
             line = line.replace(GAME_PATH, '..%s' % sep)
 
             # Print the current line
-            print(line)
+            EchoConsole(line)
 
         # Print a blank line to separate the console
-        print('')
+        EchoConsole('')
 
 # Get the _ExceptHooks instance
 ExceptHooks = _ExceptHooks()
