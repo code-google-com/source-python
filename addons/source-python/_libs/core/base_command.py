@@ -163,6 +163,9 @@ def _UnloadAddon(addon_name):
         EchoConsole('[SP] Addon "%s" cannot ' % addon_name +
             'be unloaded.  It is not currently loaded.')
 
+        # No need to go further
+        return
+
     # Unload the addon
     del AddonManager[addon_name]
 
