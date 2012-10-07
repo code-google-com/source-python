@@ -24,7 +24,10 @@ CFG_PATH = GAME_PATH.join('cfg', 'source-python')
 LOG_PATH = GAME_PATH.join('logs', 'source-python')
 
 # Get the translation's base path
-TRANSLATION_PATH = GAME_PATH.join('resource', 'source-python')
+TRANSLATION_PATH = GAME_PATH.join('resource', 'source-python', 'translations')
+
+# Get the custom event's base path
+EVENT_PATH = GAME_PATH.join('resource', 'source-python', 'events')
 
 # Get the data's base path
 DATA_PATH = ADDON_PATH.join('_libs', '_data')
