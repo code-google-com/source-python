@@ -6,6 +6,8 @@
 # Source.Python Imports
 from Source import Engine
 from Source import Entity
+#   Entities
+from entities.entities.weapon import WeaponEntity
 #   Filters
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
@@ -71,7 +73,7 @@ class _Tag(object):
         # Store the tag
         self.tag = tag
 
-    def _WeaponContainsTag(self, edict):
+    def _weapon_contains_tag(self, edict):
         '''Returns whether the weapon contains the tag'''
 
         # Return whether the weapon contains the tag
@@ -87,21 +89,27 @@ for tag in WeaponManager.tags:
     instance = WeaponTags[tag]
 
     # Register the tag's filter
-    WeaponIterManager.RegisterFilter(tag, instance._WeaponContainsTag)
+    WeaponIterManager.register_filter(tag, instance._weapon_contains_tag)
 
 
 # =============================================================================
 # >> RETURN TYPE FUNCTIONS
 # =============================================================================
-def _ReturnIndex(edict):
+def _return_index(edict):
     '''Returns the weapon's index'''
     return Engine.IndexOfEdict(edict)
 
 
-def _ReturnEdict(edict):
+def _return_edict(edict):
     '''Returns the weapon's edict'''
     return edict
 
+
+def _return_weapon(edict):
+    '''Returns the weapon's WeaponEntity instance'''
+    return WeaponEntity.get_instance_from_edict(edict)
+
 # Register the return type functions
-WeaponIterManager.RegisterReturnType('index', _ReturnIndex)
-WeaponIterManager.RegisterReturnType('edict', _ReturnEdict)
+WeaponIterManager.register_return_type('index', _return_index)
+WeaponIterManager.register_return_type('edict', _return_edict)
+WeaponIterManager.register_return_type('weapon', _return_weapon)

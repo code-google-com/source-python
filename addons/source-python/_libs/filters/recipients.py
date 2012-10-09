@@ -12,7 +12,7 @@ from filters.players import PlayerIter
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def GetRecipients(*users):
+def get_recipients(*users):
     '''Returns a RecipientFilter for the given users'''
 
     # Create a RecipientFilter

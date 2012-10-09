@@ -6,7 +6,7 @@
 # Source.Python Imports
 from core import GameEngine
 #   Filters
-from filters.recipients import GetRecipients
+from filters.recipients import get_recipients
 #   Messages
 from messages._base import MessageTypes
 
@@ -23,14 +23,14 @@ _HexChars = ('\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07')
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def Chat(users, message, index=0):
+def chat(users, message, index=0):
     '''Sends a chat message to the given players'''
 
     # Get a RecipientFilter for the given users
-    Recipients = GetRecipients(users)
+    recipients = get_recipients(users)
 
     # Create the UserMessage
-    UserMessage = GameEngine.UserMessageBegin(Recipients, _MessageType, None)
+    UserMessage = GameEngine.UserMessageBegin(recipients, _MessageType, None)
 
     # Write the given index to the UserMessage
     UserMessage.WriteByte(index)

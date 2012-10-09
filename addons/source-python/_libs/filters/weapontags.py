@@ -50,6 +50,7 @@ class WeaponTagIter(_IterObject):
 # =============================================================================
 # >> WEAPON TAG STORAGE CLASSES
 # =============================================================================
+class _WeaponTags(dict):
     '''Class used to store weapon tags for the current game'''
 
     def __missing__(self, item):
@@ -74,7 +75,7 @@ class _Tag(object):
         # Store the tag
         self.tag = tag
 
-    def _WeaponContainsTag(self, weapon):
+    def _weapon_contains_tag(self, weapon):
         '''Returns whether the weapon type contains the tag'''
 
         # Return whether the weapon type contains the tag
@@ -90,15 +91,21 @@ for tag in WeaponManager.tags:
     instance = WeaponTags[tag]
 
     # Register the tag's filter
-    WeaponTagIterManager.RegisterFilter(tag, instance._WeaponContainsTag)
+    WeaponTagIterManager.register_filter(tag, instance._weapon_contains_tag)
 
 
 # =============================================================================
 # >> RETURN TYPE FUNCTIONS
 # =============================================================================
-def _ReturnWeapon(weapon):
+def _return_weapon(weapon):
     '''Returns the weapon type's WeaponManager item'''
     return WeaponManager[weapon]
 
+
+def _return_classname(weapon):
+    '''Returns the weapon type's classname'''
+    return WeaponManager[weapon].name
+
 # Register the return type functions
-WeaponTagIterManager.RegisterReturnType('weapon', _ReturnWeapon)
+WeaponTagIterManager.register_return_type('weapon', _return_weapon)
+WeaponTagIterManager.register_return_type('classname', _return_classname)

@@ -23,26 +23,26 @@ class _BaseFilterManager(object):
         self._filters = _FilterRegistry(self.__qualname__)
         self._return_types = _ReturnTypeRegistry(self.__qualname__)
 
-    def RegisterFilter(self, filter_name, function):
+    def register_filter(self, filter_name, function):
         '''Registers the given filter to the class'''
 
         # Register the filter
-        self._filters.Register(filter_name, function)
+        self._filters.register(filter_name, function)
 
-    def UnregisterFilter(self, filter_name):
+    def unregister_filter(self, filter_name):
         '''Unregisters the given filter from the class'''
 
         # Unregister the filter
-        self._filters.Unregister(filter_name)
+        self._filters.unregister(filter_name)
 
-    def RegisterReturnType(self, return_type, function):
+    def register_return_type(self, return_type, function):
         '''Registers the given return type to the class'''
 
         # Register the return type
-        self._return_types.Register(return_type, function)
+        self._return_types.register(return_type, function)
 
-    def UnregisterReturnType(self, return_type, function):
+    def unregister_return_type(self, return_type, function):
         '''Unregisters the given return type from the class'''
 
         # Unregister the return type
-        self._return_types.Unregister(return_type)
+        self._return_types.unregister(return_type)

@@ -44,14 +44,14 @@ def event_fire(GameEvent):
     '''Called when the core catches an event.'''
 
     # Call the event within the registry
-    EventRegistry.CallEventCallbacks(GameEvent)
+    EventRegistry.call_event_callbacks(GameEvent)
 
 
 def tick_listener():
     '''Called every tick'''
 
     # Call all tick listeners
-    TickListeners.CallTickListeners()
+    TickListeners.call_tick_listeners()
 
 
 # =============================================================================
@@ -82,5 +82,5 @@ def sp_command(arg_string):
     # Make the command lower-case for comparison
     command = command.lower()
 
-    # Execute the called command
-    SPCommands.CallCommand(command, args)
+    # execute the called command
+    SPCommands.call_command(command, args)

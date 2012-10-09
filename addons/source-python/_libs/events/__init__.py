@@ -30,7 +30,7 @@ class Event(BaseDecorator):
         self.callback = callback
 
         # Register the event
-        EventRegistry.RegisterForEvent(self.callback.__name__, self.callback)
+        EventRegistry.register_for_event(self.callback.__name__, self.callback)
 
     def __call__(self, GameEvent):
         '''Calls the Event callback with the GameEvent instance'''
@@ -38,8 +38,9 @@ class Event(BaseDecorator):
         # Call the Event callback
         return self.callback(GameEvent)
 
-    def _UnregisterDecorator(self):
+    def _unregister_decorator(self):
         '''Unregisters the event'''
 
         # Unregister the event
-        EventRegistry.UnregisterForEvent(self.callback.__name__, self.callback)
+        EventRegistry.unregister_for_event(
+            self.callback.__name__, self.callback)

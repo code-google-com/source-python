@@ -6,7 +6,7 @@
 # Source.Python Imports
 from core import GameEngine
 #   Filters
-from filters.recipients import GetRecipients
+from filters.recipients import get_recipients
 #   Messages
 from messages._base import MessageTypes
 
@@ -21,14 +21,14 @@ _MessageType = MessageTypes['TextMsg']
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def Echo(users, message):
+def echo(users, message):
     '''Sends an echo message to the given players' console'''
 
     # Get a RecipientFilter for the given users
-    Recipients = GetRecipients(users)
+    recipients = get_recipients(users)
 
     # Create the UserMessage
-    UserMessage = GameEngine.UserMessageBegin(Recipients, _MessageType, None)
+    UserMessage = GameEngine.UserMessageBegin(recipients, _MessageType, None)
 
     # Write 2 (echo) to the UserMessage
     UserMessage.WriteByte(2)
