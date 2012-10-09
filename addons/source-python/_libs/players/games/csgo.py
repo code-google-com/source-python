@@ -12,7 +12,7 @@ from weapons.manager import WeaponManager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class GameWeapons(object):
+class _GameWeapons(object):
     '''Game-specific class inherited by _PlayerWeapons to
         handle CS:GO specific weapon functionality for players'''
 

@@ -69,16 +69,16 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
         '''Returns the player's uniqueid'''
         return get_uniqueid_from_player(self.info)
 
-    def _get_team(self):
+    def get_team(self):
         '''Returns the player's team'''
         return self.info.GetTeamIndex()
 
-    def _set_team(self, value):
+    def set_team(self, value):
         '''Sets a players team'''
         self.info.ChangeTeam(value)
 
     # Set the "team" property methods
-    team = property(_get_team, _set_team)
+    team = property(get_team, set_team)
 
     def respawn(self):
         '''Respawns the player'''

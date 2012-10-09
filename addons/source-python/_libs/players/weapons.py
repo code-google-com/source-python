@@ -6,7 +6,6 @@
 # Source.Python Imports
 from Source import Engine
 from Source import Entity
-from path import path
 #   Core
 from core import GAME_NAME
 #   Entities
@@ -21,29 +20,26 @@ from weapons.manager import WeaponManager
 # =============================================================================
 # >> GLOBAL VARIALBES
 # =============================================================================
-# Get the path to the game's file
-_gamefile = path(__file__).parent.joinpath('games', GAME_NAME + '.py')
-
-# Does the file exist?
-if _gamefile.isfile():
+# Use try/except to import the _GameWeapons class
+try:
 
     # Get the game's file's instance
     _game_instance = __import__('players.games.%s' % GAME_NAME, fromlist=[''])
 
-    # Get the game's GameWeapons class
-    GameWeapons = _game_instance.GameWeapons
+    # Get the game's _GameWeapons class
+    _GameWeapons = _game_instance._GameWeapons
 
-# Does the file not exist?
-else:
+# Was an error encountered?
+except:
 
-    # Set the game's GameWeapons class to the basic "object" type
-    GameWeapons = object
+    # Set the game's _GameWeapons class to the basic "object" type
+    _GameWeapons = object
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _PlayerWeapons(GameWeapons):
+class _PlayerWeapons(_GameWeapons):
     '''Base Weapon class inherited by PlayerEntity to
         perform basic weapon functionality for the player'''
 
