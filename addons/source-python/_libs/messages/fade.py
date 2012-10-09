@@ -6,7 +6,7 @@
 # Source.Python Imports
 from core import GameEngine
 #   Filters
-from filters.recipients import GetRecipients
+from filters.recipients import get_recipients
 #   Messages
 from messages._base import MessageTypes
 
@@ -14,23 +14,23 @@ from messages._base import MessageTypes
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the Fade message type
+# Get the fade message type
 _MessageType = MessageTypes['Fade']
 
 
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def Fade(users, fade_type, fade_time, hold_time, red, green, blue, alpha=255):
+def fade(users, fade_type, fade_time, hold_time, red, green, blue, alpha=255):
     '''
         Sends a fade message to the given players to fade their screen in/out
     '''
 
     # Get a RecipientFilter for the given users
-    Recipients = GetRecipients(users)
+    recipients = get_recipients(users)
 
     # Create the UserMessage
-    UserMessage = GameEngine.UserMessageBegin(Recipients, _MessageType, None)
+    UserMessage = GameEngine.UserMessageBegin(recipients, _MessageType, None)
 
     # Write the fade time to the UserMessage
     UserMessage.WriteShort(fade_time)

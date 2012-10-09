@@ -30,7 +30,7 @@ class Tick(BaseDecorator):
         self.callback = callback
 
         # Register the tick listener
-        TickListeners.RegisterTickListener(self.callback)
+        TickListeners.register_tick_listener(self.callback)
 
     def __call__(self):
         '''Calls the tick listener'''
@@ -38,8 +38,8 @@ class Tick(BaseDecorator):
         # Call the listener
         return self.callback()
 
-    def _UnregisterDecorator(self):
+    def _unregister_decorator(self):
         '''Unregisters the tick listener'''
 
         # Unregister the tick listener
-        TickListeners.UnregisterTickListener(self.callback)
+        TickListeners.unregister_tick_listener(self.callback)

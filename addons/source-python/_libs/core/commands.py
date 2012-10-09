@@ -11,8 +11,8 @@ from core import GameEngine
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def EchoConsole(text):
-    '''Echos a message to the server's console'''
+def echo_console(text):
+    '''echos a message to the server's console'''
 
     # Loop through each line in the text
     for line in text.split('\n'):

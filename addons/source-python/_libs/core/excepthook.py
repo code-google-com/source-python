@@ -14,7 +14,7 @@ from traceback import format_exception
 # Source.Python Imports
 from paths import GAME_PATH
 #   Core
-from core.commands import EchoConsole
+from core.commands import echo_console
 
 
 # =============================================================================
@@ -32,7 +32,7 @@ class _ExceptHooks(list):
             # Add the callback to the list
             super(_ExceptHooks, self).append(callback)
 
-    def PrintException(self, exctype, value, trace_back, callbacks=True):
+    def print_exception(self, exctype, value, trace_back, callbacks=True):
         '''Called when an exception is raised'''
 
         # Do all of the callbacks need looped through?
@@ -55,10 +55,10 @@ class _ExceptHooks(list):
                     # Get the new exception
                     error = sys.exc_info()
 
-                    # Re-call PrintException with the new error.
+                    # Re-call print_exception with the new error.
                     # Pass False for callbacks, so that
                     # it does not cause an infinite loop.
-                    self.PrintException(*error, callbacks=False)
+                    self.print_exception(*error, callbacks=False)
 
         # Format the exception
         format_error = format_exception(exctype, value, trace_back)
@@ -67,7 +67,7 @@ class _ExceptHooks(list):
         format_error.insert(-1, '')
 
         # Print the leading line of the exception
-        EchoConsole('\n[SP] caught an exception:')
+        echo_console('\n[SP] caught an exception:')
 
         # Loop through each line in the exception
         for line in format_error:
@@ -83,13 +83,13 @@ class _ExceptHooks(list):
             line = line.replace(GAME_PATH, '..%s' % sep)
 
             # Print the current line
-            EchoConsole(line)
+            echo_console(line)
 
         # Print a blank line to separate the console
-        EchoConsole('')
+        echo_console('')
 
 # Get the _ExceptHooks instance
 ExceptHooks = _ExceptHooks()
 
-# Set sys.excepthook to the PrintException method
-sys.excepthook = ExceptHooks.PrintException
+# Set sys.excepthook to the print_exception method
+sys.excepthook = ExceptHooks.print_exception

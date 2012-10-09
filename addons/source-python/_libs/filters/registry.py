@@ -21,7 +21,7 @@ class _BaseRegistry(dict):
         # Store the registering class' name
         self._class_name = class_name
 
-    def Register(self, item, function):
+    def register(self, item, function):
         '''Registers an item'''
 
         # Has the item already been added to the dictionary?
@@ -43,7 +43,7 @@ class _BaseRegistry(dict):
         # Add the item to the dictionary
         self[item] = function
 
-    def Unregister(self, item):
+    def unregister(self, item):
         '''Unregisters a item'''
 
         # Has the item been registered?

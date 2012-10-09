@@ -16,7 +16,7 @@ from core.excepthook import ExceptHooks
 # >> CLASSES
 # =============================================================================
 class _TickListeners(list):
-    '''Registers/Unregisters tick listeners and fires them each tick'''
+    '''Registers/unregisters tick listeners and fires them each tick'''
 
     def append(self, callback):
         '''Adds a listener to the list'''
@@ -53,7 +53,7 @@ class _TickListeners(list):
         # Remove the listener from the list
         super(_TickListeners, self).remove(callback)
 
-    def CallTickListeners(self):
+    def call_tick_listeners(self):
         '''Calls all tick listeners in order'''
 
         # Loop through all the listeners
@@ -72,15 +72,15 @@ class _TickListeners(list):
                 error = sys.exc_info()
 
                 # Print the exception to the console
-                ExceptHooks.PrintException(*error)
+                ExceptHooks.print_exception(*error)
 
-    def RegisterTickListener(self, callback):
+    def register_tick_listener(self, callback):
         '''Registers a tick listener'''
 
         # Add the listener to the list
         self.append(callback)
 
-    def UnregisterTickListener(self, callback):
+    def unregister_tick_listener(self, callback):
         '''Unregisters a tick listener'''
 
         # Remove the listener from the list

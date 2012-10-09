@@ -11,7 +11,7 @@ from traceback import format_exception
 # Source.Python Imports
 from paths import ADDON_PATH
 #   Core
-from core.commands import EchoConsole
+from core.commands import echo_console
 from core.decorators import BaseDecorator
 from core.excepthook import ExceptHooks
 #   Events
@@ -55,17 +55,17 @@ class _AddonManagementDictionary(dict):
                 # Print a message about not using built-in module names
                 # We already know the path exists, so the only way this error
                 # could occur is if it shares its name with a built-in module
-                EchoConsole(
+                echo_console(
                     '[SP] Addon name cannot use name of a built-in module')
 
             # Otherwise
             else:
 
                 # Print the exception to the console
-                ExceptHooks.PrintException(*error)
+                ExceptHooks.print_exception(*error)
 
                 # Remove all modules from sys.modules
-                self._RemoveModules(addon_name)
+                self._remove_modules(addon_name)
 
             # Return None as the value to show the addon was not loaded
             return None
@@ -89,7 +89,7 @@ class _AddonManagementDictionary(dict):
             return
 
         # Print message about unloading the addon
-        EchoConsole('[SP] Unloading "%s"...' % addon_name)
+        echo_console('[SP] Unloading "%s"...' % addon_name)
 
         # Does the addon have an unload function?
         if 'unload' in self[addon_name].globals:
@@ -108,10 +108,10 @@ class _AddonManagementDictionary(dict):
 
                 # Print the error to console, but
                 # allow the addon to still be unloaded
-                ExceptHooks.PrintException(*error)
+                ExceptHooks.print_exception(*error)
 
         # Remove all modules from sys.modules
-        self._RemoveModules(addon_name)
+        self._remove_modules(addon_name)
 
         # Remove the addon from the ordered list
         self._order.remove(addon_name)
@@ -129,7 +129,7 @@ class _AddonManagementDictionary(dict):
             # Yield the current item
             yield addon
 
-    def _RemoveModules(self, addon_name):
+    def _remove_modules(self, addon_name):
 
         # Get the addon's module
         addon_import = addon_name + '.' + addon_name
@@ -144,7 +144,7 @@ class _AddonManagementDictionary(dict):
         addon = __import__(addon_import)
 
         # Remove all events from the addon
-        self._RemoveDecorators(addon, addon_name)
+        self._remove_decorators(addon, addon_name)
 
         # Loop through all loaded modules
         for module in list(sys.modules):
@@ -155,7 +155,7 @@ class _AddonManagementDictionary(dict):
                 # Remove the module from memory
                 del sys.modules[module]
 
-    def _RemoveDecorators(self, instance, module):
+    def _remove_decorators(self, instance, module):
         '''
             Removes all BaseDecorator instances from the registry for the addon
         '''
@@ -179,13 +179,13 @@ class _AddonManagementDictionary(dict):
             if isinstance(new_instance, BaseDecorator):
 
                 # Unregister the Decorator
-                new_instance._UnregisterDecorator()
+                new_instance._unregister_decorator()
 
             # Does the module exist in sys.modules?
             elif new_module in sys.modules:
 
                 # Loop through all items in the module
-                self._RemoveDecorators(new_instance, new_module)
+                self._remove_decorators(new_instance, new_module)
 
 # Get the _AddonManagementDictionary instance
 AddonManager = _AddonManagementDictionary()
@@ -198,7 +198,7 @@ class _LoadedAddon(object):
         '''Called when an addon's instance is initialized'''
 
         # Print message that the addon is going to be loaded
-        EchoConsole('[SP] Loading "%s"...' % addon_name)
+        echo_console('[SP] Loading "%s"...' % addon_name)
 
         # Get the addon's main file
         file_path = ADDON_PATH.join(addon_name, addon_name + '.py')
@@ -207,7 +207,7 @@ class _LoadedAddon(object):
         if not file_path.isfile():
 
             # Print a message that the addon's main file was not found
-            EchoConsole(
+            echo_console(
                 '[SP] Unable to load "%s", missing file ' % addon_name +
                 '../addons/source-python/%s/%s.py' % (addon_name, addon_name))
 

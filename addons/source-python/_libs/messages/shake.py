@@ -6,7 +6,7 @@
 # Source.Python Imports
 from core import GameEngine
 #   Filters
-from filters.recipients import GetRecipients
+from filters.recipients import get_recipients
 #   Messages
 from messages._base import MessageTypes
 
@@ -14,21 +14,21 @@ from messages._base import MessageTypes
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the Shake message type
+# Get the shake message type
 _MessageType = MessageTypes['Shake']
 
 
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def Shake(users, magnitude, time):
+def shake(users, magnitude, time):
     '''Sends a shake message to the given players to shake their screen'''
 
     # Get a RecipientFilter for the given users
-    Recipients = GetRecipients(users)
+    recipients = get_recipients(users)
 
     # Create the UserMessage
-    UserMessage = GameEngine.UserMessageBegin(Recipients, _MessageType, None)
+    UserMessage = GameEngine.UserMessageBegin(recipients, _MessageType, None)
 
     # Write 0 to the UserMessage
     UserMessage.WriteByte(0)
