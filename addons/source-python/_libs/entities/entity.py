@@ -235,20 +235,58 @@ class BaseEntity(dict):
             raise TypeError('Invalid property type "%s"' % prop_type)
 
     def get_color(self):
+        '''Returns a 4 part tuple (RGBA) for the entity's color'''
+
+        # Get the render value
         value = self.render
+
+        # Return a tuple with the RGBA values
         return (
             value & 0xff, (value & 0xff00) >> 8,
             (value & 0xff0000) >> 16, (value & 0xff000000) >> 24)
 
-    def set_color(self, red, green, blue, alpha=None):
+    def set_color(self, args):
+        '''Sets the entity's color to the given RGBA values'''
+
+        # Are the the correct number of arguments?
+        if not len(args) in (3, 4):
+
+            # Raise an error
+            raise TypeError(
+                'set_color() requires 3 or 4 ' +
+                'arguments, %s were given' % len(args))
+
+        # Get the RGB values
+        red, green, blue = args[:3]
+
+        # Get the value using the RGB values
         value = red + (green << 8) + (blue << 16)
-        if alpha is None:
+
+        # Was an alpha value passed?
+        if len(args) == 3:
+
+            # Get the current alpha value
             alpha = (self.render & 0xff000000)
+
+        # Otherwise
+        else:
+
+            # Get the 4th value passed
+            alpha = args[3]
+
+        # Add the alpha value to the RGB value
         value += alpha << 24
+
+        # Set the rendermode
         self.rendermode = self.rendermode | 1
+
+        # Set the renderfx
         self.renderfx = self.renderfx | 256
+
+        # Set the entity's color
         self.render = value
 
+    # Set the "color" property for BaseEntity
     color = property(get_color, set_color)
 
     @property
