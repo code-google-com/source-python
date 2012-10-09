@@ -380,6 +380,28 @@ class _PlayerWeapons(GameWeapons):
     # =========================================================================
     # >> OTHER METHODS
     # =========================================================================
+    def get_weapon_color(self):
+        '''Returns a tuple value for the player's active weapon's color'''
+
+
+        # Get the handle of the player's active weapon
+        handle = self.active_weapon
+
+        # Get the weapon's CBaseHandle instance
+        bhandle = get_base_handle(handle)
+
+        # Was no handle found?
+        if bhandle is None:
+
+            # Raise an error
+            raise ValueError('No active weapon found for player')
+
+        # Get the index of the handle
+        index = bhandle.GetEntryIndex()
+
+        # Return the entity's color
+        return BaseEntity(index).color
+
     def set_weapon_color(self, red, green, blue, alpha=None):
         '''Sets the player's active weapon's color'''
 
@@ -399,7 +421,7 @@ class _PlayerWeapons(GameWeapons):
         index = bhandle.GetEntryIndex()
 
         # Set the entity's color
-        BaseEntity(index).set_color(red, green, blue, alpha)
+        BaseEntity(index).color = (red, green, blue, alpha)
 
 
 # =============================================================================
