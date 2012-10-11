@@ -39,6 +39,15 @@ def get_recipients(*users):
             # Add the index to the filter
             recipients.AddRecipient(index)
 
+    # Was a PlayerIter instance passed?
+    elif isinstance(users[0], PlayerIter):
+
+        # Loop through all PlayerIter indexes
+        for index in users[0]:
+
+            # Add the index to the filter
+            recipients.AddRecipient(index)
+
     # Is this a PlayerIter filter?
     else:
 
