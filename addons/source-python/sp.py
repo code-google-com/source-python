@@ -66,7 +66,7 @@ def sp_command(arg_string):
         # Get the arguments and the command
         command, args = arg_string.split(maxsplit=1)
 
-    # Was an exception raise?
+    # Was an exception raised?
     except:
 
         # Set the command as the text, since there

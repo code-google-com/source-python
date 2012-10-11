@@ -43,14 +43,6 @@ class _PlayerWeapons(_GameWeapons):
     '''Base Weapon class inherited by PlayerEntity to
         perform basic weapon functionality for the player'''
 
-    def get_primary(self):
-        '''Returns the player's primary weapon's index'''
-        return self.get_weapon_index(is_filters='primary')
-
-    def get_secondary(self):
-        '''Returns the player's secondary weapon's index'''
-        return self.get_weapon_index(is_filters='secondary')
-
     # =========================================================================
     # >> GET AMMO
     # =========================================================================
@@ -168,7 +160,10 @@ class _PlayerWeapons(_GameWeapons):
         if index is None:
 
             # Raise an error
-            raise
+            raise LookupError(
+                'No index found for given arguments ' +
+                '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
+                'for player "%s"' % self.userid)
 
         # Get the entity's WeaponEntity instance
         weapon = WeaponEntity(index)
@@ -209,7 +204,10 @@ class _PlayerWeapons(_GameWeapons):
         if index is None:
 
             # Raise an error
-            raise
+            raise LookupError(
+                'No index found for given arguments ' +
+                '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
+                'for player "%s"' % self.userid)
 
         # Get the entity's WeaponEntity instance
         weapon = WeaponEntity(index)
@@ -249,7 +247,10 @@ class _PlayerWeapons(_GameWeapons):
         if index is None:
 
             # Raise an error
-            raise
+            raise LookupError(
+                'No index found for given arguments ' +
+                '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
+                'for player "%s"' % self.userid)
 
         # Get the entity's WeaponEntity instance
         weapon = WeaponEntity(index)
@@ -294,7 +295,10 @@ class _PlayerWeapons(_GameWeapons):
         if index is None:
 
             # Raise an error
-            raise
+            raise LookupError(
+                'No index found for given arguments ' +
+                '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
+                'for player "%s"' % self.userid)
 
         # Get the entity's WeaponEntity instance
         weapon = WeaponEntity(index)
@@ -305,6 +309,14 @@ class _PlayerWeapons(_GameWeapons):
     # =========================================================================
     # >> WEAPON INDEXES
     # =========================================================================
+    def get_primary(self):
+        '''Returns the player's primary weapon's index'''
+        return self.get_weapon_index(is_filters='primary')
+
+    def get_secondary(self):
+        '''Returns the player's secondary weapon's index'''
+        return self.get_weapon_index(is_filters='secondary')
+
     def get_weapon_index(self, classname=None, is_filters=[], not_filters=[]):
         '''Returns the first instance of the given weapon classname/type'''
 
@@ -337,13 +349,16 @@ class _PlayerWeapons(_GameWeapons):
             # Is this an invalid handle?
             if handle == -1:
 
-                # Move on to the next offset
+                # Move onto the next offset
                 continue
 
             # Get the handles CBaseHandle instance
             bhandle = get_base_handle(handle)
 
+            # Was no CBaseHandle instance found?
             if bhandle is None:
+
+                # Move onto the next offset
                 continue
 
             # Get the weapon's index
@@ -390,7 +405,8 @@ class _PlayerWeapons(_GameWeapons):
         if bhandle is None:
 
             # Raise an error
-            raise ValueError('No active weapon found for player')
+            raise ValueError(
+                'No active weapon found for player "%s"' % self.userid)
 
         # Get the index of the handle
         index = bhandle.GetEntryIndex()

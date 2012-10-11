@@ -16,13 +16,13 @@ class MolotovProjectileEntity(ProjectileEntity):
 
     def __init__(self, index):
         '''Override the __init__ method to add
-            "molotov_projectile" to the _inis list'''
+            "molotov_projectile" to the _game_inis list'''
 
         # Run the inherited class __init__ method
         super(MolotovProjectileEntity, self).__init__(index)
 
-        # Add "molotov_projectile" to the _inis list
-        self._inis.append('molotov_projectile')
+        # Add "molotov_projectile" to the _game_inis list
+        self._game_inis.append('molotov_projectile')
 
     @classmethod
     def _is_valid_index_for_entity_type(cls, edict):

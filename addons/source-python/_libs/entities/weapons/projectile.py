@@ -15,15 +15,14 @@ class ProjectileEntity(WeaponEntity):
     '''Class used to interact directly with projectile entites'''
 
     def __init__(self, index):
-        '''
-            Override the __init__ method to add "projectile" to the _inis list
-        '''
+        '''Override the __init__ method to add
+            "projectile" to the _game_inis list'''
 
         # Run the inherited class __init__ method
         super(ProjectileEntity, self).__init__(index)
 
-        # Add "projectile" to the _inis list
-        self._inis.append('projectile')
+        # Add "projectile" to the _game_inis list
+        self._game_inis.append('projectile')
 
     @classmethod
     def _is_valid_index_for_entity_type(cls, edict):
