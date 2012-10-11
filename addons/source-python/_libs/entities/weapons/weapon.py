@@ -17,13 +17,15 @@ class WeaponEntity(BaseEntity):
     '''Class used to interact directly with weapon entites'''
 
     def __init__(self, index):
-        '''Override the __init__ method to add "weapon" to the _inis list'''
+        '''
+            Override the __init__ method to add "weapon" to the _game_inis list
+        '''
 
         # Run the inherited class __init__ method
         super(WeaponEntity, self).__init__(index)
 
-        # Add "weapon" to the _inis list
-        self._inis.append('weapon')
+        # Add "weapon" to the _game_inis list
+        self._game_inis.append('weapon')
 
     @classmethod
     def _is_valid_index_for_entity_type(cls, edict):

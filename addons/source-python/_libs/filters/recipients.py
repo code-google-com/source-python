@@ -15,6 +15,12 @@ from filters.players import PlayerIter
 def get_recipients(*users):
     '''Returns a RecipientFilter for the given users'''
 
+    # Was a RecipientFilter passed?
+    if len(users) and type(users[0]).__name__ == 'MRecipientFilter':
+
+        # Simply return the given filter
+        return users[0]
+
     # Create a RecipientFilter
     recipients = Shared.MRecipientFilter()
 
@@ -36,8 +42,14 @@ def get_recipients(*users):
     # Is this a PlayerIter filter?
     else:
 
+        # Was a string filter passed as the users argument?
+        if isinstance(users, str):
+
+            # Convert the users to a list
+            users = [users]
+
         # Loop through all players in the PlayerIter object
-        for index in PlayerIter(*users):
+        for index in PlayerIter(users[0], users[1] if len(users) >= 2 else []):
 
             # Add the index to the filter
             recipients.AddRecipient(index)

@@ -12,8 +12,12 @@ from entities.properties import Properties
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class BaseEntity(dict):
+class BaseEntity(object):
     '''Class used to interact directly with entities'''
+
+    index = 0
+    edict = 0
+    _game_inis = None
 
     def __new__(cls, index):
         '''Override the __new__ class method to verify the given index
@@ -35,21 +39,23 @@ class BaseEntity(dict):
             raise ValueError('Index "%s" is not appropriate type' % index)
 
         # Create the object
-        self = dict.__new__(cls)
+        self = object.__new__(cls)
 
-        # Add the base attributes as items in the dictionary
-        self['index'] = index
-        self['edict'] = edict
-        self['_inis'] = list()
+        # Set the entity's base attributes
+        self.index = index
+        self.edict = edict
+        self._game_inis = list()
 
         # Return the instance
         return self
 
     def __init__(self, index):
-        '''Override the __init__ method to add "entity" to the _inis list'''
+        '''
+            Override the __init__ method to add "entity" to the _game_inis list
+        '''
 
         # Add "entity" to the entities list
-        self._inis.append('entity')
+        self._game_inis.append('entity')
 
     def __getattr__(self, attr):
         '''Finds if the attribute is valid and gets the appropriate value'''
@@ -57,32 +63,27 @@ class BaseEntity(dict):
         # Return the attribute's value, if it is found
         return self.get_value(attr)
 
-    def get_value(self, item):
-        '''Finds if the item is valid for the instance and returns its value'''
-
-        # Is the item a member of the dictionary?
-        if item in self:
-
-            # Return the item
-            return self[item]
+    def get_value(self, attr):
+        '''Finds if the attribute is valid for
+            the instance and returns its value'''
 
         # Loop through all instances (used to get edict/IPlayerInfo attributes)
         for instance in self.instances:
 
             # Does the current instance contain the given attribute?
-            if hasattr(instance, item):
+            if hasattr(instance, attr):
 
                 # Return the instance's value for the given attribute
-                return getattr(instance, item)
+                return getattr(instance, attr)
 
-        # Is the item a property of this entity?
-        if item in self.properties:
+        # Is the attribute a property of this entity?
+        if attr in self.properties:
 
             # Return the property's value
-            return self.get_property(item)
+            return self.get_property(attr)
 
-        # If the item is not found, raise an error
-        raise LookupError('Item "%s" not found' % item)
+        # If the attribute is not found, raise an error
+        raise LookupError('Attribute "%s" not found' % attr)
 
     def get_property(self, item):
         '''Gets the value of the given property'''
@@ -143,30 +144,45 @@ class BaseEntity(dict):
     def __setattr__(self, attr, value):
         '''Finds if the attribute is value and sets its value'''
 
-        # Set the attribute's value, if it is found
-        self.set_value(attr, value)
+        # Does the class have the given attribute?
+        if hasattr(BaseEntity, attr):
 
-    def set_value(self, item, values):
-        '''Finds if the item is valid and sets its value'''
+            # Set the attribute
+            object.__setattr__(self, attr, value)
+
+        # Otherwise
+        else:
+
+            # Set the attribute's value, if it can be found
+            self.set_value(attr, value)
+
+    def set_value(self, attr, values):
+        '''Finds if the attribute is valid and sets its value'''
+
+        # Does the class have the given attribute?
+        if hasattr(BaseEntity, attr):
+
+            # Do not allow setting the value in this manner
+            return
 
         # Loop through all instances
         # (used to set using edict/IPlayerInfo attributes)
         for instance in self.instances:
 
             # Does the current instance contain the given attribute?
-            if hasattr(instance, item):
+            if hasattr(instance, attr):
 
                 # Get the attribute's instance and use it to set the value
-                setattr(instance, item, values)
+                setattr(instance, attr, values)
 
                 # No need to go further
                 return
 
-        # Is the item a property of this entity?
-        if item in self.properties:
+        # Is the attribute a property of this entity?
+        if attr in self.properties:
 
             # Set the property's value
-            self.set_property(item, values)
+            self.set_property(attr, values)
 
     def set_property(self, item, value):
         '''Sets the value of the given propery'''
@@ -176,6 +192,12 @@ class BaseEntity(dict):
 
         # Get the property's type
         prop_type = self.properties[item].type
+
+        print(item)
+        print(prop)
+        print(prop_type)
+        print(value)
+        print(self.index)
 
         # Is the property's type "int"?
         if prop_type == 'int':
@@ -309,7 +331,7 @@ class BaseEntity(dict):
     @property
     def properties(self):
         '''Returns all properties for all entities'''
-        return Properties.get_entity_properties(self._inis)
+        return Properties.get_entity_properties(self._game_inis)
 
     @classmethod
     def _is_valid_index_for_entity_type(cls, edict):

@@ -19,17 +19,38 @@ from players.weapons import _PlayerWeapons
 class PlayerEntity(BaseEntity, _PlayerWeapons):
     '''Class used to interact directly with players'''
 
+    info = None
+
     def __init__(self, index):
-        '''Override the __init__ method to add "player" to the _inis list'''
+        '''
+            Override the __init__ method to add "player" to the
+            _game_inis list and set the player's info attribute
+        '''
 
         # Run the inherited class __init__ method
         super(PlayerEntity, self).__init__(index)
 
-        # Add the player's info to the dictionary
-        self['info'] = Player.PlayerOfIndex(index)
+        # Add "player" to the _game_inis list
+        self._game_inis.append('player')
 
-        # Add "player" to the _inis list
-        self._inis.append('player')
+        # Set the player's info attribute
+        self.info = Player.PlayerOfIndex(index)
+
+    def __setattr__(self, attr, value):
+        '''Override __setattr__ to determine if PlayerEntity
+            has the attribute instead of BaseEntity'''
+
+        # Does the class have the given attribute?
+        if hasattr(PlayerEntity, attr):
+
+            # Set the attribute
+            object.__setattr__(self, attr, value)
+
+        # Otherwise
+        else:
+
+            # Set the attribute's value, if it can be found
+            self.set_value(attr, value)
 
     @property
     def instances(self):
