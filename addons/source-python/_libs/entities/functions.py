@@ -1,4 +1,4 @@
-# ../_libs/entities/properties.py
+# ../_libs/entities/functions.py
 
 # =============================================================================
 # >> IMPORTS
@@ -16,27 +16,27 @@ from core import GAME_NAME
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Store the base "properties" path
-_basepath = DATA_PATH.joinpath('properties')
+# Store the base "functions" path
+_basepath = DATA_PATH.joinpath('functions')
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _Properties(dict):
-    '''Dictionary that stores all entities with their properties'''
+class _Functions(dict):
+    '''Dictionary that stores all entities with their functions'''
 
     def __missing__(self, item):
         '''Called the first time an entity is added to the dictionary'''
 
-        # Get all properties for the given entity
-        value = self[item] = _get_all_entity_properties(item)
+        # Get all functions for the given entity
+        value = self[item] = _get_all_entity_functions(item)
 
-        # Return the properties
+        # Return the functions
         return value
 
-    def get_entity_properties(self, args):
-        '''Returns all properties for the given entities'''
+    def get_entity_functions(self, args):
+        '''Returns all functions for the given entities'''
 
         # Create an empty dictionary
         values = dict()
@@ -47,51 +47,56 @@ class _Properties(dict):
             # Add the entities to the dictionary
             values.update(self[arg])
 
-        # Return all properties for the given entities
+        # Return all functions for the given entities
         return values
 
-# Get the _Properties instance
-Properties = _Properties()
+# Get the _Functions instance
+Functions = _Functions()
 
 
-class _PropertyInstance(dict):
-    '''Stores properties as a dictionary and
-        allows access to them via attributes'''
+class _FunctionInstance(Signature):
+    '''Class that inherits from Signature to place
+       the entity's pointer as the first argument'''
 
-    def __getattr__(self, attr):
-        '''Override the __getattr__ method to
-            return the item within the dictionary'''
+    current_pointer = None
 
-        # Return the item for the given attribute
-        return self.__getitem__(attr)
+    def _pre_call_function(self, *args):
+        '''Adds the entity's pointer as the first
+            argument when calling the function'''
+
+        # Call the function with the entity's pointer as the first argument
+        self.call_function(*(self.current_pointer, ) + args)
+
+        # Reset the current pointer
+        self.current_pointer = None
 
 
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def _get_all_entity_properties(entity):
-    '''Retrieves all properties for the given entity'''
+def _get_all_entity_functions(entity):
+    '''Retrieves all functions for the given entity'''
 
     # Create an empty dictionary to pass
-    game_properties = {}
+    game_functions = {}
 
-    # Get the path to the entity's property file
-    inifile = _basepath.joinpath(entity, GAME_NAME + '.ini')
+    # Get the path to the entity's function file
+    inifile = _basepath.join(entity, GAME_NAME + '.ini')
 
     # Does the file exist?
     if not inifile.isfile():
 
         # Return the empty dictionary
-        return game_properties
+        return game_functions
 
     # Get the file's contents
-    ini = ConfigObj(inifile, unrepr=True)
+    ini = ConfigObj(inifile)
 
     # Loop through all items in the file
     for key in ini:
 
         # Add the item to the dictionary
-        game_properties[key] = _PropertyInstance(ini[key])
+        game_functions[key] = _FunctionInstance(ini[key])
 
     # Return the dictionary
-    return game_properties
+    return game_functions
