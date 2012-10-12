@@ -82,6 +82,12 @@ class BaseEntity(object):
             # Return the property's value
             return self.get_property(attr)
 
+        # Is the attribute a function of this entity?
+        if attr in self.functions:
+
+            # Return the function
+            return self.get_function(attr)
+
         # If the attribute is not found, raise an error
         raise LookupError('Attribute "%s" not found' % attr)
 
@@ -140,6 +146,15 @@ class BaseEntity(object):
 
         # If not a proper type, raise an error
         raise TypeError('Invalid property type "%s"' % prop_type)
+
+    def get_function(self, item):
+        '''Calls a dynamic function'''
+
+        # Set the entity's pointer as the current one
+        self.functions[item].current_pointer = self.pointer
+
+        # Return the pre call function method
+        return self.functions[item]._pre_call_function
 
     def __setattr__(self, attr, value):
         '''Finds if the attribute is value and sets its value'''
@@ -326,6 +341,11 @@ class BaseEntity(object):
     def properties(self):
         '''Returns all properties for all entities'''
         return Properties.get_entity_properties(self._game_inis)
+
+    @property
+    def functions(self):
+        '''Returns all dynamic calling functions for all entities'''
+        return Functions.get_entity_properties(self._game_inis)
 
     @property
     def pointer(self):

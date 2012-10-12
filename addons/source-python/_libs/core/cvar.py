@@ -13,6 +13,14 @@ from Source import Cvar
 # Get the Cvar instance
 _ServerCvar = Cvar.GetCvar()
 
+# Store flags
+_cvar_flags = {
+    'notify': Cvar.FCVAR_NOTIFY,
+    'cheat': Cvar.FCVAR_CHEAT,
+    'replicated': Cvar.FCVAR_REPLICATED,
+    'hidden': Cvar.FCVAR_HIDDEN,
+}
+
 
 # =============================================================================
 # >> CLASSES
@@ -81,29 +89,61 @@ class ServerVar(object):
         self.cvar = ServerVarDictionary._get_instance(
             name, value, flags, desc, min_value, max_value)
 
-    def __getattr__(self, name):
-        '''Runs missing attributes and methods against ConVar instance'''
-        return getattr(self.ConVar, name)
+    def __getattr__(self, attr):
+        '''Gets the value of the given attribute'''
+
+        # Is the attribute a flag?
+        if attr in _cvar_flags:
+
+            # Return the value of the cvar's flag
+            return self.cvar.IsFlagSet(_cvar_flags[attr])
+
+        # If not, return the cvar's attribute
+        return getattr(self.cvar, attr)
+
+    def __setattr__(self, attr, value):
+        '''Sets the value of the given attribute'''
+
+        # Is the attribute a flag?
+        if not attr in _cvar_flags:
+
+            # Set the attribute
+            super(ServerVar, self).__setattr__(attr, value)
+
+            # No need to go further
+            return
+
+        # Is the value "True"
+        if value:
+
+            # Add the flag
+            self.cvar.AddFlags(_cvar_flags[attr])
+
+            # No need to go further
+            return
+
+        # Remove the flag
+        self.cvar.RemoveFlags(_cvar_flags[attr])
 
     def __str__(self):
         '''Returns string value of ConVar instance.'''
-        return self.ConVar.GetString()
+        return self.cvar.GetString()
 
     def __float__(self):
         '''Returns float value of ConVar instance.'''
-        return self.ConVar.GetFloat()
+        return self.cvar.GetFloat()
 
     def __int__(self):
         '''Returns int value of ConVar instance.'''
-        return self.ConVar.GetInt()
+        return self.cvar.GetInt()
 
     def __bool__(self):
         '''Returns bool value of ConVar instance.'''
-        return self.ConVar.GetBool()
+        return self.cvar.GetBool()
 
     def __repr__(self):
         '''Returns string value of ConVar instance.'''
-        return self.ConVar.GetString()
+        return self.cvar.GetString()
 
     def set_value(self, value):
         '''Sets the value of the ConVar instance based on the input type.'''
@@ -112,126 +152,26 @@ class ServerVar(object):
         if type(value) == int:
 
             # Set the value as an integer
-            self.ConVar.SetInt(value)
+            self.cvar.SetInt(value)
 
         # Is the given value a float?
         elif type(value) == float:
 
             # Set the value as a float
-            self.ConVar.SetFloat(value)
+            self.cvar.SetFloat(value)
 
         # Is the given value a bool?
         elif type(value) == bool:
 
             # Set the value as a bool
-            self.ConVar.SetInt(int(value))
+            self.cvar.SetInt(int(value))
 
         # All other cases
         else:
 
             # Set value as a string
-            self.ConVar.SetString(value)
+            self.cvar.SetString(value)
 
     def make_public(self):
         '''Sets the notify flag for the cvar.'''
-        self.ConVar.AddFlags(Cvar.FCVAR_NOTIFY)
-
-    def _get_notify(self):
-        '''Returns whether the Notify flag is set'''
-        return self.ConVar.IsFlagSet(Cvar.FCVAR_NOTIFY)
-
-    def _set_notify(self, value):
-        '''Sets the Notify flag'''
-
-        # Make sure the value is a boolean
-        value = bool(value)
-
-        # Is the value True?
-        if value:
-
-            # Add the Notify flag
-            self.ConVar.AddFlags(Cvar.FCVAR_NOTIFY)
-
-        # Is the value False?
-        else:
-
-            # Remove the Notify flag
-            self.ConVar.RemoveFlags(Cvar.FCVAR_NOTIFY)
-
-    # Create the notify property
-    notify = property(_get_notify, _set_notify)
-
-    def _get_cheat(self):
-        '''Returns whether the Cheat flag is set'''
-        return self.ConVar.IsFlagSet(Cvar.FCVAR_CHEAT)
-
-    def _set_cheat(self, value):
-        '''Sets the Cheat flag'''
-
-        # Make sure the value is a boolean
-        value = bool(value)
-
-        # Is the value True?
-        if value:
-
-            # Add the Cheat flag
-            self.ConVar.AddFlags(Cvar.FCVAR_CHEAT)
-
-        # Is the value False?
-        else:
-
-            # Remove the Cheat flag
-            self.ConVar.RemoveFlags(Cvar.FCVAR_CHEAT)
-
-    # Create the cheat property
-    cheat = property(_get_cheat, _set_cheat)
-
-    def _get_replicated(self):
-        '''Returns whether the Replicated flag is set'''
-        return self.ConVar.IsFlagSet(Cvar.FCVAR_REPLICATED)
-
-    def _set_replicated(self, value):
-        '''Sets the Replicated flag'''
-
-        # Make sure the value is a boolean
-        value = bool(value)
-
-        # Is the value True?
-        if value:
-
-            # Add the Replicated flag
-            self.ConVar.AddFlags(Cvar.FCVAR_REPLICATED)
-
-        # Is the value False?
-        else:
-
-            # Remove the Replicated flag
-            self.ConVar.RemoveFlags(Cvar.FCVAR_REPLICATED)
-
-    # Create the replicated property
-    replicated = property(_get_replicated, _set_replicated)
-
-    def _get_hidden(self):
-        '''Returns whether the Hidden flag is set'''
-        return self.ConVar.IsFlagSet(Cvar.FCVAR_HIDDEN)
-
-    def _set_hidden(self, value):
-        '''Sets the Hidden flag'''
-
-        # Make sure the value is a boolean
-        value = bool(value)
-
-        # Is the value True?
-        if value:
-
-            # Add the Hidden flag
-            self.ConVar.AddFlags(Cvar.FCVAR_HIDDEN)
-
-        # Is the value False?
-        else:
-
-            # Remove the Hidden flag
-            self.ConVar.RemoveFlags(Cvar.FCVAR_HIDDEN)
-
-    # Create the hidden property
-    hidden = property(_get_hidden, _set_hidden)
+        self.cvar.AddFlags(Cvar.FCVAR_NOTIFY)
