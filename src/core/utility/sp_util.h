@@ -31,6 +31,7 @@
 //---------------------------------------------------------------------------------
 #include "eiface.h"
 #include "public/game/server/iplayerinfo.h"
+#include "basehandle.h"
 
 //---------------------------------------------------------------------------------
 // Globals
@@ -138,6 +139,36 @@ inline edict_t* EdictOfPlayer(IPlayerInfo* playerInfo)
 		return NULL;
 	}
 	return EdictOfUserid(playerInfo->GetUserID());
+}
+
+//---------------------------------------------------------------------------------
+// Returns the index of a handle from integer form
+//---------------------------------------------------------------------------------
+inline unsigned int IndexOfIntHandle(int iHandle)
+{
+    CBaseHandle hHandle(iHandle);
+    unsigned int iIndex = hHandle.GetEntryIndex();
+    edict_t *pEntity = PEntityOfEntIndex(iIndex);
+    if (!pEntity || pEntity->IsFree())
+    {
+        return NULL;
+    }
+    IServerNetworkable *pNetworkable = pEntity->GetNetworkable();
+    IHandleEntity *pEnt = pNetworkable->GetEntityHandle();
+    if (!pEnt)
+    {
+        return NULL;
+    }
+    const CBaseHandle hTestHandle = pEnt->GetRefEHandle();
+    if (!hTestHandle.IsValid())
+    {
+        return NULL;
+    }
+    if (hHandle.GetSerialNumber() != hTestHandle.GetSerialNumber())
+    {
+        return NULL;
+    }
+    return iIndex;
 }
 
 #endif

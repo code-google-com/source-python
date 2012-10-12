@@ -352,17 +352,14 @@ class _PlayerWeapons(_GameWeapons):
                 # Move onto the next offset
                 continue
 
-            # Get the handles CBaseHandle instance
-            bhandle = get_base_handle(handle)
+            # Get the weapon's index
+            index = Engine.IndexOfIntHandle(handle)
 
-            # Was no CBaseHandle instance found?
-            if bhandle is None:
+            # Is this a valid index?
+            if index is None:
 
                 # Move onto the next offset
                 continue
-
-            # Get the weapon's index
-            index = bhandle.GetEntryIndex()
 
             # Get the weapon's edict
             edict = Engine.PEntityOfEntIndex(index)
@@ -389,7 +386,7 @@ class _PlayerWeapons(_GameWeapons):
             yield index
 
     # =========================================================================
-    # >> OTHER METHODS
+    # >> COLOR METHODS
     # =========================================================================
     def get_weapon_color(self):
         '''Returns a tuple value for the player's active weapon's color'''
@@ -399,17 +396,14 @@ class _PlayerWeapons(_GameWeapons):
         handle = self.active_weapon
 
         # Get the weapon's CBaseHandle instance
-        bhandle = get_base_handle(handle)
+        index = Engine.IndexOfIntHandle(handle)
 
-        # Was no handle found?
-        if bhandle is None:
+        # Was no index found?
+        if index is None:
 
             # Raise an error
             raise ValueError(
                 'No active weapon found for player "%s"' % self.userid)
-
-        # Get the index of the handle
-        index = bhandle.GetEntryIndex()
 
         # Return the entity's color
         return BaseEntity(index).color
@@ -421,57 +415,14 @@ class _PlayerWeapons(_GameWeapons):
         handle = self.active_weapon
 
         # Get the weapon's CBaseHandle instance
-        bhandle = get_base_handle(handle)
+        index = Engine.IndexOfIntHandle(handle)
 
-        # Was no handle found?
-        if bhandle is None:
+        # Was no index found?
+        if index is None:
 
-            # Simply return
-            return
-
-        # Get the index of the handle
-        index = bhandle.GetEntryIndex()
+            # Raise an error
+            raise ValueError(
+                'No active weapon found for player "%s"' % self.userid)
 
         # Set the entity's color
         BaseEntity(index).color = (red, green, blue, alpha)
-
-
-# =============================================================================
-# >> FUNCTIONS
-# =============================================================================
-def get_base_handle(handle):
-    '''Returns the CBaseHandle instance for the given integer form handle'''
-
-    # Loop through all entities on the server
-    for edict in Entity.Entities():
-
-        # Use try/except in case an error is encountered
-        try:
-
-            # Get the entity's IServerNetworkable instance
-            network = edict.GetNetworkable()
-
-            # Does the entity have an IServerNetworkable instance?
-            if network is None:
-
-                # If not, move onto the next entity
-                continue
-
-            # Get the entity's CBaseHandle instance
-            current = network.GetEntityHandle().GetRefEHandle()
-
-            # Does the current CBaseHandle's
-            # integer form equal the given handle?
-            if current.ToInt() == handle:
-
-                # Return the CBaseHandle instance
-                return current
-
-        # Was an error encountered?
-        except:
-
-            # Move onto the next entity
-            continue
-
-    # If no match is found, return None
-    return None
