@@ -144,7 +144,7 @@ inline edict_t* EdictOfPlayer(IPlayerInfo* playerInfo)
 //---------------------------------------------------------------------------------
 // Returns the index of a handle from integer form
 //---------------------------------------------------------------------------------
-inline unsigned int IndexOfIntHandle(int iHandle)
+unsigned int IndexOfIntHandle(int iHandle)
 {
     CBaseHandle hHandle(iHandle);
     unsigned int iIndex = hHandle.GetEntryIndex();

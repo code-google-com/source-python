@@ -193,12 +193,6 @@ class BaseEntity(object):
         # Get the property's type
         prop_type = self.properties[item].type
 
-        print(item)
-        print(prop)
-        print(prop_type)
-        print(value)
-        print(self.index)
-
         # Is the property's type "int"?
         if prop_type == 'int':
 
@@ -332,6 +326,11 @@ class BaseEntity(object):
     def properties(self):
         '''Returns all properties for all entities'''
         return Properties.get_entity_properties(self._game_inis)
+
+    @property
+    def pointer(self):
+        '''Returns the entity's pointer'''
+        return self.edict.GetUnknown().GetBaseEntity()
 
     @classmethod
     def _is_valid_index_for_entity_type(cls, edict):
