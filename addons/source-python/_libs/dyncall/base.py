@@ -10,6 +10,9 @@ from Source import Binutils
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+DynCallVM = Binutils.dcGetVM()
+
+
 DynCallModes = {
     'cdecl': Binutils.DC_CALL_C_DEFAULT,
     'nt': Binutils.DC_CALL_C_X86_WIN32_THIS_MS,

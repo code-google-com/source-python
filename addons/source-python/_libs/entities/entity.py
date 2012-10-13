@@ -7,6 +7,7 @@
 from Source import Engine
 #   Entities
 from entities.properties import Properties
+from entities.functions import Functions
 
 
 # =============================================================================
@@ -345,7 +346,7 @@ class BaseEntity(object):
     @property
     def functions(self):
         '''Returns all dynamic calling functions for all entities'''
-        return Functions.get_entity_properties(self._game_inis)
+        return Functions.get_entity_functions(self._game_inis)
 
     @property
     def pointer(self):

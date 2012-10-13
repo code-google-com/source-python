@@ -4,6 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Binascii
+from binascii import unhexlify
 #   OS
 from os import name as os_name
 if os_name != 'nt':
@@ -15,6 +17,7 @@ from Source import Binutils
 from dyncall.base import DynCallArgs
 from dyncall.base import DynCallCalls
 from dyncall.base import DynCallModes
+from dyncall.base import DynCallVM
 from dyncall.modules import ModuleData
 
 
@@ -42,9 +45,11 @@ class Signature(object):
         # Is the server running on Windows?
         if os_name == 'nt':
 
+            # Get the hex version of the signature
+            sig = unhexlify(ini['sig'].replace(' ', ''))
+
             # Get the address of the signature
-            self.address = Binutils.FindSignature(
-                module, ini['sig'], len(ini['sig']))
+            self.address = Binutils.FindSignature(module, sig, len(sig))
 
         # Is the server not running on Windows?
         else:
@@ -73,7 +78,7 @@ class Signature(object):
         Binutils.dcReset(DynCallVM)
 
         # Set the mode to the functions convention
-        Binutils.dcMode(self.convention)
+        Binutils.dcMode(DynCallVM, self.convention)
 
         # Loop through all arguments
         for index in range(len(args)):
@@ -82,7 +87,7 @@ class Signature(object):
             if self.arguments[index] in DynCallArgs:
 
                 # Push the argument on the stack
-                DynCallArgs[self.arguments[index]](args[index])
+                DynCallArgs[self.arguments[index]](DynCallVM, args[index])
 
             # Is the current argument of an unknown type?
             else:
@@ -92,4 +97,4 @@ class Signature(object):
                     'Unknown argument type "%s"' % self.arguments[index])
 
         # Call the function
-        DynCallCalls[self.return_type](DynCallVM, self.address)
+        return DynCallCalls[self.return_type](DynCallVM, self.address)
