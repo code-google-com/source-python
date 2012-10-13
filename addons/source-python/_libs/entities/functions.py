@@ -11,6 +11,8 @@ from configobj import ConfigObj
 from paths import DATA_PATH
 #   Core
 from core import GAME_NAME
+#   DynCall
+from dyncall.signature import Signature
 
 
 # =============================================================================
