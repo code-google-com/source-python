@@ -1,4 +1,4 @@
-# ../_libs/dyncall/__init__.py
+# ../_libs/dyncall/dictionary.py
 
 # =============================================================================
 # >> IMPORTS
@@ -34,17 +34,23 @@ class _SignatureDictionary(dict):
         # Set the item to its Signature instance
         super(_SignatureDictionary, self).__setitem__(item, Signature(value))
 
+    def parse_signature_ini(self, inifile):
+        '''Parse an ini file and add its signatures to the dictionary'''
+
+        # Get the ConfigObj instance of the file
+        sigs = ConfigObj(_inipath)
+
+        # Loop through all functions
+        for function in sigs:
+
+            # Add the function to the dictionary
+            self[sigs[function]['shortname']] = sigs[function]
+
 # Get the main _SignatureDictionary instance
 SigDictionary = _SignatureDictionary()
 
 # Does the game's ini file exist?
 if _inipath.isfile():
 
-    # Get the ConfigObj instance of the file
-    _ini = ConfigObj(_inipath)
-
-    # Loop through all functions
-    for function in _ini:
-
-        # Add the function to the dictionary
-        SigDictionary[function] = _ini[function]
+    # Parse the ini file
+    SigDictionary.parse_signature_ini(_inipath)

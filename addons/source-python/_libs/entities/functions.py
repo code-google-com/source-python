@@ -12,6 +12,7 @@ from paths import DATA_PATH
 #   Core
 from core import GAME_NAME
 #   DynCall
+from dyncall.dictionary import SigDictionary
 from dyncall.signature import Signature
 
 
@@ -56,18 +57,31 @@ class _Functions(dict):
 Functions = _Functions()
 
 
-class _FunctionInstance(Signature):
-    '''Class that inherits from Signature to place
-       the entity's pointer as the first argument'''
+class _FunctionInstance(object):
+    '''Class used to store a function to be called with
+        the entity's pointer as the first argument'''
 
-    current_pointer = None
+    def __init__(self, name):
+        '''Called on initialization'''
+
+        # Is the given name registered in the dictionary?
+        if not name in SigDictionary:
+
+            # Raise an error
+            raise KeyError('No function "%s" stored in SigDictionary' % name)
+
+        # Store the function to be called
+        self.function = SigDictionary[name]
+
+        # Store the pointer as None until it is needed
+        self.current_pointer = None
 
     def _pre_call_function(self, *args):
         '''Adds the entity's pointer as the first
             argument when calling the function'''
 
         # Call the function with the entity's pointer as the first argument
-        self.call_function(*(self.current_pointer, ) + args)
+        self.function.call_function(*(self.current_pointer, ) + args)
 
         # Reset the current pointer
         self.current_pointer = None
