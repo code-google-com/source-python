@@ -12,7 +12,7 @@ from paths import DATA_PATH
 #   Core
 from core import GAME_NAME
 #   DynCall
-from dyncall.dictionary import SigDictionary
+from dyncall.dictionary import SignatureDictionary
 from dyncall.signature import Signature
 
 
@@ -65,13 +65,13 @@ class _FunctionInstance(object):
         '''Called on initialization'''
 
         # Is the given name registered in the dictionary?
-        if not name in SigDictionary:
+        if not name in SignatureDictionary:
 
             # Raise an error
-            raise KeyError('No function "%s" stored in SigDictionary' % name)
+            raise KeyError('No function "%s" stored in SignatureDictionary' % name)
 
         # Store the function to be called
-        self.function = SigDictionary[name]
+        self.function = SignatureDictionary[name]
 
         # Store the pointer as None until it is needed
         self.current_pointer = None

@@ -61,10 +61,8 @@ class _ServerVarDictionary(dict):
             # Create the ConVar with the given values
             cvar = Cvar.ConVar(
                 name, value, flags, desc,
-                min_value is None,
-                min_value if not min_value is None else 0.0,
-                max_value is None,
-                max_value if not max_value is None else 0.0)
+                min_value is None, min_value or 0.0,
+                max_value is None, max_value or 0.0)
 
         # Add the ConVar to the dictionary
         self[name] = cvar
