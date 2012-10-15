@@ -25,7 +25,7 @@ DynCallModes = {
 # Store the argument methods by code
 DynCallArgs = {
     'b': Binutils.dcArgBool,
-    'c': Binutils.dcArgChar,
+    'c': Binutils.dcArgString,
     's': Binutils.dcArgShort,
     'i': Binutils.dcArgInt,
     'l': Binutils.dcArgLong,

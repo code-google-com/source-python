@@ -50,7 +50,7 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
         else:
 
             # Set the attribute's value, if it can be found
-            self.set_value(attr, value)
+            super(PlayerEntity, self).__setattr__(attr, value)
 
     @property
     def instances(self):

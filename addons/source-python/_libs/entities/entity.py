@@ -59,14 +59,7 @@ class BaseEntity(object):
         self._game_inis.append('entity')
 
     def __getattr__(self, attr):
-        '''Finds if the attribute is valid and gets the appropriate value'''
-
-        # Return the attribute's value, if it is found
-        return self.get_value(attr)
-
-    def get_value(self, attr):
-        '''Finds if the attribute is valid for
-            the instance and returns its value'''
+        '''Finds if the attribute is valid and returns the appropriate value'''
 
         # Loop through all instances (used to get edict/IPlayerInfo attributes)
         for instance in self.instances:
@@ -81,18 +74,18 @@ class BaseEntity(object):
         if attr in self.properties:
 
             # Return the property's value
-            return self.get_property(attr)
+            return self._get_property(attr)
 
         # Is the attribute a function of this entity?
         if attr in self.functions:
 
             # Return the function
-            return self.get_function(attr)
+            return self._get_function(attr)
 
         # If the attribute is not found, raise an error
         raise LookupError('Attribute "%s" not found' % attr)
 
-    def get_property(self, item):
+    def _get_property(self, item):
         '''Gets the value of the given property'''
 
         # Get the property's prop
@@ -148,7 +141,7 @@ class BaseEntity(object):
         # If not a proper type, raise an error
         raise TypeError('Invalid property type "%s"' % prop_type)
 
-    def get_function(self, item):
+    def _get_function(self, item):
         '''Calls a dynamic function'''
 
         # Set the entity's pointer as the current one
@@ -166,19 +159,7 @@ class BaseEntity(object):
             # Set the attribute
             object.__setattr__(self, attr, value)
 
-        # Otherwise
-        else:
-
-            # Set the attribute's value, if it can be found
-            self.set_value(attr, value)
-
-    def set_value(self, attr, values):
-        '''Finds if the attribute is valid and sets its value'''
-
-        # Does the class have the given attribute?
-        if hasattr(BaseEntity, attr):
-
-            # Do not allow setting the value in this manner
+            # No need to go further
             return
 
         # Loop through all instances
@@ -189,7 +170,7 @@ class BaseEntity(object):
             if hasattr(instance, attr):
 
                 # Get the attribute's instance and use it to set the value
-                setattr(instance, attr, values)
+                setattr(instance, attr, value)
 
                 # No need to go further
                 return
@@ -198,9 +179,9 @@ class BaseEntity(object):
         if attr in self.properties:
 
             # Set the property's value
-            self.set_property(attr, values)
+            self._set_property(attr, value)
 
-    def set_property(self, item, value):
+    def _set_property(self, item, value):
         '''Sets the value of the given propery'''
 
         # Get the property's prop

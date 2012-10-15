@@ -54,6 +54,14 @@ DCCallVM* dcGetVM( void )
 }
 
 //---------------------------------------------------------------------------------
+// Wrapper to allow strings
+//---------------------------------------------------------------------------------
+void dcArgString( DCCallVM* vm, char* str )
+{
+ dcArgPointer( vm, (DCpointer)str );
+}
+
+//---------------------------------------------------------------------------------
 // Exports dyncall to python.
 //---------------------------------------------------------------------------------
 void Export_DynCall( void )
@@ -108,6 +116,7 @@ void Export_DynCall( void )
 	BOOST_FUNCTION(dcArgDouble);
 	BOOST_FUNCTION(dcArgStruct);
 	BOOST_FUNCTION(dcArgPointer);
+	BOOST_FUNCTION(dcArgString);
 
 	// Dyncall virtual machine functions for calling functions.
 	BOOST_FUNCTION(dcCallVoid);
