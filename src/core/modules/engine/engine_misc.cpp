@@ -131,4 +131,7 @@ void Export_EngineMisc( void )
 	BOOST_FUNCTION(IndexOfIntHandle,
         "Returns the index of an entity from its handle in integer form",
         args("iHandle"));
+    BOOST_FUNCTION(IndexOfPointer,
+        "Returns the index of an entity from its pointer",
+        args("iPointer"));
 }

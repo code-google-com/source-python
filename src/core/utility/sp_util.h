@@ -171,4 +171,23 @@ inline unsigned int IndexOfIntHandle(int iHandle)
     return iIndex;
 }
 
+//---------------------------------------------------------------------------------
+// Returns the index of a pointer
+//---------------------------------------------------------------------------------
+inline unsigned int IndexOfPointer(int iPointer)
+{
+    IServerUnknown *pUnknown = (IServerUnknown *)iPointer;
+    IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
+    if (!pNetworkable)
+    {
+        return NULL;
+    }
+    edict_t* pEdict = pNetworkable->GetEdict();
+    if (!pEdict)
+    {
+        return NULL;
+    }
+    return IndexOfEdict(pEdict);
+}
+
 #endif
