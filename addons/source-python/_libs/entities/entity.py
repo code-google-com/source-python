@@ -350,3 +350,23 @@ class BaseEntity(object):
 
         # Return an instance for the index
         return cls(index)
+
+    @classmethod
+    def get_instance_from_int_handle(cls, handle):
+        '''Returns a class instance for the given handle in integer form'''
+
+        # Get the index of the given handle
+        index = Engine.IndexOfIntHandle(handle)
+
+        # Return an instance for the index
+        return cls(index)
+
+    @classmethod
+    def get_instance_from_pointer(cls, pointer):
+        '''Returns a class instance for the given entity pointer'''
+
+        # Get the index of the given pointer
+        index = Engine.IndexOfPointer(pointer)
+
+        # Return an instance for the index
+        return cls(index)
