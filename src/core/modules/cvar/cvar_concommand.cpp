@@ -86,7 +86,7 @@ ConCommandManager* GetCommand(const char* szName, const char* szHelp = NULL, int
 	CommandMap::iterator commandMapIter = g_CommandMap.find(szName);
 	if (commandMapIter == g_CommandMap.end())
 	{
-		g_CommandMap.insert(std::make_pair(szName, ConCommandManager::Create(szName, szHelp, iFlags)));
+		g_CommandMap.insert(std::make_pair(szName, ConCommandManager::CreateCommand(szName, szHelp, iFlags)));
 		commandMapIter = g_CommandMap.find(szName);
 	}
 
@@ -120,9 +120,9 @@ void ClearAllCommands()
 }
 
 //---------------------------------------------------------------------------------
-// ConCommandManager [static] Create Function
+// ConCommandManager [static] CreateCommand Function
 //---------------------------------------------------------------------------------
-ConCommandManager* ConCommandManager::Create(const char* pName, const char* pHelpString, int flags)
+ConCommandManager* ConCommandManager::CreateCommand(const char* pName, const char* pHelpString, int flags)
 {
 	//We need copies of the strings, since ConCommandBase instances just copy the pointer directly
 	//If we were to declare these ConCommands in global scope in a Python module, they would fail

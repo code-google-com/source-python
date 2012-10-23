@@ -48,7 +48,7 @@ using namespace boost::python;
 class ConCommandManager: public ConCommand
 {
 public:
-	static ConCommandManager* Create(const char* pName, const char* pHelpString = 0, int flags = 0);
+	static ConCommandManager* CreateCommand(const char* pName, const char* pHelpString = 0, int flags = 0);
 	~ConCommandManager();
 	virtual void Init();
 
