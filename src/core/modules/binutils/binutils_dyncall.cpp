@@ -114,7 +114,7 @@ void Export_DynCall( void )
 	BOOST_FUNCTION(dcArgLongLong);
 	BOOST_FUNCTION(dcArgFloat);
 	BOOST_FUNCTION(dcArgDouble);
-	BOOST_FUNCTION(dcArgStruct);
+	//BOOST_FUNCTION(dcArgStruct);
 	BOOST_FUNCTION(dcArgPointer);
 	BOOST_FUNCTION(dcArgString);
 
@@ -128,6 +128,6 @@ void Export_DynCall( void )
 	BOOST_FUNCTION(dcCallLongLong);
 	BOOST_FUNCTION(dcCallFloat);
 	BOOST_FUNCTION(dcCallDouble);
-	BOOST_FUNCTION(dcCallStruct);
+	//BOOST_FUNCTION(dcCallStruct);
 	BOOST_FUNCTION(dcCallPointer);
 }
