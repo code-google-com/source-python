@@ -144,8 +144,11 @@ class BaseEntity(object):
     def _get_function(self, item):
         '''Calls a dynamic function'''
 
-        # Set the entity's pointer as the current one
-        self.functions[item].current_pointer = self.pointer
+        # Does the entity's pointer need to be added to the arguments?
+        if self.functions[item].pointer_index != -1:
+
+            # Set the entity's pointer as the current one
+            self.functions[item].current_pointer = self.pointer
 
         # Return the pre call function method
         return self.functions[item]._pre_call_function

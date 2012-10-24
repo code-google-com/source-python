@@ -61,8 +61,11 @@ class _FunctionInstance(object):
     '''Class used to store a function to be called with
         the entity's pointer as the first argument'''
 
-    def __init__(self, name):
+    def __init__(self, item):
         '''Called on initialization'''
+
+        # Get the name of the function
+        name = item['name']
 
         # Is the given name registered in the dictionary?
         if not name in SignatureDictionary:
@@ -73,6 +76,9 @@ class _FunctionInstance(object):
         # Store the function to be called
         self.function = SignatureDictionary[name]
 
+        # Store the index to add the pointer
+        self.pointer_index = item['pointer']
+
         # Store the pointer as None until it is needed
         self.current_pointer = None
 
@@ -80,8 +86,15 @@ class _FunctionInstance(object):
         '''Adds the entity's pointer as the first
             argument when calling the function'''
 
+        # Does the pointer need added?
+        if self.current_pointer:
+
+            # Add the pointer to the arguments
+            args = (args[:self.pointer_index] +
+                (self.current_pointer, ) + args[self.pointer_index:])
+
         # Call the function with the entity's pointer as the first argument
-        self.function.call_function(*(self.current_pointer, ) + args)
+        self.function.call_function(*args)
 
         # Reset the current pointer
         self.current_pointer = None
@@ -106,7 +119,7 @@ def _get_all_entity_functions(entity):
         return game_functions
 
     # Get the file's contents
-    ini = ConfigObj(inifile)
+    ini = ConfigObj(inifile, unrepr=True)
 
     # Loop through all items in the file
     for key in ini:
