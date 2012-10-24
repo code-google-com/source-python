@@ -31,7 +31,7 @@ DynCallArgs = {
     'l': Binutils.dcArgLong,
     'f': Binutils.dcArgFloat,
     'd': Binutils.dcArgDouble,
-    't': Binutils.dcArgStruct,
+    #'t': Binutils.dcArgStruct,
     'p': Binutils.dcArgPointer,
 }
 
@@ -46,6 +46,6 @@ DynCallCalls = {
     'l': Binutils.dcCallLong,
     'f': Binutils.dcCallFloat,
     'd': Binutils.dcCallDouble,
-    't': Binutils.dcCallStruct,
+    #'t': Binutils.dcCallStruct,
     'p': Binutils.dcCallPointer,
 }

@@ -37,7 +37,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #if defined(_WIN32)
-#	include <windows.h>
+#       include <windows.h>
 #else
 #   include <fcntl.h>
 #   include <link.h>
@@ -60,59 +60,48 @@
 //---------------------------------------------------------------------------------
 moduledata_t* FindModuleData(const char* szBinary)
 {
-	char szModulePath[MAX_MODULE_PATH];
+        char szModulePath[MAX_MODULE_PATH];
 
 #if defined(_WIN32)
-	sprintf_s(szModulePath, MAX_MODULE_PATH, "%s.dll", szBinary);
-	void* baseAddress = (void *)LoadLibrary(szModulePath);
+        sprintf_s(szModulePath, MAX_MODULE_PATH, "%s.dll", szBinary);
+        void* baseAddress = (void *)LoadLibrary(szModulePath);
 #else
-	sprintf(szModulePath, "%s.so", szBinary);
-	void* baseAddress = (void *)dlopen(szModulePath, RTLD_NOW);
+        sprintf(szModulePath, "%s.so", szBinary);
+        void* baseAddress = (void *)dlopen(szModulePath, RTLD_NOW | RTLD_GLOBAL);
 #endif
+
+	// Don't continue if we couldn't load the module.
+	if( !baseAddress ) 
+ 	{
+		Msg("Could not load module %s!\n", szModulePath);
+		return NULL;
+	}
 
 #if defined(_WIN32)
-	// Get memory information about the module.
-	MEMORY_BASIC_INFORMATION memInfo;
-	if(!VirtualQuery(baseAddress, &memInfo, sizeof(MEMORY_BASIC_INFORMATION)))
-	{
-		Msg("[SP] VirtualQuery failed on %s!\n", szModulePath);
-		return NULL;
-	}
+        // Get memory information about the module.
+        MEMORY_BASIC_INFORMATION memInfo;
+        if(!VirtualQuery(baseAddress, &memInfo, sizeof(MEMORY_BASIC_INFORMATION)))
+        {
+                Msg("[SP] VirtualQuery failed on %s!\n", szModulePath);
+                return NULL;
+        }
 
-	// Get at the image size too.
-	IMAGE_DOS_HEADER* dosHeader = (IMAGE_DOS_HEADER*)memInfo.AllocationBase;
-	IMAGE_NT_HEADERS* ntHeader = reinterpret_cast<IMAGE_NT_HEADERS*>(dosHeader + dosHeader->e_lfanew);
+        // Get at the image size too.
+        IMAGE_DOS_HEADER* dosHeader = (IMAGE_DOS_HEADER*)memInfo.AllocationBase;
+        IMAGE_NT_HEADERS* ntHeader = reinterpret_cast<IMAGE_NT_HEADERS*>(dosHeader + dosHeader->e_lfanew);
 
-	// Create the memory data struct.
-	moduledata_t* pData = new moduledata_t;
-	pData->handle		= memInfo.AllocationBase;
-	pData->size			= ntHeader->OptionalHeader.SizeOfImage;
+        // Create the memory data struct.
+        moduledata_t* pData = new moduledata_t;
+        pData->handle           = memInfo.AllocationBase;
+        pData->size                     = ntHeader->OptionalHeader.SizeOfImage;
 #else
-	Dl_info		info;
-	struct stat	buf;
-
-	// Attempt to get information about the module based on the address
-	// of its interface creation function.
-	if( !dladdr(baseAddress, &info) ) 
-	{
-		Msg("[SP] dladdr() for %s failed!\n", szBinary);
-		return NULL;
-	}
-
-	// Get the stat struct.
-	if( stat(info.dli_fname, &buf) != 0 )
-	{
-		Msg("[SP] stat() on %s failed!\n", szBinary);
-		return NULL;
-	}
-
-	// Construct the required memory information.
-	moduledata_t* pData		= new moduledata_t;
-	pData->handle			= baseAddress;
-	pData->size				= buf.st_size;
+        // Construct the required memory information.
+        moduledata_t* pData             = new moduledata_t;
+        pData->handle                   = baseAddress;
+        pData->size                     = 0;
 #endif
 
-	return pData;
+        return pData;
 }
 
 //---------------------------------------------------------------------------------
@@ -120,47 +109,47 @@ moduledata_t* FindModuleData(const char* szBinary)
 //---------------------------------------------------------------------------------
 unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 {
-	if( !pData ) 
-	{
-		Msg("[SP] find_signature got invalid pData!\n");
-		return NULL;
-	}
+        if( !pData ) 
+        {
+                Msg("[SP] find_signature got invalid pData!\n");
+                return NULL;
+        }
 
-	// This is required because there's no straight way to get a string from a python
-	// object from boost (without using the stl).
-	unsigned char* sig = NULL;
-	PyArg_Parse(signature.ptr(), "y", &sig);
+        // This is required because there's no straight way to get a string from a python
+        // object from boost (without using the stl).
+        unsigned char* sig = NULL;
+        PyArg_Parse(signature.ptr(), "y", &sig);
 
-	// Ugly casts but these can't be helped.
-	unsigned char*	base	= (unsigned char*)(pData->handle);
-	unsigned char*	end		= (unsigned char*)(base + pData->size);
-	int				i		= 0;
+        // Ugly casts but these can't be helped.
+        unsigned char*  base    = (unsigned char*)(pData->handle);
+        unsigned char*  end             = (unsigned char*)(base + pData->size);
+        int                             i               = 0;
 
-	// Scan the entire module.
-	while( base < end )
-	{
-		// Scan in chunks of length.
-		for( i = 0; i < length; i++ )
-		{
-			// If the current signature character is x2A, ignore it.
-			if( sig[i] == '\x2A' ) 
-				continue;
+        // Scan the entire module.
+        while( base < end )
+        {
+                // Scan in chunks of length.
+                for( i = 0; i < length; i++ )
+                {
+                        // If the current signature character is x2A, ignore it.
+                        if( sig[i] == '\x2A' ) 
+                                continue;
 
-			// Break out if we have a mismatch.
-			if( sig[i] != base[i] )
-				break;
-		}
+                        // Break out if we have a mismatch.
+                        if( sig[i] != base[i] )
+                                break;
+                }
 
-		// Did we find the signature?
-		if( i == length ) 
-			return reinterpret_cast<unsigned long>(base);
+                // Did we find the signature?
+                if( i == length ) 
+                        return reinterpret_cast<unsigned long>(base);
 
-		// Increment the base pointer.
-		base++;
-	}
+                // Increment the base pointer.
+                base++;
+        }
 
-	// Didn't find the signature :(
-	return NULL;
+        // Didn't find the signature :(
+        return NULL;
 }
 
 
@@ -169,18 +158,18 @@ unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 //---------------------------------------------------------------------------------
 unsigned long FindSymbol( moduledata_t* pData, char* symbol )
 {
-	if( !pData )
-	{
-		Msg("[SP] find_symbol got invalid pData for %s!\n", symbol);
-		return NULL;
-	}
+        if( !pData )
+        {
+                Msg("[SP] find_symbol got invalid pData for %s!\n", symbol);
+                return NULL;
+        }
 
 #if defined(__linux__)
-	if( !pData->handle ) 
-	{
-		Msg("[SP] find_symbol got invalid library handle for %s!\n", symbol);
-		return NULL;
-	}
+        if( !pData->handle ) 
+        {
+                Msg("[SP] find_symbol got invalid library handle for %s!\n", symbol);
+                return NULL;
+        }
 
     // -----------------------------------------
     // We need to use mmap now that VALVe has
@@ -306,6 +295,6 @@ unsigned long FindSymbol( moduledata_t* pData, char* symbol )
     return (unsigned long)(sym_addr);
 #endif
 
-	// Not implemented for windows yet.
-	return NULL;
+        // Not implemented for windows yet.
+        return NULL;
 }

@@ -501,7 +501,7 @@ void Export_EngineTrace( void )
 	// ----------------------------------------------------------
 	// TraceCollideCollection class.
 	// ----------------------------------------------------------
-	class_<TraceCollideCollection, bases<IEntityEnumerator>>("TraceCollideCollection", init<WrappedRay_t*, IHandleEntity*, int, int>())
+	class_<TraceCollideCollection, bases<IEntityEnumerator> >("TraceCollideCollection", init<WrappedRay_t*, IHandleEntity*, int, int>())
 		// ----------------------------------------------------------
 		// Class methods.
 		// ----------------------------------------------------------
