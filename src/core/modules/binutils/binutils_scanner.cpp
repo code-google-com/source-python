@@ -70,6 +70,8 @@ moduledata_t* FindModuleData(const char* szBinary)
         void* baseAddress = (void *)dlopen(szModulePath, RTLD_NOW | RTLD_GLOBAL);
 #endif
 
+	DevMsg(1, "Loading module %s\n", szModulePath);
+
 	// Don't continue if we couldn't load the module.
 	if( !baseAddress ) 
  	{
@@ -88,12 +90,12 @@ moduledata_t* FindModuleData(const char* szBinary)
 
         // Get at the image size too.
         IMAGE_DOS_HEADER* dosHeader = (IMAGE_DOS_HEADER*)memInfo.AllocationBase;
-        IMAGE_NT_HEADERS* ntHeader = reinterpret_cast<IMAGE_NT_HEADERS*>(dosHeader + dosHeader->e_lfanew);
+        IMAGE_NT_HEADERS* ntHeader = (IMAGE_NT_HEADERS*)((unsigned long)dosHeader + (unsigned long)dosHeader->e_lfanew);
 
         // Create the memory data struct.
         moduledata_t* pData = new moduledata_t;
-        pData->handle           = memInfo.AllocationBase;
-        pData->size                     = ntHeader->OptionalHeader.SizeOfImage;
+        pData->handle       = memInfo.AllocationBase;
+        pData->size         = ntHeader->OptionalHeader.SizeOfImage;
 #else
         // Construct the required memory information.
         moduledata_t* pData             = new moduledata_t;
@@ -101,7 +103,7 @@ moduledata_t* FindModuleData(const char* szBinary)
         pData->size                     = 0;
 #endif
 
-        return pData;
+		return pData;
 }
 
 //---------------------------------------------------------------------------------
