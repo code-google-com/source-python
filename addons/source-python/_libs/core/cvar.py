@@ -13,14 +13,6 @@ from Source import Cvar
 # Get the Cvar instance
 _ServerCvar = Cvar.GetCvar()
 
-# Store flags
-_cvar_flags = {
-    'notify': Cvar.FCVAR_NOTIFY,
-    'cheat': Cvar.FCVAR_CHEAT,
-    'replicated': Cvar.FCVAR_REPLICATED,
-    'hidden': Cvar.FCVAR_HIDDEN,
-}
-
 
 # =============================================================================
 # >> CLASSES
@@ -91,10 +83,11 @@ class ServerVar(object):
         '''Gets the value of the given attribute'''
 
         # Is the attribute a flag?
-        if attr in _cvar_flags:
+        if hasattr(Cvar, 'FCVAR_%s' % attr.upper()):
 
             # Return the value of the cvar's flag
-            return self.cvar.IsFlagSet(_cvar_flags[attr])
+            return self.cvar.IsFlagSet(
+                getattr(Cvar, 'FCVAR_%s' % attr.upper()))
 
         # If not, return the cvar's attribute
         return getattr(self.cvar, attr)
@@ -103,7 +96,7 @@ class ServerVar(object):
         '''Sets the value of the given attribute'''
 
         # Is the attribute a flag?
-        if not attr in _cvar_flags:
+        if not hasattr(Cvar, 'FCVAR_%s' % attr.upper()):
 
             # Set the attribute
             super(ServerVar, self).__setattr__(attr, value)
@@ -111,64 +104,20 @@ class ServerVar(object):
             # No need to go further
             return
 
+        # Get the flag
+        flag = getattr(Cvar, 'FCVAR_%s' % attr.upper())
+
         # Is the value "True"
         if value:
 
             # Add the flag
-            self.cvar.AddFlags(_cvar_flags[attr])
+            self.cvar.AddFlags(flag)
 
             # No need to go further
             return
 
         # Remove the flag
-        self.cvar.RemoveFlags(_cvar_flags[attr])
-
-    def __str__(self):
-        '''Returns string value of ConVar instance.'''
-        return self.cvar.GetString()
-
-    def __float__(self):
-        '''Returns float value of ConVar instance.'''
-        return self.cvar.GetFloat()
-
-    def __int__(self):
-        '''Returns int value of ConVar instance.'''
-        return self.cvar.GetInt()
-
-    def __bool__(self):
-        '''Returns bool value of ConVar instance.'''
-        return self.cvar.GetBool()
-
-    def __repr__(self):
-        '''Returns string value of ConVar instance.'''
-        return self.cvar.GetString()
-
-    def set_value(self, value):
-        '''Sets the value of the ConVar instance based on the input type.'''
-
-        # Is the given value an integer?
-        if type(value) == int:
-
-            # Set the value as an integer
-            self.cvar.SetInt(value)
-
-        # Is the given value a float?
-        elif type(value) == float:
-
-            # Set the value as a float
-            self.cvar.SetFloat(value)
-
-        # Is the given value a bool?
-        elif type(value) == bool:
-
-            # Set the value as a bool
-            self.cvar.SetInt(int(value))
-
-        # All other cases
-        else:
-
-            # Set value as a string
-            self.cvar.SetString(value)
+        self.cvar.RemoveFlags(flag)
 
     def make_public(self):
         '''Sets the notify flag for the cvar.'''

@@ -19,7 +19,7 @@ from dyncall.signature import Signature
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store the game's ini file's path
-_inipath = DATA_PATH.joinpath('dyncall', GAME_NAME + '.ini')
+_inipath = DATA_PATH.joinpath('dyncall', GAME_NAME)
 
 
 # =============================================================================
@@ -43,8 +43,11 @@ class _SignatureDictionary(dict):
 # Get the main _SignatureDictionary instance
 SignatureDictionary = _SignatureDictionary()
 
-# Does the game's ini file exist?
-if _inipath.isfile():
+# Does the game's ini directory exist?
+if _inipath.isdir():
 
-    # Parse the ini file
-    SignatureDictionary.parse_signature_ini(_inipath)
+    # Loop through all files in the directory
+    for _filepath in _inipath.files():
+
+        # Parse the ini file
+        SignatureDictionary.parse_signature_ini(_filepath)

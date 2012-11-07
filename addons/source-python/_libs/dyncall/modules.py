@@ -5,8 +5,6 @@
 # =============================================================================
 # Source.Python Imports
 from Source import Binutils
-#   Core
-from core import GAME_NAME
 
 
 # =============================================================================
@@ -19,7 +17,7 @@ class _ModuleData(dict):
         '''Add the module to the dictionary'''
 
         # Add the missing module to the dictionary
-        self[item] = Binutils.FindModuleData(GAME_NAME + '/' + item)
+        self[item] = Binutils.FindModuleData(item)
 
         # Return the module's instance
         return self[item]

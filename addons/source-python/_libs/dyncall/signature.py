@@ -13,6 +13,8 @@ if os_name != 'nt':
 
 # Source.Python Imports
 from Source import Binutils
+#   Core
+from core import GAME_NAME
 #   DynCall
 from dyncall.base import DynCallArgs
 from dyncall.base import DynCallCalls
@@ -39,8 +41,14 @@ class Signature(object):
             # Raise an error about the return type
             raise ValueError('Unknown return type "%s"' % return_type)
 
+        # Get the module for the signature/symbol
+        module = ini['module']
+
+        # Fix any paths that use $gamename
+        module = module.replace('$gamename', GAME_NAME)
+
         # Get the module instance
-        module = ModuleData[ini['module']]
+        module = ModuleData[module]
 
         # Is the server running on Windows?
         if os_name == 'nt':
