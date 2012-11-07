@@ -32,7 +32,7 @@ class _SignatureDictionary(dict):
         '''Parse an ini file and add its signatures to the dictionary'''
 
         # Get the ConfigObj instance of the file
-        sigs = ConfigObj(_inipath)
+        sigs = ConfigObj(inifile)
 
         # Loop through all functions
         for function in sigs:
