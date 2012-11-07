@@ -113,7 +113,7 @@ class _Weapon(object):
         self.slot = properties.get('slot', None)
 
         # Store the weapon's max ammo amount
-        self.maxammo = properties.get('maxammo', None)
+        self._maxammo = properties.get('maxammo', None)
 
         # Store the weapon's ammo property
         self.ammoprop = properties.get('ammoprop', None)
@@ -123,6 +123,19 @@ class _Weapon(object):
 
         # Store the weapon's tags
         self.tags = properties.get('tags', 'all').split(',')
+
+    @property
+    def maxammo(self):
+        '''Returns the maxammo amount for the weapon'''
+
+        # Is the stored maxammo an integer?
+        if isinstance(self._maxammo, int):
+
+            # Return the value
+            return self._maxammo
+
+        # Get the cvar value of the maxammo
+        return ServerVar(self._maxammo).GetInt()
 
 # Does the current game have an ini file?
 if _gamepath.isfile():

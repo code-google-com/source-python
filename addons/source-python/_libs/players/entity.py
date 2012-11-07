@@ -10,6 +10,9 @@ from Source import Player
 from core import GameEngine
 #   Entities
 from entities.entity import BaseEntity
+#   Players
+from players.helpers import address_of_playerinfo
+from players.helpers import uniqueid_of_playerinfo
 from players.weapons import _PlayerWeapons
 
 
@@ -88,7 +91,12 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
     @property
     def uniqueid(self):
         '''Returns the player's uniqueid'''
-        return get_uniqueid_from_player(self.info)
+        return uniqueid_of_playerinfo(self.info)
+
+    @property
+    def address(self):
+        '''Returns the player's IP address'''
+        return address_of_playerinfo(self.info)
 
     def get_team(self):
         '''Returns the player's team'''
@@ -119,114 +127,3 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
 
         # Return whether the given edict is one of a player entity
         return edict.GetClassName() == 'player'
-
-    @classmethod
-    def get_instance_from_userid(cls, userid):
-        '''Returns a class instance for the given userid'''
-
-        # Get the index of the given userid
-        index = Player.IndexOfUserid(userid)
-
-        # Return a class instance for the index
-        return cls(index)
-
-    @classmethod
-    def get_instance_from_playerinfo(cls, playerinfo):
-        '''Returns a class instance for the given IPlayerInfo instance'''
-
-        # Get the edict of the IPlayerInfo instance
-        edict = Player.EdictOfPlayer(playerinfo)
-
-        # Return a class instance for the edict
-        return cls.get_instance_from_edict(edict)
-
-    @classmethod
-    def get_instance_from_steamid(cls, steamid):
-        '''Returns a class instance for the given SteamID'''
-
-        # Loop through all players on the server
-        for player in Player.Players():
-
-            # Get the current player's SteamID
-            current = player.GetNetworkIDString()
-
-            # Is this the SteamID we are looking for?
-            if current == steamid:
-
-                # Return a class instance
-                return cls.get_instance_from_playerinfo(player)
-
-        # If the SteamID is not found, raise an error
-        raise ValueError('Invalid SteamID "%s"' % steamid)
-
-    @classmethod
-    def get_instance_from_uniqueid(cls, uniqueid):
-        '''Returns a class instance for the given UniqueID'''
-
-        # Loop through all players on the server
-        for player in Player.Players():
-
-            # Get the current player's UniqueID
-            current = get_uniqueid_from_player(player)
-
-            # Is this the UniqueID we are looking for?
-            if current == uniqueid:
-
-                # Return a class instance
-                return cls.get_instance_from_playerinfo(player)
-
-        # If the UniqueID is not found, raise an error
-        raise ValueError('Invalid UniqueID "%s"' % uniqueid)
-
-    @classmethod
-    def get_instance_from_name(cls, name):
-        '''Returns a class instance for the given name'''
-
-        # Loop through all players on the server
-        for player in Player.Players():
-
-            # Get the current player's name
-            current = player.GetName()
-
-            # Is this the name we are looking for?
-            if current == name:
-
-                # Return a class instance
-                return cls.get_instance_from_playerinfo(player)
-
-        # If the name is not found, raise an error
-        raise ValueError('Invalid name "%s"' % name)
-
-
-def get_uniqueid_from_player(player):
-    '''Returns the UniqueID for the given player'''
-
-    # Is the player a Bot?
-    if player.IsFakeClient():
-
-        # Return the bot's UniqueID
-        return 'BOT_%s' % player.GetName()
-
-    # Get the player's SteamID
-    steamid = player.GetNetworkIDString()
-
-    # Is this a Lan SteamID?
-    if 'LAN' in steamid:
-
-        # Get the player's edict instance
-        edict = Player.EdictOfPlayer(player)
-
-        # Get the player's index
-        index = Engine.IndexOfEdict(edict)
-
-        # Get the player's NetInfo instance
-        netinfo = GameEngine.GetPlayerNetInfo(index)
-
-        # Get the player's IP Address
-        address = netinfo.GetAddress()
-
-        # Return the Lan player's ID
-        return 'LAN_%s' % '_'.join(address.split(':')[0].split('.'))
-
-    # Return the player's SteamID
-    return steamid

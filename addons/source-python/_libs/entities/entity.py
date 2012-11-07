@@ -76,6 +76,12 @@ class BaseEntity(object):
             # Return the property's value
             return self._get_property(attr)
 
+        # Is the attribute a keyvalue of this entity?
+        if attr in self.keyvalues:
+
+            # Return the keyvalue's value
+            return self._get_keyvalue(attr)
+
         # Is the attribute a function of this entity?
         if attr in self.functions:
 
@@ -88,58 +94,35 @@ class BaseEntity(object):
     def _get_property(self, item):
         '''Gets the value of the given property'''
 
-        # Get the property's prop
-        prop = self.properties[item].prop
-
         # Get the property's type
         prop_type = self.properties[item].type
 
-        # Is the property's type "int"?
-        if prop_type == 'int':
+        # Is the property's type a known type?
+        if not hasattr(self.edict, 'GetProp%s' % prop_type):
 
-            # Is the property a True/False property?
-            if 'True' in self.properties[item]:
+            # If not a proper type, raise an error
+            raise TypeError('Invalid property type "%s"' % prop_type)
 
-                # Return if the current value equals the "True" value
-                return (
-                    self.edict.GetPropInt(prop)
-                    == self.properties[item]['True'])
+        # Get the property's prop
+        prop = self.properties[item].prop
 
-            # Return the integer value of the property
-            return self.edict.GetPropInt(prop)
+        # Get the property's value
+        value = getattr(self.edict, 'GetProp%s' % prop_type)(prop)
 
-        # Is the property's type "string"?
-        if prop_type == 'string':
+        # Is the property a True/False property?
+        if 'True' in self.properties[item]:
 
-            # Return the string value of the propery
-            return self.edict.GetPropString(prop)
+            # Return if the current value equals the "True" value
+            return value == self.properties[item]['True']
 
-        # Is the property's type "float"?
-        if prop_type == 'float':
+        # Return the value of the property
+        return value
 
-            # Return the float value of the property
-            return self.edict.GetPropFloat(prop)
+    def _get_keyvalue(self, item):
+        '''Gets the value of the given keyvalue'''
 
-        # Is the property's type "vector"?
-        if prop_type == 'vector':
-
-            # Return the Vector instance of the property
-            return self.edict.GetPropVector(prop)
-
-        # Is the property's type "vectorxy"?
-        if prop_type == 'vectorxy':
-
-            # Return the VectorXY instance of the property
-            return self.edict.GetPropVectorXY(prop)
-
-        # Is the property's type "long"?
-        if prop_type == 'long':
-
-            # Return the long value of the property
-            return self.edict.GetPropLong(prop)
-
-        # If not a proper type, raise an error
-        raise TypeError('Invalid property type "%s"' % prop_type)
+        # Return the value of the given keyvalue
+        return self.edict.GetKeyValue(item)
 
     def _get_function(self, item):
         '''Calls a dynamic function'''
@@ -184,71 +167,56 @@ class BaseEntity(object):
             # Set the property's value
             self._set_property(attr, value)
 
+        # Is the attribute a keyvalue of this entity?
+        elif attr in self.keyvalues:
+
+            # Set the keyvalue's value
+            self._set_keyvalue(attr, value)
+
+        # Was the attribute not found?
+        else:
+
+            # If the attribute is not found, raise an error
+            raise LookupError('Attribute "%s" not found' % attr)
+
     def _set_property(self, item, value):
         '''Sets the value of the given propery'''
-
-        # Get the property's prop
-        prop = self.properties[item].prop
 
         # Get the property's type
         prop_type = self.properties[item].type
 
-        # Is the property's type "int"?
-        if prop_type == 'int':
-
-            # Is the property a True/False property?
-            if 'True' in self.properties[item]:
-
-                # Get the current value
-                current = self.edict.GetPropInt(prop)
-
-                # Does the current value equal the given value?
-                if current == value:
-
-                    # No need to set the value
-                    return
-
-                # Get the exact value to set the property to
-                value = self.properties[item][str(bool(value))]
-
-            # Set the property's integer value
-            self.edict.SetPropInt(prop, value)
-
-        # Is the property's type "string"?
-        elif prop_type == 'string':
-
-            # Set the property's string value
-            self.edict.SetPropString(prop, value)
-
-        # Is the property's type "float"?
-        elif prop_type == 'float':
-
-            # Set the property's float value
-            self.edict.SetPropFloat(prop, value)
-
-        # Is the property's type "vector"?
-        elif prop_type == 'vector':
-
-            # Set the property's Vector value
-            self.edict.SetPropVector(prop, value)
-
-        # Is the property's type "vectorxy"?
-        elif prop_type == 'vectorxy':
-
-            # Set the property's VectorXY value
-            self.edict.SetPropVectorXY(prop, value)
-
-        # Is the property's type "long"?
-        elif prop_type == 'long':
-
-            # Set the property's long value
-            self.edict.SetPropLong(prop, value)
-
-        # Is the item an improper type?
-        else:
+        # Is the property's type a known type?
+        if not hasattr(self.edict, 'SetProp%s' % prop_type):
 
             # Raise an error
             raise TypeError('Invalid property type "%s"' % prop_type)
+
+        # Get the property's prop
+        prop = self.properties[item].prop
+
+        # Is the property a True/False property?
+        if 'True' in self.properties[item]:
+
+            # Get the exact value to set the property to
+            value = self.properties[item][str(bool(value))]
+
+        # Set the property's value
+        getattr(self.edict, 'SetProp%s' % prop_type)(prop, value)
+
+    def _set_keyvalue(self, item, value):
+        '''Sets the value of the given keyvalue'''
+
+        # Get the keyvalue's type
+        kv_type = self.keyvalues[item]
+
+        # Is the keyvalue's type a known type?
+        if not hasattr(self.edict, 'SetKeyValue%s' % kv_type):
+
+            # Raise an error
+            raise TypeError('Invalid keyvalue type "%s"' % kv_type)
+
+        # Set the keyvalue's value
+        getattr(self.edict, 'SetKeyValue%s' % kv_type)(value)
 
     def get_color(self):
         '''Returns a 4 part tuple (RGBA) for the entity's color'''
@@ -328,6 +296,11 @@ class BaseEntity(object):
         return Properties.get_entity_properties(self._game_inis)
 
     @property
+    def keyvalues(self):
+        '''Returns all keyvalues for all entities'''
+        return KeyValues.get_entity_keyvalues(self._game_inis)
+
+    @property
     def functions(self):
         '''Returns all dynamic calling functions for all entities'''
         return Functions.get_entity_functions(self._game_inis)
@@ -343,33 +316,3 @@ class BaseEntity(object):
 
         # Return whether the given edict has a classname
         return edict.GetClassName()
-
-    @classmethod
-    def get_instance_from_edict(cls, edict):
-        '''Returns a class instance for the given edict'''
-
-        # Get the index of the given edict
-        index = Engine.IndexOfEdict(edict)
-
-        # Return an instance for the index
-        return cls(index)
-
-    @classmethod
-    def get_instance_from_int_handle(cls, handle):
-        '''Returns a class instance for the given handle in integer form'''
-
-        # Get the index of the given handle
-        index = Engine.IndexOfIntHandle(handle)
-
-        # Return an instance for the index
-        return cls(index)
-
-    @classmethod
-    def get_instance_from_pointer(cls, pointer):
-        '''Returns a class instance for the given entity pointer'''
-
-        # Get the index of the given pointer
-        index = Engine.IndexOfPointer(pointer)
-
-        # Return an instance for the index
-        return cls(index)
