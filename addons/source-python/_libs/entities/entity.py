@@ -8,6 +8,7 @@ from Source import Engine
 #   Entities
 from entities.properties import Properties
 from entities.functions import Functions
+from entities.keyvalues import KeyValues
 
 
 # =============================================================================
@@ -216,7 +217,7 @@ class BaseEntity(object):
             raise TypeError('Invalid keyvalue type "%s"' % kv_type)
 
         # Set the keyvalue's value
-        getattr(self.edict, 'SetKeyValue%s' % kv_type)(value)
+        getattr(self.edict, 'SetKeyValue%s' % kv_type)(item, value)
 
     def get_color(self):
         '''Returns a 4 part tuple (RGBA) for the entity's color'''
