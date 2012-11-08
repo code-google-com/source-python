@@ -109,18 +109,6 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
     # Set the "team" property methods
     team = property(get_team, set_team)
 
-    def respawn(self):
-        '''Respawns the player'''
-
-        # Set the player's PlayerState property
-        self.set_property('state', 0)
-
-        # Set the player's LifeState property
-        self.set_property('lifestate', 512)
-
-        # Spawn the player
-        self.edict.DispatchSpawn()
-
     @classmethod
     def _is_valid_index_for_entity_type(cls, edict):
         '''Verifies that the given edict is of a player'''
