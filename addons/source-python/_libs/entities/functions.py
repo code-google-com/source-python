@@ -71,7 +71,8 @@ class _FunctionInstance(object):
         if not name in SignatureDictionary:
 
             # Raise an error
-            raise KeyError('No function "%s" stored in SignatureDictionary' % name)
+            raise KeyError(
+                'No function "%s" stored in SignatureDictionary' % name)
 
         # Store the function to be called
         self.function = SignatureDictionary[name]
@@ -90,8 +91,10 @@ class _FunctionInstance(object):
         if self.current_pointer:
 
             # Add the pointer to the arguments
-            args = (args[:self.pointer_index] +
-                (self.current_pointer, ) + args[self.pointer_index:])
+            args = (
+                args[:self.pointer_index] +
+                (self.current_pointer, ) +
+                args[self.pointer_index:])
 
         # Call the function with the entity's pointer as the first argument
         self.function.call_function(*args)
