@@ -77,6 +77,9 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 {
 	char szFullPath[1024];
 	char szGamePath[1024];
+	char szError[1024];
+	V_strncpy(szError, "[SP-LOADER] - No error found\n", 1024);
+
 	engine->GetGameDir(szGamePath, 1024);
 
 	V_snprintf(szFullPath, sizeof(szFullPath), "%s/addons/source-python/%s", 
@@ -87,12 +90,61 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 
 #if defined(_WIN32)
 	void* hModule = (void *)LoadLibrary(szFullPath);
+	if (!hModule)
+	{
+		// I hate windows programming...
+		DWORD nErrorCode = GetLastError();
+		LPVOID lpMsgBuf;
+		DWORD nBufferLength = FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+			FORMAT_MESSAGE_FROM_SYSTEM |
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			nErrorCode,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPTSTR) &lpMsgBuf,
+			0, NULL );
+
+		if(nBufferLength == 0)
+
+		{
+			V_snprintf(szError, sizeof(szError), 
+			   "[SP-LOADER] Could not obtain a valid translation for error. (Code: %d)\n",
+			   nErrorCode);
+		}
+		else
+		{
+			char szResult[1024];
+			memset(szResult, '\0', 1024);
+
+			// Too lazy to bring across any windows functions, cast myself from wide to narrow
+			for (unsigned int i=0; i < nBufferLength; ++i)
+			{
+				szResult[i] = static_cast<char>(static_cast<LPCSTR>(lpMsgBuf)[i]);
+			}
+
+			V_snprintf(szError, sizeof(szError), 
+			   "[SP-LOADER] (Code: %d) %s",
+			   nErrorCode,
+			   szResult/*.c_str()*/);
+
+			LocalFree(lpMsgBuf);
+		}
+	}
 #else
 	void* hModule = (void *)dlopen(szFullPath, RTLD_NOW | RTLD_GLOBAL);
+	if (!hModule)
+	{
+		V_snprintf(szError, sizeof(szError), "[SP-LOADER] Error Reported: %s\n",
+			dlerror());
+	}
 #endif
 
 	if( !hModule ) {
-		Msg("[SP-LOADER] Could not load library: %s\n", libraryPath);
+		Warning("=========================================================================\n");
+		Warning("[SP-LOADER] Could not load library: %s\n", libraryPath);
+		Warning(szError);
+		Warning("=========================================================================\n");
 		return hModule;
 	}
 
@@ -178,7 +230,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	}
 
 	// Get the interface from it.
-	m_pCorePlugin = reinterpret_cast<IServerPluginCallbacks*>(
+	m_pCorePlugin = static_cast<IServerPluginCallbacks*>(
 		m_pCore->GetFactory()(INTERFACEVERSION_ISERVERPLUGINCALLBACKS, NULL)
 		);
 
@@ -198,7 +250,10 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 //---------------------------------------------------------------------------------
 void CSourcePython::Unload( void )
 {
-	m_pCorePlugin->Unload();
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->Unload();
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -206,7 +261,10 @@ void CSourcePython::Unload( void )
 //---------------------------------------------------------------------------------
 void CSourcePython::Pause( void )
 {
-	m_pCorePlugin->Pause();
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->Pause();
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -222,7 +280,11 @@ void CSourcePython::UnPause( void )
 //---------------------------------------------------------------------------------
 const char *CSourcePython::GetPluginDescription( void )
 {
-	return m_pCorePlugin->GetPluginDescription();
+	if (m_pCorePlugin != NULL)
+	{
+		return m_pCorePlugin->GetPluginDescription();
+	}
+	return "Error loading core plugin.";
 }
 
 //---------------------------------------------------------------------------------
@@ -230,7 +292,10 @@ const char *CSourcePython::GetPluginDescription( void )
 //---------------------------------------------------------------------------------
 void CSourcePython::LevelInit( char const *pMapName )
 {
-	m_pCorePlugin->LevelInit(pMapName);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->LevelInit(pMapName);
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -239,7 +304,10 @@ void CSourcePython::LevelInit( char const *pMapName )
 //---------------------------------------------------------------------------------
 void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
-	m_pCorePlugin->ServerActivate(pEdictList, edictCount, clientMax);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->ServerActivate(pEdictList, edictCount, clientMax);
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -247,7 +315,10 @@ void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int cli
 //---------------------------------------------------------------------------------
 void CSourcePython::GameFrame( bool simulating )
 {
-	m_pCorePlugin->GameFrame(simulating);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->GameFrame(simulating);
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -255,7 +326,10 @@ void CSourcePython::GameFrame( bool simulating )
 //---------------------------------------------------------------------------------
 void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple times per map change
 {
-	m_pCorePlugin->LevelShutdown();
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->LevelShutdown();
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -263,7 +337,10 @@ void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple ti
 //---------------------------------------------------------------------------------
 void CSourcePython::ClientActive( edict_t *pEntity )
 {
-	m_pCorePlugin->ClientActive(pEntity);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->ClientActive(pEntity);
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -271,7 +348,10 @@ void CSourcePython::ClientActive( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CSourcePython::ClientDisconnect( edict_t *pEntity )
 {
-	m_pCorePlugin->ClientDisconnect(pEntity);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->ClientDisconnect(pEntity);
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -279,7 +359,10 @@ void CSourcePython::ClientDisconnect( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
-	m_pCorePlugin->ClientPutInServer(pEntity, playername);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->ClientPutInServer(pEntity, playername);
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -287,7 +370,10 @@ void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername 
 //---------------------------------------------------------------------------------
 void CSourcePython::SetCommandClient( int index )
 {
-	m_pCorePlugin->SetCommandClient(index);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->SetCommandClient(index);
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -295,7 +381,10 @@ void CSourcePython::SetCommandClient( int index )
 //---------------------------------------------------------------------------------
 void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 {
-	m_pCorePlugin->ClientSettingsChanged(pEdict);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->ClientSettingsChanged(pEdict);
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -303,7 +392,11 @@ void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 //---------------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	return m_pCorePlugin->ClientConnect(bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
+	if (m_pCorePlugin != NULL)
+	{
+		return m_pCorePlugin->ClientConnect(bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
+	}
+	return PLUGIN_STOP;
 }
 
 //---------------------------------------------------------------------------------
@@ -311,7 +404,11 @@ PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntit
 //---------------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
-	return m_pCorePlugin->NetworkIDValidated(pszUserName, pszNetworkID);
+	if (m_pCorePlugin != NULL)
+	{
+		return m_pCorePlugin->NetworkIDValidated(pszUserName, pszNetworkID);
+	}
+	return PLUGIN_STOP;
 }
 
 //---------------------------------------------------------------------------------
@@ -320,7 +417,10 @@ PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const 
 void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, 
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
-	m_pCorePlugin->OnQueryCvarValueFinished(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->OnQueryCvarValueFinished(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -332,7 +432,11 @@ PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &ar
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
 #endif
 {
-	return m_pCorePlugin->ClientCommand(pEntity, args);
+	if (m_pCorePlugin != NULL)
+	{
+		return m_pCorePlugin->ClientCommand(pEntity, args);
+	}
+	return PLUGIN_STOP;
 }
 
 //---------------------------------------------------------------------------------
@@ -341,16 +445,25 @@ PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
 #if(SOURCE_ENGINE >= 3)
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
-	m_pCorePlugin->ClientFullyConnect(pEntity);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->ClientFullyConnect(pEntity);
+	}
 }
 
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
-	m_pCorePlugin->OnEdictAllocated(edict);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->OnEdictAllocated(edict);
+	}
 }
 
 void CSourcePython::OnEdictFreed( const edict_t *edict )
 {
-	m_pCorePlugin->OnEdictFreed(edict);
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->OnEdictFreed(edict);
+	}
 }
 #endif
