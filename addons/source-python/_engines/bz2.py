@@ -4,11 +4,12 @@ This module provides a file interface, classes for incremental
 (de)compression, and functions for one-shot (de)compression.
 """
 
-__all__ = ["BZ2File", "BZ2Compressor", "BZ2Decompressor", "compress",
-           "decompress"]
+__all__ = ["BZ2File", "BZ2Compressor", "BZ2Decompressor",
+           "open", "compress", "decompress"]
 
 __author__ = "Nadeem Vawda <nadeem.vawda@gmail.com>"
 
+import builtins
 import io
 import warnings
 
@@ -39,16 +40,15 @@ class BZ2File(io.BufferedIOBase):
     returned as bytes, and data to be written should be given as bytes.
     """
 
-    def __init__(self, filename=None, mode="r", buffering=None,
-                 compresslevel=9, *, fileobj=None):
+    def __init__(self, filename, mode="r", buffering=None, compresslevel=9):
         """Open a bzip2-compressed file.
 
-        If filename is given, open the named file. Otherwise, operate on
-        the file object given by fileobj. Exactly one of these two
-        parameters should be provided.
+        If filename is a str or bytes object, is gives the name of the file to
+        be opened. Otherwise, it should be a file object, which will be used to
+        read or write the compressed data.
 
-        mode can be 'r' for reading (default), 'w' for (over)writing, or
-        'a' for appending.
+        mode can be 'r' for reading (default), 'w' for (over)writing, or 'a' for
+        appending. These can equivalently be given as 'rb', 'wb', and 'ab'.
 
         buffering is ignored. Its use is deprecated.
 
@@ -91,15 +91,15 @@ class BZ2File(io.BufferedIOBase):
         else:
             raise ValueError("Invalid mode: {!r}".format(mode))
 
-        if filename is not None and fileobj is None:
-            self._fp = open(filename, mode)
+        if isinstance(filename, (str, bytes)):
+            self._fp = builtins.open(filename, mode)
             self._closefp = True
             self._mode = mode_code
-        elif fileobj is not None and filename is None:
-            self._fp = fileobj
+        elif hasattr(filename, "read") or hasattr(filename, "write"):
+            self._fp = filename
             self._mode = mode_code
         else:
-            raise ValueError("Must give exactly one of filename and fileobj")
+            raise TypeError("filename must be a str or bytes object, or a file")
 
     def close(self):
         """Flush and close the file.
@@ -174,29 +174,31 @@ class BZ2File(io.BufferedIOBase):
 
     # Fill the readahead buffer if it is empty. Returns False on EOF.
     def _fill_buffer(self):
-        if self._buffer:
-            return True
+        # Depending on the input data, our call to the decompressor may not
+        # return any data. In this case, try again after reading another block.
+        while True:
+            if self._buffer:
+                return True
 
-        if self._decompressor.unused_data:
-            rawblock = self._decompressor.unused_data
-        else:
-            rawblock = self._fp.read(_BUFFER_SIZE)
-
-        if not rawblock:
-            if self._decompressor.eof:
-                self._mode = _MODE_READ_EOF
-                self._size = self._pos
-                return False
+            if self._decompressor.unused_data:
+                rawblock = self._decompressor.unused_data
             else:
-                raise EOFError("Compressed file ended before the "
-                               "end-of-stream marker was reached")
+                rawblock = self._fp.read(_BUFFER_SIZE)
 
-        # Continue to next stream.
-        if self._decompressor.eof:
-            self._decompressor = BZ2Decompressor()
+            if not rawblock:
+                if self._decompressor.eof:
+                    self._mode = _MODE_READ_EOF
+                    self._size = self._pos
+                    return False
+                else:
+                    raise EOFError("Compressed file ended before the "
+                                   "end-of-stream marker was reached")
 
-        self._buffer = self._decompressor.decompress(rawblock)
-        return True
+            # Continue to next stream.
+            if self._decompressor.eof:
+                self._decompressor = BZ2Decompressor()
+
+            self._buffer = self._decompressor.decompress(rawblock)
 
     # Read data until EOF.
     # If return_data is false, consume the data without returning it.
@@ -256,11 +258,14 @@ class BZ2File(io.BufferedIOBase):
                 return self._read_block(size)
 
     def read1(self, size=-1):
-        """Read up to size uncompressed bytes with at most one read
-        from the underlying stream.
+        """Read up to size uncompressed bytes, while trying to avoid
+        making multiple reads from the underlying stream.
 
         Returns b'' if the file is at EOF.
         """
+        # Usually, read1() calls _fp.read() at most once. However, sometimes
+        # this does not give enough data for the decompressor to make progress.
+        # In this case we make multiple reads, to avoid returning b"".
         with self._lock:
             self._check_can_read()
             if (size == 0 or self._mode == _MODE_READ_EOF or
@@ -390,6 +395,46 @@ class BZ2File(io.BufferedIOBase):
         with self._lock:
             self._check_not_closed()
             return self._pos
+
+
+def open(filename, mode="rb", compresslevel=9,
+         encoding=None, errors=None, newline=None):
+    """Open a bzip2-compressed file in binary or text mode.
+
+    The filename argument can be an actual filename (a str or bytes object), or
+    an existing file object to read from or write to.
+
+    The mode argument can be "r", "rb", "w", "wb", "a" or "ab" for binary mode,
+    or "rt", "wt" or "at" for text mode. The default mode is "rb", and the
+    default compresslevel is 9.
+
+    For binary mode, this function is equivalent to the BZ2File constructor:
+    BZ2File(filename, mode, compresslevel). In this case, the encoding, errors
+    and newline arguments must not be provided.
+
+    For text mode, a BZ2File object is created, and wrapped in an
+    io.TextIOWrapper instance with the specified encoding, error handling
+    behavior, and line ending(s).
+
+    """
+    if "t" in mode:
+        if "b" in mode:
+            raise ValueError("Invalid mode: %r" % (mode,))
+    else:
+        if encoding is not None:
+            raise ValueError("Argument 'encoding' not supported in binary mode")
+        if errors is not None:
+            raise ValueError("Argument 'errors' not supported in binary mode")
+        if newline is not None:
+            raise ValueError("Argument 'newline' not supported in binary mode")
+
+    bz_mode = mode.replace("t", "")
+    binary_file = BZ2File(filename, bz_mode, compresslevel=compresslevel)
+
+    if "t" in mode:
+        return io.TextIOWrapper(binary_file, encoding, errors, newline)
+    else:
+        return binary_file
 
 
 def compress(data, compresslevel=9):

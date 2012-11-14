@@ -5,7 +5,6 @@ Python implementation of the io module.
 import os
 import abc
 import codecs
-import warnings
 import errno
 # Import _thread instead of threading to reduce startup cost
 try:
@@ -15,6 +14,11 @@ except ImportError:
 
 import io
 from io import (__all__, SEEK_SET, SEEK_CUR, SEEK_END)
+
+valid_seek_flags = {0, 1, 2}  # Hardwired values
+if hasattr(os, 'SEEK_HOLE') :
+    valid_seek_flags.add(os.SEEK_HOLE)
+    valid_seek_flags.add(os.SEEK_DATA)
 
 # open() uses st_blksize whenever we can
 DEFAULT_BUFFER_SIZE = 8 * 1024  # bytes
@@ -306,6 +310,7 @@ class IOBase(metaclass=abc.ABCMeta):
         * 0 -- start of stream (the default); offset should be zero or positive
         * 1 -- current stream position; offset may be negative
         * 2 -- end of stream; offset is usually negative
+        Some operating systems / file systems could provide additional values.
 
         Return an int indicating the new absolute position.
         """
@@ -866,7 +871,7 @@ class BytesIO(BufferedIOBase):
         elif whence == 2:
             self._pos = max(0, len(self._buffer) + pos)
         else:
-            raise ValueError("invalid whence value")
+            raise ValueError("unsupported whence value")
         return self._pos
 
     def tell(self):
@@ -1041,7 +1046,7 @@ class BufferedReader(_BufferedIOMixin):
         return _BufferedIOMixin.tell(self) - len(self._read_buf) + self._read_pos
 
     def seek(self, pos, whence=0):
-        if not (0 <= whence <= 2):
+        if whence not in valid_seek_flags:
             raise ValueError("invalid whence value")
         with self._read_lock:
             if whence == 1:
@@ -1059,19 +1064,13 @@ class BufferedWriter(_BufferedIOMixin):
     DEFAULT_BUFFER_SIZE.
     """
 
-    _warning_stack_offset = 2
-
-    def __init__(self, raw,
-                 buffer_size=DEFAULT_BUFFER_SIZE, max_buffer_size=None):
+    def __init__(self, raw, buffer_size=DEFAULT_BUFFER_SIZE):
         if not raw.writable():
             raise IOError('"raw" argument must be writable.')
 
         _BufferedIOMixin.__init__(self, raw)
         if buffer_size <= 0:
             raise ValueError("invalid buffer size")
-        if max_buffer_size is not None:
-            warnings.warn("max_buffer_size is deprecated", DeprecationWarning,
-                          self._warning_stack_offset)
         self.buffer_size = buffer_size
         self._write_buf = bytearray()
         self._write_lock = Lock()
@@ -1138,8 +1137,8 @@ class BufferedWriter(_BufferedIOMixin):
         return _BufferedIOMixin.tell(self) + len(self._write_buf)
 
     def seek(self, pos, whence=0):
-        if not (0 <= whence <= 2):
-            raise ValueError("invalid whence")
+        if whence not in valid_seek_flags:
+            raise ValueError("invalid whence value")
         with self._write_lock:
             self._flush_unlocked()
             return _BufferedIOMixin.seek(self, pos, whence)
@@ -1161,15 +1160,11 @@ class BufferedRWPair(BufferedIOBase):
     # XXX The usefulness of this (compared to having two separate IO
     # objects) is questionable.
 
-    def __init__(self, reader, writer,
-                 buffer_size=DEFAULT_BUFFER_SIZE, max_buffer_size=None):
+    def __init__(self, reader, writer, buffer_size=DEFAULT_BUFFER_SIZE):
         """Constructor.
 
         The arguments are two RawIO instances.
         """
-        if max_buffer_size is not None:
-            warnings.warn("max_buffer_size is deprecated", DeprecationWarning, 2)
-
         if not reader.readable():
             raise IOError('"reader" argument must be readable.')
 
@@ -1226,17 +1221,14 @@ class BufferedRandom(BufferedWriter, BufferedReader):
     defaults to DEFAULT_BUFFER_SIZE.
     """
 
-    _warning_stack_offset = 3
-
-    def __init__(self, raw,
-                 buffer_size=DEFAULT_BUFFER_SIZE, max_buffer_size=None):
+    def __init__(self, raw, buffer_size=DEFAULT_BUFFER_SIZE):
         raw._checkSeekable()
         BufferedReader.__init__(self, raw, buffer_size)
-        BufferedWriter.__init__(self, raw, buffer_size, max_buffer_size)
+        BufferedWriter.__init__(self, raw, buffer_size)
 
     def seek(self, pos, whence=0):
-        if not (0 <= whence <= 2):
-            raise ValueError("invalid whence")
+        if whence not in valid_seek_flags:
+            raise ValueError("invalid whence value")
         self.flush()
         if self._read_buf:
             # Undo read ahead.
@@ -1448,7 +1440,7 @@ class TextIOWrapper(TextIOBase):
     r"""Character and line based layer over a BufferedIOBase object, buffer.
 
     encoding gives the name of the encoding that the stream will be
-    decoded or encoded with. It defaults to locale.getpreferredencoding.
+    decoded or encoded with. It defaults to locale.getpreferredencoding(False).
 
     errors determines the strictness of encoding and decoding (see the
     codecs.register) and defaults to "strict".
@@ -1469,6 +1461,9 @@ class TextIOWrapper(TextIOBase):
 
     _CHUNK_SIZE = 2048
 
+    # The write_through argument has no effect here since this
+    # implementation always writes through.  The argument is present only
+    # so that the signature can match the signature of the C version.
     def __init__(self, buffer, encoding=None, errors=None, newline=None,
                  line_buffering=False, write_through=False):
         if newline is not None and not isinstance(newline, str):
@@ -1487,7 +1482,7 @@ class TextIOWrapper(TextIOBase):
                     # Importing locale may fail if Python is being built
                     encoding = "ascii"
                 else:
-                    encoding = locale.getpreferredencoding()
+                    encoding = locale.getpreferredencoding(False)
 
         if not isinstance(encoding, str):
             raise ValueError("invalid encoding: %r" % encoding)
@@ -1852,8 +1847,7 @@ class TextIOWrapper(TextIOBase):
                 self._decoder.reset()
             return position
         if whence != 0:
-            raise ValueError("invalid whence (%r, should be 0, 1 or 2)" %
-                             (whence,))
+            raise ValueError("unsupported whence (%r)" % (whence,))
         if cookie < 0:
             raise ValueError("negative seek position %r" % (cookie,))
         self.flush()

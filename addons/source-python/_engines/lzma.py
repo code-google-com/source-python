@@ -18,12 +18,13 @@ __all__ = [
     "MODE_FAST", "MODE_NORMAL", "PRESET_DEFAULT", "PRESET_EXTREME",
 
     "LZMACompressor", "LZMADecompressor", "LZMAFile", "LZMAError",
-    "compress", "decompress", "is_check_supported",
-    "encode_filter_properties", "decode_filter_properties",
+    "open", "compress", "decompress", "is_check_supported",
 ]
 
+import builtins
 import io
 from _lzma import *
+from _lzma import _encode_filter_properties, _decode_filter_properties
 
 
 _MODE_CLOSED   = 0
@@ -46,16 +47,16 @@ class LZMAFile(io.BufferedIOBase):
     """
 
     def __init__(self, filename=None, mode="r", *,
-                 fileobj=None, format=None, check=-1,
-                 preset=None, filters=None):
-        """Open an LZMA-compressed file.
+                 format=None, check=-1, preset=None, filters=None):
+        """Open an LZMA-compressed file in binary mode.
 
-        If filename is given, open the named file. Otherwise, operate on
-        the file object given by fileobj. Exactly one of these two
-        parameters should be provided.
+        filename can be either an actual file name (given as a str or
+        bytes object), in which case the named file is opened, or it can
+        be an existing file object to read from or write to.
 
         mode can be "r" for reading (default), "w" for (over)writing, or
-        "a" for appending.
+        "a" for appending. These can equivalently be given as "rb", "wb",
+        and "ab" respectively.
 
         format specifies the container format to use for the file.
         If mode is "r", this defaults to FORMAT_AUTO. Otherwise, the
@@ -94,7 +95,7 @@ class LZMAFile(io.BufferedIOBase):
         self._pos = 0
         self._size = -1
 
-        if mode == "r":
+        if mode in ("r", "rb"):
             if check != -1:
                 raise ValueError("Cannot specify an integrity check "
                                  "when opening a file for reading")
@@ -110,7 +111,7 @@ class LZMAFile(io.BufferedIOBase):
             self._init_args = {"format":format, "filters":filters}
             self._decompressor = LZMADecompressor(**self._init_args)
             self._buffer = None
-        elif mode in ("w", "a"):
+        elif mode in ("w", "wb", "a", "ab"):
             if format is None:
                 format = FORMAT_XZ
             mode_code = _MODE_WRITE
@@ -119,16 +120,17 @@ class LZMAFile(io.BufferedIOBase):
         else:
             raise ValueError("Invalid mode: {!r}".format(mode))
 
-        if filename is not None and fileobj is None:
-            mode += "b"
-            self._fp = open(filename, mode)
+        if isinstance(filename, (str, bytes)):
+            if "b" not in mode:
+                mode += "b"
+            self._fp = builtins.open(filename, mode)
             self._closefp = True
             self._mode = mode_code
-        elif fileobj is not None and filename is None:
-            self._fp = fileobj
+        elif hasattr(filename, "read") or hasattr(filename, "write"):
+            self._fp = filename
             self._mode = mode_code
         else:
-            raise ValueError("Must give exactly one of filename and fileobj")
+            raise TypeError("filename must be a str or bytes object, or a file")
 
     def close(self):
         """Flush and close the file.
@@ -202,29 +204,31 @@ class LZMAFile(io.BufferedIOBase):
 
     # Fill the readahead buffer if it is empty. Returns False on EOF.
     def _fill_buffer(self):
-        if self._buffer:
-            return True
+        # Depending on the input data, our call to the decompressor may not
+        # return any data. In this case, try again after reading another block.
+        while True:
+            if self._buffer:
+                return True
 
-        if self._decompressor.unused_data:
-            rawblock = self._decompressor.unused_data
-        else:
-            rawblock = self._fp.read(_BUFFER_SIZE)
-
-        if not rawblock:
-            if self._decompressor.eof:
-                self._mode = _MODE_READ_EOF
-                self._size = self._pos
-                return False
+            if self._decompressor.unused_data:
+                rawblock = self._decompressor.unused_data
             else:
-                raise EOFError("Compressed file ended before the "
-                               "end-of-stream marker was reached")
+                rawblock = self._fp.read(_BUFFER_SIZE)
 
-        # Continue to next stream.
-        if self._decompressor.eof:
-            self._decompressor = LZMADecompressor(**self._init_args)
+            if not rawblock:
+                if self._decompressor.eof:
+                    self._mode = _MODE_READ_EOF
+                    self._size = self._pos
+                    return False
+                else:
+                    raise EOFError("Compressed file ended before the "
+                                   "end-of-stream marker was reached")
 
-        self._buffer = self._decompressor.decompress(rawblock)
-        return True
+            # Continue to next stream.
+            if self._decompressor.eof:
+                self._decompressor = LZMADecompressor(**self._init_args)
+
+            self._buffer = self._decompressor.decompress(rawblock)
 
     # Read data until EOF.
     # If return_data is false, consume the data without returning it.
@@ -282,11 +286,14 @@ class LZMAFile(io.BufferedIOBase):
             return self._read_block(size)
 
     def read1(self, size=-1):
-        """Read up to size uncompressed bytes with at most one read
-        from the underlying stream.
+        """Read up to size uncompressed bytes, while trying to avoid
+        making multiple reads from the underlying stream.
 
         Returns b"" if the file is at EOF.
         """
+        # Usually, read1() calls _fp.read() at most once. However, sometimes
+        # this does not give enough data for the decompressor to make progress.
+        # In this case we make multiple reads, to avoid returning b"".
         self._check_can_read()
         if (size == 0 or self._mode == _MODE_READ_EOF or
             not self._fill_buffer()):
@@ -367,6 +374,51 @@ class LZMAFile(io.BufferedIOBase):
         """Return the current file position."""
         self._check_not_closed()
         return self._pos
+
+
+def open(filename, mode="rb", *,
+         format=None, check=-1, preset=None, filters=None,
+         encoding=None, errors=None, newline=None):
+    """Open an LZMA-compressed file in binary or text mode.
+
+    filename can be either an actual file name (given as a str or bytes object),
+    in which case the named file is opened, or it can be an existing file object
+    to read from or write to.
+
+    The mode argument can be "r", "rb" (default), "w", "wb", "a", or "ab" for
+    binary mode, or "rt", "wt" or "at" for text mode.
+
+    The format, check, preset and filters arguments specify the compression
+    settings, as for LZMACompressor, LZMADecompressor and LZMAFile.
+
+    For binary mode, this function is equivalent to the LZMAFile constructor:
+    LZMAFile(filename, mode, ...). In this case, the encoding, errors and
+    newline arguments must not be provided.
+
+    For text mode, a LZMAFile object is created, and wrapped in an
+    io.TextIOWrapper instance with the specified encoding, error handling
+    behavior, and line ending(s).
+
+    """
+    if "t" in mode:
+        if "b" in mode:
+            raise ValueError("Invalid mode: %r" % (mode,))
+    else:
+        if encoding is not None:
+            raise ValueError("Argument 'encoding' not supported in binary mode")
+        if errors is not None:
+            raise ValueError("Argument 'errors' not supported in binary mode")
+        if newline is not None:
+            raise ValueError("Argument 'newline' not supported in binary mode")
+
+    lz_mode = mode.replace("t", "")
+    binary_file = LZMAFile(filename, lz_mode, format=format, check=check,
+                           preset=preset, filters=filters)
+
+    if "t" in mode:
+        return io.TextIOWrapper(binary_file, encoding, errors, newline)
+    else:
+        return binary_file
 
 
 def compress(data, format=FORMAT_XZ, check=-1, preset=None, filters=None):

@@ -225,32 +225,31 @@ class ExitStack(object):
         return self
 
     def __exit__(self, *exc_details):
-        if not self._exit_callbacks:
-            return
-        # This looks complicated, but it is really just
-        # setting up a chain of try-expect statements to ensure
-        # that outer callbacks still get invoked even if an
-        # inner one throws an exception
-        def _invoke_next_callback(exc_details):
-            # Callbacks are removed from the list in FIFO order
-            # but the recursion means they're invoked in LIFO order
-            cb = self._exit_callbacks.popleft()
-            if not self._exit_callbacks:
-                # Innermost callback is invoked directly
-                return cb(*exc_details)
-            # More callbacks left, so descend another level in the stack
+        # We manipulate the exception state so it behaves as though
+        # we were actually nesting multiple with statements
+        frame_exc = sys.exc_info()[1]
+        def _fix_exception_context(new_exc, old_exc):
+            while 1:
+                exc_context = new_exc.__context__
+                if exc_context in (None, frame_exc):
+                    break
+                new_exc = exc_context
+            new_exc.__context__ = old_exc
+
+        # Callbacks are invoked in LIFO order to match the behaviour of
+        # nested context managers
+        suppressed_exc = False
+        while self._exit_callbacks:
+            cb = self._exit_callbacks.pop()
             try:
-                suppress_exc = _invoke_next_callback(exc_details)
-            except:
-                suppress_exc = cb(*sys.exc_info())
-                # Check if this cb suppressed the inner exception
-                if not suppress_exc:
-                    raise
-            else:
-                # Check if inner cb suppressed the original exception
-                if suppress_exc:
+                if cb(*exc_details):
+                    suppressed_exc = True
                     exc_details = (None, None, None)
-                suppress_exc = cb(*exc_details) or suppress_exc
-            return suppress_exc
-        # Kick off the recursive chain
-        return _invoke_next_callback(exc_details)
+            except:
+                new_exc_details = sys.exc_info()
+                # simulate the stack of exceptions by setting the context
+                _fix_exception_context(new_exc_details[1], exc_details[1])
+                if not self._exit_callbacks:
+                    raise
+                exc_details = new_exc_details
+        return suppressed_exc
