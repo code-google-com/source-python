@@ -7,12 +7,10 @@
 # ------------------------------------------------------------------
 # We only need a release and debug configuration.
 # ------------------------------------------------------------------
-If(CMAKE_CONFIGURATION_TYPES)
-   Set(CMAKE_CONFIGURATION_TYPES Debug Release)
-   Set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
-    "Reset the configurations to what we need"
-    FORCE)
-EndIf()
+Set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING 
+	"Only do Release and Debug" 
+	FORCE
+)
 
 # ------------------------------------------------------------------
 # Setup include paths.

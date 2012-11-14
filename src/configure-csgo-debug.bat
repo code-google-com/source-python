@@ -1,2 +1,2 @@
-cmake -G"Visual Studio 10" -DGAME=csgo -DCMAKE_BUILD_TYPE=Debug
+cmake -G"Visual Studio 10" -DGAME=csgo
 pause
