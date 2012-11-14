@@ -11,7 +11,7 @@ extern "C" {
 #define PyException_HEAD PyObject_HEAD PyObject *dict;\
              PyObject *args; PyObject *traceback;\
              PyObject *context; PyObject *cause;\
-             int suppress_context;
+             char suppress_context;
 
 typedef struct {
     PyException_HEAD
@@ -87,7 +87,7 @@ PyAPI_FUNC(void) PyErr_GetExcInfo(PyObject **, PyObject **, PyObject **);
 PyAPI_FUNC(void) PyErr_SetExcInfo(PyObject *, PyObject *, PyObject *);
 
 #if defined(__clang__) || \
-    (defined(__GNUC__) && \
+    (defined(__GNUC_MAJOR__) && \
      ((__GNUC_MAJOR__ >= 3) || \
       (__GNUC_MAJOR__ == 2) && (__GNUC_MINOR__ >= 5)))
 #define _Py_NO_RETURN __attribute__((__noreturn__))
@@ -399,9 +399,6 @@ PyAPI_FUNC(int) PyUnicodeTranslateError_SetReason(
     PyObject *exc,
     const char *reason          /* UTF-8 encoded string */
     );
-
-/* create a StopIteration exception with the given value */
-PyAPI_FUNC(PyObject *) PyStopIteration_Create(PyObject *);
 
 /* These APIs aren't really part of the error implementation, but
    often needed to format error messages; the native C lib APIs are
