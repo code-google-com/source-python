@@ -123,6 +123,9 @@ bool CPythonManager::Initialize( void )
 	DevMsg(1, "[SP] Importing main module..\n");
  	BEGIN_BOOST_PY()
  		m_SpPy = python::import("sp");
+
+        // Call the plugin_load function to initialize the Python side
+ 		m_SpPy.attr("plugin_load")();
  	END_BOOST_PY_NORET(); // Noret because we have more stuff to do after this import.
 
     Msg("[Source.Python] Loaded successfully.\n");
