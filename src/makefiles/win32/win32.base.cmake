@@ -39,13 +39,13 @@ Set(CMAKE_CXX_FLAGS_RELEASE "/D_NDEBUG /MD /wd4005 /MP")
 # delay loaded in.
 # ------------------------------------------------------------------
 Set_Target_Properties(source-python PROPERTIES
-    LINK_FLAGS_DEBUG "/NODEFAULTLIB:msvcrtd.lib"
-    LINK_FLAGS_RELEASE "/NODEFAULTLIB:msvcrt.lib"
+    LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
+    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMTD.lib"
 )
 
 Set_Target_Properties(core PROPERTIES
-    LINK_FLAGS_DEBUG   "/NODEFAULTLIB:libcmtd.lib"
-    LINK_FLAGS_RELEASE "/NODEFAULTLIB:libcmt.lib"
+    LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
+    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMTD.lib"
 )
 
 # ------------------------------------------------------------------
