@@ -1,20 +1,36 @@
 """A pure Python implementation of import."""
 __all__ = ['__import__', 'import_module', 'invalidate_caches']
 
-from . import _bootstrap
+# Bootstrap help #####################################################
 
+# Until bootstrapping is complete, DO NOT import any modules that attempt
+# to import importlib._bootstrap (directly or indirectly). Since this
+# partially initialised package would be present in sys.modules, those
+# modules would get an uninitialised copy of the source version, instead
+# of a fully initialised version (either the frozen one or the one
+# initialised below if the frozen one is not available).
+import _imp  # Just the builtin component, NOT the full Python module
+import sys
+
+try:
+    import _frozen_importlib as _bootstrap
+except ImportError:
+    from . import _bootstrap
+    _bootstrap._setup(sys, _imp)
+else:
+    # importlib._bootstrap is the built-in import, ensure we don't create
+    # a second copy of the module.
+    _bootstrap.__name__ = 'importlib._bootstrap'
+    _bootstrap.__package__ = 'importlib'
+    _bootstrap.__file__ = __file__.replace('__init__.py', '_bootstrap.py')
+    sys.modules['importlib._bootstrap'] = _bootstrap
 
 # To simplify imports in test code
 _w_long = _bootstrap._w_long
 _r_long = _bootstrap._r_long
 
-
-# Bootstrap help #####################################################
-import imp
-import sys
-
-_bootstrap._setup(sys, imp)
-
+# Fully bootstrapped at this point, import whatever you like, circular
+# dependencies and startup overhead minimisation permitting :)
 
 # Public API #########################################################
 
@@ -22,9 +38,9 @@ from ._bootstrap import __import__
 
 
 def invalidate_caches():
-    """Call the invalidate_caches() method on all finders stored in
-    sys.path_importer_caches (where implemented)."""
-    for finder in sys.path_importer_cache.values():
+    """Call the invalidate_caches() method on all meta path finders stored in
+    sys.meta_path (where implemented)."""
+    for finder in sys.meta_path:
         if hasattr(finder, 'invalidate_caches'):
             finder.invalidate_caches()
 
