@@ -201,7 +201,7 @@ void ConCommandManager::Dispatch(const CCommand &command)
 	{
 		//Loop through the vector of callable objects.
 		// for(std::vector<PyObject*>::const_iterator iterCallable = m_vecCallables.begin(); iterCallable != m_vecCallables.end(); ++iterCallable)
-		for( unsigned int i = 0; i < m_vecCallables.Count(); i++ )
+		for( unsigned int i = 0; i < static_cast<unsigned int>(m_vecCallables.Count()); i++ )
 		{
 			//Try calling the callable, which should return an integer value determining whether this loop should continue or not. Failing to return a value
 			//or causing an Exception will be interpreted as a CommandReturn.CONTINUE value.
@@ -253,7 +253,7 @@ void ConCommandManager::AddToEnd(PyObject* pCallable)
 void ConCommandManager::Remove(PyObject* pCallable)
 {
 	unsigned int uiCallableIndex = 0;
-	for(uiCallableIndex = 0; uiCallableIndex < m_vecCallables.Count(); ++uiCallableIndex)
+	for(uiCallableIndex = 0; uiCallableIndex < static_cast<unsigned int>(m_vecCallables.Count()); ++uiCallableIndex)
 	{
 		if (m_vecCallables[uiCallableIndex] == pCallable)
 		{
