@@ -45,7 +45,11 @@ extern IPlayerInfoManager* playerinfomanager;
 //---------------------------------------------------------------------------------
 inline int IndexOfEdict(const edict_t* pEdict) 
 {
+#if( SOURCE_ENGINE >= 2 )
 	return (int)(pEdict - gpGlobals->pEdicts);
+#else
+	return (int)engine->IndexOfEdict(pEdict);
+#endif
 }
 
 //---------------------------------------------------------------------------------
@@ -53,12 +57,16 @@ inline int IndexOfEdict(const edict_t* pEdict)
 //---------------------------------------------------------------------------------
 inline edict_t* PEntityOfEntIndex(int iEntIndex)
 {
+#if( SOURCE_ENGINE >= 2 )
 	if(iEntIndex >= 0 && iEntIndex < gpGlobals->maxEntities) 
 	{
 		return (edict_t *)(gpGlobals->pEdicts + iEntIndex);	
 	}
 
 	return NULL;
+#else
+	return engine->PEntityOfEntIndex(iEntIndex);
+#endif
 }
 
 //---------------------------------------------------------------------------------

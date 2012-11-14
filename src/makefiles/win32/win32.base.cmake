@@ -5,8 +5,9 @@
 # ------------------------------------------------------------------
 
 # ------------------------------------------------------------------
-# Include shared
+# Included makefiles
 # ------------------------------------------------------------------
+include("makefiles/game/${GAME}.cmake")
 include("makefiles/shared.cmake")
 
 # ------------------------------------------------------------------
@@ -40,12 +41,12 @@ Set(CMAKE_CXX_FLAGS_RELEASE "/D_NDEBUG /MD /wd4005 /MP")
 # ------------------------------------------------------------------
 Set_Target_Properties(source-python PROPERTIES
     LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
-    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMTD.lib"
+    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
 )
 
 Set_Target_Properties(core PROPERTIES
     LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
-    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMTD.lib"
+    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
 )
 
 # ------------------------------------------------------------------
@@ -58,11 +59,18 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
     ${SOURCESDK_LIB}/public/tier3.lib
     ${SOURCESDK_LIB}/public/vstdlib.lib
     ${SOURCESDK_LIB}/public/mathlib.lib
-    ${SOURCESDK_LIB}/public/interfaces.lib
     ${DYNCALLSDK_LIB}/libdyncall_s.lib
     ${DYNCALLSDK_LIB}/libdyncallback_s.lib
     ${DYNCALLSDK_LIB}/libdynload_s.lib
 )
+
+# CSGO Engine adds in interfaces.lib
+If( SOURCE_ENGINE GREATER 2 )
+	Set(SOURCEPYTHON_LINK_LIBRARIES
+		${SOURCEPYTHON_LINK_LIBRARIES}
+		${SOURCESDK_LIB}/public/interfaces.lib
+	)
+Endif()
 
 # ------------------------------------------------------------------
 # Debug link libraries

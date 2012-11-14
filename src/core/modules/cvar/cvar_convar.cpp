@@ -48,12 +48,16 @@ void Export_ConVar( void )
 	typedef void (ConVar::*SetValueIntFn)(int);
 	typedef void (ConVar::*SetValueFloatFn)(float);
 	typedef void (ConVar::*SetValueStrFn)(const char*);
-	typedef void (ConVar::*SetValueColorFn)(Color);
 
 	SetValueIntFn	ConVar_SetValue_Int		= &ConVar::SetValue;
 	SetValueFloatFn ConVar_SetValue_Float	= &ConVar::SetValue;
 	SetValueStrFn	ConVar_SetValue_Str		= &ConVar::SetValue;
+
+#if( SOURCE_ENGINE >= 2 )
+	typedef void (ConVar::*SetValueColorFn)(Color);
 	SetValueColorFn ConVar_SetValue_Color	= &ConVar::SetValue;
+#endif
+	
 
 	BOOST_INHERITED_CLASS_NOCOPY( ConVar, ConCommandBase, init<const char*, const char*, int>() )
 		// ----------------------------------------------------------
@@ -88,11 +92,6 @@ void Export_ConVar( void )
 		)
 
 		CLASS_METHOD(ConVar,
-			GetFlags,
-			"Returns the flags set on this ConVar."
-		)
-
-		CLASS_METHOD(ConVar,
 			GetFloat,
 			"Returns the value of this console variable as a float."
 		)
@@ -100,11 +99,6 @@ void Export_ConVar( void )
 		CLASS_METHOD(ConVar,
 			GetInt,
 			"Returns the value of this console variable as a int."
-		)
-
-		CLASS_METHOD(ConVar,
-			GetColor,
-			"Returns the value of this console variable as a color."
 		)
 
 		CLASS_METHOD(ConVar,
@@ -135,31 +129,21 @@ void Export_ConVar( void )
 			"Sets the value of the console variable as a string."
 		)
 
+#if( SOURCE_ENGINE >= 2 )
+		CLASS_METHOD(ConVar,
+			GetColor,
+			"Returns the value of this console variable as a color."
+		)
+
+		CLASS_METHOD(ConVar,
+			GetFlags,
+			"Returns the flags set on this ConVar."
+		)
+
 		CLASS_METHOD_TYPEDEF(
 			SetColor,
 			ConVar_SetValue_Color,
 			"Sets the value of the console variable as a color."
-		)
-
-#if defined(CVAR_TODO)
-		CLASS_METHOD(ConVar,
-			HasMin,
-			"Returns true if the ConVar has a minimum limit."
-		)
-
-		CLASS_METHOD(ConVar,
-			HasMax,
-			"Returns true if the ConVar has a maximum limit."
-		)
-
-		CLASS_METHOD(ConVar,
-			GetMinValue,
-			"Returns the minimum value of the ConVar as a float."
-		)
-
-		CLASS_METHOD(ConVar,
-			GetMaxValue,
-			"Returns the maximum value of the ConVar as a float."
 		)
 #endif
 

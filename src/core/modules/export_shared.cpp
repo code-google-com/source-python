@@ -111,31 +111,20 @@ DECLARE_SP_MODULE(Shared)
 			"Returns the vector's magnitude squared."
 		)
 
-		CLASS_METHOD(Vector,
-			LengthRecipFast,
-			"Get one over the vector's length via fast hardware approximation"
-		)
-
 		CLASS_METHOD_OVERLOAD(Vector, 
 			IsZero,
 			"Returns true if this vector is (0,0,0) within tolerance",
 			args("tolerance")
 		)
 		
-		CLASS_METHOD(Vector,
-			IsZeroFast,
-			"Returns true if this vector is exactly (0,0,0) -- only fast if vector is coming from memory, not registers"
-		)
+
 
 		CLASS_METHOD(Vector,
 			NormalizeInPlace,
 			"Normalizes the vector"
 		)
 
-		CLASS_METHOD(Vector,
-			Normalized,
-			"Returns a normalized vector based on this object."
-		)
+
 
 		CLASS_METHOD(Vector,
 			IsLengthGreaterThan,
@@ -188,6 +177,24 @@ DECLARE_SP_MODULE(Shared)
 			Length2DSqr,
 			"Returns the length of the vector in 2D space squared."
 		)
+
+
+#if( SOURCE_ENGINE >= 2 )
+		CLASS_METHOD(Vector,
+			LengthRecipFast,
+			"Get one over the vector's length via fast hardware approximation"
+		)
+
+		CLASS_METHOD(Vector,
+			IsZeroFast,
+			"Returns true if this vector is exactly (0,0,0) -- only fast if vector is coming from memory, not registers"
+		)
+
+		CLASS_METHOD(Vector,
+			Normalized,
+			"Returns a normalized vector based on this object."
+		)
+#endif
 
 		// ----------------------------------------------------------
 		// Class operators

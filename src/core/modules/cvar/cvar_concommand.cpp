@@ -137,7 +137,9 @@ ConCommandManager* ConCommandManager::CreateCommand(const char* pName, const cha
 		//If we find one, we unregister it (in preparation for us registering our own) and keep a copy
 		//of the instance internally, so we can fire it off as part of our custom Dispatch function.
 		pHelpStringCopy = strdup(pGameCommand->GetHelpText());
+#if( SOURCE_ENGINE >= 2 )
 		flags = pGameCommand->GetFlags();
+#endif
 		g_pCVar->UnregisterConCommand(pGameCommand);
 	}
 	else
@@ -191,19 +193,20 @@ void ConCommandManager::Dispatch(const CCommand &command)
 	unsigned int uiIndex = 0;
 
 	//If no extra commands registered, just call the internal existing command if set.
-	if (m_vecCallables.size() == 0 && m_pGameCommand)
+	if (m_vecCallables.Count() == 0 && m_pGameCommand)
 	{
 		m_pGameCommand->Dispatch(command);
 	}
 	else
 	{
 		//Loop through the vector of callable objects.
-		for(std::vector<PyObject*>::const_iterator iterCallable = m_vecCallables.begin(); iterCallable != m_vecCallables.end(); ++iterCallable)
+		// for(std::vector<PyObject*>::const_iterator iterCallable = m_vecCallables.begin(); iterCallable != m_vecCallables.end(); ++iterCallable)
+		for( unsigned int i = 0; i < m_vecCallables.Count(); i++ )
 		{
 			//Try calling the callable, which should return an integer value determining whether this loop should continue or not. Failing to return a value
 			//or causing an Exception will be interpreted as a CommandReturn.CONTINUE value.
 			BEGIN_BOOST_PY()
-				object returnValue = call<object>(*iterCallable, pyCommand);	
+				object returnValue = call<object>(m_vecCallables[i], pyCommand);
 				if (!returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
 				{
 					break;
@@ -227,9 +230,9 @@ void ConCommandManager::Dispatch(const CCommand &command)
 //---------------------------------------------------------------------------------
 void ConCommandManager::AddToStart(PyObject* pCallable)
 {
-	m_vecCallables.insert(m_vecCallables.begin(), pCallable);
+	m_vecCallables.AddToHead(pCallable);
 	m_uiGameCommandIndex++;
-	if (m_uiGameCommandIndex == m_vecCallables.size())
+	if (m_uiGameCommandIndex == m_vecCallables.Count())
 	{
 		m_uiGameCommandIndex--;
 	}
@@ -241,7 +244,7 @@ void ConCommandManager::AddToStart(PyObject* pCallable)
 //---------------------------------------------------------------------------------
 void ConCommandManager::AddToEnd(PyObject* pCallable)
 {
-	m_vecCallables.push_back(pCallable);
+	m_vecCallables.AddToTail(pCallable);
 }
 
 //---------------------------------------------------------------------------------
@@ -250,11 +253,11 @@ void ConCommandManager::AddToEnd(PyObject* pCallable)
 void ConCommandManager::Remove(PyObject* pCallable)
 {
 	unsigned int uiCallableIndex = 0;
-	for(uiCallableIndex = 0; uiCallableIndex < m_vecCallables.size(); ++uiCallableIndex)
+	for(uiCallableIndex = 0; uiCallableIndex < m_vecCallables.Count(); ++uiCallableIndex)
 	{
 		if (m_vecCallables[uiCallableIndex] == pCallable)
 		{
-			m_vecCallables.erase(m_vecCallables.begin() + uiCallableIndex);
+			m_vecCallables.Remove(uiCallableIndex);
 			break;
 		}
 	}

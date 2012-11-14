@@ -73,20 +73,22 @@ void Export_ConCommandBase( void )
 		)
 
 		CLASS_METHOD(ConCommandBase,
-			RemoveFlags,
-			"Removes the given flags from the ConCommandBase instance.",
-			args("flags")
+			GetName,
+			"Returns the name of this ConCommandBase instance."
 		)
 
+#if( SOURCE_ENGINE >= 2 )
 		CLASS_METHOD(ConCommandBase,
 			GetFlags,
 			"Returns the flags set on this ConCommandBase."
 		)
 
 		CLASS_METHOD(ConCommandBase,
-			GetName,
-			"Returns the name of this ConCommandBase instance."
+			RemoveFlags,
+			"Removes the given flags from the ConCommandBase instance.",
+			args("flags")
 		)
+#endif
 
 	BOOST_END_CLASS()
 }

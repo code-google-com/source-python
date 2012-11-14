@@ -105,12 +105,6 @@ void Export_IVEngineServer( void )
 			"Returns false if the engine is not in hammer editing mode."
 		)
 
-		CLASS_METHOD(IVEngineServer, 
-			GetLaunchOptions, 
-			"Returns a keyvalues structure containing launch options for srcds.",
-			reference_existing_object_policy()
-		)
-
 		CLASS_METHOD_OVERLOAD(IVEngineServer, 
 			PrecacheModel, 
 			"Precaches a model and returns an integer containing its index.",
@@ -188,18 +182,6 @@ void Export_IVEngineServer( void )
 			GetPlayerNetworkIDString,
 			"Returns the player's network id as a string.",
 			args("playerInstance")
-		)
-
-		CLASS_METHOD(IVEngineServer,
-			IsUserIDInUse,
-			"Returns true if the userid given is in use.",
-			args("userID")
-		)
-
-		CLASS_METHOD(IVEngineServer,
-			GetLoadingProgressForUserID,
-			"Returns percentage complete a player is while loading.",
-			args("userID")
 		)
 
 		CLASS_METHOD(IVEngineServer,
@@ -284,6 +266,26 @@ void Export_IVEngineServer( void )
             "Get a convar keyvalue for a specific client",
             args("clientIndex", "name")
         )
+
+#if( SOURCE_ENGINE >= 2 )
+		CLASS_METHOD(IVEngineServer, 
+			GetLaunchOptions, 
+			"Returns a keyvalues structure containing launch options for srcds.",
+			reference_existing_object_policy()
+		)
+
+		CLASS_METHOD(IVEngineServer,
+			IsUserIDInUse,
+			"Returns true if the userid given is in use.",
+			args("userID")
+		)
+
+		CLASS_METHOD(IVEngineServer,
+			GetLoadingProgressForUserID,
+			"Returns percentage complete a player is while loading.",
+			args("userID")
+		)
+#endif
 
 	BOOST_END_CLASS()
 

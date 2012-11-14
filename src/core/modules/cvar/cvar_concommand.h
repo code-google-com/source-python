@@ -30,8 +30,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "boost/unordered_map.hpp"
-#include <vector>
-
+#include "utlvector.h"
 #include "utility/sp_util.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
@@ -55,13 +54,15 @@ public:
 	void AddToStart(PyObject* pCallable);
 	void AddToEnd(PyObject* pCallable);
 	void Remove(PyObject* pCallable);
+
 protected:
 	virtual void Dispatch(const CCommand &command);
+
 private:
 	ConCommandManager(ConCommand* pGameCommand, const char* pName, const char* pHelpString = 0, int flags = 0);
-	std::vector<PyObject*> m_vecCallables;
-	ConCommand* m_pGameCommand;
-	unsigned int m_uiGameCommandIndex;
+	CUtlVector<PyObject*>	m_vecCallables;
+	ConCommand*				m_pGameCommand;
+	unsigned int			m_uiGameCommandIndex;
 };
 
 #endif // _CVAR_CONCOMMAND_H

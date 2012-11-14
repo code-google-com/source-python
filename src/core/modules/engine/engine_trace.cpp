@@ -112,17 +112,28 @@ int WrappedIEngineTrace::GetPointContents(const Vector &vecAbsPosition, int cont
 {
 	if (ppEntity)
 	{
+#if( SOURCE_ENGINE >= 2 )
 		return enginetrace->GetPointContents(vecAbsPosition, contentsMask, ppEntity->GetEntityCollection());
+#else
+		return enginetrace->GetPointContents(vecAbsPosition, ppEntity->GetEntityCollection());
+#endif
 	}
+
+#if( SOURCE_ENGINE >= 2 )
 	return enginetrace->GetPointContents(vecAbsPosition, contentsMask, NULL);
+#else
+	return enginetrace->GetPointContents(vecAbsPosition, NULL);
+#endif
 }
 DECLARE_CLASS_METHOD_OVERLOAD(WrappedIEngineTrace, GetPointContents, 1, 3);
-	
+
+#if( SOURCE_ENGINE >= 2 )
 int WrappedIEngineTrace::GetPointContents_WorldOnly(const Vector &vecAbsPosition, int contentsMask /*= MASK_ALL*/)
 {
 	return enginetrace->GetPointContents_WorldOnly(vecAbsPosition, contentsMask);
 }
 DECLARE_CLASS_METHOD_OVERLOAD(WrappedIEngineTrace, GetPointContents_WorldOnly, 1, 2);
+#endif
 
 int	WrappedIEngineTrace::GetPointContents_Collideable(ICollideable *pCollide, const Vector &vecAbsPosition)
 {
@@ -147,6 +158,7 @@ void WrappedIEngineTrace::TraceRay(const WrappedRay_t &ray, unsigned int fMask, 
 	enginetrace->TraceRay(*pUnwrappedRay, fMask, pTraceFilter, pTrace);
 }
 
+#if( SOURCE_ENGINE >= 2 )
 void WrappedIEngineTrace::SetupLeafAndEntityListRay(const WrappedRay_t &ray, ITraceListData *pTraceData)
 {
 	Ray_t* pUnwrappedRay = ray.WrappedInstance();
@@ -163,6 +175,7 @@ void WrappedIEngineTrace::TraceRayAgainstLeafAndEntityList(const WrappedRay_t &r
 	Ray_t* pUnwrappedRay = ray.WrappedInstance();
 	enginetrace->TraceRayAgainstLeafAndEntityList(*pUnwrappedRay, pTraceData, fMask, pTraceFilter, pTrace);
 }
+#endif
 
 void WrappedIEngineTrace::SweepCollideable(ICollideable *pCollide, const Vector &vecAbsStart, const Vector &vecAbsEnd, 
 										   const QAngle &vecAngles, unsigned int fMask, ITraceFilter *pTraceFilter, trace_t *pTrace)
@@ -202,6 +215,7 @@ CPhysCollide* WrappedIEngineTrace::GetCollidableFromDisplacementsInAABB(const Ve
 	return enginetrace->GetCollidableFromDisplacementsInAABB(vMins, vMaxs);
 }
 
+#if( SOURCE_ENGINE >= 2 )
 int WrappedIEngineTrace::GetNumDisplacements()
 {
 	return enginetrace->GetNumDisplacements();
@@ -216,6 +230,7 @@ bool WrappedIEngineTrace::GetBrushInfo(int iBrush, CUtlVector<BrushSideInfo_t> *
 {
 	return enginetrace->GetBrushInfo(iBrush, pBrushSideInfoOut, pContentsOut);
 }
+#endif
 
 bool WrappedIEngineTrace::PointOutsideWorld(const Vector &ptTest)
 {
@@ -227,6 +242,7 @@ int WrappedIEngineTrace::GetLeafContainingPoint(const Vector &ptTest)
 	return enginetrace->GetLeafContainingPoint(ptTest);
 }
 
+#if( SOURCE_ENGINE >= 2 )
 ITraceListData* WrappedIEngineTrace::AllocTraceListData()
 {
 	return enginetrace->AllocTraceListData();
@@ -241,6 +257,7 @@ int WrappedIEngineTrace::GetSetDebugTraceCounter(int value, DebugTraceCounterBeh
 {
 	return enginetrace->GetSetDebugTraceCounter(value, behavior);
 }
+#endif
 
 //---------------------------------------------------------------------------------
 // A simple trace filter class, allows us to specify an entity not to collide with.
@@ -647,10 +664,13 @@ void Export_EngineTrace( void )
 			"The physicsbone hit by the trace."
 		)
 
+#if( SOURCE_ENGINE >= 2 )
 		CLASS_MEMBER(trace_t,
 			worldSurfaceIndex,
 			"The index of the msurface2_t, if applicable."
 		)
+#endif
+
 	BOOST_END_CLASS()
 
 	// ----------------------------------------------------------
@@ -698,11 +718,13 @@ void Export_EngineTrace( void )
 			args("vecAbsPosition", "contentsMask", "ppEntity")
 		)
 
+#if( SOURCE_ENGINE >= 2 )
 		CLASS_METHOD_OVERLOAD(WrappedIEngineTrace,
 			GetPointContents_WorldOnly,
 			"Gets the point contents at a specific point in world space, considering just the world.",
 			args("vecAbsPosition", "contentsMask")
 		)
+#endif
 
 		CLASS_METHOD(WrappedIEngineTrace,
 			ClipRayToEntity,
@@ -762,7 +784,7 @@ void Export_EngineTrace( void )
 	BOOST_GLOBAL_ATTRIBUTE("ALL_VISIBLE_CONTENTS", ALL_VISIBLE_CONTENTS);
 	BOOST_GLOBAL_ATTRIBUTE("CONTENTS_TESTFOGVOLUME", CONTENTS_TESTFOGVOLUME);
 	BOOST_GLOBAL_ATTRIBUTE("CONTENTS_UNUSED", CONTENTS_UNUSED);
-	BOOST_GLOBAL_ATTRIBUTE("CONTENTS_BLOCKLIGHT", CONTENTS_BLOCKLIGHT);
+
 	BOOST_GLOBAL_ATTRIBUTE("CONTENTS_TEAM1", CONTENTS_TEAM1);
 	BOOST_GLOBAL_ATTRIBUTE("CONTENTS_TEAM2", CONTENTS_TEAM2);
 	BOOST_GLOBAL_ATTRIBUTE("CONTENTS_IGNORE_NODRAW_OPAQUE", CONTENTS_IGNORE_NODRAW_OPAQUE);
@@ -797,14 +819,12 @@ void Export_EngineTrace( void )
 	BOOST_GLOBAL_ATTRIBUTE("SURF_BUMPLIGHT", SURF_BUMPLIGHT);
 	BOOST_GLOBAL_ATTRIBUTE("SURF_NOSHADOWS", SURF_NOSHADOWS);
 	BOOST_GLOBAL_ATTRIBUTE("SURF_NODECALS", SURF_NODECALS);
-	BOOST_GLOBAL_ATTRIBUTE("SURF_NOPAINT", SURF_NOPAINT);
 	BOOST_GLOBAL_ATTRIBUTE("SURF_NOCHOP", SURF_NOCHOP);
 	BOOST_GLOBAL_ATTRIBUTE("SURF_HITBOX", SURF_HITBOX);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_ALL", MASK_ALL);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_SOLID", MASK_SOLID);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_PLAYERSOLID", MASK_PLAYERSOLID);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_NPCSOLID", MASK_NPCSOLID);
-	BOOST_GLOBAL_ATTRIBUTE("MASK_NPCFLUID", MASK_NPCFLUID);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_WATER", MASK_WATER);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_OPAQUE", MASK_OPAQUE);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_OPAQUE_AND_NPCS", MASK_OPAQUE_AND_NPCS);
@@ -812,16 +832,22 @@ void Export_EngineTrace( void )
 	BOOST_GLOBAL_ATTRIBUTE("MASK_BLOCKLOS_AND_NPCS", MASK_BLOCKLOS_AND_NPCS);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_VISIBLE", MASK_VISIBLE);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_VISIBLE_AND_NPCS", MASK_VISIBLE_AND_NPCS);
-	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT", MASK_SHOT);
-	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT_BRUSHONLY", MASK_SHOT_BRUSHONLY);
+	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT", MASK_SHOT);	
 	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT_HULL", MASK_SHOT_HULL);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT_PORTAL", MASK_SHOT_PORTAL);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_SOLID_BRUSHONLY", MASK_SOLID_BRUSHONLY);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_PLAYERSOLID_BRUSHONLY", MASK_PLAYERSOLID_BRUSHONLY);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_NPCSOLID_BRUSHONLY", MASK_NPCSOLID_BRUSHONLY);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_NPCWORLDSTATIC", MASK_NPCWORLDSTATIC);
-	BOOST_GLOBAL_ATTRIBUTE("MASK_NPCWORLDSTATIC_FLUID", MASK_NPCWORLDSTATIC_FLUID);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_SPLITAREAPORTAL", MASK_SPLITAREAPORTAL);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_CURRENT", MASK_CURRENT);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_DEADSOLID", MASK_DEADSOLID);
+
+#if( SOURCE_ENGINE >= 2 )
+	BOOST_GLOBAL_ATTRIBUTE("CONTENTS_BLOCKLIGHT", CONTENTS_BLOCKLIGHT);
+	BOOST_GLOBAL_ATTRIBUTE("SURF_NOPAINT", SURF_NOPAINT);
+	BOOST_GLOBAL_ATTRIBUTE("MASK_NPCFLUID", MASK_NPCFLUID);
+	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT_BRUSHONLY", MASK_SHOT_BRUSHONLY);
+	BOOST_GLOBAL_ATTRIBUTE("MASK_NPCWORLDSTATIC_FLUID", MASK_NPCWORLDSTATIC_FLUID);
+#endif
 }

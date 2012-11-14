@@ -214,9 +214,11 @@ void DumpServerClassProps(SendTable* pTable, int iTabLevel)
 		case DPT_DataTable:
 			szType = "datatable";
 			break;
+#if( SOURCE_ENGINE >= 2 )
 		case DPT_Int64:
 			szType = "int64";
 			break;
+#endif
 		default:
 			szType = "**Unknown**";
 			break;

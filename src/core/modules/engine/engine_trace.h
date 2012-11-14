@@ -90,7 +90,10 @@ class WrappedIEngineTrace
 {
 public:
 	int GetPointContents(const Vector &vecAbsPosition, int contentsMask = MASK_ALL, EntityCollection* ppEntity = NULL);	
+
+#if( SOURCE_ENGINE >= 2 )
 	int GetPointContents_WorldOnly(const Vector &vecAbsPosition, int contentsMask = MASK_ALL);
+#endif
 	int	GetPointContents_Collideable(ICollideable *pCollide, const Vector &vecAbsPosition);
 
 	void ClipRayToEntity(const WrappedRay_t &ray, unsigned int fMask, IHandleEntity *pEnt, trace_t *pTrace);
@@ -98,9 +101,11 @@ public:
 
 	void TraceRay(const WrappedRay_t &ray, unsigned int fMask, ITraceFilter *pTraceFilter, trace_t *pTrace);
 
+#if( SOURCE_ENGINE >= 2)
 	void SetupLeafAndEntityListRay(const WrappedRay_t &ray, ITraceListData *pTraceData);
 	void SetupLeafAndEntityListBox(const Vector &vecBoxMin, const Vector &vecBoxMax, ITraceListData *pTraceData);
 	void TraceRayAgainstLeafAndEntityList(const WrappedRay_t &ray, ITraceListData *pTraceData, unsigned int fMask, ITraceFilter *pTraceFilter, trace_t *pTrace);
+#endif
 
 	void SweepCollideable(ICollideable *pCollide, const Vector &vecAbsStart, const Vector &vecAbsEnd, 
 						  const QAngle &vecAngles, unsigned int fMask, ITraceFilter *pTraceFilter, trace_t *pTrace);
@@ -114,19 +119,20 @@ public:
 	void GetBrushesInAABB(const Vector &vMins, const Vector &vMaxs, CUtlVector<int> *pOutput, int iContentsMask = 0xFFFFFFFF);
 	CPhysCollide* GetCollidableFromDisplacementsInAABB(const Vector& vMins, const Vector& vMaxs);
 
+#if( SOURCE_ENGINE >= 2 )
 	int GetNumDisplacements();
 	void GetDisplacementMesh(int nIndex, virtualmeshlist_t *pMeshTriList);
-	
 	bool GetBrushInfo(int iBrush, CUtlVector<BrushSideInfo_t> *pBrushSideInfoOut, int *pContentsOut);
+#endif
 	bool PointOutsideWorld(const Vector &ptTest);
 
 	int GetLeafContainingPoint(const Vector &ptTest);
 
+#if( SOURCE_ENGINE >= 2 )
 	ITraceListData *AllocTraceListData();
-
 	void FreeTraceListData(ITraceListData *tracelistData);
-
 	int GetSetDebugTraceCounter(int value, DebugTraceCounterBehavior_t behavior);
+#endif
 };
 
 //---------------------------------------------------------------------------------
