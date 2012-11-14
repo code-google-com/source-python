@@ -65,9 +65,10 @@ namespace boost
     }
 }
 
-#if ! defined  BOOST_NO_RVALUE_REFERENCES
+#if ! defined  BOOST_NO_CXX11_RVALUE_REFERENCES
 
 #define BOOST_THREAD_RV_REF(TYPE) BOOST_RV_REF(TYPE)
+#define BOOST_THREAD_RV_REF_2_TEMPL_ARGS(TYPE) BOOST_RV_REF_2_TEMPL_ARGS(TYPE)
 #define BOOST_THREAD_RV_REF_BEG BOOST_RV_REF_BEG
 #define BOOST_THREAD_RV_REF_END BOOST_RV_REF_END
 #define BOOST_THREAD_RV(V) V
@@ -84,9 +85,10 @@ namespace boost
       {}; \
     }
 
-#elif ! defined  BOOST_NO_RVALUE_REFERENCES && defined  BOOST_MSVC
+#elif ! defined  BOOST_NO_CXX11_RVALUE_REFERENCES && defined  BOOST_MSVC
 
 #define BOOST_THREAD_RV_REF(TYPE) BOOST_RV_REF(TYPE)
+#define BOOST_THREAD_RV_REF_2_TEMPL_ARGS(TYPE) BOOST_RV_REF_2_TEMPL_ARGS(TYPE)
 #define BOOST_THREAD_RV_REF_BEG BOOST_RV_REF_BEG
 #define BOOST_THREAD_RV_REF_END BOOST_RV_REF_END
 #define BOOST_THREAD_RV(V) V
@@ -107,6 +109,7 @@ namespace boost
 
 #if defined BOOST_THREAD_USES_MOVE
 #define BOOST_THREAD_RV_REF(TYPE) BOOST_RV_REF(TYPE)
+#define BOOST_THREAD_RV_REF_2_TEMPL_ARGS(TYPE) BOOST_RV_REF_2_TEMPL_ARGS(TYPE)
 #define BOOST_THREAD_RV_REF_BEG BOOST_RV_REF_BEG
 #define BOOST_THREAD_RV_REF_END BOOST_RV_REF_END
 #define BOOST_THREAD_RV(V) V
@@ -176,7 +179,7 @@ namespace detail
 #endif
 
 
-#if ! defined  BOOST_NO_RVALUE_REFERENCES
+#if ! defined  BOOST_NO_CXX11_RVALUE_REFERENCES
 
 #define BOOST_THREAD_MOVABLE(TYPE)
 
@@ -227,19 +230,26 @@ namespace detail
 
 
 
-#ifndef BOOST_NO_RVALUE_REFERENCES
 namespace boost
 {  namespace thread_detail
   {
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
       template <class T>
       typename decay<T>::type
       decay_copy(T&& t)
       {
           return boost::forward<T>(t);
       }
+#else
+  template <class T>
+  typename decay<T>::type
+  decay_copy(BOOST_THREAD_FWD_REF(T) t)
+  {
+      return boost::forward<T>(t);
+  }
+#endif
   }
 }
-#endif
 
 #include <boost/config/abi_suffix.hpp>
 

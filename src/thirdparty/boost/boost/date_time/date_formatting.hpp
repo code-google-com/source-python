@@ -6,7 +6,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2011-05-24 11:11:37 -0400 (Tue, 24 May 2011) $
+ * $Date: 2012-09-25 15:08:40 -0400 (Tue, 25 Sep 2012) $
  */
 
 #include "boost/date_time/iso_format.hpp"
@@ -54,7 +54,9 @@ namespace date_time {
           os << std::setw(2) << std::setfill(os.widen('0')) << month.as_number();
           break;
         }
-     
+        default:
+          break;
+          
       }
       return os;
     } // format_month

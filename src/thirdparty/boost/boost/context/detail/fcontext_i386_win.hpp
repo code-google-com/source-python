@@ -4,27 +4,31 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef BOOST_CTX_DETAIL_FCONTEXT_I386H
-#define BOOST_CTX_DETAIL_FCONTEXT_I386H
+#ifndef BOOST_CONTEXT_DETAIL_FCONTEXT_I386H
+#define BOOST_CONTEXT_DETAIL_FCONTEXT_I386H
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
+
+#include <cstddef>
 
 #include <boost/config.hpp>
 #include <boost/cstdint.hpp>
 
 #include <boost/context/detail/config.hpp>
 
+#if defined(BOOST_MSVC)
 #pragma warning(push)
 #pragma warning(disable:4351)
+#endif
 
 #ifdef BOOST_HAS_ABI_HEADERS
 # include BOOST_ABI_PREFIX
 #endif
 
 namespace boost {
-namespace ctx {
+namespace context {
 
 extern "C" {
 
@@ -32,11 +36,12 @@ extern "C" {
 
 struct stack_t
 {
-    void    *   base;
+    void    *   sp;
+    std::size_t size;
     void    *   limit;
 
     stack_t() :
-        base( 0), limit( 0)
+        sp( 0), size( 0), limit( 0)
     {}
 };
 
@@ -74,6 +79,8 @@ struct fcontext_t
 # include BOOST_ABI_SUFFIX
 #endif
 
+#if defined(BOOST_MSVC)
 #pragma warning(pop)
+#endif
 
-#endif // BOOST_CTX_DETAIL_FCONTEXT_I386_H
+#endif // BOOST_CONTEXT_DETAIL_FCONTEXT_I386_H

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //
 // (C) Copyright Olaf Krzikalla 2004-2006.
-// (C) Copyright Ion Gaztanaga  2006-2009
+// (C) Copyright Ion Gaztanaga  2006-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -83,7 +83,7 @@ class list_impl
    typedef typename Config::value_traits                             value_traits;
    /// @cond
    static const bool external_value_traits =
-      detail::external_value_traits_is_true<value_traits>::value;
+      detail::external_value_traits_bool_is_true<value_traits>::value;
    typedef typename detail::eval_if_c
       < external_value_traits
       , detail::eval_value_traits<value_traits>
@@ -204,16 +204,16 @@ class list_impl
    //!   constructor throws (this does not happen with predefined Boost.Intrusive hooks).
    list_impl(const value_traits &v_traits = value_traits())
       :  data_(v_traits)
-   { 
+   {
       this->priv_size_traits().set_size(size_type(0));
-      node_algorithms::init_header(this->get_root_node()); 
+      node_algorithms::init_header(this->get_root_node());
    }
 
    //! <b>Requires</b>: Dereferencing iterator must yield an lvalue of type value_type.
    //!
    //! <b>Effects</b>: Constructs a list equal to the range [first,last).
    //!
-   //! <b>Complexity</b>: Linear in std::distance(b, e). No copy constructors are called. 
+   //! <b>Complexity</b>: Linear in std::distance(b, e). No copy constructors are called.
    //!
    //! <b>Throws</b>: If real_value_traits::node_traits::node
    //!   constructor throws (this does not happen with predefined Boost.Intrusive hooks).
@@ -227,17 +227,17 @@ class list_impl
    }
 
    //! <b>Effects</b>: to-do
-   //!  
+   //!
    list_impl(BOOST_RV_REF(list_impl) x)
       : data_(::boost::move(x.priv_value_traits()))
    {
       this->priv_size_traits().set_size(size_type(0));
-      node_algorithms::init_header(this->get_root_node()); 
+      node_algorithms::init_header(this->get_root_node());
       this->swap(x);
    }
 
    //! <b>Effects</b>: to-do
-   //!  
+   //!
    list_impl& operator=(BOOST_RV_REF(list_impl) x)
    {  this->swap(x); return *this;  }
 
@@ -470,7 +470,7 @@ class list_impl
    //! <b>Throws</b>: Nothing.
    //!
    //! <b>Complexity</b>: Constant.
-   reverse_iterator rend()  
+   reverse_iterator rend()
    { return reverse_iterator(begin()); }
 
    //! <b>Effects</b>: Returns a const_reverse_iterator pointing to the end
@@ -479,7 +479,7 @@ class list_impl
    //! <b>Throws</b>: Nothing.
    //!
    //! <b>Complexity</b>: Constant.
-   const_reverse_iterator rend() const  
+   const_reverse_iterator rend() const
    { return this->crend(); }
 
    //! <b>Effects</b>: Returns a const_reverse_iterator pointing to the end
@@ -488,7 +488,7 @@ class list_impl
    //! <b>Throws</b>: Nothing.
    //!
    //! <b>Complexity</b>: Constant.
-   const_reverse_iterator crend() const  
+   const_reverse_iterator crend() const
    { return const_reverse_iterator(this->begin()); }
 
    //! <b>Precondition</b>: end_iterator must be a valid end iterator
@@ -771,7 +771,7 @@ class list_impl
    //!
    //!   If cloner throws, all cloned elements are unlinked and disposed
    //!   calling Disposer::operator()(pointer).
-   //!  
+   //!
    //! <b>Complexity</b>: Linear to erased plus inserted elements.
    //!
    //! <b>Throws</b>: If cloner throws. Basic guarantee.
@@ -928,12 +928,12 @@ class list_impl
    //!
    //! <b>Note</b>: Iterators of values obtained from list x now point to elements of this
    //!   list. Iterators of this list and all the references are not invalidated.
-   void splice(const_iterator p, list_impl&x, const_iterator start, const_iterator end)
+   void splice(const_iterator p, list_impl&x, const_iterator start, const_iterator end_)
    {
       if(constant_time_size)
-         this->splice(p, x, start, end, std::distance(start, end));
+         this->splice(p, x, start, end_, std::distance(start, end_));
       else
-         this->splice(p, x, start, end, 1);//distance is a dummy value
+         this->splice(p, x, start, end_, 1);//distance is a dummy value
    }
 
    //! <b>Requires</b>: p must be a valid iterator of *this.
@@ -949,19 +949,19 @@ class list_impl
    //!
    //! <b>Note</b>: Iterators of values obtained from list x now point to elements of this
    //!   list. Iterators of this list and all the references are not invalidated.
-   void splice(const_iterator p, list_impl&x, const_iterator start, const_iterator end, difference_type n)
+   void splice(const_iterator p, list_impl&x, const_iterator start, const_iterator end_, difference_type n)
    {
       if(n){
          if(constant_time_size){
             size_traits &thist = this->priv_size_traits();
             size_traits &xt = x.priv_size_traits();
-            BOOST_INTRUSIVE_INVARIANT_ASSERT(n == std::distance(start, end));
-            node_algorithms::transfer(p.pointed_node(), start.pointed_node(), end.pointed_node());
+            BOOST_INTRUSIVE_INVARIANT_ASSERT(n == std::distance(start, end_));
+            node_algorithms::transfer(p.pointed_node(), start.pointed_node(), end_.pointed_node());
             thist.set_size(thist.get_size() + n);
             xt.set_size(xt.get_size() - n);
          }
          else{
-            node_algorithms::transfer(p.pointed_node(), start.pointed_node(), end.pointed_node());
+            node_algorithms::transfer(p.pointed_node(), start.pointed_node(), end_.pointed_node());
          }
       }
    }

@@ -1,4 +1,4 @@
-//  (C) Copyright Gennadiy Rozental 2005-2010.
+//  (C) Copyright Gennadiy Rozental 2005-2012.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 75003 $
+//  Version     : $Revision: 81198 $
 //
 //  Description : implements XML Log formatter
 // ***************************************************************************
@@ -80,7 +80,13 @@ xml_log_formatter::log_build_info( std::ostream& ostr )
 void
 xml_log_formatter::test_unit_start( std::ostream& ostr, test_unit const& tu )
 {
-    ostr << "<" << tu_type_name( tu ) << " name" << attr_value() << tu.p_name.get() << ">";
+    ostr << "<" << tu_type_name( tu ) << " name" << attr_value() << tu.p_name.get();
+
+    if( !tu.p_file_name.get().empty() )
+        ostr << BOOST_TEST_L( " file" ) << attr_value() << tu.p_file_name
+             << BOOST_TEST_L( " line" ) << attr_value() << tu.p_line_num;
+
+    ostr << ">";
 }
 
 //____________________________________________________________________________//

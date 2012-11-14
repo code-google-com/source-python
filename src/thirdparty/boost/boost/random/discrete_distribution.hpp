@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: discrete_distribution.hpp 77152 2012-03-02 16:16:45Z marshall $
+ * $Id: discrete_distribution.hpp 79389 2012-07-09 19:50:17Z marshall $
  */
 
 #ifndef BOOST_RANDOM_DISCRETE_DISTRIBUTION_HPP_INCLUDED
@@ -25,7 +25,7 @@
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/detail/vector_io.hpp>
 
-#ifndef BOOST_NO_0X_HDR_INITIALIZER_LIST
+#ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
 #include <initializer_list>
 #endif
 
@@ -69,7 +69,7 @@ public:
         {
             normalize();
         }
-#ifndef BOOST_NO_0X_HDR_INITIALIZER_LIST
+#ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
         /**
          * If wl.size() == 0, equivalent to the default constructor.
          * Otherwise, the values of the @c initializer_list represent
@@ -190,7 +190,7 @@ public:
     {
         init(first, last);
     }
-#ifndef BOOST_NO_0X_HDR_INITIALIZER_LIST
+#ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
     /**
      * Constructs a @c discrete_distribution from a @c std::initializer_list.
      * If the @c initializer_list is empty, equivalent to the default

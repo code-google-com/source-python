@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: large_arithmetic.hpp 70061 2011-03-17 15:45:12Z steven_watanabe $
+ * $Id: large_arithmetic.hpp 80992 2012-10-15 19:10:33Z steven_watanabe $
  */
 
 #ifndef BOOST_RANDOM_DETAIL_LARGE_ARITHMETIC_HPP
@@ -31,9 +31,9 @@ struct div_t {
 
 inline div_t muldivmod(boost::uintmax_t a, boost::uintmax_t b, boost::uintmax_t m)
 {
-    static const int bits =
+    const int bits =
         ::std::numeric_limits< ::boost::uintmax_t>::digits / 2;
-    static const ::boost::uintmax_t mask = (::boost::uintmax_t(1) << bits) - 1;
+    const ::boost::uintmax_t mask = (::boost::uintmax_t(1) << bits) - 1;
     typedef ::boost::uint_t<bits>::fast digit_t;
 
     int shift = std::numeric_limits< ::boost::uintmax_t>::digits - 1

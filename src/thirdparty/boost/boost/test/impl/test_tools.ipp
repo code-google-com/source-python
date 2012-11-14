@@ -1,4 +1,4 @@
-//  (C) Copyright Gennadiy Rozental 2005-2010.
+//  (C) Copyright Gennadiy Rozental 2005-2012.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 75035 $
+//  Version     : $Revision: 81243 $
 //
 //  Description : supplies offline implementation for the Test Tools
 // ***************************************************************************
@@ -140,8 +140,12 @@ format_report( OutStream& os, predicate_result const& pr, unit_test::lazy_ostrea
         if( tl != PASS ) {
             const_string details_message = pr.message();
 
-            if( !details_message.is_empty() )
-                os << " [" << pr.message() << "]" ;
+            if( !details_message.is_empty() ) {
+                if( first_char( details_message ) != '\n' )
+                    os << " [" << details_message << "]" ;
+                else
+                    os << "." << details_message;
+            }
         }
         break;
 

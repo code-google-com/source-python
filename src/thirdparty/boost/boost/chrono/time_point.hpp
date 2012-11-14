@@ -32,7 +32,6 @@ time2_demo contained this comment:
 
 #include <boost/chrono/duration.hpp>
 #include <iostream>
-#include <boost/chrono/detail/system.hpp>
 
 #ifndef BOOST_CHRONO_HEADER_ONLY
 // this must occur after all of the includes and before any code appears:
@@ -218,12 +217,12 @@ namespace chrono {
 
         // special values
 
-        static BOOST_CONSTEXPR time_point
+        static BOOST_CHRONO_LIB_CONSTEXPR time_point
         min BOOST_PREVENT_MACRO_SUBSTITUTION ()
         {
             return time_point((duration::min)());
         }
-        static BOOST_CONSTEXPR time_point
+        static BOOST_CHRONO_LIB_CONSTEXPR time_point
         max BOOST_PREVENT_MACRO_SUBSTITUTION ()
         {
             return time_point((duration::max)());
