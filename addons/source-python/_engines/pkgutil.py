@@ -2,8 +2,10 @@
 
 import os
 import sys
+import importlib
 import imp
 import os.path
+from warnings import warn
 from types import ModuleType
 
 __all__ = [
@@ -155,6 +157,49 @@ def iter_importer_modules(importer, prefix=''):
 
 iter_importer_modules = simplegeneric(iter_importer_modules)
 
+# Implement a file walker for the normal importlib path hook
+def _iter_file_finder_modules(importer, prefix=''):
+    if importer.path is None or not os.path.isdir(importer.path):
+        return
+
+    yielded = {}
+    import inspect
+    try:
+        filenames = os.listdir(importer.path)
+    except OSError:
+        # ignore unreadable directories like import does
+        filenames = []
+    filenames.sort()  # handle packages before same-named modules
+
+    for fn in filenames:
+        modname = inspect.getmodulename(fn)
+        if modname=='__init__' or modname in yielded:
+            continue
+
+        path = os.path.join(importer.path, fn)
+        ispkg = False
+
+        if not modname and os.path.isdir(path) and '.' not in fn:
+            modname = fn
+            try:
+                dircontents = os.listdir(path)
+            except OSError:
+                # ignore unreadable directories like import does
+                dircontents = []
+            for fn in dircontents:
+                subname = inspect.getmodulename(fn)
+                if subname=='__init__':
+                    ispkg = True
+                    break
+            else:
+                continue    # not a package
+
+        if modname and '.' not in modname:
+            yielded[modname] = 1
+            yield prefix + modname, ispkg
+
+iter_importer_modules.register(
+    importlib.machinery.FileFinder, _iter_file_finder_modules)
 
 class ImpImporter:
     """PEP 302 Importer that wraps Python's "classic" import algorithm
@@ -168,6 +213,8 @@ class ImpImporter:
     """
 
     def __init__(self, path=None):
+        warn("This emulation is deprecated, use 'importlib' instead",
+             DeprecationWarning)
         self.path = path
 
     def find_module(self, fullname, path=None):
@@ -232,6 +279,8 @@ class ImpLoader:
     code = source = None
 
     def __init__(self, fullname, file, filename, etc):
+        warn("This emulation is deprecated, use 'importlib' instead",
+             DeprecationWarning)
         self.file = file
         self.filename = filename
         self.fullname = fullname
@@ -366,10 +415,6 @@ def get_importer(path_item):
     The returned importer is cached in sys.path_importer_cache
     if it was newly created by a path hook.
 
-    If there is no importer, a wrapper around the basic import
-    machinery is returned. This wrapper is never inserted into
-    the importer cache (None is inserted instead).
-
     The cache (or part of it) can be cleared manually if a
     rescan of sys.path_hooks is necessary.
     """
@@ -384,10 +429,7 @@ def get_importer(path_item):
             except ImportError:
                 pass
         else:
-            try:
-                importer = ImpImporter(path_item)
-            except ImportError:
-                importer = None
+            importer = None
     return importer
 
 
@@ -395,55 +437,37 @@ def iter_importers(fullname=""):
     """Yield PEP 302 importers for the given module name
 
     If fullname contains a '.', the importers will be for the package
-    containing fullname, otherwise they will be importers for sys.meta_path,
-    sys.path, and Python's "classic" import machinery, in that order.  If
-    the named module is in a package, that package is imported as a side
+    containing fullname, otherwise they will be all registered top level
+    importers (i.e. those on both sys.meta_path and sys.path_hooks).
+
+    If the named module is in a package, that package is imported as a side
     effect of invoking this function.
 
-    Non PEP 302 mechanisms (e.g. the Windows registry) used by the
-    standard import machinery to find files in alternative locations
-    are partially supported, but are searched AFTER sys.path. Normally,
-    these locations are searched BEFORE sys.path, preventing sys.path
-    entries from shadowing them.
-
-    For this to cause a visible difference in behaviour, there must
-    be a module or package name that is accessible via both sys.path
-    and one of the non PEP 302 file system mechanisms. In this case,
-    the emulation will find the former version, while the builtin
-    import mechanism will find the latter.
-
-    Items of the following types can be affected by this discrepancy:
-        imp.C_EXTENSION, imp.PY_SOURCE, imp.PY_COMPILED, imp.PKG_DIRECTORY
+    If no module name is specified, all top level importers are produced.
     """
     if fullname.startswith('.'):
-        raise ImportError("Relative module names not supported")
+        msg = "Relative module name {!r} not supported".format(fullname)
+        raise ImportError(msg)
     if '.' in fullname:
         # Get the containing package's __path__
-        pkg = '.'.join(fullname.split('.')[:-1])
-        if pkg not in sys.modules:
-            __import__(pkg)
-        path = getattr(sys.modules[pkg], '__path__', None) or []
+        pkg_name = fullname.rpartition(".")[0]
+        pkg = importlib.import_module(pkg)
+        path = getattr(sys.modules[pkg], '__path__', None)
+        if path is None:
+            return
     else:
         for importer in sys.meta_path:
             yield importer
         path = sys.path
     for item in path:
         yield get_importer(item)
-    if '.' not in fullname:
-        yield ImpImporter()
 
 def get_loader(module_or_name):
     """Get a PEP 302 "loader" object for module_or_name
 
-    If the module or package is accessible via the normal import
-    mechanism, a wrapper around the relevant part of that machinery
-    is returned.  Returns None if the module cannot be found or imported.
+    Returns None if the module cannot be found or imported.
     If the named module is not already imported, its containing package
     (if any) is imported, in order to establish the package __path__.
-
-    This function uses iter_importers(), and is thus subject to the same
-    limitations regarding platform-specific special import locations such
-    as the Windows registry.
     """
     if module_or_name in sys.modules:
         module_or_name = sys.modules[module_or_name]
@@ -457,22 +481,33 @@ def get_loader(module_or_name):
         fullname = module_or_name
     return find_loader(fullname)
 
+
 def find_loader(fullname):
     """Find a PEP 302 "loader" object for fullname
 
-    If fullname contains dots, path must be the containing package's __path__.
-    Returns None if the module cannot be found or imported. This function uses
-    iter_importers(), and is thus subject to the same limitations regarding
-    platform-specific special import locations such as the Windows registry.
+    This is s convenience wrapper around :func:`importlib.find_loader` that
+    sets the *path* argument correctly when searching for submodules, and
+    also ensures parent packages (if any) are imported before searching for
+    submodules.
     """
-    for importer in iter_importers(fullname):
-        if importer is None:
-            continue
-        loader = importer.find_module(fullname)
-        if loader is not None:
-            return loader
-
-    return None
+    if fullname.startswith('.'):
+        msg = "Relative module name {!r} not supported".format(fullname)
+        raise ImportError(msg)
+    path = None
+    pkg_name = fullname.rpartition(".")[0]
+    if pkg_name:
+        pkg = importlib.import_module(pkg_name)
+        path = getattr(pkg, "__path__", None)
+        if path is None:
+            return None
+    try:
+        return importlib.find_loader(fullname, path)
+    except (ImportError, AttributeError, TypeError, ValueError) as ex:
+        # This hack fixes an impedance mismatch between pkgutil and
+        # importlib, where the latter throws other errors for cases where
+        # pkgutil previously threw ImportError
+        msg = "Error while finding loader for {!r} ({}: {})"
+        raise ImportError(msg.format(fullname, type(ex), ex)) from ex
 
 
 def extend_path(path, name):
@@ -513,12 +548,22 @@ def extend_path(path, name):
         # frozen package.  Return the path unchanged in that case.
         return path
 
-    pname = os.path.join(*name.split('.')) # Reconstitute as relative path
     sname_pkg = name + ".pkg"
 
     path = path[:] # Start with a copy of the existing path
 
-    for dir in sys.path:
+    parent_package, _, final_name = name.rpartition('.')
+    if parent_package:
+        try:
+            search_path = sys.modules[parent_package].__path__
+        except (KeyError, AttributeError):
+            # We can't do anything: find_loader() returns None when
+            # passed a dotted name.
+            return path
+    else:
+        search_path = sys.path
+
+    for dir in search_path:
         if not isinstance(dir, str):
             continue
 
@@ -526,7 +571,7 @@ def extend_path(path, name):
         if finder is not None:
             # Is this finder PEP 420 compliant?
             if hasattr(finder, 'find_loader'):
-                loader, portions = finder.find_loader(name)
+                loader, portions = finder.find_loader(final_name)
             else:
                 # No, no need to call it
                 loader = None

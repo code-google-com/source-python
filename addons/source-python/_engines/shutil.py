@@ -36,7 +36,7 @@ __all__ = ["copyfileobj", "copyfile", "copymode", "copystat", "copy", "copy2",
            "register_archive_format", "unregister_archive_format",
            "get_unpack_formats", "register_unpack_format",
            "unregister_unpack_format", "unpack_archive",
-           "ignore_patterns", "chown"]
+           "ignore_patterns", "chown", "which"]
            # disk_usage is added later, if available on the platform
 
 class Error(EnvironmentError):
@@ -82,10 +82,10 @@ def _samefile(src, dst):
     return (os.path.normcase(os.path.abspath(src)) ==
             os.path.normcase(os.path.abspath(dst)))
 
-def copyfile(src, dst, symlinks=False):
+def copyfile(src, dst, *, follow_symlinks=True):
     """Copy data from src to dst.
 
-    If optional flag `symlinks` is set and `src` is a symbolic link, a new
+    If follow_symlinks is not set and src is a symbolic link, a new
     symlink will be created instead of copying the file it points to.
 
     """
@@ -103,22 +103,23 @@ def copyfile(src, dst, symlinks=False):
             if stat.S_ISFIFO(st.st_mode):
                 raise SpecialFileError("`%s` is a named pipe" % fn)
 
-    if symlinks and os.path.islink(src):
+    if not follow_symlinks and os.path.islink(src):
         os.symlink(os.readlink(src), dst)
     else:
         with open(src, 'rb') as fsrc:
             with open(dst, 'wb') as fdst:
                 copyfileobj(fsrc, fdst)
+    return dst
 
-def copymode(src, dst, symlinks=False):
+def copymode(src, dst, *, follow_symlinks=True):
     """Copy mode bits from src to dst.
 
-    If the optional flag `symlinks` is set, symlinks aren't followed if and
-    only if both `src` and `dst` are symlinks. If `lchmod` isn't available (eg.
-    Linux), in these cases, this method does nothing.
+    If follow_symlinks is not set, symlinks aren't followed if and only
+    if both `src` and `dst` are symlinks.  If `lchmod` isn't available
+    (e.g. Linux) this method does nothing.
 
     """
-    if symlinks and os.path.islink(src) and os.path.islink(dst):
+    if not follow_symlinks and os.path.islink(src) and os.path.islink(dst):
         if hasattr(os, 'lchmod'):
             stat_func, chmod_func = os.lstat, os.lchmod
         else:
@@ -131,64 +132,20 @@ def copymode(src, dst, symlinks=False):
     st = stat_func(src)
     chmod_func(dst, stat.S_IMODE(st.st_mode))
 
-def copystat(src, dst, symlinks=False):
-    """Copy all stat info (mode bits, atime, mtime, flags) from src to dst.
-
-    If the optional flag `symlinks` is set, symlinks aren't followed if and
-    only if both `src` and `dst` are symlinks.
-
-    """
-    def _nop(*args, ns=None):
-        pass
-
-    if symlinks and os.path.islink(src) and os.path.islink(dst):
-        stat_func = os.lstat
-        utime_func = os.lutimes if hasattr(os, 'lutimes') else _nop
-        chmod_func = os.lchmod if hasattr(os, 'lchmod') else _nop
-        chflags_func = os.lchflags if hasattr(os, 'lchflags') else _nop
-    else:
-        stat_func = os.stat
-        utime_func = os.utime if hasattr(os, 'utime') else _nop
-        chmod_func = os.chmod if hasattr(os, 'chmod') else _nop
-        chflags_func = os.chflags if hasattr(os, 'chflags') else _nop
-
-    st = stat_func(src)
-    mode = stat.S_IMODE(st.st_mode)
-    utime_func(dst, ns=(st.st_atime_ns, st.st_mtime_ns))
-    chmod_func(dst, mode)
-    if hasattr(st, 'st_flags'):
-        try:
-            chflags_func(dst, st.st_flags)
-        except OSError as why:
-            for err in 'EOPNOTSUPP', 'ENOTSUP':
-                if hasattr(errno, err) and why.errno == getattr(errno, err):
-                    break
-            else:
-                raise
-
 if hasattr(os, 'listxattr'):
-    def _copyxattr(src, dst, symlinks=False):
+    def _copyxattr(src, dst, *, follow_symlinks=True):
         """Copy extended filesystem attributes from `src` to `dst`.
 
         Overwrite existing attributes.
 
-        If the optional flag `symlinks` is set, symlinks won't be followed.
+        If `follow_symlinks` is false, symlinks won't be followed.
 
         """
-        if symlinks:
-            listxattr = os.llistxattr
-            removexattr = os.lremovexattr
-            setxattr = os.lsetxattr
-            getxattr = os.lgetxattr
-        else:
-            listxattr = os.listxattr
-            removexattr = os.removexattr
-            setxattr = os.setxattr
-            getxattr = os.getxattr
 
-        for attr in listxattr(src):
+        for name in os.listxattr(src, follow_symlinks=follow_symlinks):
             try:
-                setxattr(dst, attr, getxattr(src, attr))
+                value = os.getxattr(src, name, follow_symlinks=follow_symlinks)
+                os.setxattr(dst, name, value, follow_symlinks=follow_symlinks)
             except OSError as e:
                 if e.errno not in (errno.EPERM, errno.ENOTSUP, errno.ENODATA):
                     raise
@@ -196,34 +153,90 @@ else:
     def _copyxattr(*args, **kwargs):
         pass
 
-def copy(src, dst, symlinks=False):
-    """Copy data and mode bits ("cp src dst").
+def copystat(src, dst, *, follow_symlinks=True):
+    """Copy all stat info (mode bits, atime, mtime, flags) from src to dst.
+
+    If the optional flag `follow_symlinks` is not set, symlinks aren't followed if and
+    only if both `src` and `dst` are symlinks.
+
+    """
+    def _nop(*args, ns=None, follow_symlinks=None):
+        pass
+
+    # follow symlinks (aka don't not follow symlinks)
+    follow = follow_symlinks or not (os.path.islink(src) and os.path.islink(dst))
+    if follow:
+        # use the real function if it exists
+        def lookup(name):
+            return getattr(os, name, _nop)
+    else:
+        # use the real function only if it exists
+        # *and* it supports follow_symlinks
+        def lookup(name):
+            fn = getattr(os, name, _nop)
+            if fn in os.supports_follow_symlinks:
+                return fn
+            return _nop
+
+    st = lookup("stat")(src, follow_symlinks=follow)
+    mode = stat.S_IMODE(st.st_mode)
+    lookup("utime")(dst, ns=(st.st_atime_ns, st.st_mtime_ns),
+        follow_symlinks=follow)
+    try:
+        lookup("chmod")(dst, mode, follow_symlinks=follow)
+    except NotImplementedError:
+        # if we got a NotImplementedError, it's because
+        #   * follow_symlinks=False,
+        #   * lchown() is unavailable, and
+        #   * either
+        #       * fchownat() is unvailable or
+        #       * fchownat() doesn't implement AT_SYMLINK_NOFOLLOW.
+        #         (it returned ENOSUP.)
+        # therefore we're out of options--we simply cannot chown the
+        # symlink.  give up, suppress the error.
+        # (which is what shutil always did in this circumstance.)
+        pass
+    if hasattr(st, 'st_flags'):
+        try:
+            lookup("chflags")(dst, st.st_flags, follow_symlinks=follow)
+        except OSError as why:
+            for err in 'EOPNOTSUPP', 'ENOTSUP':
+                if hasattr(errno, err) and why.errno == getattr(errno, err):
+                    break
+            else:
+                raise
+    _copyxattr(src, dst, follow_symlinks=follow)
+
+def copy(src, dst, *, follow_symlinks=True):
+    """Copy data and mode bits ("cp src dst"). Return the file's destination.
 
     The destination may be a directory.
 
-    If the optional flag `symlinks` is set, symlinks won't be followed. This
+    If follow_symlinks is false, symlinks won't be followed. This
     resembles GNU's "cp -P src dst".
 
     """
     if os.path.isdir(dst):
         dst = os.path.join(dst, os.path.basename(src))
-    copyfile(src, dst, symlinks=symlinks)
-    copymode(src, dst, symlinks=symlinks)
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+    copymode(src, dst, follow_symlinks=follow_symlinks)
+    return dst
 
-def copy2(src, dst, symlinks=False):
-    """Copy data and all stat info ("cp -p src dst").
+def copy2(src, dst, *, follow_symlinks=True):
+    """Copy data and all stat info ("cp -p src dst"). Return the file's
+    destination."
 
     The destination may be a directory.
 
-    If the optional flag `symlinks` is set, symlinks won't be followed. This
+    If follow_symlinks is false, symlinks won't be followed. This
     resembles GNU's "cp -P src dst".
 
     """
     if os.path.isdir(dst):
         dst = os.path.join(dst, os.path.basename(src))
-    copyfile(src, dst, symlinks=symlinks)
-    copystat(src, dst, symlinks=symlinks)
-    _copyxattr(src, dst, symlinks=symlinks)
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+    copystat(src, dst, follow_symlinks=follow_symlinks)
+    return dst
 
 def ignore_patterns(*patterns):
     """Function that can be used as copytree() ignore parameter.
@@ -294,7 +307,7 @@ def copytree(src, dst, symlinks=False, ignore=None, copy_function=copy2,
                     # code with a custom `copy_function` may rely on copytree
                     # doing the right thing.
                     os.symlink(linkto, dstname)
-                    copystat(srcname, dstname, symlinks=symlinks)
+                    copystat(srcname, dstname, follow_symlinks=not symlinks)
                 else:
                     # ignore dangling symlink if the flag is on
                     if not os.path.exists(linkto) and ignore_dangling_symlinks:
@@ -319,27 +332,13 @@ def copytree(src, dst, symlinks=False, ignore=None, copy_function=copy2,
             # Copying file access times may fail on Windows
             pass
         else:
-            errors.extend((src, dst, str(why)))
+            errors.append((src, dst, str(why)))
     if errors:
         raise Error(errors)
+    return dst
 
-def rmtree(path, ignore_errors=False, onerror=None):
-    """Recursively delete a directory tree.
-
-    If ignore_errors is set, errors are ignored; otherwise, if onerror
-    is set, it is called to handle the error with arguments (func,
-    path, exc_info) where func is os.listdir, os.remove, or os.rmdir;
-    path is the argument to that function that caused it to fail; and
-    exc_info is a tuple returned by sys.exc_info().  If ignore_errors
-    is false and onerror is None, an exception is raised.
-
-    """
-    if ignore_errors:
-        def onerror(*args):
-            pass
-    elif onerror is None:
-        def onerror(*args):
-            raise
+# version vulnerable to race conditions
+def _rmtree_unsafe(path, onerror):
     try:
         if os.path.islink(path):
             # symlinks to directories are forbidden, see bug #1669
@@ -360,17 +359,109 @@ def rmtree(path, ignore_errors=False, onerror=None):
         except os.error:
             mode = 0
         if stat.S_ISDIR(mode):
-            rmtree(fullname, ignore_errors, onerror)
+            _rmtree_unsafe(fullname, onerror)
         else:
             try:
-                os.remove(fullname)
+                os.unlink(fullname)
             except os.error:
-                onerror(os.remove, fullname, sys.exc_info())
+                onerror(os.unlink, fullname, sys.exc_info())
     try:
         os.rmdir(path)
     except os.error:
         onerror(os.rmdir, path, sys.exc_info())
 
+# Version using fd-based APIs to protect against races
+def _rmtree_safe_fd(topfd, path, onerror):
+    names = []
+    try:
+        names = os.listdir(topfd)
+    except os.error:
+        onerror(os.listdir, path, sys.exc_info())
+    for name in names:
+        fullname = os.path.join(path, name)
+        try:
+            orig_st = os.stat(name, dir_fd=topfd, follow_symlinks=False)
+            mode = orig_st.st_mode
+        except os.error:
+            mode = 0
+        if stat.S_ISDIR(mode):
+            try:
+                dirfd = os.open(name, os.O_RDONLY, dir_fd=topfd)
+            except os.error:
+                onerror(os.open, fullname, sys.exc_info())
+            else:
+                try:
+                    if os.path.samestat(orig_st, os.fstat(dirfd)):
+                        _rmtree_safe_fd(dirfd, fullname, onerror)
+                        try:
+                            os.rmdir(name, dir_fd=topfd)
+                        except os.error:
+                            onerror(os.rmdir, fullname, sys.exc_info())
+                finally:
+                    os.close(dirfd)
+        else:
+            try:
+                os.unlink(name, dir_fd=topfd)
+            except os.error:
+                onerror(os.unlink, fullname, sys.exc_info())
+
+_use_fd_functions = ({os.open, os.stat, os.unlink, os.rmdir} <=
+                     os.supports_dir_fd and
+                     os.listdir in os.supports_fd and
+                     os.stat in os.supports_follow_symlinks)
+
+def rmtree(path, ignore_errors=False, onerror=None):
+    """Recursively delete a directory tree.
+
+    If ignore_errors is set, errors are ignored; otherwise, if onerror
+    is set, it is called to handle the error with arguments (func,
+    path, exc_info) where func is platform and implementation dependent;
+    path is the argument to that function that caused it to fail; and
+    exc_info is a tuple returned by sys.exc_info().  If ignore_errors
+    is false and onerror is None, an exception is raised.
+
+    """
+    if ignore_errors:
+        def onerror(*args):
+            pass
+    elif onerror is None:
+        def onerror(*args):
+            raise
+    if _use_fd_functions:
+        # While the unsafe rmtree works fine on bytes, the fd based does not.
+        if isinstance(path, bytes):
+            path = os.fsdecode(path)
+        # Note: To guard against symlink races, we use the standard
+        # lstat()/open()/fstat() trick.
+        try:
+            orig_st = os.lstat(path)
+        except Exception:
+            onerror(os.lstat, path, sys.exc_info())
+            return
+        try:
+            fd = os.open(path, os.O_RDONLY)
+        except Exception:
+            onerror(os.lstat, path, sys.exc_info())
+            return
+        try:
+            if (stat.S_ISDIR(orig_st.st_mode) and
+                os.path.samestat(orig_st, os.fstat(fd))):
+                _rmtree_safe_fd(fd, path, onerror)
+                try:
+                    os.rmdir(path)
+                except os.error:
+                    onerror(os.rmdir, path, sys.exc_info())
+            else:
+                raise NotADirectoryError(20,
+                                         "Not a directory: '{}'".format(path))
+        finally:
+            os.close(fd)
+    else:
+        return _rmtree_unsafe(path, onerror)
+
+# Allow introspection of whether or not the hardening against symlink
+# attacks is supported on the current platform
+rmtree.avoids_symlink_attacks = _use_fd_functions
 
 def _basename(path):
     # A basename() variant which first strips the trailing slash, if present.
@@ -379,7 +470,8 @@ def _basename(path):
 
 def move(src, dst):
     """Recursively move a file or directory to another location. This is
-    similar to the Unix "mv" command.
+    similar to the Unix "mv" command. Return the file or directory's
+    destination.
 
     If the destination is a directory or a symlink to a directory, the source
     is moved inside the directory. The destination path must not already
@@ -423,6 +515,7 @@ def move(src, dst):
         else:
             copy2(src, real_dst)
             os.unlink(src)
+    return real_dst
 
 def _destinsrc(src, dst):
     src = abspath(src)
@@ -954,3 +1047,56 @@ def get_terminal_size(fallback=(80, 24)):
             lines = size.lines
 
     return os.terminal_size((columns, lines))
+
+def which(cmd, mode=os.F_OK | os.X_OK, path=None):
+    """Given a command, mode, and a PATH string, return the path which
+    conforms to the given mode on the PATH, or None if there is no such
+    file.
+
+    `mode` defaults to os.F_OK | os.X_OK. `path` defaults to the result
+    of os.environ.get("PATH"), or can be overridden with a custom search
+    path.
+
+    """
+    # Check that a given file can be accessed with the correct mode.
+    # Additionally check that `file` is not a directory, as on Windows
+    # directories pass the os.access check.
+    def _access_check(fn, mode):
+        return (os.path.exists(fn) and os.access(fn, mode)
+                and not os.path.isdir(fn))
+
+    # Short circuit. If we're given a full path which matches the mode
+    # and it exists, we're done here.
+    if _access_check(cmd, mode):
+        return cmd
+
+    path = (path or os.environ.get("PATH", os.defpath)).split(os.pathsep)
+
+    if sys.platform == "win32":
+        # The current directory takes precedence on Windows.
+        if not os.curdir in path:
+            path.insert(0, os.curdir)
+
+        # PATHEXT is necessary to check on Windows.
+        pathext = os.environ.get("PATHEXT", "").split(os.pathsep)
+        # See if the given file matches any of the expected path extensions.
+        # This will allow us to short circuit when given "python.exe".
+        matches = [cmd for ext in pathext if cmd.lower().endswith(ext.lower())]
+        # If it does match, only test that one, otherwise we have to try
+        # others.
+        files = [cmd] if matches else [cmd + ext.lower() for ext in pathext]
+    else:
+        # On other platforms you don't have things like PATHEXT to tell you
+        # what file suffixes are executable, so just pass on cmd as-is.
+        files = [cmd]
+
+    seen = set()
+    for dir in path:
+        dir = os.path.normcase(dir)
+        if not dir in seen:
+            seen.add(dir)
+            for thefile in files:
+                name = os.path.join(dir, thefile)
+                if _access_check(name, mode):
+                    return name
+    return None

@@ -20,6 +20,9 @@ def open(filename, mode="rb", compresslevel=9,
          encoding=None, errors=None, newline=None):
     """Open a gzip-compressed file in binary or text mode.
 
+    The filename argument can be an actual filename (a str or bytes object), or
+    an existing file object to read from or write to.
+
     The mode argument can be "r", "rb", "w", "wb", "a" or "ab" for binary mode,
     or "rt", "wt" or "at" for text mode. The default mode is "rb", and the
     default compresslevel is 9.
@@ -43,7 +46,15 @@ def open(filename, mode="rb", compresslevel=9,
             raise ValueError("Argument 'errors' not supported in binary mode")
         if newline is not None:
             raise ValueError("Argument 'newline' not supported in binary mode")
-    binary_file = GzipFile(filename, mode.replace("t", ""), compresslevel)
+
+    gz_mode = mode.replace("t", "")
+    if isinstance(filename, (str, bytes)):
+        binary_file = GzipFile(filename, gz_mode, compresslevel)
+    elif hasattr(filename, "read") or hasattr(filename, "write"):
+        binary_file = GzipFile(None, gz_mode, compresslevel, filename)
+    else:
+        raise TypeError("filename must be a str or bytes object, or a file")
+
     if "t" in mode:
         return io.TextIOWrapper(binary_file, encoding, errors, newline)
     else:
@@ -118,7 +129,7 @@ class GzipFile(io.BufferedIOBase):
     the exception of the readinto() and truncate() methods.
 
     This class only supports opening files in binary mode. If you need to open a
-    compressed file in text mode, wrap your GzipFile with an io.TextIOWrapper.
+    compressed file in text mode, use the gzip.open() function.
 
     """
 
@@ -171,9 +182,8 @@ class GzipFile(io.BufferedIOBase):
         if fileobj is None:
             fileobj = self.myfileobj = builtins.open(filename, mode or 'rb')
         if filename is None:
-            if hasattr(fileobj, 'name') and isinstance(fileobj.name, str):
-                filename = fileobj.name
-            else:
+            filename = getattr(fileobj, 'name', '')
+            if not isinstance(filename, (str, bytes)):
                 filename = ''
         if mode is None:
             mode = getattr(fileobj, 'mode', 'rb')
@@ -247,7 +257,8 @@ class GzipFile(io.BufferedIOBase):
             # RFC 1952 requires the FNAME field to be Latin-1. Do not
             # include filenames that cannot be represented that way.
             fname = os.path.basename(self.name)
-            fname = fname.encode('latin-1')
+            if not isinstance(fname, bytes):
+                fname = fname.encode('latin-1')
             if fname.endswith(b'.gz'):
                 fname = fname[:-3]
         except UnicodeEncodeError:
@@ -374,7 +385,10 @@ class GzipFile(io.BufferedIOBase):
             return b''
 
         try:
-            self._read()
+            # For certain input data, a single call to _read() may not return
+            # any data. In this case, retry until we get some data or reach EOF.
+            while self.extrasize <= 0:
+                self._read()
         except EOFError:
             pass
         if size < 0 or size > self.extrasize:
@@ -399,8 +413,10 @@ class GzipFile(io.BufferedIOBase):
             if self.fileobj is None:
                 return b''
             try:
-                # 1024 is the same buffering heuristic used in read()
-                self._read(max(n, 1024))
+                # Ensure that we don't return b"" if we haven't reached EOF.
+                while self.extrasize == 0:
+                    # 1024 is the same buffering heuristic used in read()
+                    self._read(max(n, 1024))
             except EOFError:
                 pass
         offset = self.offset - self.extrastart

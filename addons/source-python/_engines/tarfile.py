@@ -1657,8 +1657,8 @@ class TarFile(object):
         except ImportError:
             raise CompressionError("bz2 module is not available")
 
-        fileobj = bz2.BZ2File(filename=name if fileobj is None else None,
-                mode=mode, fileobj=fileobj, compresslevel=compresslevel)
+        fileobj = bz2.BZ2File(fileobj or name, mode,
+                              compresslevel=compresslevel)
 
         try:
             t = cls.taropen(name, mode, fileobj, **kwargs)
@@ -1681,8 +1681,7 @@ class TarFile(object):
         except ImportError:
             raise CompressionError("lzma module is not available")
 
-        fileobj = lzma.LZMAFile(filename=name if fileobj is None else None,
-                mode=mode, fileobj=fileobj, preset=preset)
+        fileobj = lzma.LZMAFile(fileobj or name, mode, preset=preset)
 
         try:
             t = cls.taropen(name, mode, fileobj, **kwargs)

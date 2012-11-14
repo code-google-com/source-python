@@ -56,9 +56,10 @@ if 'posix' in _names:
         pass
     import posixpath as path
 
-    import posix
-    __all__.extend(_get_exports_list(posix))
-    del posix
+    try:
+        from posix import _have_functions
+    except ImportError:
+        pass
 
 elif 'nt' in _names:
     name = 'nt'
@@ -74,6 +75,11 @@ elif 'nt' in _names:
     import nt
     __all__.extend(_get_exports_list(nt))
     del nt
+
+    try:
+        from nt import _have_functions
+    except ImportError:
+        pass
 
 elif 'os2' in _names:
     name = 'os2'
@@ -94,6 +100,11 @@ elif 'os2' in _names:
     __all__.extend(_get_exports_list(os2))
     del os2
 
+    try:
+        from os2 import _have_functions
+    except ImportError:
+        pass
+
 elif 'ce' in _names:
     name = 'ce'
     linesep = '\r\n'
@@ -110,6 +121,11 @@ elif 'ce' in _names:
     __all__.extend(_get_exports_list(ce))
     del ce
 
+    try:
+        from ce import _have_functions
+    except ImportError:
+        pass
+
 else:
     raise ImportError('no os specific module found')
 
@@ -119,8 +135,97 @@ from os.path import (curdir, pardir, sep, pathsep, defpath, extsep, altsep,
 
 del _names
 
+
+if _exists("_have_functions"):
+    _globals = globals()
+    def _add(str, fn):
+        if (fn in _globals) and (str in _have_functions):
+            _set.add(_globals[fn])
+
+    _set = set()
+    _add("HAVE_FACCESSAT",  "access")
+    _add("HAVE_FCHMODAT",   "chmod")
+    _add("HAVE_FCHOWNAT",   "chown")
+    _add("HAVE_FSTATAT",    "stat")
+    _add("HAVE_FUTIMESAT",  "utime")
+    _add("HAVE_LINKAT",     "link")
+    _add("HAVE_MKDIRAT",    "mkdir")
+    _add("HAVE_MKFIFOAT",   "mkfifo")
+    _add("HAVE_MKNODAT",    "mknod")
+    _add("HAVE_OPENAT",     "open")
+    _add("HAVE_READLINKAT", "readlink")
+    _add("HAVE_RENAMEAT",   "rename")
+    _add("HAVE_SYMLINKAT",  "symlink")
+    _add("HAVE_UNLINKAT",   "unlink")
+    _add("HAVE_UNLINKAT",   "rmdir")
+    _add("HAVE_UTIMENSAT",  "utime")
+    supports_dir_fd = _set
+
+    _set = set()
+    _add("HAVE_FACCESSAT",  "access")
+    supports_effective_ids = _set
+
+    _set = set()
+    _add("HAVE_FCHDIR",     "chdir")
+    _add("HAVE_FCHMOD",     "chmod")
+    _add("HAVE_FCHOWN",     "chown")
+    _add("HAVE_FDOPENDIR",  "listdir")
+    _add("HAVE_FEXECVE",    "execve")
+    _set.add(stat) # fstat always works
+    _add("HAVE_FTRUNCATE",  "truncate")
+    _add("HAVE_FUTIMENS",   "utime")
+    _add("HAVE_FUTIMES",    "utime")
+    _add("HAVE_FPATHCONF",  "pathconf")
+    if _exists("statvfs") and _exists("fstatvfs"): # mac os x10.3
+        _add("HAVE_FSTATVFS", "statvfs")
+    supports_fd = _set
+
+    _set = set()
+    _add("HAVE_FACCESSAT",  "access")
+    # Some platforms don't support lchmod().  Often the function exists
+    # anyway, as a stub that always returns ENOSUP or perhaps EOPNOTSUPP.
+    # (No, I don't know why that's a good design.)  ./configure will detect
+    # this and reject it--so HAVE_LCHMOD still won't be defined on such
+    # platforms.  This is Very Helpful.
+    #
+    # However, sometimes platforms without a working lchmod() *do* have
+    # fchmodat().  (Examples: Linux kernel 3.2 with glibc 2.15,
+    # OpenIndiana 3.x.)  And fchmodat() has a flag that theoretically makes
+    # it behave like lchmod().  So in theory it would be a suitable
+    # replacement for lchmod().  But when lchmod() doesn't work, fchmodat()'s
+    # flag doesn't work *either*.  Sadly ./configure isn't sophisticated
+    # enough to detect this condition--it only determines whether or not
+    # fchmodat() minimally works.
+    #
+    # Therefore we simply ignore fchmodat() when deciding whether or not
+    # os.chmod supports follow_symlinks.  Just checking lchmod() is
+    # sufficient.  After all--if you have a working fchmodat(), your
+    # lchmod() almost certainly works too.
+    #
+    # _add("HAVE_FCHMODAT",   "chmod")
+    _add("HAVE_FCHOWNAT",   "chown")
+    _add("HAVE_FSTATAT",    "stat")
+    _add("HAVE_LCHFLAGS",   "chflags")
+    _add("HAVE_LCHMOD",     "chmod")
+    if _exists("lchown"): # mac os x10.3
+        _add("HAVE_LCHOWN", "chown")
+    _add("HAVE_LINKAT",     "link")
+    _add("HAVE_LUTIMES",    "utime")
+    _add("HAVE_LSTAT",      "stat")
+    _add("HAVE_FSTATAT",    "stat")
+    _add("HAVE_UTIMENSAT",  "utime")
+    _add("MS_WINDOWS",      "stat")
+    supports_follow_symlinks = _set
+
+    del _set
+    del _have_functions
+    del _globals
+    del _add
+
+
 # Python uses fixed values for the SEEK_ constants; they are mapped
 # to native constants if necessary in posixmodule.c
+# Other possible SEEK values are directly imported from posixmodule.c
 SEEK_SET = 0
 SEEK_CUR = 1
 SEEK_END = 2
@@ -160,8 +265,20 @@ def makedirs(name, mode=0o777, exist_ok=False):
     try:
         mkdir(name, mode)
     except OSError as e:
-        if not (e.errno == errno.EEXIST and exist_ok and path.isdir(name) and
-                st.S_IMODE(lstat(name).st_mode) == _get_masked_mode(mode)):
+        dir_exists = path.isdir(name)
+        expected_mode = _get_masked_mode(mode)
+        if dir_exists:
+            # S_ISGID is automatically copied by the OS from parent to child
+            # directories on mkdir.  Don't consider it being set to be a mode
+            # mismatch as mkdir does not unset it when not specified in mode.
+            actual_mode = st.S_IMODE(lstat(name).st_mode) & ~st.S_ISGID
+        else:
+            actual_mode = -1
+        if not (e.errno == errno.EEXIST and exist_ok and dir_exists and
+                actual_mode == expected_mode):
+            if dir_exists and actual_mode != expected_mode:
+                e.strerror += ' (mode %o != expected mode %o)' % (
+                        actual_mode, expected_mode)
             raise
 
 def removedirs(name):
@@ -305,9 +422,9 @@ def walk(top, topdown=True, onerror=None, followlinks=False):
 
 __all__.append("walk")
 
-if _exists("openat"):
+if {open, stat} <= supports_dir_fd and {listdir, stat} <= supports_fd:
 
-    def fwalk(top, topdown=True, onerror=None, followlinks=False):
+    def fwalk(top=".", topdown=True, onerror=None, *, follow_symlinks=False, dir_fd=None):
         """Directory tree generator.
 
         This behaves exactly like walk(), except that it yields a 4-tuple
@@ -317,8 +434,12 @@ if _exists("openat"):
         `dirpath`, `dirnames` and `filenames` are identical to walk() output,
         and `dirfd` is a file descriptor referring to the directory `dirpath`.
 
-        The advantage of walkfd() over walk() is that it's safe against symlink
-        races (when followlinks is False).
+        The advantage of fwalk() over walk() is that it's safe against symlink
+        races (when follow_symlinks is False).
+
+        If dir_fd is not None, it should be a file descriptor open to a directory,
+          and top should be relative; top will then be relative to that directory.
+          (dir_fd is always supported for fwalk.)
 
         Caution:
         Since fwalk() yields file descriptors, those are only valid until the
@@ -330,7 +451,7 @@ if _exists("openat"):
         import os
         for root, dirs, files, rootfd in os.fwalk('python/Lib/email'):
             print(root, "consumes", end="")
-            print(sum([os.fstatat(rootfd, name).st_size for name in files]),
+            print(sum([os.stat(name, dir_fd=rootfd).st_size for name in files]),
                   end="")
             print("bytes in", len(files), "non-directory files")
             if 'CVS' in dirs:
@@ -338,24 +459,21 @@ if _exists("openat"):
         """
         # Note: To guard against symlink races, we use the standard
         # lstat()/open()/fstat() trick.
-        orig_st = lstat(top)
-        topfd = open(top, O_RDONLY)
+        orig_st = stat(top, follow_symlinks=False, dir_fd=dir_fd)
+        topfd = open(top, O_RDONLY, dir_fd=dir_fd)
         try:
-            if (followlinks or (st.S_ISDIR(orig_st.st_mode) and
-                                path.samestat(orig_st, fstat(topfd)))):
-                yield from _fwalk(topfd, top, topdown, onerror, followlinks)
+            if (follow_symlinks or (st.S_ISDIR(orig_st.st_mode) and
+                                    path.samestat(orig_st, stat(topfd)))):
+                yield from _fwalk(topfd, top, topdown, onerror, follow_symlinks)
         finally:
             close(topfd)
 
-    def _fwalk(topfd, toppath, topdown, onerror, followlinks):
+    def _fwalk(topfd, toppath, topdown, onerror, follow_symlinks):
         # Note: This uses O(depth of the directory tree) file descriptors: if
         # necessary, it can be adapted to only require O(1) FDs, see issue
         # #13734.
 
-        # whether to follow symlinks
-        flag = 0 if followlinks else AT_SYMLINK_NOFOLLOW
-
-        names = flistdir(topfd)
+        names = listdir(topfd)
         dirs, nondirs = [], []
         for name in names:
             try:
@@ -363,14 +481,14 @@ if _exists("openat"):
                 # walk() which reports symlinks to directories as directories.
                 # We do however check for symlinks before recursing into
                 # a subdirectory.
-                if st.S_ISDIR(fstatat(topfd, name).st_mode):
+                if st.S_ISDIR(stat(name, dir_fd=topfd).st_mode):
                     dirs.append(name)
                 else:
                     nondirs.append(name)
             except FileNotFoundError:
                 try:
                     # Add dangling symlinks, ignore disappeared files
-                    if st.S_ISLNK(fstatat(topfd, name, AT_SYMLINK_NOFOLLOW)
+                    if st.S_ISLNK(stat(name, dir_fd=topfd, follow_symlinks=False)
                                 .st_mode):
                         nondirs.append(name)
                 except FileNotFoundError:
@@ -381,16 +499,16 @@ if _exists("openat"):
 
         for name in dirs:
             try:
-                orig_st = fstatat(topfd, name, flag)
-                dirfd = openat(topfd, name, O_RDONLY)
+                orig_st = stat(name, dir_fd=topfd, follow_symlinks=follow_symlinks)
+                dirfd = open(name, O_RDONLY, dir_fd=topfd)
             except error as err:
                 if onerror is not None:
                     onerror(err)
                 return
             try:
-                if followlinks or path.samestat(orig_st, fstat(dirfd)):
+                if follow_symlinks or path.samestat(orig_st, stat(dirfd)):
                     dirpath = path.join(toppath, name)
-                    yield from _fwalk(dirfd, dirpath, topdown, onerror, followlinks)
+                    yield from _fwalk(dirfd, dirpath, topdown, onerror, follow_symlinks)
             finally:
                 close(dirfd)
 

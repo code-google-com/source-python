@@ -15,8 +15,8 @@ also inspected for path configuration files.
 
 If a file named "pyvenv.cfg" exists one directory above sys.executable,
 sys.prefix and sys.exec_prefix are set to that directory and
-it is also checked for site-packages and site-python (sys.prefix and
-sys.exec_prefix will always be the "real" prefixes of the Python
+it is also checked for site-packages and site-python (sys.base_prefix and
+sys.base_exec_prefix will always be the "real" prefixes of the Python
 installation). If "pyvenv.cfg" (a bootstrap configuration file) contains
 the key "include-system-site-packages" set to anything other than "false"
 (case-insensitive), the system-level prefixes will still also be
@@ -499,8 +499,8 @@ def venv(known_paths):
     global PREFIXES, ENABLE_USER_SITE
 
     env = os.environ
-    if sys.platform == 'darwin' and '__PYTHONV_LAUNCHER__' in env:
-        executable = os.environ['__PYTHONV_LAUNCHER__']
+    if sys.platform == 'darwin' and '__PYVENV_LAUNCHER__' in env:
+        executable = os.environ['__PYVENV_LAUNCHER__']
     else:
         executable = sys.executable
     executable_dir, executable_name = os.path.split(executable)

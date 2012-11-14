@@ -495,9 +495,9 @@ class LZMACompressor:
         self._comp = None
 
     def _init(self):
-        props = lzma.encode_filter_properties({'id': lzma.FILTER_LZMA1})
+        props = lzma._encode_filter_properties({'id': lzma.FILTER_LZMA1})
         self._comp = lzma.LZMACompressor(lzma.FORMAT_RAW, filters=[
-                lzma.decode_filter_properties(lzma.FILTER_LZMA1, props)
+                lzma._decode_filter_properties(lzma.FILTER_LZMA1, props)
         ])
         return struct.pack('<BBH', 9, 4, len(props)) + props
 
@@ -529,7 +529,7 @@ class LZMADecompressor:
                 return b''
 
             self._decomp = lzma.LZMADecompressor(lzma.FORMAT_RAW, filters=[
-                    lzma.decode_filter_properties(lzma.FILTER_LZMA1,
+                    lzma._decode_filter_properties(lzma.FILTER_LZMA1,
                             self._unconsumed[4:4 + psize])
             ])
             data = self._unconsumed[4 + psize:]
@@ -733,12 +733,13 @@ class ZipExtFile(io.BufferedIOBase):
                 buf += self._read1(self.MAX_N)
             return buf
 
-        n -= len(self._readbuffer) - self._offset
-        if n < 0:
-            buf = self._readbuffer[self._offset:n]
-            self._offset += len(buf)
+        end = n + self._offset
+        if end < len(self._readbuffer):
+            buf = self._readbuffer[self._offset:end]
+            self._offset = end
             return buf
 
+        n = end - len(self._readbuffer)
         buf = self._readbuffer[self._offset:]
         self._readbuffer = b''
         self._offset = 0
@@ -774,12 +775,13 @@ class ZipExtFile(io.BufferedIOBase):
             buf += data
             return buf
 
-        n -= len(self._readbuffer) - self._offset
-        if n < 0:
-            buf = self._readbuffer[self._offset:n]
-            self._offset += len(buf)
+        end = n + self._offset
+        if end < len(self._readbuffer):
+            buf = self._readbuffer[self._offset:end]
+            self._offset = end
             return buf
 
+        n = end - len(self._readbuffer)
         buf = self._readbuffer[self._offset:]
         self._readbuffer = b''
         self._offset = 0
