@@ -63,7 +63,11 @@ DECLARE_CLASS_METHOD_OVERLOAD(IGameEvent, GetString, 0, 2)
 //---------------------------------------------------------------------------------
 // IGameEventManager overloads.
 //---------------------------------------------------------------------------------
+#if( SOURCE_ENGINE >= 2 )
 DECLARE_CLASS_METHOD_OVERLOAD(IGameEventManager2, CreateEvent, 1, 3)
+#else
+DECLARE_CLASS_METHOD_OVERLOAD(IGameEventManager2, CreateEvent, 1, 2)
+#endif
 DECLARE_CLASS_METHOD_OVERLOAD(IGameEventManager2, FireEvent, 1, 2)
 
 //---------------------------------------------------------------------------------
@@ -101,11 +105,6 @@ DECLARE_SP_MODULE(Event)
 			args("keyName", "defaultValue")
 		)
 
-		CLASS_METHOD_OVERLOAD(IGameEvent, GetUint64,
-			"Returns given key's value as a 64-bit integer.",
-			args("keyName", "defaultValue")
-		)
-
 		CLASS_METHOD_OVERLOAD(IGameEvent, 
 			GetFloat,
 			"Returns given key's value as a floating point.",
@@ -131,12 +130,6 @@ DECLARE_SP_MODULE(Event)
 		)
 
 		CLASS_METHOD(IGameEvent,
-			SetUint64,
-			"Sets given key's value as a 64-bit integer.",
-			args("keyName", "value")
-		)
-
-		CLASS_METHOD(IGameEvent,
 			SetFloat,
 			"Sets given key's value as a floating point.",
 			args("keyName", "value")
@@ -147,6 +140,20 @@ DECLARE_SP_MODULE(Event)
 			"Sets given key's value as a string.",
 			args("keyName", "value")
 		)
+
+#if( SOURCE_ENGINE >= 2 )
+		CLASS_METHOD_OVERLOAD(IGameEvent, GetUint64,
+			"Returns given key's value as a 64-bit integer.",
+			args("keyName", "defaultValue")
+		)
+
+		CLASS_METHOD(IGameEvent,
+			SetUint64,
+			"Sets given key's value as a 64-bit integer.",
+			args("keyName", "value")
+		)
+#endif
+
 
 	BOOST_END_CLASS()
 

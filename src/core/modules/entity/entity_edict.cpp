@@ -179,11 +179,13 @@ void Export_Edict()
 			"Returns the value (as a string) of a network prop name.",
 			args("szFullPath")
 		)
+#if( SOURCE_ENGINE >= 2 )
 		CLASS_METHOD_TYPEDEF(GetPropLong,
 			&GetPropValue<long long, DPT_Int64>,
 			"Returns the value (as a long long) of a network prop name.",
 			args("szFullPath")
 		)
+#endif
 
 		// ----------------------------------------------------------
 		// Expose methods for setting the values of network props
@@ -214,12 +216,13 @@ void Export_Edict()
 			"Sets the value (as a string) of a network prop name.",
 			args("szFullPath", "propValue")
 		)
+#if( SOURCE_ENGINE >= 2 )
 		CLASS_METHOD_TYPEDEF(SetPropLong,
 			&SetPropValue<long long, DPT_Int64>,
 			"Sets the value (as a long long) of a network prop name.",
 			args("szFullPath", "propValue")
 		)
-
+#endif
 		// ----------------------------------------------------------
 		// Expose methods for access keyvalues of entities, and also
 		// to spawn entities.

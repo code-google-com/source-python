@@ -58,12 +58,20 @@ IEngineSound* GetSound( void )
 
 //Declare method overloads to allow for default parameter options
 DECLARE_CLASS_METHOD_OVERLOAD(IEngineSound, PrecacheSound, 1, 3);
+#if( SOURCE_ENGINE >= 2 )
 DECLARE_CLASS_METHOD_OVERLOAD(IEngineSound, EmitSound, 9, 17);
+#else
+DECLARE_CLASS_METHOD_OVERLOAD(IEngineSound, EmitSound, 6, 15);
+#endif
 DECLARE_CLASS_METHOD_OVERLOAD(IEngineSound, EmitSentenceByIndex, 7, 15);
 
 void Export_EngineSound( void )
 {
+#if( SOURCE_ENGINE >= 2 )
 	typedef int (IEngineSound::*EmitSoundFn)(IRecipientFilter&, int, int, const char*, unsigned int, const char*, float, float, int, int, int, const Vector*, const Vector*, CUtlVector<Vector>*, bool, float, int);
+#else
+	typedef void (IEngineSound::*EmitSoundFn)(IRecipientFilter&, int, int, const char*, float, float, int, int, int, const Vector*, const Vector*, CUtlVector<Vector>*, bool, float, int);
+#endif
 	EmitSoundFn	IEngineSound_EmitSoundFn = &IEngineSound::EmitSound;
 
 	// ----------------------------------------------------------
@@ -92,17 +100,12 @@ void Export_EngineSound( void )
 		)
 
 		CLASS_METHOD(IEngineSound, 
-			IsLoopingSound, 
-			"Returns True if a specific sound is set to loop.", 
-			args("pSample")
-		)
-
-		CLASS_METHOD(IEngineSound, 
 			GetSoundDuration, 
 			"Returns the duration of a specific sound, in seconds. NOTE: Will not currently work with *.mp3 files.", 
 			args("pSample")
 		)
 
+#if( SOURCE_ENGINE >= 2 )
 		//Had to define the hard way: A typedef AND default parameters all in one method!
 		.def("EmitSound",
 			IEngineSound_EmitSoundFn,
@@ -111,6 +114,15 @@ void Export_EngineSound( void )
 				args("filter", "iEntIndex", "iChannel", "pSoundEntry", "nSoundEntryHash", "pSample", "flVolume", "flAttenuation", "nSeed", "iFlags", "iPitch", "pOrigin", "pDirection", "pUtlVecOrigins", "bUpdatePositions", "soundtime", "speakerentity")
 			)
 		)
+#else
+		.def("EmitSound",
+			IEngineSound_EmitSoundFn,
+			IEngineSound_EmitSound(
+				"Emits a sound from an entity.",
+				args("filter", "iEntIndex", "iChannel", "pSample", "flVolume", "flAttenuation", "iFlags", "iPitch", "iSpecialDSP", "pOrigin", "pDirection", "pUtlVecOrigins", "bUpdatePositions", "soundtime", "speakerentity")
+			)
+		)
+#endif
 
 		CLASS_METHOD_OVERLOAD(IEngineSound, 
 			EmitSentenceByIndex, 
@@ -129,6 +141,15 @@ void Export_EngineSound( void )
 			"Returns the distance gain value from a sound level",
 			args("soundlevel", "dist")
 		)
+
+#if( SOURCE_ENGINE >= 2 )
+		CLASS_METHOD(IEngineSound, 
+			IsLoopingSound, 
+			"Returns True if a specific sound is set to loop.", 
+			args("pSample")
+		)
+#endif
+
 	BOOST_END_CLASS()
 
 	// ----------------------------------------------------------
