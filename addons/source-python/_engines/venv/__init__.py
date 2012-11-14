@@ -1,7 +1,8 @@
 """
 Virtual environment (venv) package for Python. Based on PEP 405.
 
-Copyright (C) 20011-2012 Vinay Sajip. All Rights Reserved.
+Copyright (C) 2011-2012 Vinay Sajip.
+Licensed to the PSF under a contributor agreement.
 
 usage: python -m venv [-h] [--system-site-packages] [--symlinks] [--clear]
             [--upgrade]
@@ -36,7 +37,6 @@ try:
     import threading
 except ImportError:
     threading = None
-import zipfile
 
 logger = logging.getLogger(__name__)
 
@@ -82,13 +82,6 @@ class EnvBuilder:
         :param env_dir: The target directory to create an environment in.
 
         """
-        if (self.symlinks and
-            sys.platform == 'darwin' and
-            sysconfig.get_config_var('PYTHONFRAMEWORK')):
-            # Symlinking the stub executable in an OSX framework build will
-            # result in a broken virtual environment.
-            raise ValueError(
-                'Symlinking is not supported on OSX framework Python.')
         env_dir = os.path.abspath(env_dir)
         context = self.ensure_directories(env_dir)
         self.create_configuration(context)
@@ -119,8 +112,8 @@ class EnvBuilder:
         context.prompt = '(%s) ' % context.env_name
         create_if_needed(env_dir)
         env = os.environ
-        if sys.platform == 'darwin' and '__PYTHONV_LAUNCHER__' in env:
-            executable = os.environ['__PYTHONV_LAUNCHER__']
+        if sys.platform == 'darwin' and '__PYVENV_LAUNCHER__' in env:
+            executable = os.environ['__PYVENV_LAUNCHER__']
         else:
             executable = sys.executable
         dirname, exename = os.path.split(os.path.abspath(executable))
@@ -316,7 +309,7 @@ class EnvBuilder:
                     data = self.replace_variables(data, context)
                 with open(dstfile, mode) as f:
                     f.write(data)
-                os.chmod(dstfile, 0o755)
+                shutil.copymode(srcfile, dstfile)
 
 
 def create(env_dir, system_site_packages=False, clear=False, symlinks=False):
@@ -346,8 +339,7 @@ def main(args=None):
     elif not hasattr(sys, 'base_prefix'):
         compatible = False
     if not compatible:
-        raise ValueError('This script is only for use with '
-                         'Python 3.3 (pythonv variant)')
+        raise ValueError('This script is only for use with Python 3.3')
     else:
         import argparse
 
@@ -355,21 +347,27 @@ def main(args=None):
                                          description='Creates virtual Python '
                                                      'environments in one or '
                                                      'more target '
-                                                     'directories.')
+                                                     'directories.',
+                                         epilog='Once an environment has been '
+                                                'created, you may wish to '
+                                                'activate it, e.g. by '
+                                                'sourcing an activate script '
+                                                'in its bin directory.')
         parser.add_argument('dirs', metavar='ENV_DIR', nargs='+',
                             help='A directory to create the environment in.')
         parser.add_argument('--system-site-packages', default=False,
                             action='store_true', dest='system_site',
                             help='Give the virtual environment access to the '
                                  'system site-packages dir.')
-        if os.name == 'nt' or (sys.platform == 'darwin' and
-                               sysconfig.get_config_var('PYTHONFRAMEWORK')):
+        if os.name == 'nt':
             use_symlinks = False
         else:
             use_symlinks = True
         parser.add_argument('--symlinks', default=use_symlinks,
                             action='store_true', dest='symlinks',
-                            help="Attempt to symlink rather than copy.")
+                            help='Try to use symlinks rather than copies, '
+                                 'when symlinks are not the default for '
+                                 'the platform.')
         parser.add_argument('--clear', default=False, action='store_true',
                             dest='clear', help='Delete the environment '
                                                'directory if it already '
