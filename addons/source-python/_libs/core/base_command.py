@@ -12,6 +12,8 @@ from paths import DATA_PATH
 #   Addons
 from addons.info import AddonInfo
 from addons.manager import AddonManager
+#   Auth
+from auth.commands import AuthCommands
 #   Core
 from core.commands import echo_console
 
@@ -26,7 +28,7 @@ class _SPCommands(dict):
         '''Called on instanciation'''
 
         # Create a list to keep the items in order for iteration
-        self._order = []
+        self._order = list()
 
     def __setitem__(self, item, value):
         '''
@@ -49,7 +51,7 @@ class _SPCommands(dict):
             yield item
 
     def call_command(self, command, args):
-        '''executes the given "sp" sub-command'''
+        '''Executes the given "sp" sub-command'''
 
         # Is the command registered?
         if not command in self:
@@ -93,6 +95,15 @@ class _SPCommands(dict):
             # Go no further
             return
 
+        # Does the current item have its own call_command method?
+        if hasattr(self[command], 'call_command'):
+
+            # Call the instance's call_command method
+            self[command].call_command(args)
+
+            # Go no further
+            return
+
         # Execute the command
         self[command]()
 
@@ -101,14 +112,23 @@ class _SPCommands(dict):
 
         # Send header messages
         echo_console('[Source.Python] Help:')
-        echo_console('usage: sp <command> <arguments>')
-        echo_console('=' * 61)
+        echo_console('usage: sp <command> [arguments]')
+        echo_console('=' * 76)
 
         # Loop through all registered sub-commands
         for item in self:
 
             # Set the text
             text = str(item)
+
+            # Does the current item have its own _print_help method?
+            if hasattr(self[item], '_print_help'):
+
+                # Call the instance's _print_help method
+                self[item]._print_help()
+
+                # Continue onto the next item
+                continue
 
             # Does the current command have required arguments?
             if hasattr(self[item], 'args'):
@@ -118,10 +138,10 @@ class _SPCommands(dict):
 
             # Send a message for the current command
             echo_console(
-                '%s %s' % (text, self[item].__doc__.rjust(60 - len(text))))
+                '%s %s' % (text, self[item].__doc__.rjust(75 - len(text))))
 
         # Send ending message
-        echo_console('=' * 61)
+        echo_console('=' * 76)
 
 
 # =============================================================================
@@ -283,6 +303,9 @@ SPCommands['unload'] = _unload_addon
 SPCommands['unload'].args = ['<addon>']
 SPCommands['reload'] = _reload_addon
 SPCommands['reload'].args = ['<addon>']
+
+# Add the auth command to the dictionary
+SPCommands['auth'] = AuthCommands
 
 # Add all printing commands to the dictionary
 SPCommands['list'] = _print_addons

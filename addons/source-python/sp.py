@@ -29,7 +29,13 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Configobj
+from configobj import ConfigObj
+
 # Source.Python Imports
+from paths import CFG_PATH
+#   Core
 from core.base_command import SPCommands
 #   Events
 from events.manager import EventRegistry
@@ -40,6 +46,19 @@ from listeners.tick import TickListeners
 # =============================================================================
 # >> CORE FUNCTIONS
 # =============================================================================
+def plugin_load():
+    '''Called when the plugin is finished loading'''
+
+    # Get the core settings
+    core_settings = ConfigObj(CFG_PATH.joinpath('core_settings.ini'))
+
+    # Get the auth providers that should be loaded
+    auth_providers = core_settings['AUTH_SETTINGS']['providers'].split()
+
+    # Load the auth providers
+    SPCommands.call_command('auth', ['load'] + auth_providers)
+
+
 def event_fire(GameEvent):
     '''Called when the core catches an event.'''
 
