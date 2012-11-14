@@ -49,8 +49,9 @@ class _AuthCommands(dict):
         if not args:
 
             # Send a message that a sub-command is needed
-            echo_console('[SP Auth] The "sp auth"' +
-                'command must be followed by a sub-command.')
+            echo_console(
+                '[SP Auth] The "sp auth" command must' +
+                ' be followed by a sub-command.')
 
             # Print the auth help text
             self._print_auth_help()
@@ -130,8 +131,9 @@ def _load_auth_providers(providers):
     if not providers:
 
         # Send a message about the required argument
-        echo_console('[SP Auth] The "sp auth load"' +
-            'command requires at least one auth provider argument.')
+        echo_console(
+            '[SP Auth] The "sp auth load" command requires' +
+            ' at least one auth provider argument.')
 
         # No need to go further
         return
@@ -150,8 +152,9 @@ def _unload_auth_providers(providers):
     if not providers:
 
         # Send a message about the required argument
-        echo_console('[SP Auth] The "sp auth unload"' +
-            'command requires at least one auth provider argument.')
+        echo_console(
+            '[SP Auth] The "sp auth unload" command ' +
+            'requires at least one auth provider argument.')
 
         # No need to go further
         return

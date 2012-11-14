@@ -11,6 +11,7 @@ import re
 #   Auth
 from auth.paths import AUTH_CFG_PATH
 
+
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
@@ -31,7 +32,6 @@ class _SimpleAuth(set):
 
         # Open the simple auth config file
         with SIMPLE_FILE_PATH.open() as auth_file:
-
 
             # Loop through each line in the file
             for line in auth_file.readlines():

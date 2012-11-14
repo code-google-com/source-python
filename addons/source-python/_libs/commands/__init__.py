@@ -19,6 +19,7 @@ class _ServerCommandDecorator(BaseDecorator):
         '''Stores the instanciating class' unregister method'''
         self._unregister_decorator = class_instance._unregister_server_command
 
+
 class ServerCommand(object):
     '''Class used to register server commands using a decorator'''
 

@@ -391,7 +391,6 @@ class _PlayerWeapons(_GameWeapons):
     def get_weapon_color(self):
         '''Returns a tuple value for the player's active weapon's color'''
 
-
         # Get the handle of the player's active weapon
         handle = self.active_weapon
 

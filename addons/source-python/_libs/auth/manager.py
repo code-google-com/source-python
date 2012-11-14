@@ -29,8 +29,9 @@ class _AuthManager(dict):
         if provider in self:
 
             # If so, send a message that the provider is already loaded
-            echo_console('[SP Auth] Unable to load provider ' +
-                '"%s", provider is already loaded.' % provider)
+            echo_console(
+                '[SP Auth] Unable to load provider "' +
+                '%s", provider is already loaded.' % provider)
 
             # No need to go further
             return
@@ -39,8 +40,9 @@ class _AuthManager(dict):
         if not AUTH_PROVIDER_PATH.joinpath(provider + '.py').isfile():
 
             # Send a message that the file does not exist
-            echo_console('[SP Auth] Unable to load provider "%s"' % provider +
-                ', missing file ../addons/source-python/auth/%s.py' % provider)
+            echo_console(
+                '[SP Auth] Unable to load provider "%s", ' % provider +
+                'missing file ../addons/source-python/auth/%s.py' % provider)
 
             # No need to go further
             return
@@ -65,7 +67,8 @@ class _AuthManager(dict):
         if not provider in self:
 
             # If not, send a message that the provider is not loaded
-            echo_console('[SP Auth] Unable to unload provider ' +
+            echo_console(
+                '[SP Auth] Unable to unload provider ' +
                 '"%s", provider not loaded.' % provider)
 
         # Call the providers unload method
@@ -87,8 +90,8 @@ class _AuthManager(dict):
         # Load the provider
         self.load_auth(provider)
 
-    def is_player_authorized(self, playerinfo,
-            level=None, permission=None, flag=None):
+    def is_player_authorized(
+            self, playerinfo, level=None, permission=None, flag=None):
         '''Checks to see if the player is authorized'''
 
         # Get the player's uniqueid
