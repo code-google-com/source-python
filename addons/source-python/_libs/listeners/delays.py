@@ -115,6 +115,9 @@ class _TickDelays(dict):
         # Add the _Delay instance to the dictionary using its execution time
         self[delay_object.exec_time].append(delay_object)
 
+        # Return the object
+        return delay_object
+
     def _tick(self):
         '''Called every tick when the listener is registered'''
 
