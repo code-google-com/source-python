@@ -64,7 +64,7 @@ class _TickDelays(dict):
         if not self:
 
             # Register the tick listener
-            TickListeners.register_tick_listener(self.tick)
+            TickListeners.register_tick_listener(self._tick)
 
         # Add the item to the dictionary as a _Times instance
         self[item] = _Times()
@@ -115,7 +115,7 @@ class _TickDelays(dict):
         # Add the _Delay instance to the dictionary using its execution time
         self[delay_object.exec_time].append(delay_object)
 
-    def tick(self):
+    def _tick(self):
         '''Called every tick when the listener is registered'''
 
         # Get the current time
@@ -137,7 +137,7 @@ class _TickDelays(dict):
         if not self:
 
             # Unregister the tick listener
-            TickListeners.unregister_tick_listener(self.tick)
+            TickListeners.unregister_tick_listener(self._tick)
 
     def cancel_delay(self, delay_object):
         '''Method used to cancel a delay'''
@@ -146,13 +146,14 @@ class _TickDelays(dict):
         if not isinstance(delay_object, _Delay):
 
             # If not, raise an error
-            raise
+            raise TypeError(
+                'TickDelays.cancel_delay requires a _Delay instance.')
 
         # Is the given _Delay object's time no longer in the dictionary?
         if not delay_object.exec_time in self:
 
             # If not, raise an error
-            raise
+            raise KeyError('Object is no longer registered.')
 
         # Remove the delay from its time
         self[delay_object.exec_time].remove(delay_object)
