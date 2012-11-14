@@ -1,4 +1,4 @@
-//  (C) Copyright Gennadiy Rozental 2005-2011.
+//  (C) Copyright Gennadiy Rozental 2005-2012.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 75035 $
+//  Version     : $Revision: 81193 $
 //
 //  Description : defines framework interface
 // ***************************************************************************
@@ -84,6 +84,7 @@ BOOST_TEST_DECL context_generator   get_context();
 
 // Master test suite access
 BOOST_TEST_DECL master_test_suite_t& master_test_suite();
+BOOST_TEST_DECL test_suite&          current_auto_test_suite( test_suite* ts = 0, bool push_or_pop = true );
 
 // constant access methods
 BOOST_TEST_DECL test_case const&    current_test_case();

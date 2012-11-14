@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: subtract_with_carry.hpp 72826 2011-06-30 22:27:53Z steven_watanabe $
+ * $Id: subtract_with_carry.hpp 80995 2012-10-16 03:05:15Z marshall $
  *
  * Revision history
  *  2002-03-02  created
@@ -354,7 +354,7 @@ public:
                                                boost::uint32_t, value)
     { init_modulus(); seed(value); }
     /**
-     * Creates a new \subtract_with_carry_01_engine and seeds with with values
+     * Creates a new \subtract_with_carry_01_engine and seeds with values
      * produced by seq.generate().
      */
     BOOST_RANDOM_DETAIL_SEED_SEQ_CONSTRUCTOR(subtract_with_carry_01_engine,

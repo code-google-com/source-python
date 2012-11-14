@@ -5,7 +5,7 @@
  * Subject to the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2011-01-15 03:11:51 -0500 (Sat, 15 Jan 2011) $
+ * $Date: 2012-08-15 13:06:56 -0400 (Wed, 15 Aug 2012) $
  */
 
 #include <string>
@@ -208,7 +208,7 @@ namespace local_time {
     }
 
     //! Simple destructor, releases time zone if last referrer
-    ~local_date_time_base() {};
+    ~local_date_time_base() {}
 
     //! Copy constructor
     local_date_time_base(const local_date_time_base& rhs) :

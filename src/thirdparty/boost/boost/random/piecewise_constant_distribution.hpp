@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: piecewise_constant_distribution.hpp 77152 2012-03-02 16:16:45Z marshall $
+ * $Id: piecewise_constant_distribution.hpp 79389 2012-07-09 19:50:17Z marshall $
  */
 
 #ifndef BOOST_RANDOM_PIECEWISE_CONSTANT_DISTRIBUTION_HPP_INCLUDED
@@ -22,7 +22,7 @@
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/detail/vector_io.hpp>
 
-#ifndef BOOST_NO_0X_HDR_INITIALIZER_LIST
+#ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
 #include <initializer_list>
 #endif
 
@@ -84,7 +84,7 @@ public:
                 }
             }
         }
-#ifndef BOOST_NO_0X_HDR_INITIALIZER_LIST
+#ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
         /**
          * Constructs a @c param_type object from an
          * initializer_list containing the interval boundaries
@@ -271,7 +271,7 @@ public:
             _bins.param(bins_param);
         }
     }
-#ifndef BOOST_NO_0X_HDR_INITIALIZER_LIST
+#ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
     /**
      * Constructs a piecewise_constant_distribution from an
      * initializer_list containing the interval boundaries

@@ -1,4 +1,4 @@
-//  (C) Copyright Gennadiy Rozental 2005-2010.
+//  (C) Copyright Gennadiy Rozental 2005-2012.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
@@ -7,7 +7,7 @@
 //
 //  File        : $RCSfile$
 //
-//  Version     : $Revision: 75373 $
+//  Version     : $Revision: 81217 $
 //
 //  Description : implements framework API - main driver for the test
 // ***************************************************************************
@@ -186,7 +186,7 @@ private:
 
         return false;
     }
-    virtual void    test_suite_finish( test_suite const& ts )
+    virtual void    test_suite_finish( test_suite const& /*ts*/ )
     {
         --m_depth;
     }
@@ -322,14 +322,14 @@ private:
 class framework_impl : public test_tree_visitor {
 public:
     framework_impl()
-    : m_master_test_suite( 0 )
-    , m_curr_test_case( INV_TEST_UNIT_ID )
+    : m_curr_test_case( INV_TEST_UNIT_ID )
     , m_next_test_case_id( MIN_TEST_CASE_ID )
     , m_next_test_suite_id( MIN_TEST_SUITE_ID )
     , m_is_initialized( false )
     , m_test_in_progress( false )
     , m_context_idx( 0 )
-    {}
+    {
+    }
 
     ~framework_impl() { clear(); }
 
@@ -460,6 +460,8 @@ public:
     typedef std::vector<context_frame> context_data;
 
     master_test_suite_t* m_master_test_suite;
+    std::vector<test_suite*> m_auto_test_suites;
+
     test_unit_id    m_curr_test_case;
     test_unit_store m_test_units;
 
@@ -953,6 +955,26 @@ master_test_suite()
         s_frk_impl().m_master_test_suite = new master_test_suite_t;
 
     return *s_frk_impl().m_master_test_suite;
+}
+
+//____________________________________________________________________________//
+
+// ************************************************************************** //
+// **************            current_auto_test_suite           ************** //
+// ************************************************************************** //
+
+test_suite&
+current_auto_test_suite( test_suite* ts, bool push_or_pop )
+{
+    if( s_frk_impl().m_auto_test_suites.empty() )
+        s_frk_impl().m_auto_test_suites.push_back( &framework::master_test_suite() );
+
+    if( !push_or_pop )
+        s_frk_impl().m_auto_test_suites.pop_back();
+    else if( ts )
+        s_frk_impl().m_auto_test_suites.push_back( ts );
+
+    return *s_frk_impl().m_auto_test_suites.back();
 }
 
 //____________________________________________________________________________//

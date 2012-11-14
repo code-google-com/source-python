@@ -6,7 +6,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2011-04-11 14:20:53 -0400 (Mon, 11 Apr 2011) $
+ * $Date: 2012-09-26 12:22:04 -0400 (Wed, 26 Sep 2012) $
  */
 
 #include "boost/tokenizer.hpp"
@@ -116,6 +116,7 @@ namespace date_time {
         
         break;
       }
+      default: break;
       }//switch
       pos++;
     }
@@ -281,6 +282,7 @@ namespace date_time {
             
             break;
           }
+          default: break;
       };
       pos++;
     }
