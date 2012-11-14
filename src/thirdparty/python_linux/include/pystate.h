@@ -114,6 +114,9 @@ typedef struct _ts {
     PyObject *async_exc; /* Asynchronous exception to raise */
     long thread_id; /* Thread id where this tstate was created */
 
+    int trash_delete_nesting;
+    PyObject *trash_delete_later;
+
     /* XXX signal handlers should also be here */
 
 } PyThreadState;
@@ -124,6 +127,11 @@ PyAPI_FUNC(PyInterpreterState *) PyInterpreterState_New(void);
 PyAPI_FUNC(void) PyInterpreterState_Clear(PyInterpreterState *);
 PyAPI_FUNC(void) PyInterpreterState_Delete(PyInterpreterState *);
 PyAPI_FUNC(int) _PyState_AddModule(PyObject*, struct PyModuleDef*);
+#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
+/* New in 3.3 */
+PyAPI_FUNC(int) PyState_AddModule(PyObject*, struct PyModuleDef*);
+PyAPI_FUNC(int) PyState_RemoveModule(struct PyModuleDef*);
+#endif
 PyAPI_FUNC(PyObject*) PyState_FindModule(struct PyModuleDef*);
 
 PyAPI_FUNC(PyThreadState *) PyThreadState_New(PyInterpreterState *);

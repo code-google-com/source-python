@@ -30,6 +30,9 @@ PyAPI_FUNC(wchar_t *) Py_GetPythonHome(void);
 
 PyAPI_FUNC(void) Py_Initialize(void);
 PyAPI_FUNC(void) Py_InitializeEx(int);
+#ifndef Py_LIMITED_API
+PyAPI_FUNC(void) _Py_InitializeEx_Private(int, int);
+#endif
 PyAPI_FUNC(void) Py_Finalize(void);
 PyAPI_FUNC(int) Py_IsInitialized(void);
 PyAPI_FUNC(PyThreadState *) Py_NewInterpreter(void);
@@ -82,9 +85,12 @@ PyAPI_FUNC(struct _mod *) PyParser_ASTFromFile(
     PyParser_SimpleParseFileFlags(FP, S, B, 0)
 #endif
 PyAPI_FUNC(struct _node *) PyParser_SimpleParseStringFlags(const char *, int,
-                                                          int);
+                                                           int);
+PyAPI_FUNC(struct _node *) PyParser_SimpleParseStringFlagsFilename(const char *,
+                                                                   const char *,
+                                                                   int, int);
 PyAPI_FUNC(struct _node *) PyParser_SimpleParseFileFlags(FILE *, const char *,
-                                                        int, int);
+                                                         int, int);
 
 #ifndef Py_LIMITED_API
 PyAPI_FUNC(PyObject *) PyRun_StringFlags(const char *, int, PyObject *,
