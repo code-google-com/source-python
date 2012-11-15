@@ -401,7 +401,7 @@ public:
 #define INTERFACEVERSION_SERVERGAMEDLL_VERSION_4	"ServerGameDLL004"
 #define INTERFACEVERSION_SERVERGAMEDLL_VERSION_5	"ServerGameDLL005"
 #define INTERFACEVERSION_SERVERGAMEDLL_VERSION_6	"ServerGameDLL006"
-#define INTERFACEVERSION_SERVERGAMEDLL				"ServerGameDLL007"
+#define INTERFACEVERSION_SERVERGAMEDLL				"ServerGameDLL009"
 
 //-----------------------------------------------------------------------------
 // Purpose: These are the interfaces that the game .dll exposes to the engine
