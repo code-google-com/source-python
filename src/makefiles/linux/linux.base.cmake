@@ -65,7 +65,7 @@ Set(CMAKE_SHARED_LINKER_FLAGS   "libtier0.so libvstdlib.so")
 If(CMAKE_BUILD_TYPE MATCHES Debug)
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG -DBOOST_DEBUG_PYTHON -D_DEBUG -DPy_DEBUG")
 Else()
-    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_NDEBUG -DPy_DEBUG")
+    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_NDEBUG")
 EndIf()
 
 # ------------------------------------------------------------------
