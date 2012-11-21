@@ -1,1 +1,1 @@
-cmake -DGAME=ob-valve -DCMAKE_BUILD_TYPE=Debug
+cmake -DGAME=ob-valve
