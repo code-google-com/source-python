@@ -46,10 +46,24 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
 # ------------------------------------------------------------------
 # Game specific library hacks.
 # ------------------------------------------------------------------
-If(GAME MATCHES csgo)
+If(SOURCE_ENGINE EQUAL 2)
+    # Orangebox has all the tier libraries.
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
-         ${SOURCESDK_LIB}/linux/interfaces_i486.a
+         ${SOURCESDK_LIB}/linux/tier1_i486.a
+         ${SOURCESDK_LIB}/linux/tier2_i486.a
+         ${SOURCESDK_LIB}/linux/tier3_i486.a
+         ${SOURCESDK_LIB}/linux/libtier0_srv.so
+         ${SOURCESDK_LIB}/linux/libvstdlib_srv.so
+    )
+EndIf()
+
+If(SOURCE_ENGINE EQUAL 3)
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
+         ${SOURCESDK_LIB}/linux/interfaces_i486.
+         ${SOURCESDK_LIB}/linux/libtier0.so
+         ${SOURCESDK_LIB}/linux/libvstdlib.so
     )
 EndIf()
 
@@ -62,11 +76,6 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_snprintf=snprintf -D_vsnprintf=vsnpri
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrcmpi=strcasecmp -Wall -Wno-uninitialized")
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -DHAVE_STDINT_H -m32 -DCOMPILER_GCC")
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-non-virtual-dtor -fno-threadsafe-statics -v")
-
-# ------------------------------------------------------------------
-# Link shared objects.
-# ------------------------------------------------------------------
-Set(CMAKE_SHARED_LINKER_FLAGS   "libtier0.so libvstdlib.so")
 
 # ------------------------------------------------------------------
 # Debug / Release compiler flags.
@@ -92,9 +101,3 @@ Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
     ${BOOSTSDK_LIB}/libboost_python_d.a
     ${PYTHONSDK_LIB}/libpython3.3dm.so.1.0
 )
-
-# ------------------------------------------------------------------
-# Need to copy tier0 and vstdlib so files.
-# ------------------------------------------------------------------
-FILE(COPY ${SOURCESDK_LIB}/linux/libtier0.so DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-FILE(COPY ${SOURCESDK_LIB}/linux/libvstdlib.so DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
