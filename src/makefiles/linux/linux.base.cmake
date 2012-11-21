@@ -37,12 +37,21 @@ Include_Directories(
 Set(SOURCEPYTHON_LINK_LIBRARIES
     pthread dl util
     ${SOURCESDK_LIB}/linux/mathlib_i486.a
-    ${SOURCESDK_LIB}/linux/interfaces_i486.a
     ${SOURCESDK_LIB}/linux/tier1_i486.a
     ${DYNCALLSDK_LIB}/libdyncall_s.a
     ${DYNCALLSDK_LIB}/libdyncallback_s.a
     ${DYNCALLSDK_LIB}/libdynload_s.a
 )
+
+# ------------------------------------------------------------------
+# Game specific library hacks.
+# ------------------------------------------------------------------
+If(GAME MATCHES csgo)
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
+         ${SOURCESDK_LIB}/linux/interfaces_i486.a
+    )
+EndIf()
 
 # ------------------------------------------------------------------
 # Linux compiler flags.
