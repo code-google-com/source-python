@@ -61,7 +61,7 @@ class BaseMessage(object):
         self.__init__(*args)
 
         # Set the class' message index
-        self._message_index = MessageTypes[cls.__name__]
+        self._message_index = index
 
         # Return the class
         return self

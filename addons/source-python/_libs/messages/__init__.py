@@ -37,5 +37,5 @@ for _filepath in path(__file__).parent.joinpath('types').files():
         # Is the current item native to the current module?
         if _module.__dict__[item].__module__ == _module.__name__:
 
-            # Add the function as a global object for this module
+            # Add the class as a global object for this module
             _basemodule.__dict__[item] = _module.__dict__[item]
