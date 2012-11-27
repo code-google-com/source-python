@@ -12,7 +12,6 @@ from core import GAME_NAME
 from entities.entity import BaseEntity
 from entities.weapons.weapon import WeaponEntity
 #   Filters
-from filters.weapontags import WeaponTagIter
 #   Weapons
 from weapons.manager import WeaponManager
 
@@ -28,6 +27,9 @@ try:
 
     # Get the game's _GameWeapons class
     _GameWeapons = _game_instance._GameWeapons
+
+    # If the rest was successful, import WeaponTagIter
+    from filters.weapontags import WeaponTagIter
 
 # Was an error encountered?
 except:
