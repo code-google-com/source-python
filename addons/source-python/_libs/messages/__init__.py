@@ -16,47 +16,26 @@ import sys
 # Get the current module
 _basemodule = sys.modules[__package__]
 
-# Loop through all files in the directory
-for _filepath in path(__file__).parent.files('*.py'):
+# Loop through all files in the "types" directory
+for _filepath in path(__file__).parent.joinpath('types').files():
 
     # Get the file's name
     _filename = _filepath.namebase
 
-    # Is the file private?
-    if _filename.startswith('_'):
+    # Import the module
+    _module = __import__('messages.types.' + _filename, fromlist=[''])
 
-        # If so, skip this file
-        continue
+    # Loop through all items in the module
+    for item in _module.__dict__:
 
-    # Try to import the module and get its globals
-    try:
+        # Is the item private?
+        if item.startswith('_'):
 
-        # Import the module
-        _module = __import__(__package__ + '.' + _filename, fromlist=[''])
+            # If so, do not import this item
+            continue
 
-        # Loop through all items in the module
-        for item in _module.__dict__:
+        # Is the current item native to the current module?
+        if _module.__dict__[item].__module__ == _module.__name__:
 
-            # Is the item private?
-            if item.startswith('_'):
-
-                # If so, do not import this item
-                continue
-
-            # Is the current item a function?
-            if type(_module.__dict__[item]).__name__ != 'function':
-
-                # If not, do not import this item
-                continue
-
-            # Is the current item native to the current module?
-            if _module.__dict__[item].__module__ == _module.__name__:
-
-                # Add the function as a global object for this module
-                _basemodule.__dict__[item] = _module.__dict__[item]
-
-    # Was an error encountered?
-    except:
-
-        # Do nothing
-        pass
+            # Add the function as a global object for this module
+            _basemodule.__dict__[item] = _module.__dict__[item]

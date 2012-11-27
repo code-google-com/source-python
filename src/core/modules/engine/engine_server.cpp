@@ -27,6 +27,7 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
+#include <cstring>
 #include "../export_main.h"
 #include "irecipientfilter.h"
 #include "eiface.h"
@@ -46,6 +47,7 @@ using namespace boost::python;
 // External variables to use.
 //---------------------------------------------------------------------------------
 extern IVEngineServer* engine;
+extern IServerGameDLL* servergamedll;
 
 //---------------------------------------------------------------------------------
 // Returns the engine instance.
@@ -61,6 +63,43 @@ IVEngineServer* GetEngine( void )
 void Engine_ClientCommand( edict_t* pEdict, const char* szMsg ) 
 {
 	engine->ClientCommand(pEdict, szMsg);
+}
+
+//---------------------------------------------------------------------------------
+// Returns the index of the given usermessage type
+//---------------------------------------------------------------------------------
+int IndexOfUserMessage( char* str )
+{
+    char sz_mname[256];
+    int sizereturn;
+    int index = 0;
+    while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
+    {
+        if(strcmp(str, sz_mname) == 0)
+        {
+            return index;
+        }
+        index++;
+    }
+    return -1;
+}
+
+//---------------------------------------------------------------------------------
+// Prints out all user messages
+//---------------------------------------------------------------------------------
+void DumpUserMessages()
+{
+    char sz_mname[256];
+    int sizereturn;
+    int index = 0;
+    Msg("UserMessages:\n");
+    Msg("\tIndex\tSize\tName\n");
+    Msg("\t=========================\n");
+    while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
+    {
+        Msg("\t  %d\t %d\t%s\n", index, sizereturn, sz_mname);
+        index++;
+    }
 }
 
 //---------------------------------------------------------------------------------
@@ -304,4 +343,11 @@ void Export_IVEngineServer( void )
 
 	// Functions
 	BOOST_FUNCTION(GetEngine, reference_existing_object_policy());
+    BOOST_FUNCTION(IndexOfUserMessage,
+        "Returns the index of the given usermessage type",
+        args("str")
+    );
+    BOOST_FUNCTION(DumpUserMessages,
+        "Prints out all UserMessages with their index and size"
+    );
 }
