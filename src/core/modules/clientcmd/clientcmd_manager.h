@@ -23,14 +23,15 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.  
 */
-#ifndef _CVAR_CONCOMMAND_H
-#define _CVAR_CONCOMMAND_H
+#ifndef _CLIENTCMD_MANAGER_H
+#define _CLIENTCMD_MANAGER_H
 
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
 #include "boost/unordered_map.hpp"
-#include "utlvector.h"
+#include <vector>
+
 #include "utility/sp_util.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
@@ -42,27 +43,32 @@
 using namespace boost::python;
 
 //---------------------------------------------------------------------------------
-// ConCommandManager class
+// ClientCommandReturn enum
 //---------------------------------------------------------------------------------
-class ConCommandManager: public ConCommand
+enum ClientCommandReturn
+{
+	CONTINUE = 0,
+	BLOCK
+};
+
+class ConCommand;
+
+//---------------------------------------------------------------------------------
+// ClientCommandManager class
+//---------------------------------------------------------------------------------
+class ClientCommandManager
 {
 public:
-	static ConCommandManager* CreateCommand(const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	~ConCommandManager();
-	virtual void Init();
+	ClientCommandManager();
+	~ClientCommandManager();
 
 	void AddToStart(PyObject* pCallable);
 	void AddToEnd(PyObject* pCallable);
 	void Remove(PyObject* pCallable);
 
-protected:
-	virtual void Dispatch(const CCommand &command);
-
+	ClientCommandReturn Dispatch(edict_t *pEntity, const CCommand &command);
 private:
-	ConCommandManager(ConCommand* pGameCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	CUtlVector<PyObject*>	m_vecCallables;
-	ConCommand*				m_pGameCommand;
-	unsigned int			m_uiGameCommandIndex;
+	std::vector<PyObject*> m_vecCallables;
 };
 
-#endif // _CVAR_CONCOMMAND_H
+#endif // _CLIENTCMD_MANAGER_H

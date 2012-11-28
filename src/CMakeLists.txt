@@ -81,6 +81,7 @@ Set(SOURCEPYTHON_MODULE_HEADERS
     core/modules/export_player.h
     core/modules/engine/engine_trace.h
     core/modules/cvar/cvar_concommand.h
+    core/modules/clientcmd/clientcmd_manager.h
 )
 
 Set(SOURCEPYTHON_MODULE_SOURCES
@@ -112,6 +113,14 @@ Set(SOURCEPYTHON_MODULE_CVAR_SOURCES
     core/modules/cvar/cvar_flags.cpp
     core/modules/cvar/cvar_icvar.cpp
     core/modules/cvar/cvar_main.cpp
+)
+
+# ------------------------------------------------------------------
+# ClientCmd module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_MODULE_CLIENTCMD_SOURCES
+    core/modules/clientcmd/clientcmd_manager.cpp
+    core/modules/clientcmd/clientcmd_main.cpp
 )
 
 # ------------------------------------------------------------------
@@ -168,6 +177,7 @@ Set(SOURCEPYTHON_MODULE_FILES
     
     ${SOURCEPYTHON_MODULE_ENGINE_SOURCES}
     ${SOURCEPYTHON_MODULE_CVAR_SOURCES}
+    ${SOURCEPYTHON_MODULE_CLIENTCMD_SOURCES}    
     ${SOURCEPYTHON_MODULE_MISC_SOURCES}
     ${SOURCEPYTHON_MODULE_ENTITY_SOURCES}
     ${SOURCEPYTHON_MODULE_BINUTILS_SOURCES}
@@ -192,6 +202,7 @@ Source_Group("Source Files\\Modules\\Engine"        FILES ${SOURCEPYTHON_MODULE_
 Source_Group("Source Files\\Modules\\Cvar"          FILES ${SOURCEPYTHON_MODULE_CVAR_SOURCES})
 Source_Group("Source Files\\Modules\\Misc"          FILES ${SOURCEPYTHON_MODULE_MISC_SOURCES})
 Source_Group("Source Files\\Modules\\Entity"        FILES ${SOURCEPYTHON_MODULE_ENTITY_SOURCES})
+Source_Group("Source Files\\Modules\\ClientCmd"     FILES ${SOURCEPYTHON_MODULE_CLIENTCMD_SOURCES})
 Source_Group("Source Files\\Modules\\Binutils"      FILES ${SOURCEPYTHON_MODULE_BINUTILS_SOURCES})
 Source_Group("Source Files\\Util"                   FILES ${SOURCEPYTHON_UTIL_SOURCES})
 
