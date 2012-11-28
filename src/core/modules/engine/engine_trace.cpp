@@ -102,7 +102,7 @@ Ray_t* WrappedRay_t::WrappedInstance() const
 }
 
 //---------------------------------------------------------------------------------
-// Wraps Ray_t.
+// Wraps IEngineTrace.
 // Q: Why is this wrapped?
 // A: Since Ray_t cannot be used directly, and IEngineTrace includes a few
 //    functions that take const Ray_t& parameters, a wrap is needed so that
@@ -291,16 +291,16 @@ void CTraceFilterSimple::SetEntity(const IHandleEntity* pPassEntity)
 // A simple trace collection class, allows us to obtain information about multiple
 // entities along a ray, using EnumerateEntities.
 //---------------------------------------------------------------------------------
-TraceCollideCollection::TraceCollideCollection(WrappedRay_t* pWrappedRay, IHandleEntity* pIgnoreEntity, int iContentsMask, int iMaxCount):
+TraceCollideCollection::TraceCollideCollection(WrappedRay_t* pWrappedRay, IHandleEntity* pIgnoreEntity, unsigned int uiContentsMask, unsigned int uiMaxCount):
 	m_pWrappedRay(pWrappedRay),
 	m_pIgnoreEntity(pIgnoreEntity),
-	m_iContentsMask(iContentsMask),
-	m_iCollidedEntitiesCount(iMaxCount),
+	m_uiContentsMask(uiContentsMask),
+	m_uiCollidedEntitiesCount(uiMaxCount),
 	m_iCollidedEntitiesLast(-1)
 {
 	//Create the array of entity pointers
-	m_pCollidedEntities = new IServerUnknown*[m_iCollidedEntitiesCount];
-	memset(m_pCollidedEntities, 0, sizeof(IServerUnknown*) * m_iCollidedEntitiesCount);
+	m_pCollidedEntities = new IServerUnknown*[m_uiCollidedEntitiesCount];
+	memset(m_pCollidedEntities, 0, sizeof(IServerUnknown*) * m_uiCollidedEntitiesCount);
 }
 
 TraceCollideCollection::~TraceCollideCollection()
@@ -327,7 +327,7 @@ bool TraceCollideCollection::EnumEntity(IHandleEntity* pHandleEntity)
 
 	//Get trace information, only add if along the ray
 	trace_t traceOut;
-	enginetrace->ClipRayToEntity(*m_pWrappedRay->WrappedInstance(), m_iContentsMask, pHandleEntity, &traceOut);
+	enginetrace->ClipRayToEntity(*m_pWrappedRay->WrappedInstance(), m_uiContentsMask, pHandleEntity, &traceOut);
 	if ((traceOut.fraction < 1.0f ) || (traceOut.startsolid) || (traceOut.allsolid))
 	{
 		//Add the entity pointer to the array
@@ -337,15 +337,15 @@ bool TraceCollideCollection::EnumEntity(IHandleEntity* pHandleEntity)
 	return true;
 }
 
-IServerUnknown* TraceCollideCollection::GetEntity(int iIndex)
+IServerUnknown* TraceCollideCollection::GetEntity(unsigned int uiIndex)
 {
 	//Return the entity at the index
-	if (iIndex > m_iCollidedEntitiesLast || iIndex < 0)
+	if (static_cast<int>(uiIndex) > m_iCollidedEntitiesLast)
 	{
 		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Invalid index for this entity collection.");
 		return NULL;
 	}
-	return m_pCollidedEntities[iIndex];
+	return m_pCollidedEntities[uiIndex];
 }
 
 int TraceCollideCollection::GetEntityCount()

@@ -80,12 +80,15 @@ IServerTools*		  servertools		= NULL;
 // External globals
 //---------------------------------------------------------------------------------
 extern DCCallVM* g_pCallVM;
+extern ICvar* g_pCVar;
+
 
 //---------------------------------------------------------------------------------
 // Extern functions
 //---------------------------------------------------------------------------------
 extern void InitCVars();
 extern void ClearAllCommands();
+extern PLUGIN_RESULT DispatchClientCommand(edict_t *pEntity, const CCommand &command);
 
 //---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -442,13 +445,17 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 // Orangebox.
 //---------------------------------------------------------------------------------
 #if(SOURCE_ENGINE >= 1)
-	PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
-#else
-	PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
-#endif
+PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
 {
+	return DispatchClientCommand(pEntity, args);
+}
+#else
+PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
+{
+	//TODO
 	return PLUGIN_CONTINUE;
 }
+#endif
 
 //---------------------------------------------------------------------------------
 // Alien Swarm.

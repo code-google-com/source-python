@@ -160,21 +160,21 @@ private:
 class TraceCollideCollection: public IEntityEnumerator
 {
 public:
-	TraceCollideCollection(WrappedRay_t* pWrappedRay, IHandleEntity* pIgnoreEntity, int iContentsMask, int iMaxCount);
+	TraceCollideCollection(WrappedRay_t* pWrappedRay, IHandleEntity* pIgnoreEntity, unsigned int uiContentsMask, unsigned int uiMaxCount);
 	~TraceCollideCollection();
 
 	virtual bool EnumEntity(IHandleEntity* pHandleEntity);
 
-	IServerUnknown* GetEntity(int iIndex);
+	IServerUnknown* GetEntity(unsigned int uiIndex);
 	int GetEntityCount();
 
 private:
 	WrappedRay_t* m_pWrappedRay;
 	IHandleEntity* m_pIgnoreEntity;
 	IServerUnknown** m_pCollidedEntities;
-	int m_iCollidedEntitiesCount;
+	unsigned int m_uiCollidedEntitiesCount;
+	unsigned int m_uiContentsMask;
 	int m_iCollidedEntitiesLast;
-	int m_iContentsMask;
 };
 
 #endif // _ENGINE_TRACE_H

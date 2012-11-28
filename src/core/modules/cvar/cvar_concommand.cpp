@@ -122,40 +122,40 @@ void ClearAllCommands()
 //---------------------------------------------------------------------------------
 // ConCommandManager [static] CreateCommand Function
 //---------------------------------------------------------------------------------
-ConCommandManager* ConCommandManager::CreateCommand(const char* pName, const char* pHelpString, int flags)
+ConCommandManager* ConCommandManager::CreateCommand(const char* szName, const char* szHelpString, int iFlags)
 {
 	//We need copies of the strings, since ConCommandBase instances just copy the pointer directly
 	//If we were to declare these ConCommands in global scope in a Python module, they would fail
 	//to function after 'import'ing the module, despite being valid instances.
-	char* pNameCopy = strdup(pName);
-	char* pHelpStringCopy = NULL;
+	char* szNameCopy = strdup(szName);
+	char* szHelpStringCopy = NULL;
 
 	//We look for any existing ConCommands registered with the same name.
-	ConCommand* pGameCommand = g_pCVar->FindCommand(pNameCopy);
+	ConCommand* pGameCommand = g_pCVar->FindCommand(szNameCopy);
 	if (pGameCommand)
 	{
 		//If we find one, we unregister it (in preparation for us registering our own) and keep a copy
 		//of the instance internally, so we can fire it off as part of our custom Dispatch function.
-		pHelpStringCopy = strdup(pGameCommand->GetHelpText());
+		szHelpStringCopy = strdup(pGameCommand->GetHelpText());
 #if( SOURCE_ENGINE >= 2 )
-		flags = pGameCommand->GetFlags();
+		iFlags = pGameCommand->GetFlags();
 #endif
 		g_pCVar->UnregisterConCommand(pGameCommand);
 	}
 	else
 	{
-		pHelpStringCopy = strdup(pHelpString);
+		szHelpStringCopy = strdup(szHelpString);
 	}
 
 	//Create and return a new ConCommandManager instance.
-	return new ConCommandManager(pGameCommand, pNameCopy, pHelpStringCopy, flags);
+	return new ConCommandManager(pGameCommand, szNameCopy, szHelpStringCopy, iFlags);
 }
 
 //---------------------------------------------------------------------------------
 // ConCommandManager C'tor. Is kept private so they cannot be directly instanced.
 //---------------------------------------------------------------------------------
-ConCommandManager::ConCommandManager(ConCommand* pGameCommand, const char* pName, const char* pHelpString, int flags):
-	ConCommand(pName, (FnCommandCallback_t)NULL, pHelpString, flags),
+ConCommandManager::ConCommandManager(ConCommand* pGameCommand, const char* szName, const char* szHelpString, int iFlags):
+	ConCommand(szName, (FnCommandCallback_t)NULL, szHelpString, iFlags),
 	m_pGameCommand(pGameCommand),
 	m_uiGameCommandIndex(0)
 {
@@ -363,4 +363,11 @@ void Export_ConCommand( void )
 			args("szName", "szHelp", "iFlags")
 		)[reference_existing_object_policy()]
 	);
+
+	// ----------------------------------------------------------
+	// Expose RemoveCommmand function
+	// ----------------------------------------------------------
+	BOOST_FUNCTION(RemoveCommand,
+		"Removes the command manager given the specific command name.",
+		args("szName"));
 }

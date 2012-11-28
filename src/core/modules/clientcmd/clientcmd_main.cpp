@@ -23,46 +23,23 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.  
 */
-#ifndef _CVAR_CONCOMMAND_H
-#define _CVAR_CONCOMMAND_H
 
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "boost/unordered_map.hpp"
-#include "utlvector.h"
-#include "utility/sp_util.h"
-#include "core/sp_python.h"
+#include "../export_main.h"
 #include "utility/wrap_macros.h"
-#include "convar.h"
+#include "core/sp_python.h"
 
 //---------------------------------------------------------------------------------
-// Namespaces to use.
+// All external functions to export the cvars and related functions.
 //---------------------------------------------------------------------------------
-using namespace boost::python;
+extern void Export_ClientCommandManager( void );
 
 //---------------------------------------------------------------------------------
-// ConCommandManager class
+// Wraps game events related structures.
 //---------------------------------------------------------------------------------
-class ConCommandManager: public ConCommand
+DECLARE_SP_MODULE(ClientCmd)
 {
-public:
-	static ConCommandManager* CreateCommand(const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	~ConCommandManager();
-	virtual void Init();
-
-	void AddToStart(PyObject* pCallable);
-	void AddToEnd(PyObject* pCallable);
-	void Remove(PyObject* pCallable);
-
-protected:
-	virtual void Dispatch(const CCommand &command);
-
-private:
-	ConCommandManager(ConCommand* pGameCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	CUtlVector<PyObject*>	m_vecCallables;
-	ConCommand*				m_pGameCommand;
-	unsigned int			m_uiGameCommandIndex;
-};
-
-#endif // _CVAR_CONCOMMAND_H
+	Export_ClientCommandManager();
+}
