@@ -12,6 +12,12 @@ from entities.helpers import *
 
 
 # =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get an instance of the PlayerInfoManager
+_player_info_manager = Player.GetPlayerInfoManager()
+
+# =============================================================================
 # >> HELPER FUNCTIONS
 # =============================================================================
 def index_from_userid(userid):
@@ -101,7 +107,7 @@ def playerinfo_from_index(index):
 
 def playerinfo_from_edict(edict):
     '''Returns an IPlayerInfo instance from the given edict'''
-    return Player.GetPlayerInfo(edict)
+    return _player_info_manager.GetPlayerInfo(edict)
 
 
 def playerinfo_from_basehandle(bhandle):
