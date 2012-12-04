@@ -1,4 +1,4 @@
-# ../_libs/messages/type/shake.py
+# ../_libs/messages/types/shake.py
 
 # =============================================================================
 # >> IMPORTS
@@ -8,7 +8,6 @@
 from core import GameEngine
 #   Messages
 from messages.base import BaseMessageNoText
-from messages.base import get_usermsg_instance
 
 
 # =============================================================================
@@ -29,7 +28,7 @@ class Shake(BaseMessageNoText):
         '''Sends the message to the given recipients'''
 
         # Create the UserMessage
-        UserMessage = get_usermsg_instance(recipients, self._message_index)
+        UserMessage = self._get_usermsg_instance(recipients)
 
         # Write 0 to the UserMessage
         UserMessage.WriteByte(0)

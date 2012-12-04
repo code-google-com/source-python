@@ -1,4 +1,4 @@
-# ../_libs/messages/type/textmsg.py
+# ../_libs/messages/types/textmsg.py
 
 # =============================================================================
 # >> IMPORTS
@@ -8,7 +8,6 @@
 from core import GameEngine
 #   Messages
 from messages.base import BaseMessage
-from messages.base import get_usermsg_instance
 
 
 # =============================================================================
@@ -34,7 +33,7 @@ class TextMsg(BaseMessage):
         '''Sends the message to the given recipients'''
 
         # Create the UserMessage
-        UserMessage = get_usermsg_instance(recipients, self._message_index)
+        UserMessage = self._get_usermsg_instance(recipients)
 
         # Write the message type to the UserMessage
         UserMessage.WriteByte(self.type)

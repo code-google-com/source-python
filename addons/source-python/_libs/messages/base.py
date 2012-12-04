@@ -8,6 +8,7 @@ from Source import Engine
 from Source import Player
 #   Core
 from core import GameEngine
+from core import GAME_NAME
 from core.cvar import ServerVar
 #   Filters
 from filters.recipients import get_recipients
@@ -55,7 +56,9 @@ class BaseMessage(object):
         if index == -1:
 
             # If not, raise an error
-            raise
+            raise NotImplementedError(
+                'UserMessage type "%s" is' % cls.__name__ +
+                ' not implemented forgame "%s"' % GAME_NAME)
 
         self = object.__new__(cls)
         self.__init__(*args)
@@ -115,13 +118,25 @@ class BaseMessage(object):
         # Return the proper lang string for the player
         return self.message[language]
 
+    def _get_usermsg_instance(self, recipients):
+        '''Returns the UserMessage instance base on the engine version'''
+
+        # Is this an older engine?
+        if ServerVar('sp_engine_ver').GetInt() < 3:
+
+            # Return using the older version of UserMessageBegin
+            return GameEngine.UserMessageBegin(recipients, self._message_index)
+
+        # Return using the newest version of UserMessageBegin
+        return GameEngine.UserMessageBegin(
+            recipients, self._message_index, None)
+
 
 class BaseMessageNoText(BaseMessage):
     '''Base class used for UserMessages that do not send text'''
 
     def send(self, users=None):
         '''Called when the message should be sent to users'''
-
 
         # Were any users passed?
         if users is None:
@@ -134,19 +149,3 @@ class BaseMessageNoText(BaseMessage):
 
         # Send the message to the recipients
         self._send_message(recipients)
-
-
-# =============================================================================
-# >> FUNCTIONS
-# =============================================================================
-def get_usermsg_instance(recipients, message_type):
-    '''Returns a UserMessage instance based on the engine version'''
-
-    # Is this an older engine?
-    if ServerVar('sp_engine_ver').GetInt() < 3:
-
-        # Return using the older version of UserMessageBegin
-        return GameEngine.UserMessageBegin(recipients, message_type)
-
-    # Return using the newest version of UserMessageBegin
-    return GameEngine.UserMessageBegin(recipients, message_type, None)
