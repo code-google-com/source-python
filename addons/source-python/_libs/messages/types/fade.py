@@ -1,4 +1,4 @@
-# ../_libs/messages/type/fade.py
+# ../_libs/messages/types/fade.py
 
 # =============================================================================
 # >> IMPORTS
@@ -7,7 +7,6 @@
 from core import GameEngine
 #   Messages
 from messages.base import BaseMessageNoText
-from messages.base import get_usermsg_instance
 
 
 # =============================================================================
@@ -35,7 +34,7 @@ class Fade(BaseMessageNoText):
         '''Sends the message to the given recipients'''
 
         # Create the UserMessage
-        UserMessage = get_usermsg_instance(recipients, self._message_index)
+        UserMessage = self._get_usermsg_instance(recipients)
 
         # Write the fade time to the UserMessage
         UserMessage.WriteShort(self.fade_time)
