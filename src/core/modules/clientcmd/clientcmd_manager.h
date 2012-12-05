@@ -68,7 +68,7 @@ public:
 
 	ClientCommandReturn Dispatch(edict_t *pEntity, const CCommand &command);
 private:
-	std::vector<PyObject*> m_vecCallables;
+	CUtlVector<PyObject*> m_vecCallables;
 };
 
 #endif // _CLIENTCMD_MANAGER_H

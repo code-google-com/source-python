@@ -126,15 +126,15 @@ ClientCommandReturn ClientCommandManager::Dispatch(edict_t *pEntity, const CComm
 	//Create a reference wrap around the command instance passed (as we will be passing this over the boundary in a moment).
 	boost::reference_wrapper<const CCommand> pyCommand = boost::ref(command);
 	boost::python::pointer_wrapper<edict_t*> pyEntity = boost::python::pointer_wrapper<edict_t*>(pEntity);
-	unsigned int uiIndex = 0;
 
 	//Loop through the vector of callable objects.
-	for(std::vector<PyObject*>::const_iterator iterCallable = m_vecCallables.begin(); iterCallable != m_vecCallables.end(); ++iterCallable)
+	// for(std::vector<PyObject*>::const_iterator iterCallable = m_vecCallables.begin(); iterCallable != m_vecCallables.end(); ++iterCallable)
+	for(int i = 0; i < m_vecCallables.Count(); i++)
 	{
 		//Try calling the callable, which should return an integer value determining whether this loop should continue or not. Failing to return a value
 		//or causing an Exception will be interpreted as a ClientCommandReturn.BLOCK value.
 		BEGIN_BOOST_PY()
-			object returnValue = call<object>(*iterCallable, pyEntity, pyCommand);	
+			object returnValue = call<object>(m_vecCallables[i], pyEntity, pyCommand);	
 			if (returnValue.is_none() || extract<int>(returnValue) == (int)BLOCK)
 			{
 				return BLOCK;
@@ -152,7 +152,7 @@ ClientCommandReturn ClientCommandManager::Dispatch(edict_t *pEntity, const CComm
 //---------------------------------------------------------------------------------
 void ClientCommandManager::AddToStart(PyObject* pCallable)
 {
-	m_vecCallables.insert(m_vecCallables.begin(), pCallable);
+	m_vecCallables.AddToHead(pCallable);
 }
 
 //---------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ void ClientCommandManager::AddToStart(PyObject* pCallable)
 //---------------------------------------------------------------------------------
 void ClientCommandManager::AddToEnd(PyObject* pCallable)
 {
-	m_vecCallables.push_back(pCallable);
+	m_vecCallables.AddToTail(pCallable);
 }
 
 //---------------------------------------------------------------------------------
@@ -169,12 +169,11 @@ void ClientCommandManager::AddToEnd(PyObject* pCallable)
 //---------------------------------------------------------------------------------
 void ClientCommandManager::Remove(PyObject* pCallable)
 {
-	unsigned int uiCallableIndex = 0;
-	for(uiCallableIndex = 0; uiCallableIndex < m_vecCallables.size(); ++uiCallableIndex)
+	for(int iCallableIndex = 0; iCallableIndex < m_vecCallables.Count(); ++iCallableIndex)
 	{
-		if (m_vecCallables[uiCallableIndex] == pCallable)
+		if (m_vecCallables[iCallableIndex] == pCallable)
 		{
-			m_vecCallables.erase(m_vecCallables.begin() + uiCallableIndex);
+			m_vecCallables.Remove(iCallableIndex);
 			break;
 		}
 	}
