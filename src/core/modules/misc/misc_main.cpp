@@ -35,6 +35,7 @@
 // All external functions to export misc classes and functions.
 //---------------------------------------------------------------------------------
 extern void Export_Effects( void );
+extern void Export_StringTables( void );
 
 //---------------------------------------------------------------------------------
 // Wraps all miscellaneous classes, structures, etc.
@@ -44,4 +45,5 @@ extern void Export_Effects( void );
 DECLARE_SP_MODULE(Misc)
 {
 	Export_Effects();
+	Export_StringTables();
 }

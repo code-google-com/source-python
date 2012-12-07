@@ -37,7 +37,7 @@ class _AddonManagementDictionary(dict):
 
         # Was the file not found?
         # We use this check because we already printed the error to console
-        except FileNotFoundError:
+        except AddonFileNotFoundError:
 
             # Return None as the value to show the addon was not loaded
             return None
@@ -191,6 +191,9 @@ class _AddonManagementDictionary(dict):
 AddonManager = _AddonManagementDictionary()
 
 
+class AddonFileNotFoundError(Exception):
+    '''Addon file not found.'''
+    
 class _LoadedAddon(object):
     '''Stores an addon's instance'''
 
@@ -213,7 +216,7 @@ class _LoadedAddon(object):
 
             # Raise an error, so that the addon
             # is not added to the AddonManager
-            raise FileNotFoundError
+            raise AddonFileNotFoundError
 
         # Import the addon
         addon = __import__(addon_name + '.' + addon_name)

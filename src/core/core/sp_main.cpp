@@ -48,6 +48,7 @@
 #include "engine/IEngineTrace.h"
 #include "public/toolframework/itoolentity.h"
 #include "dyncall.h"
+#include "networkstringtabledefs.h"
 
 //---------------------------------------------------------------------------------
 // Disable warnings.
@@ -75,6 +76,7 @@ IFileSystem*		  filesystem		= NULL;
 IEffects*			  effects			= NULL;
 IServerGameDLL*		  servergamedll		= NULL;
 IServerTools*		  servertools		= NULL;
+INetworkStringTableContainer* networkstringtable = NULL;
 
 //---------------------------------------------------------------------------------
 // External globals
@@ -122,7 +124,7 @@ InterfaceHelper_t gEngineInterfaces[] = {
 	{IENGINESOUND_SERVER_INTERFACE_VERSION, (void **)&enginesound},
 	{VENGINE_SERVER_RANDOM_INTERFACE_VERSION, (void **)&randomStr},
 	{FILESYSTEM_INTERFACE_VERSION, (void **)&filesystem},
-	{IENGINESOUND_SERVER_INTERFACE_VERSION, (void **)&enginesound},
+	{INTERFACENAME_NETWORKSTRINGTABLESERVER, (void **)&networkstringtable},
 
 	{NULL, NULL}
 };

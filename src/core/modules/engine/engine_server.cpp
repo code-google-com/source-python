@@ -60,9 +60,9 @@ IVEngineServer* GetEngine( void )
 //---------------------------------------------------------------------------------
 // This is required because we can't wrap variadic functions with boost.
 //---------------------------------------------------------------------------------
-void Engine_ClientCommand( edict_t* pEdict, const char* szMsg ) 
+void Engine_ClientCommand( IVEngineServer* pEngine, edict_t* pEdict, const char* szMsg ) 
 {
-	engine->ClientCommand(pEdict, szMsg);
+	pEngine->ClientCommand(pEdict, szMsg);
 }
 
 //---------------------------------------------------------------------------------
@@ -261,7 +261,7 @@ void Export_IVEngineServer( void )
 		)
 
 		// Note: This is requierd because we can't wrap variadic functions correctly.
-		CLASS_METHOD_TYPEDEF("ClientCommand",
+		CLASS_METHOD_TYPEDEF(ClientCommand,
 			Engine_ClientCommand,
 			"Runs a command on the client.",
 			args("pEdict", "szCmd")
