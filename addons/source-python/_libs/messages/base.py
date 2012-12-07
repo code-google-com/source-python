@@ -108,12 +108,9 @@ class BaseMessage(object):
 
     def _get_player_message(self, index):
         '''Returns the lang string for the current player index'''
-
-        # Get the IPlayerInfo instance for the given index
-        player = Player.PlayerOfIndex(index)
-
+        
         # Get the player's language
-        language = GameEngine.GetClientConVarValue(player, 'cl_language')
+        language = GameEngine.GetClientConVarValue(index, 'cl_language')
 
         # Return the proper lang string for the player
         return self.message[language]

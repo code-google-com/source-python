@@ -133,7 +133,7 @@ def playerinfo_from_userid(userid):
 # =============================================================================
 # >> OTHER HELPER FUNCTIONS
 # =============================================================================
-def index_of_steamid(steamid):
+def index_from_steamid(steamid):
     '''Returns an index from the given SteamID'''
 
     # Loop through all players on the server
@@ -143,29 +143,29 @@ def index_of_steamid(steamid):
         if player.GetNetworkIDString() == steamid:
 
             # Return the index of the current player
-            return index_of_playerinfo(player)
+            return index_from_playerinfo(player)
 
     # If no player found with a matching SteamID, raise an error
     raise ValueError('Invalid SteamID "%s"' % steamid)
 
 
-def index_of_uniqueid(uniqueid):
+def index_from_uniqueid(uniqueid):
     '''Returns an index from the given UniqueID'''
 
     # Loop through all players on the server
     for player in Player.Players():
 
         # Is the current player's UniqueID the same as the one given?
-        if uniqueid_of_playerinfo(player) == uniqueid:
+        if uniqueid_from_playerinfo(player) == uniqueid:
 
             # Return the index of the current player
-            return index_of_playerinfo(player)
+            return index_from_playerinfo(player)
 
     # If no player found with a matching UniqueID, raise an error
     raise ValueError('Invalid UniqueID "%s"' % uniqueid)
 
 
-def index_of_name(name):
+def index_from_name(name):
     '''Returns an index from the given player name'''
 
     # Loop through all players on the server
@@ -175,13 +175,13 @@ def index_of_name(name):
         if player.GetName() == name:
 
             # Return the index of the current player
-            return index_of_playerinfo(player)
+            return index_from_playerinfo(player)
 
     # If no player found with a matching name, raise an error
     raise ValueError('Invalid name "%s"' % name)
 
 
-def uniqueid_of_playerinfo(player):
+def uniqueid_from_playerinfo(player):
     '''Returns the UniqueID for the given player'''
 
     # Is the player a Bot?
@@ -197,7 +197,7 @@ def uniqueid_of_playerinfo(player):
     if 'LAN' in steamid:
 
         # Get the player's IP address
-        address = address_of_player(player)
+        address = address_from_player(player)
 
         # Return the Lan player's ID
         return 'LAN_%s' % '_'.join(address.split(':')[0].split('.'))
@@ -206,14 +206,14 @@ def uniqueid_of_playerinfo(player):
     return steamid
 
 
-def address_of_playerinfo(player):
+def address_from_playerinfo(player):
     '''Returns the IP address for the given player'''
 
     # Get the player's index
-    index = index_of_playerinfo(player)
+    index = index_from_playerinfo(player)
 
     # Get the player's NetInfo instance
     netinfo = GameEngine.GetPlayerNetInfo(index)
 
-    # Get the player's IP Address
-    address = netinfo.GetAddress()
+    # Return the player's IP Address
+    return netinfo.GetAddress()

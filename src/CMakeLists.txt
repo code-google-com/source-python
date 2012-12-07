@@ -129,6 +129,7 @@ Set(SOURCEPYTHON_MODULE_CLIENTCMD_SOURCES
 Set(SOURCEPYTHON_MODULE_MISC_SOURCES
     core/modules/misc/misc_main.cpp
     core/modules/misc/misc_effects.cpp
+    core/modules/misc/misc_stringtables.cpp
 )
 
 # ------------------------------------------------------------------

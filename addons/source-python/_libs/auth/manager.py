@@ -9,7 +9,7 @@ from auth.paths import AUTH_PROVIDER_PATH
 #   Core
 from core.commands import echo_console
 #   Players
-from players.helpers import uniqueid_of_playerinfo
+from players.helpers import uniqueid_from_playerinfo
 
 
 # =============================================================================
@@ -95,7 +95,7 @@ class _AuthManager(dict):
         '''Checks to see if the player is authorized'''
 
         # Get the player's uniqueid
-        uniqueid = uniqueid_of_playerinfo(playerinfo)
+        uniqueid = uniqueid_from_playerinfo(playerinfo)
 
         # Loop through all loaded auth providers
         for provider in self:

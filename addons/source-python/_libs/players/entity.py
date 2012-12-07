@@ -11,8 +11,8 @@ from core import GameEngine
 #   Entities
 from entities.entity import BaseEntity
 #   Players
-from players.helpers import address_of_playerinfo
-from players.helpers import uniqueid_of_playerinfo
+from players.helpers import address_from_playerinfo
+from players.helpers import uniqueid_from_playerinfo
 from players.weapons import _PlayerWeapons
 
 
@@ -86,17 +86,17 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
     @property
     def language(self):
         '''Returns the player's language'''
-        return GameEngine.GetClientConVarValue(self.info, 'cl_language')
+        return GameEngine.GetClientConVarValue(self.index, 'cl_language')
 
     @property
     def uniqueid(self):
         '''Returns the player's uniqueid'''
-        return uniqueid_of_playerinfo(self.info)
+        return uniqueid_from_playerinfo(self.info)
 
     @property
     def address(self):
         '''Returns the player's IP address'''
-        return address_of_playerinfo(self.info)
+        return address_from_playerinfo(self.info)
 
     def get_team(self):
         '''Returns the player's team'''
