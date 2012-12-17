@@ -4,11 +4,13 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+from Source import Binutils
 from Source import Engine
 #   Entities
-from entities.properties import Properties
 from entities.functions import Functions
 from entities.keyvalues import KeyValues
+from entities.offsets import Offsets
+from entities.properties import Properties
 
 
 # =============================================================================
@@ -83,6 +85,12 @@ class BaseEntity(object):
             # Return the keyvalue's value
             return self._get_keyvalue(attr)
 
+        # Is the attribute an offset of this entity?
+        if attr in self.offsets:
+
+            # Return the offset's value
+            return self._get_offset(attr)
+
         # Is the attribute a function of this entity?
         if attr in self.functions:
 
@@ -124,6 +132,22 @@ class BaseEntity(object):
 
         # Return the value of the given keyvalue
         return self.edict.GetKeyValue(item)
+
+    def _get_offset(self, item):
+        '''Gets teh value of the given offset'''
+
+        # Get the offset's type
+        offset_type = self.offsets[item].type
+
+        # Is the offset's type a known type?
+        if not hasattr(Binutils, 'GetLoc%s' % offset_type):
+
+            # If not a proper type, raise an error
+            raise TypeError('Invalid offset type "%s"' % offset_type)
+
+        # Return the value of the offset
+        return getattr(Binutils, 'GetLoc%s' % offset_type)(
+            self.pointer + self.offsets[item].offset)
 
     def _get_function(self, item):
         '''Calls a dynamic function'''
@@ -174,6 +198,12 @@ class BaseEntity(object):
             # Set the keyvalue's value
             self._set_keyvalue(attr, value)
 
+        # Is the attribute an offset of this entity?
+        elif attr in self.offsets:
+
+            # Set the offset's value
+            self._set_offset(attr, value)
+
         # Was the attribute not found?
         else:
 
@@ -218,6 +248,22 @@ class BaseEntity(object):
 
         # Set the keyvalue's value
         getattr(self.edict, 'SetKeyValue%s' % kv_type)(item, value)
+
+    def _set_offset(self, item, value):
+        '''Sets the value of the given offset'''
+
+        # Get the offset's type
+        offset_type = self.offsets[item].type
+
+        # Is the offset's type a known type?
+        if not hasattr(Binutils, 'SetLoc%s' % offset_type):
+
+            # If not a proper type, raise an error
+            raise TypeError('Invalid offset type "%s"' % offset_type)
+
+        # Set the offset's value
+        getattr(Binutils, 'SetLoc%s' % offset_type)(
+            self.pointer + self.offsets[item].offset, value)
 
     def get_color(self):
         '''Returns a 4 part tuple (RGBA) for the entity's color'''
@@ -300,6 +346,11 @@ class BaseEntity(object):
     def keyvalues(self):
         '''Returns all keyvalues for all entities'''
         return KeyValues.get_entity_keyvalues(self._game_inis)
+
+    @property
+    def offsets(self):
+        '''Returns all offsets for all entities'''
+        return Offsets.get_entity_offsets(self._game_inis)
 
     @property
     def functions(self):
