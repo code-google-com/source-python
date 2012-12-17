@@ -5,6 +5,8 @@
 # =============================================================================
 # Source.Python Imports
 from Source import Entity
+#   Entities
+from entities.helpers import index_from_edict
 #   Weapons
 from weapons.manager import WeaponManager
 
@@ -94,8 +96,11 @@ class _GameWeapons(object):
         # Loop through all c4 entities on the server
         for edict in Entity.Entities('weapon_c4'):
 
+            # Get the entity's index
+            index = index_from_edict(edict)
+
             # Get the entity's BaseEntity instance
-            entity = BaseEntity.get_instance_from_edict(edict)
+            entity = BaseEntity(index)
 
             # Is the entity's "owner" the player?
             if entity.owner == self.handle.ToInt():
