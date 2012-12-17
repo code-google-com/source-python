@@ -10,6 +10,8 @@ from traceback import format_exception
 
 # Source.Python Imports
 from paths import ADDON_PATH
+#   Addons
+from addons.errors import AddonFileNotFoundError
 #   Core
 from core.commands import echo_console
 from core.decorators import BaseDecorator
@@ -19,7 +21,7 @@ from events.manager import EventRegistry
 
 
 # =============================================================================
-# >> CLASSES
+# >> MAIN CLASSES
 # =============================================================================
 class _AddonManagementDictionary(dict):
     '''Stores addon's and their instances'''
@@ -191,9 +193,6 @@ class _AddonManagementDictionary(dict):
 AddonManager = _AddonManagementDictionary()
 
 
-class AddonFileNotFoundError(Exception):
-    '''Addon file not found.'''
-    
 class _LoadedAddon(object):
     '''Stores an addon's instance'''
 

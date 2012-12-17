@@ -300,3 +300,51 @@ unsigned long FindSymbol( moduledata_t* pData, char* symbol )
         // Not implemented for windows yet.
         return NULL;
 }
+
+//---------------------------------------------------------------------------------
+// Returns the bool value of the given address
+//---------------------------------------------------------------------------------
+bool GetLocBool( int addr )
+{
+    return *(bool *)((char *)addr);
+}
+
+//---------------------------------------------------------------------------------
+// Returns the integer value of the given address
+//---------------------------------------------------------------------------------
+int GetLocInt( int addr )
+{
+    return *(int *)((char *)addr);
+}
+
+//---------------------------------------------------------------------------------
+// Returns the float value of the given address
+//---------------------------------------------------------------------------------
+float GetLocFloat( int addr )
+{
+    return *(float *)((char *)addr);
+}
+
+//---------------------------------------------------------------------------------
+// Sets the given address to the given bool value
+//---------------------------------------------------------------------------------
+void SetLocBool( int addr, bool bValue )
+{
+    *(bool *)((char *)addr) = bValue;
+}
+
+//---------------------------------------------------------------------------------
+// Sets the given address to the given integer value
+//---------------------------------------------------------------------------------
+void SetLocInt( int addr, int iValue )
+{
+    *(int *)((char *)addr) = iValue;
+}
+
+//---------------------------------------------------------------------------------
+// Sets the given address to the given float value
+//---------------------------------------------------------------------------------
+void SetLocFloat( int addr, float fValue )
+{
+    *(float *)((char *)addr) = fValue;
+}
