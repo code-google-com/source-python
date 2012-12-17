@@ -8,6 +8,10 @@ from Source import Engine
 from Source import Entity
 #   Entities
 from entities.entities.weapon import WeaponEntity
+from entities.helpers import basehandle_from_edict
+from entities.helpers import index_from_edict
+from entities.helpers import inthandle_from_edict
+from entities.helpers import pointer_from_edict
 #   Filters
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
@@ -95,11 +99,6 @@ for tag in WeaponManager.tags:
 # =============================================================================
 # >> RETURN TYPE FUNCTIONS
 # =============================================================================
-def _return_index(edict):
-    '''Returns the weapon's index'''
-    return Engine.IndexOfEdict(edict)
-
-
 def _return_edict(edict):
     '''Returns the weapon's edict'''
     return edict
@@ -107,9 +106,12 @@ def _return_edict(edict):
 
 def _return_weapon(edict):
     '''Returns the weapon's WeaponEntity instance'''
-    return WeaponEntity.get_instance_from_edict(edict)
+    return WeaponEntity(index_from_edict(edict))
 
 # Register the return type functions
-WeaponIterManager.register_return_type('index', _return_index)
+WeaponIterManager.register_return_type('index', index_from_edict)
+WeaponIterManager.register_return_type('basehandle', basehandle_from_edict)
+WeaponIterManager.register_return_type('inthandle', inthandle_from_edict)
+WeaponIterManager.register_return_type('pointer', pointer_from_edict)
 WeaponIterManager.register_return_type('edict', _return_edict)
 WeaponIterManager.register_return_type('weapon', _return_weapon)

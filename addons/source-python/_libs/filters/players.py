@@ -18,6 +18,14 @@ from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
 #   Players
 from players.entity import PlayerEntity
+from players.helpers import address_from_playerinfo
+from players.helpers import basehandle_from_playerinfo
+from players.helpers import edict_from_playerinfo
+from players.helpers import index_from_playerinfo
+from players.helpers import inthandle_from_playerinfo
+from players.helpers import pointer_from_playerinfo
+from players.helpers import uniqueid_from_playerinfo
+from players.helpers import userid_from_playerinfo
 
 
 # =============================================================================
@@ -147,29 +155,14 @@ for number, team in enumerate(('un', 'spec', 't', 'ct')):
 # =============================================================================
 # >> RETURN TYPE FUNCTIONS
 # =============================================================================
-def _return_index(IPlayerInfo):
-    '''Returns the player's index'''
-    return Engine.IndexOfEdict(_return_edict(IPlayerInfo))
-
-
-def _return_edict(IPlayerInfo):
-    '''Returns the player's edict'''
-    return Player.EdictOfPlayer(IPlayerInfo)
-
-
-def _return_player_info(IPlayerInfo):
+def _return_playerinfo(IPlayerInfo):
     '''Returns the player's IPlayerInfo instance'''
     return IPlayerInfo
 
 
-def _return_userid(IPlayerInfo):
-    '''Returns the player's userid'''
-    return IPlayerInfo.GetUserID()
-
-
 def _return_player(IPlayerInfo):
     '''Returns the player's PlayerEntity instance'''
-    return PlayerEntity.get_instance_from_playerinfo(IPlayerInfo)
+    return PlayerEntity(index_from_playerinfo(IPlayerInfo))
 
 
 def _return_name(IPlayerInfo):
@@ -180,12 +173,6 @@ def _return_name(IPlayerInfo):
 def _return_steamid(IPlayerInfo):
     '''Returns the player's SteamID'''
     return IPlayerInfo.GetNetworkIDString()
-
-
-def _return_handle(IPlayerInfo):
-    '''Returns the player's handle'''
-    return Player.EdictOfPlayer(
-        IPlayerInfo).GetNetworkable().GetEntityHandle().GetRefEHandle().ToInt()
 
 
 def _return_location(IPlayerInfo):
@@ -234,14 +221,19 @@ def _return_team(IPlayerInfo):
     return IPlayerInfo.GetTeamIndex()
 
 # Register the return type functions
-PlayerIterManager.register_return_type('index', _return_index)
-PlayerIterManager.register_return_type('edict', _return_edict)
-PlayerIterManager.register_return_type('info', _return_player_info)
-PlayerIterManager.register_return_type('userid', _return_userid)
+PlayerIterManager.register_return_type('index', index_from_playerinfo)
+PlayerIterManager.register_return_type('edict', edict_from_playerinfo)
+PlayerIterManager.register_return_type(
+    'basehandle', basehandle_from_playerinfo)
+PlayerIterManager.register_return_type('inthandle', inthandle_from_playerinfo)
+PlayerIterManager.register_return_type('pointer', pointer_from_playerinfo)
+PlayerIterManager.register_return_type('userid', userid_from_playerinfo)
+PlayerIterManager.register_return_type('uniqueid', uniqueid_from_playerinfo)
+PlayerIterManager.register_return_type('address', address_from_playerinfo)
+PlayerIterManager.register_return_type('info', _return_playerinfo)
 PlayerIterManager.register_return_type('player', _return_player)
 PlayerIterManager.register_return_type('name', _return_name)
 PlayerIterManager.register_return_type('steamid', _return_steamid)
-PlayerIterManager.register_return_type('handle', _return_handle)
 PlayerIterManager.register_return_type('location', _return_location)
 PlayerIterManager.register_return_type('kills', _return_kills)
 PlayerIterManager.register_return_type('deaths', _return_deaths)
