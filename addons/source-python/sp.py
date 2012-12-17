@@ -55,8 +55,11 @@ def plugin_load():
     # Get the auth providers that should be loaded
     auth_providers = core_settings['AUTH_SETTINGS']['providers'].split()
 
-    # Load the auth providers
-    SPCommands.call_command('auth', ['load'] + auth_providers)
+    # Should any providers be loaded?
+    if auth_providers:
+
+        # Load the auth providers
+        SPCommands.call_command('auth', ['load'] + auth_providers)
 
 
 def event_fire(GameEvent):
