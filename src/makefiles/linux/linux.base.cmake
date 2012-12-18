@@ -61,7 +61,7 @@ EndIf()
 If(SOURCE_ENGINE EQUAL 3)
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
-         ${SOURCESDK_LIB}/linux/interfaces_i486.
+         ${SOURCESDK_LIB}/linux/interfaces_i486.a
          ${SOURCESDK_LIB}/linux/libtier0.so
          ${SOURCESDK_LIB}/linux/libvstdlib.so
     )
