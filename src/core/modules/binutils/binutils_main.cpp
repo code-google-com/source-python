@@ -63,6 +63,11 @@ DECLARE_SP_MODULE(Binutils)
 	    args("moduleData", "symbol")
     );
 
+    BOOST_FUNCTION(FindVirtualFunction,
+        "Returns the address of a vtable function",
+        args("pThisPointer", "iOffset")
+    );
+
     BOOST_FUNCTION(GetLocBool,
         "Returns the bool value from the given address",
         args("addr")

@@ -85,6 +85,11 @@ unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 unsigned long FindSymbol( moduledata_t* pData, char* symbol );
 
 //---------------------------------------------------------------------------------
+// Returns the address of a vtable function
+//---------------------------------------------------------------------------------
+int FindVirtualFunction( void* pThisPointer, int iOffset );
+
+//---------------------------------------------------------------------------------
 // Returns the bool value of the given address
 //---------------------------------------------------------------------------------
 bool GetLocBool( int addr );
