@@ -70,18 +70,18 @@ void Engine_ClientCommand( IVEngineServer* pEngine, edict_t* pEdict, const char*
 //---------------------------------------------------------------------------------
 int IndexOfUserMessage( char* str )
 {
-    char sz_mname[256];
-    int sizereturn;
-    int index = 0;
-    while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
-    {
-        if(strcmp(str, sz_mname) == 0)
-        {
-            return index;
-        }
-        index++;
-    }
-    return -1;
+	char sz_mname[256];
+	int sizereturn;
+	int index = 0;
+	while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
+	{
+		if(strcmp(str, sz_mname) == 0)
+		{
+			return index;
+		}
+		index++;
+	}
+	return -1;
 }
 
 //---------------------------------------------------------------------------------
@@ -89,17 +89,17 @@ int IndexOfUserMessage( char* str )
 //---------------------------------------------------------------------------------
 void DumpUserMessages()
 {
-    char sz_mname[256];
-    int sizereturn;
-    int index = 0;
-    Msg("UserMessages:\n");
-    Msg("\tIndex\tSize\tName\n");
-    Msg("\t=========================\n");
-    while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
-    {
-        Msg("\t  %d\t %d\t%s\n", index, sizereturn, sz_mname);
-        index++;
-    }
+	char sz_mname[256];
+	int sizereturn;
+	int index = 0;
+	Msg("UserMessages:\n");
+	Msg("\tIndex\tSize\tName\n");
+	Msg("\t=========================\n");
+	while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
+	{
+		Msg("\t  %d\t %d\t%s\n", index, sizereturn, sz_mname);
+		index++;
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -300,11 +300,11 @@ void Export_IVEngineServer( void )
 			args("pEdict", "szMsg")
 		)
 
-        CLASS_METHOD(IVEngineServer,
-            GetClientConVarValue,
-            "Get a convar keyvalue for a specific client",
-            args("clientIndex", "name")
-        )
+		CLASS_METHOD(IVEngineServer,
+			GetClientConVarValue,
+			"Get a convar keyvalue for a specific client",
+			args("clientIndex", "name")
+		)
 
 #if( SOURCE_ENGINE >= 2 )
 		CLASS_METHOD(IVEngineServer, 
@@ -328,26 +328,26 @@ void Export_IVEngineServer( void )
 
 	BOOST_END_CLASS()
 
-    BOOST_ABSTRACT_CLASS(INetChannelInfo)
-        CLASS_METHOD(INetChannelInfo,
-            GetAddress,
-            "Returns the IP address as a string."
-        )
+	BOOST_ABSTRACT_CLASS(INetChannelInfo)
+		CLASS_METHOD(INetChannelInfo,
+			GetAddress,
+			"Returns the IP address as a string."
+		)
 
-        CLASS_METHOD(INetChannelInfo,
-            GetTimeConnected,
-            "Returns the connection time (in seconds)."
-        )
+		CLASS_METHOD(INetChannelInfo,
+			GetTimeConnected,
+			"Returns the connection time (in seconds)."
+		)
 
-    BOOST_END_CLASS()
+	BOOST_END_CLASS()
 
 	// Functions
 	BOOST_FUNCTION(GetEngine, reference_existing_object_policy());
-    BOOST_FUNCTION(IndexOfUserMessage,
-        "Returns the index of the given usermessage type",
-        args("str")
-    );
-    BOOST_FUNCTION(DumpUserMessages,
-        "Prints out all UserMessages with their index and size"
-    );
+	BOOST_FUNCTION(IndexOfUserMessage,
+		"Returns the index of the given usermessage type",
+		args("str")
+	);
+	BOOST_FUNCTION(DumpUserMessages,
+		"Prints out all UserMessages with their index and size"
+	);
 }

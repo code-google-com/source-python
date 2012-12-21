@@ -109,15 +109,19 @@ Entities::~Entities()
 edict_t* Entities::getNext()
 {
 	edict_t* pEDict = NULL;
-	while(m_iEntityIndex < gpGlobals->maxEntities && (!pEDict || pEDict->IsFree()))
+	while(m_iEntityIndex < gpGlobals->maxEntities && !pEDict)
 	{
 		m_iEntityIndex++;
 		pEDict = PEntityOfEntIndex(m_iEntityIndex);
-
+		
+		if (!pEDict || pEDict->IsFree() || !strlen(pEDict->GetClassName()))
+		{
+			pEDict = NULL;
+		}
 		//If the filter string is set, then only allow edict_t instances which either:
 		//- Begin with the filter string if m_bExactMatch is false
 		//- An exact match with the filter string if m_bExactMatch is true
-		if (m_uiClassNameLen && m_szClassName && pEDict && !pEDict->IsFree())
+		else if (m_uiClassNameLen && m_szClassName)
 		{
 			if (!m_bExactMatch && strncmp(pEDict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
 			{

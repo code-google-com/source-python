@@ -123,15 +123,15 @@ void Export_EngineMisc( void )
 	// Expose some entity functions
 	// ----------------------------------------------------------
 	BOOST_FUNCTION(PEntityOfEntIndex,
-        "Returns the edict for an entity index.",
-        reference_existing_object_policy());
+		"Returns the edict for an entity index.",
+		reference_existing_object_policy());
 	BOOST_FUNCTION(IndexOfEdict,
-        "Returns the index of an entity edict",
-        args("edict"));
+		"Returns the index of an entity edict",
+		args("edict"));
 	BOOST_FUNCTION(IndexOfIntHandle,
-        "Returns the index of an entity from its handle in integer form",
-        args("iHandle"));
-    BOOST_FUNCTION(IndexOfPointer,
-        "Returns the index of an entity from its pointer",
-        args("iPointer"));
+		"Returns the index of an entity from its handle in integer form",
+		args("iHandle"));
+	BOOST_FUNCTION(IndexOfPointer,
+		"Returns the index of an entity from its pointer",
+		args("iPointer"));
 }

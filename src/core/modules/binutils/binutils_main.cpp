@@ -36,6 +36,7 @@
 // Other wrapping functions.
 //---------------------------------------------------------------------------------
 extern void Export_DynCall( void );
+extern void Export_MemoryTools( void );
 
 //---------------------------------------------------------------------------------
 // Exports the binutils module.
@@ -59,45 +60,13 @@ DECLARE_SP_MODULE(Binutils)
 	);
 
 	BOOST_FUNCTION(FindSymbol,
-        "Returns the address of a symbol found in memory",
-	    args("moduleData", "symbol")
-    );
-
-    BOOST_FUNCTION(FindVirtualFunction,
-        "Returns the address of a vtable function",
-        args("pThisPointer", "iOffset")
-    );
-
-    BOOST_FUNCTION(GetLocBool,
-        "Returns the bool value from the given address",
-        args("addr")
-    );
-
-    BOOST_FUNCTION(GetLocInt,
-        "Returns the integer value from the given address",
-        args("addr")
-    );
-
-    BOOST_FUNCTION(GetLocFloat,
-        "Returns the float value from the given address",
-        args("addr")
-    );
-
-    BOOST_FUNCTION(SetLocBool,
-        "Sets the given address to the given bool value",
-        args("addr", "bValue")
-    );
-
-    BOOST_FUNCTION(SetLocInt,
-        "Sets the given address to the given integer value",
-        args("addr", "iValue")
-    );
-
-    BOOST_FUNCTION(SetLocFloat,
-        "Sets the given address to the given float value",
-        args("addr", "fValue")
-    );
+		"Returns the address of a symbol found in memory",
+		args("moduleData", "symbol")
+	);
 
 	// Export dyncall library.
 	Export_DynCall();
+
+	// Export memory management functions.
+	Export_MemoryTools();
 }

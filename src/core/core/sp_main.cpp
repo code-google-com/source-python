@@ -54,7 +54,7 @@
 // Disable warnings.
 //---------------------------------------------------------------------------------
 #if defined(_WIN32)
-#    pragma warning( disable : 4005 )
+#	 pragma warning( disable : 4005 )
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -63,19 +63,19 @@
 //---------------------------------------------------------------------------------
 // Interfaces from the engine
 //---------------------------------------------------------------------------------
-IVEngineServer*		  engine			= NULL; // helper functions (messaging clients, loading content, making entities, running commands, etc)
-IGameEventManager2*	  gameeventmanager	= NULL; // game events interface
-IPlayerInfoManager*	  playerinfomanager	= NULL; // game dll interface to interact with players
-IBotManager*	 	  botmanager		= NULL; // game dll interface to interact with bots
-IServerPluginHelpers* helpers			= NULL; // special 3rd party plugin helpers from the engine
-IUniformRandomStream* randomStr         = NULL;
-IEngineTrace*         enginetrace       = NULL;
-IEngineSound*		  enginesound		= NULL;
-CGlobalVars*          gpGlobals         = NULL;
-IFileSystem*		  filesystem		= NULL;
-IEffects*			  effects			= NULL;
-IServerGameDLL*		  servergamedll		= NULL;
-IServerTools*		  servertools		= NULL;
+IVEngineServer*			engine				= NULL; // helper functions (messaging clients, loading content, making entities, running commands, etc)
+IGameEventManager2*		gameeventmanager	= NULL; // game events interface
+IPlayerInfoManager*		playerinfomanager	= NULL; // game dll interface to interact with players
+IBotManager*			botmanager			= NULL; // game dll interface to interact with bots
+IServerPluginHelpers*	helpers				= NULL; // special 3rd party plugin helpers from the engine
+IUniformRandomStream*	randomStr			= NULL;
+IEngineTrace*			enginetrace			= NULL;
+IEngineSound*			enginesound			= NULL;
+CGlobalVars*			gpGlobals			= NULL;
+IFileSystem*			filesystem			= NULL;
+IEffects*				effects				= NULL;
+IServerGameDLL*			servergamedll		= NULL;
+IServerTools*			servertools			= NULL;
 INetworkStringTableContainer* networkstringtable = NULL;
 
 //---------------------------------------------------------------------------------
@@ -212,12 +212,12 @@ CSourcePython::~CSourcePython()
 //---------------------------------------------------------------------------------
 bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
-    // This seems to be new with
+	// This seems to be new with
 #if( SOURCE_ENGINE >= 3 )
-    ConnectInterfaces(&interfaceFactory, 1);
+	ConnectInterfaces(&interfaceFactory, 1);
 #else
-    ConnectTier1Libraries( &interfaceFactory, 1 );
-    ConnectTier2Libraries( &interfaceFactory, 2 );
+	ConnectTier1Libraries( &interfaceFactory, 1 );
+	ConnectTier2Libraries( &interfaceFactory, 2 );
 #endif
 
 	// Get all engine interfaces.
@@ -349,7 +349,7 @@ void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int cli
 //---------------------------------------------------------------------------------
 void CSourcePython::GameFrame( bool simulating )
 {
-    g_AddonManager.GameFrame();
+	g_AddonManager.GameFrame();
 }
 
 //---------------------------------------------------------------------------------
