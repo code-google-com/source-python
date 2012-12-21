@@ -56,7 +56,7 @@ struct moduledata_t
 	// Free the handle.
 	~moduledata_t( void )
 	{
-		if( handle ) {
+		if( handle ){
 #if defined(_WIN32)
 			FreeLibrary((HMODULE)handle);
 #else
@@ -84,39 +84,4 @@ unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 //---------------------------------------------------------------------------------
 unsigned long FindSymbol( moduledata_t* pData, char* symbol );
 
-//---------------------------------------------------------------------------------
-// Returns the address of a vtable function
-//---------------------------------------------------------------------------------
-int FindVirtualFunction( void* pThisPointer, int iOffset );
-
-//---------------------------------------------------------------------------------
-// Returns the bool value of the given address
-//---------------------------------------------------------------------------------
-bool GetLocBool( int addr );
-
-//---------------------------------------------------------------------------------
-// Returns the integer value of the given address
-//---------------------------------------------------------------------------------
-int GetLocInt( int addr );
-
-//---------------------------------------------------------------------------------
-// Returns the float value of the given address
-//---------------------------------------------------------------------------------
-float GetLocFloat( int addr );
-
-//---------------------------------------------------------------------------------
-// Sets the given address to the given bool value
-//---------------------------------------------------------------------------------
-void SetLocBool( int addr, bool bValue );
-
-//---------------------------------------------------------------------------------
-// Sets the given address to the given integer value
-//---------------------------------------------------------------------------------
-void SetLocInt( int addr, int iValue );
-
-//---------------------------------------------------------------------------------
-// Sets the given address to the given float value
-//---------------------------------------------------------------------------------
-void SetLocFloat( int addr, float fValue );
-
-#endif 
+#endif // _BINUTILS_SCANNER_H

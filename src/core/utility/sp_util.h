@@ -108,13 +108,13 @@ inline IPlayerInfo* PlayerOfUserid(int userid)
 //---------------------------------------------------------------------------------
 inline int IndexOfUserid(int userid)
 {
-    edict_t* pEdict = EdictOfUserid(userid);
-    if (!pEdict)
-    {
-        return NULL;
-    }
+	edict_t* pEdict = EdictOfUserid(userid);
+	if (!pEdict)
+	{
+		return NULL;
+	}
 
-    return IndexOfEdict(pEdict);
+	return IndexOfEdict(pEdict);
 }
 
 //---------------------------------------------------------------------------------
@@ -154,29 +154,29 @@ inline edict_t* EdictOfPlayer(IPlayerInfo* playerInfo)
 //---------------------------------------------------------------------------------
 inline unsigned int IndexOfIntHandle(int iHandle)
 {
-    CBaseHandle hHandle(iHandle);
-    unsigned int iIndex = hHandle.GetEntryIndex();
-    edict_t *pEntity = PEntityOfEntIndex(iIndex);
-    if (!pEntity || pEntity->IsFree())
-    {
-        return NULL;
-    }
-    IServerNetworkable *pNetworkable = pEntity->GetNetworkable();
-    IHandleEntity *pEnt = pNetworkable->GetEntityHandle();
-    if (!pEnt)
-    {
-        return NULL;
-    }
-    const CBaseHandle hTestHandle = pEnt->GetRefEHandle();
-    if (!hTestHandle.IsValid())
-    {
-        return NULL;
-    }
-    if (hHandle.GetSerialNumber() != hTestHandle.GetSerialNumber())
-    {
-        return NULL;
-    }
-    return iIndex;
+	CBaseHandle hHandle(iHandle);
+	unsigned int iIndex = hHandle.GetEntryIndex();
+	edict_t *pEntity = PEntityOfEntIndex(iIndex);
+	if (!pEntity || pEntity->IsFree())
+	{
+		return NULL;
+	}
+	IServerNetworkable *pNetworkable = pEntity->GetNetworkable();
+	IHandleEntity *pEnt = pNetworkable->GetEntityHandle();
+	if (!pEnt)
+	{
+		return NULL;
+	}
+	const CBaseHandle hTestHandle = pEnt->GetRefEHandle();
+	if (!hTestHandle.IsValid())
+	{
+		return NULL;
+	}
+	if (hHandle.GetSerialNumber() != hTestHandle.GetSerialNumber())
+	{
+		return NULL;
+	}
+	return iIndex;
 }
 
 //---------------------------------------------------------------------------------
@@ -184,18 +184,18 @@ inline unsigned int IndexOfIntHandle(int iHandle)
 //---------------------------------------------------------------------------------
 inline unsigned int IndexOfPointer(int iPointer)
 {
-    IServerUnknown *pUnknown = (IServerUnknown *)iPointer;
-    IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
-    if (!pNetworkable)
-    {
-        return NULL;
-    }
-    edict_t* pEdict = pNetworkable->GetEdict();
-    if (!pEdict)
-    {
-        return NULL;
-    }
-    return IndexOfEdict(pEdict);
+	IServerUnknown *pUnknown = (IServerUnknown *)iPointer;
+	IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
+	if (!pNetworkable)
+	{
+		return NULL;
+	}
+	edict_t* pEdict = pNetworkable->GetEdict();
+	if (!pEdict)
+	{
+		return NULL;
+	}
+	return IndexOfEdict(pEdict);
 }
 
 #endif

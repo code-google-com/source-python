@@ -47,19 +47,19 @@ void Export_CBaseHandle( void )
 		// Methods
 		// ----------------------------------------------------------
 		CLASS_METHOD(CBaseHandle,
-            IsValid,
-            "Returns true if the handle has been initted with any values."
-        )
+			IsValid,
+			"Returns true if the handle has been initted with any values."
+		)
 
 		CLASS_METHOD(CBaseHandle,
-            ToInt,
-            "Returns an integer value of the handle."
-        )
+			ToInt,
+			"Returns an integer value of the handle."
+		)
 
-        CLASS_METHOD(CBaseHandle,
-            GetEntryIndex,
-            "Returns the index of the handle."
-        )
+		CLASS_METHOD(CBaseHandle,
+			GetEntryIndex,
+			"Returns the index of the handle."
+		)
 
 		// ----------------------------------------------------------
 		// Operators

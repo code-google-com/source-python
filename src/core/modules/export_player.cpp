@@ -435,21 +435,21 @@ DECLARE_SP_MODULE(Player)
 	);
 
 	BOOST_FUNCTION(PlayerOfUserid,
-        "Returns the IPlayerInfo instance for a userid.",
-        args("userid"),
+		"Returns the IPlayerInfo instance for a userid.",
+		args("userid"),
 		reference_existing_object_policy()
-    );
+	);
 
-    BOOST_FUNCTION(IndexOfUserid,
-        "Returns the index of a userid.",
-        args("userid")
-    );
+	BOOST_FUNCTION(IndexOfUserid,
+		"Returns the index of a userid.",
+		args("userid")
+	);
 
 	BOOST_FUNCTION(PlayerOfIndex,
-        "Returns the IPlayerInfo instance for a player index.",
-        args("index"),
+		"Returns the IPlayerInfo instance for a player index.",
+		args("index"),
 		reference_existing_object_policy()
-    );
+	);
 
 	BOOST_FUNCTION(EdictOfPlayer,
 		"Returns the edict for a IPlayerInfo instance.",

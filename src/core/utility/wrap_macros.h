@@ -163,7 +163,7 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define CLASS_METHOD_OVERLOAD_RET( classname, methodname, docstring, args, retpol ) \
 	.def(XSTRINGIFY(methodname), &classname::methodname, \
-	     classname##_##methodname( args, docstring )[retpol])
+		 classname##_##methodname( args, docstring )[retpol])
 
 //---------------------------------------------------------------------------------
 // Use this macro to define a global attribute

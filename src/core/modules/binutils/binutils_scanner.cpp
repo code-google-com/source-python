@@ -37,7 +37,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #if defined(_WIN32)
-#       include <windows.h>
+#	   include <windows.h>
 #else
 #   include <fcntl.h>
 #   include <link.h>
@@ -60,16 +60,15 @@
 //---------------------------------------------------------------------------------
 moduledata_t* FindModuleData(const char* szBinary)
 {
-        char szModulePath[MAX_MODULE_PATH];
+	char szModulePath[MAX_MODULE_PATH];
 
 #if defined(_WIN32)
-        sprintf_s(szModulePath, MAX_MODULE_PATH, "%s.dll", szBinary);
-        void* baseAddress = (void *)LoadLibrary(szModulePath);
+	sprintf_s(szModulePath, MAX_MODULE_PATH, "%s.dll", szBinary);
+	void* baseAddress = (void *)LoadLibrary(szModulePath);
 #else
-        sprintf(szModulePath, "%s.so", szBinary);
-        void* baseAddress = (void *)dlopen(szModulePath, RTLD_NOW | RTLD_GLOBAL);
+	sprintf(szModulePath, "%s.so", szBinary);
+	void* baseAddress = (void *)dlopen(szModulePath, RTLD_NOW | RTLD_GLOBAL);
 #endif
-
 	DevMsg(1, "Loading module %s\n", szModulePath);
 
 	// Don't continue if we couldn't load the module.
@@ -80,30 +79,29 @@ moduledata_t* FindModuleData(const char* szBinary)
 	}
 
 #if defined(_WIN32)
-        // Get memory information about the module.
-        MEMORY_BASIC_INFORMATION memInfo;
-        if(!VirtualQuery(baseAddress, &memInfo, sizeof(MEMORY_BASIC_INFORMATION)))
-        {
-                Msg("[SP] VirtualQuery failed on %s!\n", szModulePath);
-                return NULL;
-        }
+	// Get memory information about the module.
+	MEMORY_BASIC_INFORMATION memInfo;
+	if(!VirtualQuery(baseAddress, &memInfo, sizeof(MEMORY_BASIC_INFORMATION)))
+	{
+		Msg("[SP] VirtualQuery failed on %s!\n", szModulePath);
+		return NULL;
+	}
 
-        // Get at the image size too.
-        IMAGE_DOS_HEADER* dosHeader = (IMAGE_DOS_HEADER*)memInfo.AllocationBase;
-        IMAGE_NT_HEADERS* ntHeader = (IMAGE_NT_HEADERS*)((unsigned long)dosHeader + (unsigned long)dosHeader->e_lfanew);
+	// Get at the image size too.
+	IMAGE_DOS_HEADER* dosHeader = (IMAGE_DOS_HEADER*)memInfo.AllocationBase;
+	IMAGE_NT_HEADERS* ntHeader = (IMAGE_NT_HEADERS*)((unsigned long)dosHeader + (unsigned long)dosHeader->e_lfanew);
 
-        // Create the memory data struct.
-        moduledata_t* pData = new moduledata_t;
-        pData->handle       = memInfo.AllocationBase;
-        pData->size         = ntHeader->OptionalHeader.SizeOfImage;
+	// Create the memory data struct.
+	moduledata_t* pData = new moduledata_t;
+	pData->handle	   = memInfo.AllocationBase;
+	pData->size		 = ntHeader->OptionalHeader.SizeOfImage;
 #else
-        // Construct the required memory information.
-        moduledata_t* pData             = new moduledata_t;
-        pData->handle                   = baseAddress;
-        pData->size                     = 0;
+	// Construct the required memory information.
+	moduledata_t* pData			 = new moduledata_t;
+	pData->handle				   = baseAddress;
+	pData->size					 = 0;
 #endif
-
-		return pData;
+	return pData;
 }
 
 //---------------------------------------------------------------------------------
@@ -111,47 +109,47 @@ moduledata_t* FindModuleData(const char* szBinary)
 //---------------------------------------------------------------------------------
 unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 {
-        if( !pData ) 
-        {
-                Msg("[SP] find_signature got invalid pData!\n");
-                return NULL;
-        }
+	if( !pData ) 
+	{
+		Msg("[SP] find_signature got invalid pData!\n");
+		return NULL;
+	}
 
-        // This is required because there's no straight way to get a string from a python
-        // object from boost (without using the stl).
-        unsigned char* sig = NULL;
-        PyArg_Parse(signature.ptr(), "y", &sig);
+	// This is required because there's no straight way to get a string from a python
+	// object from boost (without using the stl).
+	unsigned char* sig = NULL;
+	PyArg_Parse(signature.ptr(), "y", &sig);
 
-        // Ugly casts but these can't be helped.
-        unsigned char*  base    = (unsigned char*)(pData->handle);
-        unsigned char*  end             = (unsigned char*)(base + pData->size);
-        int                             i               = 0;
+	// Ugly casts but these can't be helped.
+	unsigned char*  base	= (unsigned char*)(pData->handle);
+	unsigned char*  end		= (unsigned char*)(base + pData->size);
+	int				i		= 0;
 
-        // Scan the entire module.
-        while( base < end )
-        {
-                // Scan in chunks of length.
-                for( i = 0; i < length; i++ )
-                {
-                        // If the current signature character is x2A, ignore it.
-                        if( sig[i] == '\x2A' ) 
-                                continue;
+	// Scan the entire module.
+	while( base < end )
+	{
+		// Scan in chunks of length.
+		for( i = 0; i < length; i++ )
+		{
+			// If the current signature character is x2A, ignore it.
+			if( sig[i] == '\x2A' ) 
+				continue;
 
-                        // Break out if we have a mismatch.
-                        if( sig[i] != base[i] )
-                                break;
-                }
+			// Break out if we have a mismatch.
+			if( sig[i] != base[i] )
+				break;
+		}
 
-                // Did we find the signature?
-                if( i == length ) 
-                        return reinterpret_cast<unsigned long>(base);
+		// Did we find the signature?
+		if( i == length ) 
+			return reinterpret_cast<unsigned long>(base);
 
-                // Increment the base pointer.
-                base++;
-        }
+		// Increment the base pointer.
+		base++;
+	}
 
-        // Didn't find the signature :(
-        return NULL;
+	// Didn't find the signature :(
+	return NULL;
 }
 
 
@@ -160,204 +158,142 @@ unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 //---------------------------------------------------------------------------------
 unsigned long FindSymbol( moduledata_t* pData, char* symbol )
 {
-        if( !pData )
-        {
-                Msg("[SP] find_symbol got invalid pData for %s!\n", symbol);
-                return NULL;
-        }
+	if( !pData )
+	{
+		Msg("[SP] find_symbol got invalid pData for %s!\n", symbol);
+		return NULL;
+	}
 
 #if defined(__linux__)
-        if( !pData->handle ) 
-        {
-                Msg("[SP] find_symbol got invalid library handle for %s!\n", symbol);
-                return NULL;
-        }
+	if( !pData->handle ) 
+	{
+		Msg("[SP] find_symbol got invalid library handle for %s!\n", symbol);
+		return NULL;
+	}
 
-    // -----------------------------------------
-    // We need to use mmap now that VALVe has
-    // made them all private!
-    // Thank you to DamagedSoul from AlliedMods
-    // for the following code.
-    // It can be found at:
-    // http://hg.alliedmods.net/sourcemod-central/file/dc361050274d/core/logic/MemoryUtils.cpp
-    // -----------------------------------------
-    struct link_map *dlmap;
-    struct stat dlstat;
-    int dlfile;
-    uintptr_t map_base;
-    Elf32_Ehdr *file_hdr;
-    Elf32_Shdr *sections, *shstrtab_hdr, *symtab_hdr, *strtab_hdr;
-    Elf32_Sym *symtab;
-    const char *shstrtab, *strtab;
-    uint16_t section_count;
-    uint32_t symbol_count;
+	// -----------------------------------------
+	// We need to use mmap now that VALVe has
+	// made them all private!
+	// Thank you to DamagedSoul from AlliedMods
+	// for the following code.
+	// It can be found at:
+	// http://hg.alliedmods.net/sourcemod-central/file/dc361050274d/core/logic/MemoryUtils.cpp
+	// -----------------------------------------
+	struct link_map *dlmap;
+	struct stat dlstat;
+	int dlfile;
+	uintptr_t map_base;
+	Elf32_Ehdr *file_hdr;
+	Elf32_Shdr *sections, *shstrtab_hdr, *symtab_hdr, *strtab_hdr;
+	Elf32_Sym *symtab;
+	const char *shstrtab, *strtab;
+	uint16_t section_count;
+	uint32_t symbol_count;
 
-    dlmap = (struct link_map *)pData->handle;
-    symtab_hdr = NULL;
-    strtab_hdr = NULL;
+	dlmap = (struct link_map *)pData->handle;
+	symtab_hdr = NULL;
+	strtab_hdr = NULL;
 
-    dlfile = open(dlmap->l_name, O_RDONLY);
-    if (dlfile == -1 || fstat(dlfile, &dlstat) == -1)
-    {
-    Msg("dlfile == -1!\n");
-            close(dlfile);
-            return NULL;
-    }
+	dlfile = open(dlmap->l_name, O_RDONLY);
+	if (dlfile == -1 || fstat(dlfile, &dlstat) == -1)
+	{
+		Msg("dlfile == -1!\n");
+		close(dlfile);
+		return NULL;
+	}
 
-    /* Map library file into memory */
-    file_hdr = (Elf32_Ehdr *)mmap(NULL, dlstat.st_size, PROT_READ, MAP_PRIVATE, dlfile, 0);
-    map_base = (uintptr_t)file_hdr;
-    if (file_hdr == MAP_FAILED)
-    {
-    Msg("file_hdr == MAP_FAILED!\n");
-            close(dlfile);
-            return NULL;
-    }
-    close(dlfile);
+	/* Map library file into memory */
+	file_hdr = (Elf32_Ehdr *)mmap(NULL, dlstat.st_size, PROT_READ, MAP_PRIVATE, dlfile, 0);
+	map_base = (uintptr_t)file_hdr;
+	if (file_hdr == MAP_FAILED)
+	{
+		Msg("file_hdr == MAP_FAILED!\n");
+		close(dlfile);
+		return NULL;
+	}
+	close(dlfile);
 
-    if (file_hdr->e_shoff == 0 || file_hdr->e_shstrndx == SHN_UNDEF)
-    {
-    Msg("file_hdr->e_shoff == 0!\n");
-            munmap(file_hdr, dlstat.st_size);
-            return NULL;
-    }
+	if (file_hdr->e_shoff == 0 || file_hdr->e_shstrndx == SHN_UNDEF)
+	{
+		Msg("file_hdr->e_shoff == 0!\n");
+		munmap(file_hdr, dlstat.st_size);
+		return NULL;
+	}
 
-    sections = (Elf32_Shdr *)(map_base + file_hdr->e_shoff);
-    section_count = file_hdr->e_shnum;
-    /* Get ELF section header string table */
-    shstrtab_hdr = &sections[file_hdr->e_shstrndx];
-    shstrtab = (const char *)(map_base + shstrtab_hdr->sh_offset);
+	sections = (Elf32_Shdr *)(map_base + file_hdr->e_shoff);
+	section_count = file_hdr->e_shnum;
+	/* Get ELF section header string table */
+	shstrtab_hdr = &sections[file_hdr->e_shstrndx];
+	shstrtab = (const char *)(map_base + shstrtab_hdr->sh_offset);
 
-    /* Iterate sections while looking for ELF symbol table and string table */
-    for (uint16_t i = 0; i < section_count; i++)
-    {
-            Elf32_Shdr &hdr = sections[i];
-            const char *section_name = shstrtab + hdr.sh_name;
+	/* Iterate sections while looking for ELF symbol table and string table */
+	for (uint16_t i = 0; i < section_count; i++)
+	{
+		Elf32_Shdr &hdr = sections[i];
+		const char *section_name = shstrtab + hdr.sh_name;
 
-            if (strcmp(section_name, ".symtab") == 0)
-            {
-                    symtab_hdr = &hdr;
-            }
-            else if (strcmp(section_name, ".strtab") == 0)
-            {
-                    strtab_hdr = &hdr;
-            }
-    }
+		if (strcmp(section_name, ".symtab") == 0)
+		{
+			symtab_hdr = &hdr;
+		}
+		else if (strcmp(section_name, ".strtab") == 0)
+		{
+			strtab_hdr = &hdr;
+		}
+	}
 
-    /* Uh oh, we don't have a symbol table or a string table */
-    if (symtab_hdr == NULL || strtab_hdr == NULL)
-    {
-    Msg("File doesn't have a symbol table!\n");
-            munmap(file_hdr, dlstat.st_size);
-            return NULL;
-    }
+	/* Uh oh, we don't have a symbol table or a string table */
+	if (symtab_hdr == NULL || strtab_hdr == NULL)
+	{
+		Msg("File doesn't have a symbol table!\n");
+		munmap(file_hdr, dlstat.st_size);
+		return NULL;
+	}
 
-    symtab = (Elf32_Sym *)(map_base + symtab_hdr->sh_offset);
-    strtab = (const char *)(map_base + strtab_hdr->sh_offset);
-    symbol_count = symtab_hdr->sh_size / symtab_hdr->sh_entsize;
-    void* sym_addr = NULL;
+	symtab = (Elf32_Sym *)(map_base + symtab_hdr->sh_offset);
+	strtab = (const char *)(map_base + strtab_hdr->sh_offset);
+	symbol_count = symtab_hdr->sh_size / symtab_hdr->sh_entsize;
+	void* sym_addr = NULL;
 
-    /* Iterate symbol table starting from the position we were at last time */
-    for (uint32_t i = 0; i < symbol_count; i++)
-    {
-            Elf32_Sym &sym = symtab[i];
-            unsigned char sym_type = ELF32_ST_TYPE(sym.st_info);
-            const char *sym_name = strtab + sym.st_name;
+	/* Iterate symbol table starting from the position we were at last time */
+	for (uint32_t i = 0; i < symbol_count; i++)
+	{
+		Elf32_Sym &sym = symtab[i];
+		unsigned char sym_type = ELF32_ST_TYPE(sym.st_info);
+		const char *sym_name = strtab + sym.st_name;
 
-            /* Skip symbols that are undefined or do not refer to functions or objects */
-            if (sym.st_shndx == SHN_UNDEF || (sym_type != STT_FUNC && sym_type != STT_OBJECT))
-            {
-                    continue;
-            }
+		/* Skip symbols that are undefined or do not refer to functions or objects */
+		if (sym.st_shndx == SHN_UNDEF || (sym_type != STT_FUNC && sym_type != STT_OBJECT))
+		{
+			continue;
+		}
 
-            if (strcmp(symbol, sym_name) == 0)
-            {
-        sym_addr = (void *)(dlmap->l_addr + sym.st_value);
-                    break;
-            }
-    }
+		if (strcmp(symbol, sym_name) == 0)
+		{
+			sym_addr = (void *)(dlmap->l_addr + sym.st_value);
+			break;
+		}
+	}
 
-    // Unmap the file now.
-    munmap(file_hdr, dlstat.st_size);
+	// Unmap the file now.
+	munmap(file_hdr, dlstat.st_size);
 
-    // Validate it
-    if( !sym_addr )
-    {
-        DevMsg("[SP]: Could not find symbol %s!\n", symbol);
-        return NULL;
-    }
+	// Validate it
+	if( !sym_addr )
+	{
+		DevMsg("[SP]: Could not find symbol %s!\n", symbol);
+		return NULL;
+	}
 
-    // Print it out
-    DevMsg(1, "************************************\n");
-    DevMsg(1, "[SP]: Symbol: %s.\n", symbol);
-    DevMsg(1, "[SP]: Symbol address: %d.\n", sym_addr);
-    DevMsg(1, "************************************\n");
+	// Print it out
+	DevMsg(1, "************************************\n");
+	DevMsg(1, "[SP]: Symbol: %s.\n", symbol);
+	DevMsg(1, "[SP]: Symbol address: %d.\n", sym_addr);
+	DevMsg(1, "************************************\n");
 
-    // Return it
-    return (unsigned long)(sym_addr);
+	// Return it
+	return (unsigned long)(sym_addr);
 #endif
-
-        // Not implemented for windows yet.
-        return NULL;
-}
-
-//---------------------------------------------------------------------------------
-// Returns the address of a vtable function
-//---------------------------------------------------------------------------------
-int FindVirtualFunction( void* pThisPointer, int iOffset )
-{
-#ifdef __linux__
-    iOffset ++;
-#endif
-    void **vtable = *(void ***)pThisPointer;
-    void *func = vtable[iOffset];
-    return (int)func;
-}
-
-//---------------------------------------------------------------------------------
-// Returns the bool value of the given address
-//---------------------------------------------------------------------------------
-bool GetLocBool( int addr )
-{
-    return *(bool *)((char *)addr);
-}
-
-//---------------------------------------------------------------------------------
-// Returns the integer value of the given address
-//---------------------------------------------------------------------------------
-int GetLocInt( int addr )
-{
-    return *(int *)((char *)addr);
-}
-
-//---------------------------------------------------------------------------------
-// Returns the float value of the given address
-//---------------------------------------------------------------------------------
-float GetLocFloat( int addr )
-{
-    return *(float *)((char *)addr);
-}
-
-//---------------------------------------------------------------------------------
-// Sets the given address to the given bool value
-//---------------------------------------------------------------------------------
-void SetLocBool( int addr, bool bValue )
-{
-    *(bool *)((char *)addr) = bValue;
-}
-
-//---------------------------------------------------------------------------------
-// Sets the given address to the given integer value
-//---------------------------------------------------------------------------------
-void SetLocInt( int addr, int iValue )
-{
-    *(int *)((char *)addr) = iValue;
-}
-
-//---------------------------------------------------------------------------------
-// Sets the given address to the given float value
-//---------------------------------------------------------------------------------
-void SetLocFloat( int addr, float fValue )
-{
-    *(float *)((char *)addr) = fValue;
+	// Not implemented for windows yet.
+	return NULL;
 }

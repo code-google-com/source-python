@@ -52,7 +52,7 @@ struct OffsetDefinition
 {
 public:
 	OffsetDefinition(int iOffset, SendPropType type):
-	    m_iOffset(iOffset), m_type(type)
+		m_iOffset(iOffset), m_type(type)
 	{
 	}
 	OffsetDefinition():
@@ -72,26 +72,26 @@ OffsetMap g_OffsetMap;
 //---------------------------------------------------------------------------------
 void SplitPath(const char* szFullPath, char* szClassName, char* szTempPath)
 {
-    if (!szFullPath || !szClassName || !szTempPath)
-    {
-        return;
-    }
+	if (!szFullPath || !szClassName || !szTempPath)
+	{
+		return;
+	}
 
-    int i = 0;
-    while(szFullPath[i] != '\0' && szFullPath[i] != '.')
-    {
-        szClassName[i] = szFullPath[i];
-        i++;
-    }
-    szClassName[i]='\0';
-    int j = 0;
-    while(szFullPath[i] != '\0')
-    {
-        i++;
-        szTempPath[j] = szFullPath[i];
-        j++;
-    }
-    szTempPath[j]='\0';
+	int i = 0;
+	while(szFullPath[i] != '\0' && szFullPath[i] != '.')
+	{
+		szClassName[i] = szFullPath[i];
+		i++;
+	}
+	szClassName[i]='\0';
+	int j = 0;
+	while(szFullPath[i] != '\0')
+	{
+		i++;
+		szTempPath[j] = szFullPath[i];
+		j++;
+	}
+	szTempPath[j]='\0';
 }
 
 //---------------------------------------------------------------------------------
@@ -102,37 +102,37 @@ void SplitPath(const char* szFullPath, char* szClassName, char* szTempPath)
 //---------------------------------------------------------------------------------
 bool GetPropOffsetInTable(SendTable* pTable, char* szRemainPath, int* iOffset, SendPropType* pType)
 {
-    char szTempPath[2048];
-    strcpy(szTempPath, szRemainPath);
-    char szValueName[1024];
-    SplitPath(szRemainPath, szValueName, szTempPath);
-    int NumProps = pTable->GetNumProps();
-    for (int i=0; i<NumProps; i++)
-    {
-        SendProp* pProp = pTable->GetProp(i);
+	char szTempPath[2048];
+	strcpy(szTempPath, szRemainPath);
+	char szValueName[1024];
+	SplitPath(szRemainPath, szValueName, szTempPath);
+	int NumProps = pTable->GetNumProps();
+	for (int i=0; i<NumProps; i++)
+	{
+		SendProp* pProp = pTable->GetProp(i);
 		if (strcmp(szValueName, pProp->GetName()) == 0)
-        {
-            bool bValueOutput = false;
-            *iOffset = *iOffset + pProp->GetOffset();
-            *pType = pProp->GetType();
-            switch (pProp->GetType())
-            {
-            case DPT_Vector:
-            case DPT_String:
-            case DPT_Array:
-            case DPT_Int:
-            case DPT_Float:
-                return true;
-            case DPT_DataTable:
-                return GetPropOffsetInTable(pProp->GetDataTable(), szTempPath, iOffset, pType);
-                break;
-            default:
-                *iOffset = 0;
-                return false; 
-            }
-        }
-    }
-    return false;
+		{
+			bool bValueOutput = false;
+			*iOffset = *iOffset + pProp->GetOffset();
+			*pType = pProp->GetType();
+			switch (pProp->GetType())
+			{
+			case DPT_Vector:
+			case DPT_String:
+			case DPT_Array:
+			case DPT_Int:
+			case DPT_Float:
+				return true;
+			case DPT_DataTable:
+				return GetPropOffsetInTable(pProp->GetDataTable(), szTempPath, iOffset, pType);
+				break;
+			default:
+				*iOffset = 0;
+				return false; 
+			}
+		}
+	}
+	return false;
 }
 
 //---------------------------------------------------------------------------------
@@ -149,27 +149,27 @@ bool GetPropOffset(const char* szFullPath, int* iOffset, SendPropType* pType)
 		return true;
 	}
 
-    char szTempPath[2048];
-    strcpy(szTempPath, szFullPath);
-    char szClassName[1024];
-    SplitPath(szFullPath, szClassName, szTempPath);
-    *iOffset = 0;
+	char szTempPath[2048];
+	strcpy(szTempPath, szFullPath);
+	char szClassName[1024];
+	SplitPath(szFullPath, szClassName, szTempPath);
+	*iOffset = 0;
 
-    ServerClass* pCurrentServerClass = servergamedll->GetAllServerClasses();
-    while (pCurrentServerClass)
-    {
+	ServerClass* pCurrentServerClass = servergamedll->GetAllServerClasses();
+	while (pCurrentServerClass)
+	{
 		if (strcmp(pCurrentServerClass->GetName(), szClassName) == 0)
-        {
-            if (GetPropOffsetInTable(pCurrentServerClass->m_pTable, szTempPath, iOffset, pType))
+		{
+			if (GetPropOffsetInTable(pCurrentServerClass->m_pTable, szTempPath, iOffset, pType))
 			{
 				g_OffsetMap[szFullPath] = OffsetDefinition(*iOffset, *pType);
 				return true;
 			}
 			return false;
-        }
-        pCurrentServerClass = pCurrentServerClass->m_pNext;
-    }
-    return false;
+		}
+		pCurrentServerClass = pCurrentServerClass->m_pNext;
+	}
+	return false;
 }
 
 //---------------------------------------------------------------------------------

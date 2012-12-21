@@ -57,8 +57,10 @@ INetworkStringTableContainer* GetStringTables( void )
 //---------------------------------------------------------------------------------
 bool INetworkStringTable_AddString( INetworkStringTable* pTable, const char* string )
 {
-	if (pTable->GetNumStrings() >= pTable->GetMaxStrings())
+	if (pTable->GetNumStrings() >= pTable->GetMaxStrings() || pTable->FindStringIndex(string) != INVALID_STRING_INDEX)
+	{
 		return false;
+	}
 	bool bLocked = engine->LockNetworkStringTables(false);
 	pTable->AddString(false, string, strlen(string)+1);
 	engine->LockNetworkStringTables(bLocked);

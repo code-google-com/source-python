@@ -67,8 +67,8 @@ T* GetPropPointer(edict_t* pEdict, const char* szFullPath)
 	}
 
 	//Get the offset of the network prop
-    int iOffset = 0;
-    SendPropType propType;
+	int iOffset = 0;
+	SendPropType propType;
 	if (!GetPropOffset(szFullPath, &iOffset, &propType))
 	{
 		BOOST_RAISE_EXCEPTION(PyExc_Exception, "Could not find the prop offset by the prop name.");

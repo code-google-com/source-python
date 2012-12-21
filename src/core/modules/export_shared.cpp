@@ -77,9 +77,9 @@ DECLARE_SP_MODULE(Shared)
 		// ----------------------------------------------------------
 		CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t)
 
-        // ----------------------------------------------------------
-        // Class Methods
-        // ----------------------------------------------------------
+		// ----------------------------------------------------------
+		// Class Methods
+		// ----------------------------------------------------------
 		CLASS_METHOD(Vector,
 			Init,
 			"Vector initialization",
@@ -223,23 +223,23 @@ DECLARE_SP_MODULE(Shared)
 		.def("__getitem__", &GetItemIndexer<Vector, vec_t>, "Returns the vector element at the given index.", args("i"))
 		.def("__setitem__", &SetItemIndexer<Vector, vec_t>, "Sets the vector element at the given index.", args("i", "value"))
 
-        // ----------------------------------------------------------
-        // Class Attributes
-        // ----------------------------------------------------------
-        CLASS_MEMBER(Vector,
-            x,
-            "Read/write value of the x coordinate for the vector."
-        )
+		// ----------------------------------------------------------
+		// Class Attributes
+		// ----------------------------------------------------------
+		CLASS_MEMBER(Vector,
+			x,
+			"Read/write value of the x coordinate for the vector."
+		)
 
-        CLASS_MEMBER(Vector,
-            y,
-            "Read/write value of the y coordinate for the vector."
-        )
+		CLASS_MEMBER(Vector,
+			y,
+			"Read/write value of the y coordinate for the vector."
+		)
 
-        CLASS_MEMBER(Vector,
-            z,
-            "Read/write value of the z coordinate for the vector."
-        )
+		CLASS_MEMBER(Vector,
+			z,
+			"Read/write value of the z coordinate for the vector."
+		)
 
 	BOOST_END_CLASS()
 
@@ -272,9 +272,9 @@ DECLARE_SP_MODULE(Shared)
 		CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t, vec_t)
 		CLASS_CONSTRUCTOR(RadianEuler const&)
 
-        // ----------------------------------------------------------
-        // Class Methods
-        // ----------------------------------------------------------
+		// ----------------------------------------------------------
+		// Class Methods
+		// ----------------------------------------------------------
 		CLASS_METHOD_OVERLOAD(Quaternion,
 			Init,
 			"Quaternion initialization",
@@ -299,28 +299,28 @@ DECLARE_SP_MODULE(Shared)
 		.def("__getitem__", &GetItemIndexer<Quaternion, vec_t>, "Returns the Quaternion element at the given index.", args("i"))
 		.def("__setitem__", &SetItemIndexer<Quaternion, vec_t>, "Sets the Quaternion element at the given index.", args("i", "value"))
 
-        // ----------------------------------------------------------
-        // Class Attributes
-        // ----------------------------------------------------------
-        CLASS_MEMBER(Quaternion,
-            x,
-            "Read/write value of the x member for the Quaternion."
-        )
+		// ----------------------------------------------------------
+		// Class Attributes
+		// ----------------------------------------------------------
+		CLASS_MEMBER(Quaternion,
+			x,
+			"Read/write value of the x member for the Quaternion."
+		)
 
-        CLASS_MEMBER(Quaternion,
-            y,
-            "Read/write value of the y member for the Quaternion."
-        )
+		CLASS_MEMBER(Quaternion,
+			y,
+			"Read/write value of the y member for the Quaternion."
+		)
 
-        CLASS_MEMBER(Quaternion,
-            z,
-            "Read/write value of the z member for the Quaternion."
-        )
+		CLASS_MEMBER(Quaternion,
+			z,
+			"Read/write value of the z member for the Quaternion."
+		)
 
-        CLASS_MEMBER(Quaternion,
-            w,
-            "Read/write value of the z member for the Quaternion."
-        )
+		CLASS_MEMBER(Quaternion,
+			w,
+			"Read/write value of the z member for the Quaternion."
+		)
 	BOOST_END_CLASS()
 
 	// ----------------------------------------------------------
@@ -337,9 +337,9 @@ DECLARE_SP_MODULE(Shared)
 		CLASS_CONSTRUCTOR(Quaternion const&)
 		CLASS_CONSTRUCTOR(QAngle const&)
 
-        // ----------------------------------------------------------
-        // Class Methods
-        // ----------------------------------------------------------
+		// ----------------------------------------------------------
+		// Class Methods
+		// ----------------------------------------------------------
 		CLASS_METHOD_OVERLOAD(RadianEuler,
 			Init,
 			"RadianEuler initialization",
@@ -367,23 +367,23 @@ DECLARE_SP_MODULE(Shared)
 		.def("__getitem__", &GetItemIndexer<RadianEuler, vec_t>, "Returns the RadianEuler element at the given index.", args("i"))
 		.def("__setitem__", &SetItemIndexer<RadianEuler, vec_t>, "Sets the RadianEuler element at the given index.", args("i", "value"))
 
-        // ----------------------------------------------------------
-        // Class Attributes
-        // ----------------------------------------------------------
-        CLASS_MEMBER(RadianEuler,
-            x,
-            "Read/write value of the x member for the Quaternion."
-        )
+		// ----------------------------------------------------------
+		// Class Attributes
+		// ----------------------------------------------------------
+		CLASS_MEMBER(RadianEuler,
+			x,
+			"Read/write value of the x member for the Quaternion."
+		)
 
-        CLASS_MEMBER(RadianEuler,
-            y,
-            "Read/write value of the y member for the Quaternion."
-        )
+		CLASS_MEMBER(RadianEuler,
+			y,
+			"Read/write value of the y member for the Quaternion."
+		)
 
-        CLASS_MEMBER(RadianEuler,
-            z,
-            "Read/write value of the z member for the Quaternion."
-        )
+		CLASS_MEMBER(RadianEuler,
+			z,
+			"Read/write value of the z member for the Quaternion."
+		)
 	BOOST_END_CLASS()
 
 	// ----------------------------------------------------------
@@ -398,9 +398,9 @@ DECLARE_SP_MODULE(Shared)
 		// ----------------------------------------------------------
 		CLASS_CONSTRUCTOR(vec_t, vec_t, vec_t)
 
-        // ----------------------------------------------------------
-        // Class Methods
-        // ----------------------------------------------------------
+		// ----------------------------------------------------------
+		// Class Methods
+		// ----------------------------------------------------------
 		CLASS_METHOD_OVERLOAD(QAngle,
 			Init,
 			"QAngle initialization",
@@ -448,23 +448,23 @@ DECLARE_SP_MODULE(Shared)
 		.def("__getitem__", &GetItemIndexer<QAngle, vec_t>, "Returns the QAngle element at the given index.", args("i"))
 		.def("__setitem__", &SetItemIndexer<QAngle, vec_t>, "Sets the QAngle element at the given index.", args("i", "value"))
 
-        // ----------------------------------------------------------
-        // Class Attributes
-        // ----------------------------------------------------------
-        CLASS_MEMBER(QAngle,
-            x,
-            "Read/write value of the x coordinate for the QAngle."
-        )
+		// ----------------------------------------------------------
+		// Class Attributes
+		// ----------------------------------------------------------
+		CLASS_MEMBER(QAngle,
+			x,
+			"Read/write value of the x coordinate for the QAngle."
+		)
 
-        CLASS_MEMBER(QAngle,
-            y,
-            "Read/write value of the y coordinate for the QAngle."
-        )
+		CLASS_MEMBER(QAngle,
+			y,
+			"Read/write value of the y coordinate for the QAngle."
+		)
 
-        CLASS_MEMBER(QAngle,
-            z,
-            "Read/write value of the z coordinate for the QAngle."
-        )
+		CLASS_MEMBER(QAngle,
+			z,
+			"Read/write value of the z coordinate for the QAngle."
+		)
 	BOOST_END_CLASS()
 
 	// ----------------------------------------------------------
