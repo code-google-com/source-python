@@ -7,7 +7,7 @@
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -16,12 +16,12 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Source Python Team gives you permission 
-* to link the code of this program (as well as its derivative works) to 
+* As a special exception, the Source Python Team gives you permission
+* to link the code of this program (as well as its derivative works) to
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, the Source.Python
-* Development Team grants this exception to all derivative works.  
+* Development Team grants this exception to all derivative works.
 */
 
 //---------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ IServerEntity* GetServerEntity(trace_t* pSelf)
 // Wraps Ray_t.
 // Q: Why is this wrapped?
 // A: Ray_t can't be directly exposed to Boost.Python, as some of its member
-//    variables use the VectorAligned type, which is specially defined using
+//	variables use the VectorAligned type, which is specially defined using
 //	  ALIGN16.
 //---------------------------------------------------------------------------------
 WrappedRay_t::WrappedRay_t()
@@ -105,8 +105,8 @@ Ray_t* WrappedRay_t::WrappedInstance() const
 // Wraps IEngineTrace.
 // Q: Why is this wrapped?
 // A: Since Ray_t cannot be used directly, and IEngineTrace includes a few
-//    functions that take const Ray_t& parameters, a wrap is needed so that
-//    we can use the WrappedRay_t type instead.
+//	functions that take const Ray_t& parameters, a wrap is needed so that
+//	we can use the WrappedRay_t type instead.
 //---------------------------------------------------------------------------------
 int WrappedIEngineTrace::GetPointContents(const Vector &vecAbsPosition, int contentsMask /*= MASK_ALL*/, EntityCollection* ppEntity /*= NULL*/)
 {
@@ -177,7 +177,7 @@ void WrappedIEngineTrace::TraceRayAgainstLeafAndEntityList(const WrappedRay_t &r
 }
 #endif
 
-void WrappedIEngineTrace::SweepCollideable(ICollideable *pCollide, const Vector &vecAbsStart, const Vector &vecAbsEnd, 
+void WrappedIEngineTrace::SweepCollideable(ICollideable *pCollide, const Vector &vecAbsStart, const Vector &vecAbsEnd,
 										   const QAngle &vecAngles, unsigned int fMask, ITraceFilter *pTraceFilter, trace_t *pTrace)
 {
 	enginetrace->SweepCollideable(pCollide, vecAbsStart, vecAbsEnd, vecAngles, fMask, pTraceFilter, pTrace);
@@ -225,7 +225,7 @@ void WrappedIEngineTrace::GetDisplacementMesh(int nIndex, virtualmeshlist_t *pMe
 {
 	enginetrace->GetDisplacementMesh(nIndex, pMeshTriList);
 }
-	
+
 bool WrappedIEngineTrace::GetBrushInfo(int iBrush, CUtlVector<BrushSideInfo_t> *pBrushSideInfoOut, int *pContentsOut)
 {
 	return enginetrace->GetBrushInfo(iBrush, pBrushSideInfoOut, pContentsOut);
@@ -449,7 +449,7 @@ void Export_EngineTrace( void )
 		CLASS_METHOD(ITraceFilter,
 			GetTraceType,
 			"Returns the trace type of this trace filter."
-		)			
+		)
 	BOOST_END_CLASS()
 
 	// ----------------------------------------------------------
@@ -832,7 +832,7 @@ void Export_EngineTrace( void )
 	BOOST_GLOBAL_ATTRIBUTE("MASK_BLOCKLOS_AND_NPCS", MASK_BLOCKLOS_AND_NPCS);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_VISIBLE", MASK_VISIBLE);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_VISIBLE_AND_NPCS", MASK_VISIBLE_AND_NPCS);
-	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT", MASK_SHOT);	
+	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT", MASK_SHOT);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT_HULL", MASK_SHOT_HULL);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_SHOT_PORTAL", MASK_SHOT_PORTAL);
 	BOOST_GLOBAL_ATTRIBUTE("MASK_SOLID_BRUSHONLY", MASK_SOLID_BRUSHONLY);

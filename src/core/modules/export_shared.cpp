@@ -7,7 +7,7 @@
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -16,12 +16,12 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Source Python Team gives you permission 
-* to link the code of this program (as well as its derivative works) to 
+* As a special exception, the Source Python Team gives you permission
+* to link the code of this program (as well as its derivative works) to
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, the Source.Python
-* Development Team grants this exception to all derivative works.  
+* Development Team grants this exception to all derivative works.
 */
 
 //---------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void SetItemIndexer(T* self, const int i, const U& value)
 DECLARE_SP_MODULE(Shared)
 {
 	BOOST_CLASS(Vector)
-		
+
 		// ----------------------------------------------------------
 		// Constructors
 		// ----------------------------------------------------------
@@ -111,12 +111,12 @@ DECLARE_SP_MODULE(Shared)
 			"Returns the vector's magnitude squared."
 		)
 
-		CLASS_METHOD_OVERLOAD(Vector, 
+		CLASS_METHOD_OVERLOAD(Vector,
 			IsZero,
 			"Returns true if this vector is (0,0,0) within tolerance",
 			args("tolerance")
 		)
-		
+
 
 
 		CLASS_METHOD(Vector,
@@ -265,7 +265,7 @@ DECLARE_SP_MODULE(Shared)
 	// ----------------------------------------------------------
 	// Exposes Quaternion class.
 	// ----------------------------------------------------------
-	BOOST_CLASS(Quaternion)		
+	BOOST_CLASS(Quaternion)
 		// ----------------------------------------------------------
 		// Constructors
 		// ----------------------------------------------------------
@@ -329,7 +329,7 @@ DECLARE_SP_MODULE(Shared)
 	typedef vec_t (RadianEuler::*RadianEulerIndexerFn)(int) const;
 	RadianEulerIndexerFn fnRadianEulerIndexer = &RadianEuler::operator[];
 
-	BOOST_CLASS(RadianEuler)		
+	BOOST_CLASS(RadianEuler)
 		// ----------------------------------------------------------
 		// Constructors
 		// ----------------------------------------------------------
@@ -392,7 +392,7 @@ DECLARE_SP_MODULE(Shared)
 	typedef vec_t (QAngle::*QAngleIndexerFn)(int) const;
 	QAngleIndexerFn fnQAngleIndexer = &QAngle::operator[];
 
-	BOOST_CLASS(QAngle)		
+	BOOST_CLASS(QAngle)
 		// ----------------------------------------------------------
 		// Constructors
 		// ----------------------------------------------------------
@@ -407,7 +407,7 @@ DECLARE_SP_MODULE(Shared)
 			args("ix", "iy", "iz")
 		)
 
-		CLASS_METHOD(QAngle, 
+		CLASS_METHOD(QAngle,
 			Random,
 			"QAngle initialization with random values",
 			args("minVal", "maxVal")

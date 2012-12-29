@@ -7,7 +7,7 @@
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -16,12 +16,12 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Source Python Team gives you permission 
-* to link the code of this program (as well as its derivative works) to 
+* As a special exception, the Source Python Team gives you permission
+* to link the code of this program (as well as its derivative works) to
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, the Source.Python
-* Development Team grants this exception to all derivative works.  
+* Development Team grants this exception to all derivative works.
 */
 #ifndef _ENGINE_TRACE_H
 #define _ENGINE_TRACE_H
@@ -42,7 +42,7 @@ extern IEngineTrace* enginetrace;
 // Wraps Ray_t.
 // Q: Why is this wrapped?
 // A: Ray_t can't be directly exposed to Boost.Python, as some of its member
-//    variables use the VectorAligned type, which is specially defined using
+//	variables use the VectorAligned type, which is specially defined using
 //	  ALIGN16.
 //---------------------------------------------------------------------------------
 struct WrappedRay_t
@@ -83,13 +83,13 @@ private:
 // Wraps Ray_t.
 // Q: Why is this wrapped?
 // A: Since Ray_t cannot be used directly, and IEngineTrace includes a few
-//    functions that take const Ray_t& parameters, a wrap is needed so that
-//    we can use the WrappedRay_t type instead.
+//	functions that take const Ray_t& parameters, a wrap is needed so that
+//	we can use the WrappedRay_t type instead.
 //---------------------------------------------------------------------------------
 class WrappedIEngineTrace
 {
 public:
-	int GetPointContents(const Vector &vecAbsPosition, int contentsMask = MASK_ALL, EntityCollection* ppEntity = NULL);	
+	int GetPointContents(const Vector &vecAbsPosition, int contentsMask = MASK_ALL, EntityCollection* ppEntity = NULL);
 
 #if( SOURCE_ENGINE >= 2 )
 	int GetPointContents_WorldOnly(const Vector &vecAbsPosition, int contentsMask = MASK_ALL);
@@ -107,7 +107,7 @@ public:
 	void TraceRayAgainstLeafAndEntityList(const WrappedRay_t &ray, ITraceListData *pTraceData, unsigned int fMask, ITraceFilter *pTraceFilter, trace_t *pTrace);
 #endif
 
-	void SweepCollideable(ICollideable *pCollide, const Vector &vecAbsStart, const Vector &vecAbsEnd, 
+	void SweepCollideable(ICollideable *pCollide, const Vector &vecAbsStart, const Vector &vecAbsEnd,
 						  const QAngle &vecAngles, unsigned int fMask, ITraceFilter *pTraceFilter, trace_t *pTrace);
 
 	void EnumerateEntities(const WrappedRay_t &ray, bool triggers, IEntityEnumerator *pEnumerator);
@@ -140,7 +140,7 @@ public:
 //---------------------------------------------------------------------------------
 class CTraceFilterSimple: public CTraceFilter
 {
-public:	
+public:
 	CTraceFilterSimple();
 	CTraceFilterSimple(const IHandleEntity* pPassEntity);
 

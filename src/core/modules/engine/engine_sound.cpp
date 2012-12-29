@@ -7,7 +7,7 @@
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -16,12 +16,12 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Source Python Team gives you permission 
-* to link the code of this program (as well as its derivative works) to 
+* As a special exception, the Source Python Team gives you permission
+* to link the code of this program (as well as its derivative works) to
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, the Source.Python
-* Development Team grants this exception to all derivative works.  
+* Development Team grants this exception to all derivative works.
 */
 
 //---------------------------------------------------------------------------------
@@ -81,27 +81,27 @@ void Export_EngineSound( void )
 		// ----------------------------------------------------------
 		// Class methods.
 		// ----------------------------------------------------------
-		CLASS_METHOD_OVERLOAD(IEngineSound, 
-			PrecacheSound, 
+		CLASS_METHOD_OVERLOAD(IEngineSound,
+			PrecacheSound,
 			"Precaches a specific sound.",
 			args("pSample", "bPreload", "bIsUISound")
 		)
 
-		CLASS_METHOD(IEngineSound, 
-			IsSoundPrecached, 
-			"Returns True if a specific sound is precached.", 
+		CLASS_METHOD(IEngineSound,
+			IsSoundPrecached,
+			"Returns True if a specific sound is precached.",
 			args("pSample")
 		)
 
-		CLASS_METHOD(IEngineSound, 
-			PrefetchSound, 
-			"Prefetches a specific sound.", 
+		CLASS_METHOD(IEngineSound,
+			PrefetchSound,
+			"Prefetches a specific sound.",
 			args("pSample")
 		)
 
-		CLASS_METHOD(IEngineSound, 
-			GetSoundDuration, 
-			"Returns the duration of a specific sound, in seconds. NOTE: Will not currently work with *.mp3 files.", 
+		CLASS_METHOD(IEngineSound,
+			GetSoundDuration,
+			"Returns the duration of a specific sound, in seconds. NOTE: Will not currently work with *.mp3 files.",
 			args("pSample")
 		)
 
@@ -124,8 +124,8 @@ void Export_EngineSound( void )
 		)
 #endif
 
-		CLASS_METHOD_OVERLOAD(IEngineSound, 
-			EmitSentenceByIndex, 
+		CLASS_METHOD_OVERLOAD(IEngineSound,
+			EmitSentenceByIndex,
 			"Emits a sentence by a specific sentence index.",
 			args("filter", "iEntIndex", "iChannel", "iSentenceIndex", "flVolume", "iSoundlevel", "nSeed", "iFlags", "iPitch", "pOrigin", "pDirection", "pUtlVecOrigins", "bUpdatePositions", "soundtime", "speakerentity")
 		)
@@ -143,9 +143,9 @@ void Export_EngineSound( void )
 		)
 
 #if( SOURCE_ENGINE >= 2 )
-		CLASS_METHOD(IEngineSound, 
-			IsLoopingSound, 
-			"Returns True if a specific sound is set to loop.", 
+		CLASS_METHOD(IEngineSound,
+			IsLoopingSound,
+			"Returns True if a specific sound is set to loop.",
 			args("pSample")
 		)
 #endif

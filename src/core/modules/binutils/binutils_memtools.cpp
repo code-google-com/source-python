@@ -7,7 +7,7 @@
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -16,12 +16,12 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Source Python Team gives you permission 
-* to link the code of this program (as well as its derivative works) to 
+* As a special exception, the Source Python Team gives you permission
+* to link the code of this program (as well as its derivative works) to
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, the Source.Python
-* Development Team grants this exception to all derivative works.  
+* Development Team grants this exception to all derivative works.
 */
 
 //---------------------------------------------------------------------------------
@@ -107,12 +107,12 @@ void Export_MemoryTools( void )
 		args("size"),
 		"Allocates a memory block and returns its pointer."
 	);
-	
+
 	BOOST_FUNCTION(DeallocatePointer,
 		args("ptr"),
 		"Deallocates a memory block."
 	);
-	
+
 	def("FindVirtualFunction",
 		FindVirtualFunction,
 		FindVirtualFunction_Overloads(
@@ -120,7 +120,7 @@ void Export_MemoryTools( void )
 			"Returns the address of a vtable function."
 		)
 	);
-	
+
 	// GetLocVal...
 	def("GetLocBool", &GetLocVal<bool>, args("ptr"), "Returns the value at the given memory location as a boolean.");
 	def("GetLocChar", &GetLocVal<char>, args("ptr"), "Returns the value at the given memory location as a character.");
@@ -131,7 +131,7 @@ void Export_MemoryTools( void )
 	def("GetLocLongLong", &GetLocVal<long long>, args("ptr"), "Returns the value at the given memory location as a long long.");
 	def("GetLocPointer", &GetLocVal<unsigned long>, args("ptr"), "Returns the value at the given memory location as a pointer.");
 	def("GetLocShort", &GetLocVal<short>, args("ptr"), "Returns the value at the given memory location as a short.");
-	
+
 	// SetLocVal...
 	def("SetLocBool", &SetLocVal<bool>, args("ptr", "value"), "Sets the given value at the given memory location as a boolean.");
 	def("SetLocChar", &SetLocVal<char>, args("ptr", "value"), "Sets the given value at the given memory location as a character.");
@@ -142,7 +142,7 @@ void Export_MemoryTools( void )
 	def("SetLocLong", &SetLocVal<long>, args("ptr", "value"), "Sets the given value at the given memory location as a long.");
 	def("SetLocPointer", &SetLocVal<unsigned long>, args("ptr", "value"), "Sets the given value at the given memory location as a pointer.");
 	def("SetLocShort", &SetLocVal<short>, args("ptr", "value"), "Sets the given value at the given memory location as a short.");
-	
+
 	BOOST_FUNCTION(ReallocatePointer,
 		args("ptr", "size"),
 		"Reallocates a memory block."

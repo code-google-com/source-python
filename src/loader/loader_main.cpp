@@ -7,7 +7,7 @@
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -16,12 +16,12 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Source Python Team gives you permission 
-* to link the code of this program (as well as its derivative works) to 
+* As a special exception, the Source Python Team gives you permission
+* to link the code of this program (as well as its derivative works) to
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, the Source.Python
-* Development Team grants this exception to all derivative works.  
+* Development Team grants this exception to all derivative works.
 */
 
 //---------------------------------------------------------------------------------
@@ -39,7 +39,7 @@
 // Disable warnings.
 //---------------------------------------------------------------------------------
 #if defined(_WIN32)
-#    pragma warning( disable : 4005 )
+#	pragma warning( disable : 4005 )
 #endif
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -50,7 +50,7 @@
 //---------------------------------------------------------------------------------
 ICvar* g_pCVar = NULL; // This is required for linux linking..
 
-// 
+//
 // The plugin is a static singleton that is exported as an interface
 //
 CSourcePython g_EmtpyServerPlugin;
@@ -71,7 +71,7 @@ CSourcePython::~CSourcePython()
 
 //---------------------------------------------------------------------------------
 // This function will load libraries and return true if they load successfully.
-// 
+//
 //---------------------------------------------------------------------------------
 void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 {
@@ -82,7 +82,7 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 
 	engine->GetGameDir(szGamePath, 1024);
 
-	V_snprintf(szFullPath, sizeof(szFullPath), "%s/addons/source-python/%s", 
+	V_snprintf(szFullPath, sizeof(szFullPath), "%s/addons/source-python/%s",
 		szGamePath, libraryPath);
 
 	// Fix up the slahes.
@@ -96,7 +96,7 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 		DWORD nErrorCode = GetLastError();
 		LPVOID lpMsgBuf;
 		DWORD nBufferLength = FormatMessage(
-			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+			FORMAT_MESSAGE_ALLOCATE_BUFFER |
 			FORMAT_MESSAGE_FROM_SYSTEM |
 			FORMAT_MESSAGE_IGNORE_INSERTS,
 			NULL,
@@ -108,7 +108,7 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 		if(nBufferLength == 0)
 
 		{
-			V_snprintf(szError, sizeof(szError), 
+			V_snprintf(szError, sizeof(szError),
 			   "[SP-LOADER] Could not obtain a valid translation for error. (Code: %d)\n",
 			   nErrorCode);
 		}
@@ -123,7 +123,7 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 				szResult[i] = static_cast<char>(static_cast<LPCSTR>(lpMsgBuf)[i]);
 			}
 
-			V_snprintf(szError, sizeof(szError), 
+			V_snprintf(szError, sizeof(szError),
 			   "[SP-LOADER] (Code: %d) %s",
 			   nErrorCode,
 			   szResult/*.c_str()*/);
@@ -156,7 +156,7 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 //---------------------------------------------------------------------------------
 bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
-    Msg("[Source.Python] Loading...\n");
+	Msg("[Source.Python] Loading...\n");
 
 	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 
@@ -195,7 +195,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	V_FixSlashes(szSourcePython);
 	V_FixSlashes(szPythonEngine);
-	
+
 	// ------------------------------------------------------------------
 	// Load python.
 	// ------------------------------------------------------------------
@@ -355,7 +355,7 @@ void CSourcePython::ClientDisconnect( edict_t *pEntity )
 }
 
 //---------------------------------------------------------------------------------
-// Purpose: called on 
+// Purpose: called on
 //---------------------------------------------------------------------------------
 void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
@@ -414,7 +414,7 @@ PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const 
 //---------------------------------------------------------------------------------
 // Purpose: called when a cvar value query is finished
 //---------------------------------------------------------------------------------
-void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, 
+void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
 	if (m_pCorePlugin != NULL)

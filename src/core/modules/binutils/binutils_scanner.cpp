@@ -7,7 +7,7 @@
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -16,8 +16,8 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Source Python Team gives you permission 
-* to link the code of this program (as well as its derivative works) to 
+* As a special exception, the Source Python Team gives you permission
+* to link the code of this program (as well as its derivative works) to
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, the Source.Python
@@ -72,7 +72,7 @@ moduledata_t* FindModuleData(const char* szBinary)
 	DevMsg(1, "Loading module %s\n", szModulePath);
 
 	// Don't continue if we couldn't load the module.
-	if( !baseAddress ) 
+	if( !baseAddress )
  	{
 		Msg("Could not load module %s!\n", szModulePath);
 		return NULL;
@@ -109,7 +109,7 @@ moduledata_t* FindModuleData(const char* szBinary)
 //---------------------------------------------------------------------------------
 unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 {
-	if( !pData ) 
+	if( !pData )
 	{
 		Msg("[SP] find_signature got invalid pData!\n");
 		return NULL;
@@ -132,7 +132,7 @@ unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 		for( i = 0; i < length; i++ )
 		{
 			// If the current signature character is x2A, ignore it.
-			if( sig[i] == '\x2A' ) 
+			if( sig[i] == '\x2A' )
 				continue;
 
 			// Break out if we have a mismatch.
@@ -141,7 +141,7 @@ unsigned long FindSignature( moduledata_t* pData, object signature, int length )
 		}
 
 		// Did we find the signature?
-		if( i == length ) 
+		if( i == length )
 			return reinterpret_cast<unsigned long>(base);
 
 		// Increment the base pointer.
@@ -165,7 +165,7 @@ unsigned long FindSymbol( moduledata_t* pData, char* symbol )
 	}
 
 #if defined(__linux__)
-	if( !pData->handle ) 
+	if( !pData->handle )
 	{
 		Msg("[SP] find_symbol got invalid library handle for %s!\n", symbol);
 		return NULL;

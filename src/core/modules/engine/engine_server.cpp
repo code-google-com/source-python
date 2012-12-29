@@ -7,7 +7,7 @@
 * This program is free software; you can redistribute it and/or modify it under
 * the terms of the GNU General Public License, version 3.0, as published by the
 * Free Software Foundation.
-* 
+*
 * This program is distributed in the hope that it will be useful, but WITHOUT
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -16,12 +16,12 @@
 * You should have received a copy of the GNU General Public License along with
 * this program.  If not, see <http://www.gnu.org/licenses/>.
 *
-* As a special exception, the Source Python Team gives you permission 
-* to link the code of this program (as well as its derivative works) to 
+* As a special exception, the Source Python Team gives you permission
+* to link the code of this program (as well as its derivative works) to
 * "Half-Life 2," the "Source Engine," and any Game MODs that run on software
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, the Source.Python
-* Development Team grants this exception to all derivative works.  
+* Development Team grants this exception to all derivative works.
 */
 
 //---------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ IVEngineServer* GetEngine( void )
 //---------------------------------------------------------------------------------
 // This is required because we can't wrap variadic functions with boost.
 //---------------------------------------------------------------------------------
-void Engine_ClientCommand( IVEngineServer* pEngine, edict_t* pEdict, const char* szMsg ) 
+void Engine_ClientCommand( IVEngineServer* pEngine, edict_t* pEdict, const char* szMsg )
 {
 	pEngine->ClientCommand(pEdict, szMsg);
 }
@@ -120,7 +120,7 @@ void Export_IVEngineServer( void )
 	// ----------------------------------------------------------
 	BOOST_ABSTRACT_CLASS( IVEngineServer )
 
-		CLASS_METHOD(IVEngineServer, 
+		CLASS_METHOD(IVEngineServer,
 			ChangeLevel,
 			"Tells the engine to change the level. If s2 is None, the engine will execute a \
 			changelevel command. If s2 is a valid map, the engine will execute a changelevel2 \
@@ -128,24 +128,24 @@ void Export_IVEngineServer( void )
 			args("s1", "s2")
 		)
 
-		CLASS_METHOD(IVEngineServer, 
-			IsMapValid, 
-			"Returns true if filename refers to a valid map.", 
+		CLASS_METHOD(IVEngineServer,
+			IsMapValid,
+			"Returns true if filename refers to a valid map.",
 			args("filename")
 		)
 
-		CLASS_METHOD(IVEngineServer, 
-			IsDedicatedServer, 
+		CLASS_METHOD(IVEngineServer,
+			IsDedicatedServer,
 			"Returns true if the engine is running in dedicated mode."
 		)
-		
-		CLASS_METHOD(IVEngineServer, 
-			IsInEditMode, 
+
+		CLASS_METHOD(IVEngineServer,
+			IsInEditMode,
 			"Returns false if the engine is not in hammer editing mode."
 		)
 
-		CLASS_METHOD_OVERLOAD(IVEngineServer, 
-			PrecacheModel, 
+		CLASS_METHOD_OVERLOAD(IVEngineServer,
+			PrecacheModel,
 			"Precaches a model and returns an integer containing its index.",
 			args("s", "preload")
 		)
@@ -307,8 +307,8 @@ void Export_IVEngineServer( void )
 		)
 
 #if( SOURCE_ENGINE >= 2 )
-		CLASS_METHOD(IVEngineServer, 
-			GetLaunchOptions, 
+		CLASS_METHOD(IVEngineServer,
+			GetLaunchOptions,
 			"Returns a keyvalues structure containing launch options for srcds.",
 			reference_existing_object_policy()
 		)
