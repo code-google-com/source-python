@@ -98,7 +98,7 @@ class BaseEntity(object):
             return self._get_function(attr)
 
         # If the attribute is not found, raise an error
-        raise LookupError('Attribute "%s" not found' % attr)
+        raise AttributeError('Attribute "%s" not found' % attr)
 
     def _get_property(self, item):
         '''Gets the value of the given property'''
