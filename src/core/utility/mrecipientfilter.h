@@ -43,11 +43,11 @@
 class MRecipientFilter : public IRecipientFilter
 {
 public:
-	MRecipientFilter(void) {};
-	~MRecipientFilter(void) {};
+	MRecipientFilter();
+	virtual ~MRecipientFilter();
 
-	virtual bool IsReliable( void ) const { return false; }
-	virtual bool IsInitMessage( void ) const { return false; }
+	virtual bool IsReliable( void ) const;
+	virtual bool IsInitMessage( void ) const;
 
 	virtual int GetRecipientCount( void ) const;
 	virtual int GetRecipientIndex( int slot ) const;

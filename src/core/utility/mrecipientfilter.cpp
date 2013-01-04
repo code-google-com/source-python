@@ -53,6 +53,24 @@ extern CGlobalVars		*gpGlobals;
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+MRecipientFilter::MRecipientFilter()
+{
+}
+
+MRecipientFilter::~MRecipientFilter()
+{
+}
+
+bool MRecipientFilter::IsReliable( void ) const
+{
+	return false;
+}
+
+bool MRecipientFilter::IsInitMessage( void ) const
+{
+	return false;
+}
+
 int MRecipientFilter::GetRecipientCount() const
 {
 	return m_Recipients.Count();
