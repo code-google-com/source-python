@@ -12,13 +12,6 @@ from events.manager import EventRegistry
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Get the downloadables string table instance
-DownloadTable = Misc.GetStringTables().FindTable('downloadables')
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class Downloadables(AutoUnload, set):
@@ -38,7 +31,7 @@ class Downloadables(AutoUnload, set):
             return
 
         # Add the item to the downloadables stringtable
-        DownloadTable.AddString(item)
+        DownloadablesList.download_table.AddString(item)
 
         # Add the item to the script's downloadables
         super(Downloadables, self).add(item)
@@ -50,7 +43,7 @@ class Downloadables(AutoUnload, set):
         for item in self:
 
             # Add the item to the downloadables stringtable
-            DownloadTable.AddString(item)
+            DownloadablesList.download_table.AddString(item)
 
     def _unload_instance(self):
         '''Removes the instance from the downloadables list'''
@@ -60,8 +53,19 @@ class Downloadables(AutoUnload, set):
 class _DownloadablesList(list):
     '''List object used to store downloads on a per-script basis'''
 
-    def level_init(self, GameEvent):
+    def __init__(self):
+        '''Refresh the downloadables table instance'''
+        self._refresh_table_instance()
+
+    def _refresh_table_instance(self):
+        '''Gets the current instance of the downloadables table'''
+        self.download_table = Misc.GetStringTables().FindTable('downloadables')
+
+    def server_spawn(self, GameEvent):
         '''Adds all items stored as downloadables to the stringtable'''
+
+        # Refresh the downloadables table instance
+        self._refresh_table_instance()
 
         # Loop through all items in the list
         for item in self:
@@ -72,7 +76,7 @@ class _DownloadablesList(list):
 # Get the _DownloadablesList instance
 DownloadablesList = _DownloadablesList()
 
-# Register for the event level_init in
+# Register for the event server_spawn in
 # order to reset all downloads on map change
 EventRegistry.register_for_event(
-    'level_init', DownloadablesList.level_init)
+    'server_spawn', DownloadablesList.server_spawn)
