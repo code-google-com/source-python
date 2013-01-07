@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Core
-from core.decorators import BaseDecorator
+from core import AutoUnload
 #   Events
 from events.manager import EventRegistry
 
@@ -13,7 +13,7 @@ from events.manager import EventRegistry
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Event(BaseDecorator):
+class Event(AutoUnload):
     '''Event decorator class'''
 
     def __init__(self, callback):
@@ -38,7 +38,7 @@ class Event(BaseDecorator):
         # Call the Event callback
         return self.callback(GameEvent)
 
-    def _unregister_decorator(self):
+    def _unload_instance(self):
         '''Unregisters the event'''
 
         # Unregister the event

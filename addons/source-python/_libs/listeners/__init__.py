@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Core
-from core.decorators import BaseDecorator
+from core import AutoUnload
 #   Listeners
 from listeners.tick import TickListeners
 
@@ -13,8 +13,8 @@ from listeners.tick import TickListeners
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Tick(BaseDecorator):
-    '''Decorator used to register/unregister a tick listener'''
+class Tick(AutoUnload):
+    '''Decorator class used to register/unregister a tick listener'''
 
     def __init__(self, callback):
         '''Store the callback and register the tick listener'''
@@ -38,7 +38,7 @@ class Tick(BaseDecorator):
         # Call the listener
         return self.callback()
 
-    def _unregister_decorator(self):
+    def _unload_instance(self):
         '''Unregisters the tick listener'''
 
         # Unregister the tick listener

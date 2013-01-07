@@ -13,8 +13,8 @@ from paths import ADDON_PATH
 #   Addons
 from addons.errors import AddonFileNotFoundError
 #   Core
+from core import AutoUnload
 from core.commands import echo_console
-from core.decorators import BaseDecorator
 from core.excepthook import ExceptHooks
 #   Events
 from events.manager import EventRegistry
@@ -145,8 +145,8 @@ class _AddonManagementDictionary(dict):
         # Get the addon's instance
         addon = __import__(addon_import)
 
-        # Remove all events from the addon
-        self._remove_decorators(addon, addon_name)
+        # Remove all instances of AutoUnload classes from the addon
+        self._unload_instances(addon, addon_name)
 
         # Loop through all loaded modules
         for module in list(sys.modules):
@@ -157,10 +157,8 @@ class _AddonManagementDictionary(dict):
                 # Remove the module from memory
                 del sys.modules[module]
 
-    def _remove_decorators(self, instance, module):
-        '''
-            Removes all BaseDecorator instances from the registry for the addon
-        '''
+    def _unload_instances(self, instance, module):
+        '''Removes all AutoUnload instances from the registry for the addon'''
 
         # Does the current object have a __dict__?
         if not hasattr(instance, '__dict__'):
@@ -177,17 +175,17 @@ class _AddonManagementDictionary(dict):
             # Get the object's module
             new_module = module + '.' + item
 
-            # Is the item an "BaseDecorator" instance?
-            if isinstance(new_instance, BaseDecorator):
+            # Is the item an "AutoUnload" instance?
+            if isinstance(new_instance, AutoUnload):
 
-                # Unregister the Decorator
-                new_instance._unregister_decorator()
+                # Unregister the instance
+                new_instance._unload_instance()
 
             # Does the module exist in sys.modules?
             elif new_module in sys.modules:
 
                 # Loop through all items in the module
-                self._remove_decorators(new_instance, new_module)
+                self._unload_instances(new_instance, new_module)
 
 # Get the _AddonManagementDictionary instance
 AddonManager = _AddonManagementDictionary()

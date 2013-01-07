@@ -20,3 +20,15 @@ GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
 
 # Get the Engine's instance
 GameEngine = Engine.GetEngine()
+
+
+# =============================================================================
+# >> CLASSES
+# =============================================================================
+class AutoUnload(object):
+    '''
+        Class used to auto unload specific instances.
+
+        Each class which inherits this one
+        should have a _unload_instance method.
+    '''
