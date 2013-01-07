@@ -5,19 +5,19 @@
 # =============================================================================
 # Source.Python Imports
 #   Core
-from core.decorators import BaseDecorator
+from core import AutoUnload
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _CommandDecorator(BaseDecorator):
+class _CommandDecorator(AutoUnload):
     '''Decorator class used to register/unregister commands'''
 
     def __init__(self, class_instance):
         '''Stores the instanciating class' unregister method'''
         self._command_called = class_instance._command_called
-        self._unregister_decorator = class_instance._unregister_command
+        self._unload_instance = class_instance._unregister_command
 
 
 class CommandRegistration(object):

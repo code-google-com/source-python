@@ -6,7 +6,7 @@
 # Source.Python Imports
 from Source import Misc
 #   Core
-from core.decorators import BaseDecorator
+from core import AutoUnload
 #   Events
 from events.manager import EventRegistry
 
@@ -21,7 +21,7 @@ DownloadTable = Misc.GetStringTables().FindTable('downloadables')
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Downloadables(BaseDecorator, set):
+class Downloadables(AutoUnload, set):
     '''Class used to store downloadables for a script'''
 
     def __init__(self):
@@ -41,7 +41,7 @@ class Downloadables(BaseDecorator, set):
         DownloadTable.AddString(item)
 
         # Add the item to the script's downloadables
-        super(Download, self).add(item)
+        super(Downloadables, self).add(item)
 
     def _set_all_downloads(self):
         '''Adds all downloadables for the script on level init'''
@@ -52,7 +52,7 @@ class Downloadables(BaseDecorator, set):
             # Add the item to the downloadables stringtable
             DownloadTable.AddString(item)
 
-    def _unregister_decorator(self):
+    def _unload_instance(self):
         '''Removes the instance from the downloadables list'''
         DownloadablesList.remove(self)
 
