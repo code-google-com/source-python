@@ -29,6 +29,7 @@
 //---------------------------------------------------------------------------------
 #include "boost/python.hpp"
 #include "export_main.h"
+#include "core/sp_main.h"
 #include "core/sp_python.h"
 #include "utility/wrap_macros.h"
 #include "irecipientfilter.h"
@@ -41,6 +42,11 @@
 // Namespaces to use.
 //---------------------------------------------------------------------------------
 using namespace boost::python;
+
+//---------------------------------------------------------------------------------
+// Extern variables
+//---------------------------------------------------------------------------------
+extern CSourcePython g_SourcePythonPlugin;
 
 //---------------------------------------------------------------------------------
 // Class method overloads
@@ -63,6 +69,14 @@ template<class T, class U>
 void SetItemIndexer(T* self, const int i, const U& value)
 {
 	(*self)[i] = value;
+}
+
+//---------------------------------------------------------------------------------
+// Helper function to get the current command index
+//---------------------------------------------------------------------------------
+int GetCommandIndex()
+{
+	return g_SourcePythonPlugin.GetCommandIndex() + 1;
 }
 
 //---------------------------------------------------------------------------------
@@ -515,4 +529,7 @@ DECLARE_SP_MODULE(Shared)
 
 		CLASS_METHOD_TYPEDEF(WriteString, fnWriteString)
 	BOOST_END_CLASS()
+
+	BOOST_FUNCTION(GetCommandIndex,
+		"Returns the index of the player that used the most current command");
 }

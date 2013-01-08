@@ -1,4 +1,4 @@
-# ../_libs/events/__init__.py
+# ../_libs/commands/say/filter.py
 
 # =============================================================================
 # >> IMPORTS
@@ -6,18 +6,22 @@
 # Source.Python Imports
 #   Core
 from core import AutoUnload
-#   Events
-from events.manager import EventRegistry
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+SayFilterList = list()
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Event(AutoUnload):
-    '''Event decorator class'''
+class SayFilter(AutoUnload):
+    '''Class used to register a SayFilter'''
 
     def __init__(self, callback):
-        '''Store the callback and register the event'''
+        '''Store the callback and register the say filter'''
 
         # Is the callback callable?
         if not callable(callback):
@@ -29,14 +33,13 @@ class Event(AutoUnload):
         # Store the callback
         self.callback = callback
 
-        # Register the event
-        EventRegistry.register_for_event(self.callback.__name__, self.callback)
+        # Register the say filter
+        SayFilterList.append(self)
 
-    def __call__(self, GameEvent):
-        '''Calls the Event callback with the GameEvent instance'''
-        return self.callback(GameEvent)
+    def __call__(self, index, teamonly, CCommand):
+        '''Calls the say filter with the provided arguments'''
+        return self.callback(index, teamonly, CCommand)
 
     def _unload_instance(self):
-        '''Unregisters the event'''
-        EventRegistry.unregister_for_event(
-            self.callback.__name__, self.callback)
+        '''Unregisters the say filter'''
+        SayFilterList.remove(self)
