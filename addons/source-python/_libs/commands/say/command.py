@@ -21,9 +21,24 @@ class _SayCommandDecorator(_CommandDecorator):
 class SayCommand(object):
     '''Class used to register say commands using a decorator'''
 
-    def __init__(self, name):
+    def __init__(self, names):
         '''Stores the name of the command'''
-        self.name = name
+
+        # Was only one command given?
+        if isinstance(names, str):
+
+            # Make the names a list
+            names = [names]
+
+        # Are the names an iterable?
+        if not isinstance(names, list):
+
+            # Raise an error
+            raise TypeError('SayCommand commands must be passed ' +
+                'as a list or string, not %s' % type(names).__name__)
+
+        # Store the list of command names
+        self.names = names
 
     def __call__(self, callback):
         '''Registers the command to the given callback'''
@@ -34,16 +49,27 @@ class SayCommand(object):
         # Get the decorator instance so it auto unloads
         self._decorator_instance = _SayCommandDecorator(self)
 
-        # Add the decorator instance to the stored command's list
-        SayCommandDictionary[self.name].append(self._decorator_instance)
+        # Loop through all command names
+        for name in self.names:
+
+            # Add the decorator instance to the stored command's list
+            SayCommandDictionary[name].append(self._decorator_instance)
+
+        # Return the decorator instance of this class
+        return self._decorator_instance
 
     def _command_called(self, index, teamonly, CCommand):
         '''Call the stored callback with the given arguments'''
         return self.callback(index, teamonly, CCommand)
 
     def _unregister_command(self):
-        '''Unregister the instance from the command'''
-        SayCommandDictionary[self.name].remove(self._decorator_instance)
+        '''Unregister the instance from the commands'''
+
+        # Loop through all command names
+        for name in self.names:
+
+            # Remove the instance from the command's callbacks
+            SayCommandDictionary[name].remove(self._decorator_instance)
 
 
 class _SayCommandList(list):
