@@ -15,17 +15,34 @@ from commands.base import CommandRegistration
 class ServerCommand(CommandRegistration):
     '''Class used to register server commands using a decorator'''
 
-    def __init__(self, name, description, flags=0):
+    def __init__(self, names, description='', flags=0):
         '''Stores the name, description, and flags of the command'''
-        self.name = name
+
+        # Was only one command given?
+        if isinstance(names, str):
+
+            # Make the names a list
+            names = [names]
+
+        # Are the names a list or tuple?
+        if not type(names) in (list, tuple):
+
+            # Raise an error
+            raise TypeError('ServerCommand commands must be passed ' +
+                'as a list, tuple, or string, not "%s"' % type(names).__name__)
+
+        # Store the list of command names
+        self.names = names
+
+        # Store the description and flags
         self.description = description
         self.flags = flags
 
-    def _register_command(self):
-        '''Registers the command with the instance's
+    def _register_command(self, name):
+        '''Registers the commands with the instance's
             callback and returns its instance'''
 
-        return Cvar.GetCommand(self.name, self.description, self.flags)
+        return Cvar.GetCommand(name, self.description, self.flags)
 
     def _command_called(self, CCommand):
         '''Called when the command is called on the server'''

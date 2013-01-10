@@ -29,17 +29,32 @@ class CommandRegistration(object):
         # Store the callback
         self.callback = callback
 
-        # Register the command
-        self._command = self._register_command()
-
+        # Get the decorator instance
         self._decorator_instance = _CommandDecorator(self)
 
-        # Add the callback to the commands callback list
-        self._command.AddToEnd(self._decorator_instance._command_called)
+        # Create an empty list to store Cvar instances
+        self.instances = list()
 
-        # Return a decorator instance of this class
+        # Loop through all command names
+        for name in self.names:
+
+            # Register the command
+            instance = self._register_command(name)
+
+            # Add the callback to the command's callback list
+            instance.AddToEnd(self._decorator_instance._command_called)
+
+            # Add the instance to the list of instances
+            self.instances.append(instance)
+
+        # Return the decorator instance of this class
         return self._decorator_instance
 
     def _unregister_command(self):
-        '''Unregisters the callback from the command'''
-        self._command.Remove(self._decorator_instance._command_called)
+        '''Unregisters the instance from the commands'''
+
+        # Loop through all command instances
+        for instance in self.instances:
+
+            # Remove the instance from the command's callbacks
+            instance.Remove(self._decorator_instance._command_called)

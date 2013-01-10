@@ -16,20 +16,7 @@ from commands.say.filter import SayFilter
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-# Register the "say" command
-@ServerCommand('say', 'Say Command Registration')
-def _say_command(CCommand):
-    '''Called when someone uses the "say" command'''
-    return _say_commands(CCommand)
-
-
-# Register the "say_team" command
-@ServerCommand('say_team', 'SayTeam Command Registration')
-def _say_team_command(CCommand):
-    '''Called when someone uses the "say_team" command'''
-    return _say_commands(CCommand)
-
-
+@ServerCommand(('say', 'say_team'))
 def _say_commands(CCommand):
     '''Called when someone uses either the "say" or "say_team" command'''
 
