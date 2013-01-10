@@ -15,15 +15,15 @@ from commands.base import CommandRegistration
 class ClientCommand(CommandRegistration):
     '''Class used to register server commands using a decorator'''
 
-    def __init__(self, name):
+    def __init__(self, *names):
         '''Stores the name of the command'''
-        self.name = name
+        self.names = names
 
-    def _register_command(self):
+    def _register_command(self, name):
         '''Registers the command with the instance's
             callback and returns its instance'''
 
-        return ClientCmd.GetClientCommand(self.name)
+        return ClientCmd.GetClientCommand(name)
 
     def _command_called(self, edict, CCommand):
         '''Called when a client calls the command'''
