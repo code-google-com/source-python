@@ -75,6 +75,15 @@ class _WeaponManager(dict):
         # Return the weapon's instance
         return self.get(name, None)
 
+    def __contains__(self, item):
+        '''Override __contains__ to format the given name'''
+
+        # Format the weapon's name
+        name = self._format_name(item)
+
+        # Return whether the weapon is in the dictionary
+        return super(_WeaponManager, self).__contains__(name)
+
     def _format_name(self, item):
         '''Formats the name to include the game's weapon prefix'''
 
