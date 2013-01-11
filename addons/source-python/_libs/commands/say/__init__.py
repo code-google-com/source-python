@@ -47,17 +47,18 @@ def _say_commands(CCommand):
     # Was a registered command used?
     if name in SayCommandDictionary:
 
+        # Set the return value in case it changes
+        return_val = True
+
         # Loop through each callback for the given command
         for instance in SayCommandDictionary[name]:
 
             # Call the callback
             return_type = instance(index, teamonly, CCommand)
 
-            # Does the command now need blocked?
-            if not return_type is None and not return_type:
-
-                # Block the rest of the callbacks
-                return False
+            # Set the return value
+            return_val = return_val and (
+                return_type is None or bool(return_type))
 
     # Loop through all say filters
     for callback in SayFilterList:
@@ -71,5 +72,5 @@ def _say_commands(CCommand):
             # Block the rest of the say filters
             return False
 
-    # Allow the text to print in chat
-    return True
+    # Return the return value set by Say Commands
+    return return_val
