@@ -3,10 +3,16 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Sys
+import sys
+
 # Source.Python Imports
 from Source import ClientCmd
 #   Commands
 from commands.base import CommandRegistration
+#   Core
+from core.excepthook import ExceptHooks
 
 
 # =============================================================================
@@ -28,8 +34,23 @@ class ClientCommand(CommandRegistration):
     def _command_called(self, edict, CCommand):
         '''Called when a client calls the command'''
 
-        # Call the callback and get the return type
-        return_type = self.callback(edict, CCommand)
+        # Use try/except in case an error is encountered
+        try:
+
+            # Call the callback and get the return type
+            return_type = self.callback(edict. CCommand)
+
+        # Was an error encountered?
+        except:
+
+            # Get the error
+            error = sys.exc_info()
+
+            # Print the exception to the console
+            ExceptHooks.print_exception(*error)
+
+            # No need to go further
+            return ClientCmd.ClientCommandReturn.CONTINUE
 
         # Was a False value returned?
         if return_type is None or return_type:

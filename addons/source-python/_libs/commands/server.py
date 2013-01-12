@@ -3,10 +3,16 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Sys
+import sys
+
 # Source.Python Imports
 from Source import Cvar
 #   Commands
 from commands.base import CommandRegistration
+#   Core
+from core.excepthook import ExceptHooks
 
 
 # =============================================================================
@@ -47,8 +53,23 @@ class ServerCommand(CommandRegistration):
     def _command_called(self, CCommand):
         '''Called when the command is called on the server'''
 
-        # Call the callback and get the return type
-        return_type = self.callback(CCommand)
+        # Use try/except in case an error is encountered
+        try:
+
+            # Call the callback and get the return type
+            return_type = self.callback(CCommand)
+
+        # Was an error encountered?
+        except:
+
+            # Get the error
+            error = sys.exc_info()
+
+            # Print the exception to the console
+            ExceptHooks.print_exception(*error)
+
+            # No need to go further
+            return Cvar.CommandReturn.CONTINUE
 
         # Was a False value returned?
         if return_type is None or return_type:
