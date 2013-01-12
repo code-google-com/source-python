@@ -13,6 +13,7 @@ from path import path
 from paths import DATA_PATH
 #   Core
 from core import GAME_NAME
+from core.cvar import ServerVar
 #   Weapons
 from weapons.default import NoWeaponManager
 

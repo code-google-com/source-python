@@ -3,9 +3,14 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Sys
+import sys
+
 # Source.Python Imports
 #   Core
 from core import AutoUnload
+from core.excepthook import ExceptHooks
 
 
 # =============================================================================
@@ -38,7 +43,21 @@ class SayFilter(AutoUnload):
 
     def __call__(self, index, teamonly, CCommand):
         '''Calls the say filter with the provided arguments'''
-        return self.callback(index, teamonly, CCommand)
+
+        # Use try/except in case an error is encountered
+        try:
+
+            # Call the callback and return its return value
+            return self.callback(index, teamonly, CCommand)
+
+        # Was an error encountered?
+        except:
+
+            # Get the error
+            error = sys.exc_info()
+
+            # Print the exception to the console
+            ExceptHooks.print_exception(*error)
 
     def _unload_instance(self):
         '''Unregisters the say filter'''
