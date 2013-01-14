@@ -13,14 +13,13 @@ from entities.entity import BaseEntity
 #   Players
 from players.helpers import address_from_playerinfo
 from players.helpers import uniqueid_from_playerinfo
-from players.specials import _PlayerSpecials
 from players.weapons import _PlayerWeapons
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PlayerEntity(BaseEntity, _PlayerWeapons, _PlayerSpecials):
+class PlayerEntity(BaseEntity, _PlayerWeapons):
     '''Class used to interact directly with players'''
 
     info = None

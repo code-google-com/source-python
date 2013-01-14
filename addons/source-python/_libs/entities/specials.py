@@ -1,4 +1,4 @@
-# ../_libs/players/specials.py
+# ../_libs/entities/specials.py
 
 # =============================================================================
 # >> IMPORTS
@@ -14,7 +14,7 @@ from entities.weapons.weapon import WeaponEntity
 #   Filters
 from filters.weapontags import WeaponTagIter
 #   Players
-from players.errors import WeaponIndexError
+from weapons.errors import WeaponIndexError
 
 
 # =============================================================================
@@ -26,11 +26,11 @@ _projectile_weapons = list(WeaponTagIter('grenade', return_types='classname'))
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _PlayerSpecials(object):
-    '''Player base class used to hold special functionality'''
+class _EntitySpecials(object):
+    '''Base class used to hold special functionality'''
 
     def damage(self, victim_index, damage=0, damage_type=0, weapon_index=None):
-        '''Method used to hurt another player with the given arguments'''
+        '''Method used to hurt another entity with the given arguments'''
 
         # Is the game supported?
         if not 'TakeDamage' in SignatureDictionary:
@@ -39,16 +39,11 @@ class _PlayerSpecials(object):
             raise NotImplementedError(
                 'damage is not implemented for %s' % GAME_NAME)
 
-        # Get a memory address for CTakeDamageInfo
-        take_damage_info = Binutils.AllocateMemory(96)
-
         # Get the victim's BaseEntity instance.
-        # We use BaseEntity so that the player can
-        # damage any entity, not just other players
         victim = BaseEntity(victim_index)
 
-        # Was a weapon index given?
-        if weapon_index is None:
+        # Was no weapon index given?
+        if weapon_index is None and self.classname == 'player':
 
             # Get the player's active weapon
             weapon_index = index_from_inthandle(self.active_weapon)
@@ -66,6 +61,9 @@ class _PlayerSpecials(object):
             raise WeaponIndexError(
                 'Invalid index "%s" for weapon' % weapon_index)
 
+        # Get a memory address for CTakeDamageInfo
+        take_damage_info = Binutils.AllocateMemory(96)
+
         # Is the weapon a projectile?
         if weapon.classname in _projectile_weapons:
 
@@ -75,10 +73,10 @@ class _PlayerSpecials(object):
         # Is the weapon not a projectile?
         else:
 
-            # Set the hInflictor to the player's handle
+            # Set the hInflictor to the entity's handle
             Binutils.SetLocInt(take_damage_info + 36, self.handle.ToInt())
 
-        # Set the hAttacker to the player's handle
+        # Set the hAttacker to the entity's handle
         Binutils.SetLocInt(take_damage_info + 40, self.handle.ToInt())
 
         # Set the hWeapon to the weapon's handle

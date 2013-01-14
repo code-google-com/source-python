@@ -11,12 +11,13 @@ from entities.functions import Functions
 from entities.keyvalues import KeyValues
 from entities.offsets import Offsets
 from entities.properties import Properties
+from entities.specials import _EntitySpecials
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class BaseEntity(object):
+class BaseEntity(_EntitySpecials):
     '''Class used to interact directly with entities'''
 
     index = 0
