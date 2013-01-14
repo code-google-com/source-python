@@ -48,7 +48,7 @@ class _EntitySpecials(object):
                 'damage is not implemented for %s' % GAME_NAME)
 
         # Was no weapon index given?
-        if weapon_index is None and self.classname == 'player':
+        if weapon_index is None and hasattr(self, 'active_weapon'):
 
             # Get the player's active weapon
             weapon_index = index_from_inthandle(self.active_weapon)
