@@ -45,7 +45,7 @@ MessageTypes = _MessageTypes()
 class BaseMessage(object):
     '''Base message class'''
 
-    def __new__(cls, *args):
+    def __new__(cls, *args, **kw):
         '''Verifies that the message type exists for the
             current game before returning a class instance'''
 
@@ -61,7 +61,7 @@ class BaseMessage(object):
                 ' not implemented forgame "%s"' % GAME_NAME)
 
         self = object.__new__(cls)
-        self.__init__(*args)
+        self.__init__(*args, **kw)
 
         # Set the class' message index
         self._message_index = index
