@@ -11,7 +11,6 @@ from core import GAME_NAME
 #   Entities
 from entities.entity import BaseEntity
 from entities.weapons.weapon import WeaponEntity
-#   Filters
 #   Weapons
 from weapons.manager import WeaponManager
 
