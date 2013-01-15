@@ -60,6 +60,8 @@ class _SimpleAuth(set):
 # Get the _SimpleAuth instance
 SimpleAuth = _SimpleAuth()
 
+is_player_authorized = SimpleAuth.is_player_authorized
+
 
 # =============================================================================
 # >> FUNCTIONS
