@@ -1,18 +1,23 @@
-# ../_libs/commands/client/command.py
+# ../_libs/commands/server/command.py
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
 #   Commands
-from commands.command import _PlayerCommandRegistration
-from commands.client.manager import ClientCommandRegistry
+from commands.command import _CommandRegistration
+from commands.server.manager import ServerCommandRegistry
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class ClientCommand(_PlayerCommandRegistration):
+class ServerCommand(_CommandRegistration):
     '''Class used to register server commands using a decorator'''
 
-    _RegistrationClass = ClientCommandRegistry
+    _RegistrationClass = ServerCommandRegistry
+
+    def __init__(self, names, description='', flags=0):
+        '''Stores the given arguments'''
+        self.names = names
+        self.args = (description, flags)

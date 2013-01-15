@@ -1,4 +1,4 @@
-# ../_libs/commands/__init__.py
+# ../_libs/commands/say/__init__.py
 
 # =============================================================================
 # >> IMPORTS
@@ -6,17 +6,16 @@
 # Source.Python Imports
 from Source import Shared
 #   Commands
-from commands.server import ServerCommand
-from commands.say.command import SayCommandDictionary
 from commands.say.command import SayCommand
-from commands.say.filter import SayFilterList
 from commands.say.filter import SayFilter
+from commands.say.manager import SayCommandRegistry
+from commands.server.command import ServerCommand as _ServerCommand
 
 
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-@ServerCommand(('say', 'say_team'))
+@_ServerCommand(('say', 'say_team'))
 def _say_commands(CCommand):
     '''Called when someone uses either the "say" or "say_team" command'''
 
@@ -33,9 +32,10 @@ def _say_commands(CCommand):
         return True
 
     # Is the first word a command or are there any say filters?
-    if not (name in SayCommandDictionary or SayFilterList):
+    if (not name in SayCommandRegistry._commands
+            and not SayCommandRegistry._filters):
 
-        # If not, returt True
+        # If not, return True
         return True
 
     # Get the index of the player that issued the command
@@ -45,23 +45,13 @@ def _say_commands(CCommand):
     teamonly = CCommand[0] == 'say_team'
 
     # Was a registered command used?
-    if name in SayCommandDictionary:
+    if name in SayCommandRegistry._commands:
 
-        # Set the return value in case it changes
-        return_val = True
-
-        # Loop through each callback for the given command
-        for instance in SayCommandDictionary[name]:
-
-            # Call the callback
-            return_type = instance(index, teamonly, CCommand)
-
-            # Set the return value
-            return_val = return_val and (
-                return_type is None or bool(return_type))
+        return_val =  SayCommandRegistry._commands[
+            name]._command_called(index, teamonly, CCommand)
 
     # Loop through all say filters
-    for callback in SayFilterList:
+    for callback in SayCommandRegistry._filters:
 
         # Call the say filter
         return_type = callback(index, teamonly, CCommand)

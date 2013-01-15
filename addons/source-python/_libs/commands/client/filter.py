@@ -1,4 +1,4 @@
-# ../_libs/commands/say/filter.py
+# ../_libs/commands/client/filter.py
 
 # =============================================================================
 # >> IMPORTS
@@ -7,17 +7,17 @@
 #   Core
 from core import AutoUnload
 #   Commands
-from commands.say.manager import SayCommandRegistry
+from commands.client.manager import ClientCommandRegistry
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class SayFilter(AutoUnload):
-    '''Class used to register a say filter'''
+class ClientCommandFilter(AutoUnload):
+    '''Class used to register a client command filter'''
 
     def __init__(self, callback):
-        '''Store the callback and registers the say filter'''
+        '''Store the callback and registers the client command filter'''
 
         # Is the callback callable?
         if not callable(callback):
@@ -29,9 +29,9 @@ class SayFilter(AutoUnload):
         # Store the callback
         self.callback = callback
 
-        # Register the say filter
-        SayCommandRegistry.register_filter(self.callback)
+        # Register the client command filter
+        ClientCommandRegistry.register_filter(self.callback)
 
     def _unload_instance(self):
-        '''Unregisters the say filter'''
-        SayCommandRegistry.unregister_filter(self.callback)
+        '''Unregisters the client command filter'''
+        ClientCommandRegistry.unregister_filter(self.callback)
