@@ -39,7 +39,6 @@ class _CommandRegistration(object):
 
     def _unregister_command(self):
         '''Unregisters the instance from the commands'''
-
         self._RegistrationClass.unregister_command(self.names, self.callback)
 
 
