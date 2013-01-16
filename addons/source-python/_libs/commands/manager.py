@@ -1,5 +1,16 @@
 # ../_libs/commands/manager.py
 
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
+#   Sys
+import sys
+
+# Source.Python Imports
+#   Core
+from core.excepthook import ExceptHooks
+
 
 # =============================================================================
 # >> CLASSES
@@ -64,12 +75,24 @@ class _CommandList(list):
         # Loop through the callbacks in the list
         for callback in self:
 
-            # Call the callback
-            return_type = callback(*args)
+            # Use try/except in case an error is encountered during a callback
+            try:
 
-            # Get the updated return value
-            return_val = return_val and (
-                return_type is None or bool(return_type))
+                # Call the callback
+                return_type = callback(*args)
+
+                # Get the updated return value
+                return_val = return_val and (
+                    return_type is None or bool(return_type))
+
+            # Was an error encountered?
+            except:
+
+                # Get the error
+                error = sys.exc_info()
+
+                # Print the exception to the console
+                ExceptHooks.print_exception(*error)
 
         # Should the "CONTINUE" value be returned?
         if return_val:

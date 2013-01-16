@@ -3,6 +3,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Sys
+import sys
+
 # Source.Python Imports
 from Source import Shared
 #   Commands
@@ -10,6 +14,8 @@ from commands.say.command import SayCommand
 from commands.say.filter import SayFilter
 from commands.say.manager import SayCommandRegistry
 from commands.server.command import ServerCommand as _ServerCommand
+#   Core
+from core.excepthook import ExceptHooks
 
 
 # =============================================================================
@@ -53,14 +59,26 @@ def _say_commands(CCommand):
     # Loop through all say filters
     for callback in SayCommandRegistry._filters:
 
-        # Call the say filter
-        return_type = callback(index, teamonly, CCommand)
+        # Use try/except in case an error is encountered during a callback
+        try:
 
-        # Does the command now need blocked?
-        if not return_type is None and not return_type:
+            # Call the say filter
+            return_type = callback(index, teamonly, CCommand)
 
-            # Block the rest of the say filters
-            return False
+            # Does the command now need blocked?
+            if not return_type is None and not return_type:
+
+                # Block the rest of the say filters
+                return False
+
+        # Was an error encountered?
+        except:
+
+            # Get the error
+            error = sys.exc_info()
+
+            # Print the exception to the console
+            ExceptHooks.print_exception(*error)
 
     # Return the return value set by Say Commands
     return return_val

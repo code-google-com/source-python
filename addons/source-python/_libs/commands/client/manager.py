@@ -3,12 +3,18 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Sys
+import sys
+
 # Source.Python Imports
 from Source import ClientCmd
 #   Commands
 from commands.manager import _CommandList
 from commands.player import _AuthCallback
 from commands.player import _PlayerCommandRegistry
+#   Core
+from core.excepthook import ExceptHooks
 #   Players
 from players.helpers import playerinfo_from_edict
 
@@ -35,9 +41,13 @@ class _ClientCommandList(_CommandList):
     def _call_command(self, *args):
         return_val = True
         for callback in self:
-            return_type = callback(*args)
-            return_val = return_val and (
-                return_type is None or bool(return_type))
+            try:
+                return_type = callback(*args)
+                return_val = return_val and (
+                    return_type is None or bool(return_type))
+            except:
+                error = sys.exc_info()
+                ExceptHooks.print_exception(*error)
         if return_val:
             return self._ContinueValue
         return self._BlockValue

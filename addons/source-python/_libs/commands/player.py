@@ -3,11 +3,17 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Sys
+import sys
+
 # Source.Python Imports
 #   Auth
 from auth.manager import AuthManager
 #   Commands
 from commands.manager import _CommandRegistry
+#   Core
+from core.excepthook import ExceptHooks
 
 
 # =============================================================================
@@ -128,8 +134,21 @@ class _AuthCallback(object):
                 # Is there fail callback?
                 if not self.fail_callback is None:
 
-                    # Call the fail callback
-                    self.fail_callback(*args)
+                    # Use try/except in case the fail
+                    # callback encounters an error
+                    try:
+
+                        # Call the fail callback
+                        self.fail_callback(*args)
+
+                    # Was an error encountered?
+                    except:
+
+                        # Get the error
+                        error = sys.exc_info()
+
+                        # Print the exception to the console
+                        ExceptHooks.print_exception(*error)
 
                 # Return a False value, since the player is not authorized
                 return False
