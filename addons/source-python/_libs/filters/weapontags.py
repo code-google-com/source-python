@@ -44,7 +44,7 @@ class WeaponTagIter(_IterObject):
         for weapon in WeaponManager:
 
             # Yield the weapon
-            yield weapon
+            yield WeaponManager[weapon]
 
 
 # =============================================================================
@@ -99,13 +99,49 @@ for tag in WeaponManager.tags:
 # =============================================================================
 def _return_weapon(weapon):
     '''Returns the weapon type's WeaponManager item'''
-    return WeaponManager[weapon]
+    return weapon
 
 
 def _return_classname(weapon):
     '''Returns the weapon type's classname'''
-    return WeaponManager[weapon].name
+    return weapon.name
+
+
+def _return_basename(weapon):
+    '''Returns the weapon type's basename'''
+    return weapon.basename
+
+
+def _return_slot(weapon):
+    '''Returns the weapon type's slot'''
+    return weapon.slot
+
+
+def _return_maxammo(weapon):
+    '''Returns the weapon type's maxammo'''
+    return weapon.maxammo
+
+
+def _return_ammoprop(weapon):
+    '''Returns the weapon type's ammoprop'''
+    return weapon.ammoprop
+
+
+def _return_clip(weapon):
+    '''Returns the weapon type's clip'''
+    return weapon.clip
+
+
+def _return_tags(weapon):
+    '''Returns the weapon type's tags'''
+    return weapon.tags
 
 # Register the return type functions
 WeaponTagIterManager.register_return_type('weapon', _return_weapon)
 WeaponTagIterManager.register_return_type('classname', _return_classname)
+WeaponTagIterManager.register_return_type('basename', _return_basename)
+WeaponTagIterManager.register_return_type('slot', _return_slot)
+WeaponTagIterManager.register_return_type('maxammo', _return_maxammo)
+WeaponTagIterManager.register_return_type('ammoprop', _return_ammoprop)
+WeaponTagIterManager.register_return_type('clip', _return_clip)
+WeaponTagIterManager.register_return_type('tags', _return_tags)
