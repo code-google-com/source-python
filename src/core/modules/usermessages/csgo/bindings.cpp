@@ -1,4 +1,4 @@
-#include <boost/python.hpp>
+#include "../../export_main.h"
 
     void make_CCSUsrMsg_VGUIMenu_bindings();
     void make_CCSUsrMsg_Geiger_bindings();
@@ -64,7 +64,7 @@
     void make_CCSUsrMsg_ServerRankUpdate_RankUpdate_bindings();
     void make_ECstrike15UserMessages_bindings();
 
-BOOST_PYTHON_MODULE(usermessages)
+DECLARE_SP_MODULE(Usermessages)
 {
     ::make_CCSUsrMsg_VGUIMenu_bindings();
     ::make_CCSUsrMsg_Geiger_bindings();
