@@ -213,7 +213,7 @@ def _return_weapon(IPlayerInfo):
 def _return_language(IPlayerInfo):
     '''Returns the player's language'''
     return GameEngine.GetClientConVarValue(
-        _return_index(IPlayerInfo), 'cl_language')
+        index_from_playerinfo(IPlayerInfo), 'cl_language')
 
 
 def _return_team(IPlayerInfo):
