@@ -1,0 +1,10 @@
+README
+setup.py
+protobpl/__init__.py
+protobpl/bindings_generator.py
+protobpl/plugin_pb2.py
+protobpl.egg-info/PKG-INFO
+protobpl.egg-info/SOURCES.txt
+protobpl.egg-info/dependency_links.txt
+protobpl.egg-info/entry_points.txt
+protobpl.egg-info/top_level.txt
