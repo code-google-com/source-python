@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: protobpl
+Version: 1.0
+Summary: Protoc plugin for generation of boost::python bindings
+Home-page: http://www.github.com/dademurphy/protobpl
+Author: Johnny Graettinger
+Author-email: johnny531@gmail.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN

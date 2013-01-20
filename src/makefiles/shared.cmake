@@ -40,6 +40,12 @@ Set(DYNCALLSDK_INCLUDE   ${DYNCALLSDK}/include)
 Set(DYNCALLSDK_LIB       ${DYNCALLSDK}/lib)
 
 # ------------------------------------------------------------------
+# Protobuf specific.
+# ------------------------------------------------------------------
+Set(PROTOBUF		${THIRDPARTY_DIR}/protobuf/protobuf-2.3.0)
+Set(PROTOBUF_INCLUDE	${PROTOBUF}/src)
+
+# ------------------------------------------------------------------
 # Include directories
 # ------------------------------------------------------------------
 Include_Directories(
@@ -49,8 +55,10 @@ Include_Directories(
     ${SOURCESDK}/public
     ${SOURCESDK}/public/tier0
     ${SOURCESDK}/public/tier1
+    ${SOURCESDK}/public/engine/protobuf
     ${DYNCALLSDK_INCLUDE}
     ${BOOSTSDK_INCLUDE}
+    ${PROTOBUF_INCLUDE}
     ${CMAKE_CURRENT_SOURCE_DIR}/core # Hack but required.
 )
 

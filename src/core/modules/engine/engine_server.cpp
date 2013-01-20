@@ -65,6 +65,7 @@ void Engine_ClientCommand( IVEngineServer* pEngine, edict_t* pEdict, const char*
 	pEngine->ClientCommand(pEdict, szMsg);
 }
 
+#if (SOURCE_ENGINE < 3)
 //---------------------------------------------------------------------------------
 // Returns the index of the given usermessage type
 //---------------------------------------------------------------------------------
@@ -101,6 +102,7 @@ void DumpUserMessages()
 		index++;
 	}
 }
+#endif
 
 //---------------------------------------------------------------------------------
 // IVEngineServer overloads
@@ -279,8 +281,8 @@ void Export_IVEngineServer( void )
 			args("originInEntitySpace", "decalIndex", "entityIndex", "modelIndex", "bLowPriority")
 		)
 
+#if (SOURCE_ENGINE < 3)
 		// TODO: Message_DetermineMulticastRecipients
-
 		CLASS_METHOD(IVEngineServer,
 			UserMessageBegin,
 			"Begin a message from the server to the client.dll",
@@ -293,6 +295,8 @@ void Export_IVEngineServer( void )
 			"Finish entity or user message and dispatch it.",
 			reference_existing_object_policy()
 		)
+
+#endif
 
 		CLASS_METHOD(IVEngineServer,
 			ClientPrintf,
@@ -343,6 +347,8 @@ void Export_IVEngineServer( void )
 
 	// Functions
 	BOOST_FUNCTION(GetEngine, reference_existing_object_policy());
+
+#if (SOURCE_ENGINE < 3)
 	BOOST_FUNCTION(IndexOfUserMessage,
 		"Returns the index of the given usermessage type",
 		args("str")
@@ -350,4 +356,5 @@ void Export_IVEngineServer( void )
 	BOOST_FUNCTION(DumpUserMessages,
 		"Prints out all UserMessages with their index and size"
 	);
+#endif
 }

@@ -69,6 +69,7 @@ If( SOURCE_ENGINE GREATER 2 )
 	Set(SOURCEPYTHON_LINK_LIBRARIES
 		${SOURCEPYTHON_LINK_LIBRARIES}
 		${SOURCESDK_LIB}/public/interfaces.lib
+        ${SOURCESDK_LIB}/win32/release/vs2010/libprotobuf.lib
 	)
 Endif()
 
@@ -87,4 +88,3 @@ Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
     optimized ${PYTHONSDK_LIB}/python33.lib 
     optimized ${BOOSTSDK_LIB}/libboost_python-vc100-mt-1_53.lib
 )
-

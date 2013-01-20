@@ -1,0 +1,72 @@
+SET(SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES
+    # As these are not in any LIB files for the SDK, I think this is the best way
+    # of compiling them for the time being until Allied modders puts them in a .lib
+    core/modules/usermessages/csgo/cstrike15_usermessages.pb.cc
+    #---------------------------------------------------------------------------
+    
+	core/modules/usermessages/csgo/bindings.cpp 
+
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_AchievementEvent.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_AdjustMoney.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_AmmoDenied.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_BarTime.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_CallVoteFailed.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ClientInfo.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_CloseCaption.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_CloseCaptionDirect.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_CurrentTimescale.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_Damage.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_DesiredTimescale.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_DisconnectToLobby.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_DisplayInventory.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_Fade.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_GameTitle.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_Geiger.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_HintText.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_HudMsg.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_HudText.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ItemDrop.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ItemPickup.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_KeyHintText.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_KillCam.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_MarkAchievement.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_MatchEndConditions.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_MatchStatsUpdate.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_PlayerStatsUpdate.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_PlayerStatsUpdate_Stat.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ProcessSpottedEntityUpdate.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_RadioText.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_RawAudio.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ReloadEffect.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_RequestEloBracketInfo.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_RequestState.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ResetHud.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_Rumble.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_SayText.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_SayText2.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_SendAudio.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_SendLastKillerDamageToClient.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ServerRankRevealAll.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ServerRankUpdate.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ServerRankUpdate_RankUpdate.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_SetEloBracketInfo.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_SetPlayerEloDisplayBracket.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_Shake.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_ShowMenu.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_StopSpectatorMode.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_TextMsg.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_Train.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_VGUIMenu.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_VGUIMenu_Subkey.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_VoiceMask.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_VoiceMask_PlayerMask.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_VoteFailed.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_VotePass.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_VoteSetup.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_VoteStart.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_WarmupHasEnded.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_XRankGet.cpp
+	core/modules/usermessages/csgo/usermessages/CCSUsrMsg_XRankUpd.cpp
+	core/modules/usermessages/csgo/usermessages/ECstrike15UserMessages.cpp
+)

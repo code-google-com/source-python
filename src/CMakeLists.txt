@@ -168,6 +168,18 @@ Set(SOURCEPYTHON_MODULE_BINUTILS_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Usermessages module
+# ------------------------------------------------------------------
+
+# As these are not in any LIB files for the SDK, I think this is the best way
+# of compiling them for the time being until Allied modders puts them in a .lib
+SET (SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES
+    core/modules/usermessages/netmessages.pb.cc
+)
+
+include("makefiles/game/${GAME}.usermessages.cmake")
+
+# ------------------------------------------------------------------
 # All module files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -175,6 +187,8 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_MODULE_SOURCES}
     
     ${SOURCEPYTHON_MODULE_BINUTILS_HEADERS}
+    ${SOURCEPYTHON_MODULE_USERMESSAGES_HEADERS}
+    ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_HEADERS}
     
     
     ${SOURCEPYTHON_MODULE_ENGINE_SOURCES}
@@ -183,30 +197,33 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_MODULE_MISC_SOURCES}
     ${SOURCEPYTHON_MODULE_ENTITY_SOURCES}
     ${SOURCEPYTHON_MODULE_BINUTILS_SOURCES}
-)
+    ${SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES}
+    ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
 
 # ------------------------------------------------------------------
 # Create source groups for everything to make our projects nice and 
 # clean.
 # ------------------------------------------------------------------
-Source_Group("Header Files\\Addons"                 FILES ${SOURCEPYTHON_ADDON_HEADERS})
-Source_Group("Header Files\\Core"                   FILES ${SOURCEPYTHON_CORE_HEADERS})
-Source_Group("Header Files\\Util"                   FILES ${SOURCEPYTHON_UTIL_HEADERS})
-Source_Group("Header Files\\Modules"                FILES ${SOURCEPYTHON_MODULE_HEADERS})
-Source_Group("Header Files\\Modules\\Entity"        FILES ${SOURCEPYTHON_MODULE_ENTITY_HEADERS})
-Source_Group("Header Files\\Modules\\Binutils"      FILES ${SOURCEPYTHON_MODULE_BINUTILS_HEADERS})
+Source_Group("Header Files\\Addons"                             FILES ${SOURCEPYTHON_ADDON_HEADERS})
+Source_Group("Header Files\\Core"                               FILES ${SOURCEPYTHON_CORE_HEADERS})
+Source_Group("Header Files\\Util"                               FILES ${SOURCEPYTHON_UTIL_HEADERS})
+Source_Group("Header Files\\Modules"                            FILES ${SOURCEPYTHON_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Entity"                    FILES ${SOURCEPYTHON_MODULE_ENTITY_HEADERS})
+Source_Group("Header Files\\Modules\\Binutils"                  FILES ${SOURCEPYTHON_MODULE_BINUTILS_HEADERS})
 
-Source_Group("Source Files\\Addons"                 FILES ${SOURCEPYTHON_ADDON_SOURCES})
-Source_Group("Source Files\\Core"                   FILES ${SOURCEPYTHON_CORE_SOURCES})
-Source_Group("Source Files\\Modules"                FILES ${SOURCEPYTHON_MODULE_SOURCES})
+Source_Group("Source Files\\Addons"                             FILES ${SOURCEPYTHON_ADDON_SOURCES})
+Source_Group("Source Files\\Core"                               FILES ${SOURCEPYTHON_CORE_SOURCES})
+Source_Group("Source Files\\Modules"                            FILES ${SOURCEPYTHON_MODULE_SOURCES})
 
-Source_Group("Source Files\\Modules\\Engine"        FILES ${SOURCEPYTHON_MODULE_ENGINE_SOURCES})
-Source_Group("Source Files\\Modules\\Cvar"          FILES ${SOURCEPYTHON_MODULE_CVAR_SOURCES})
-Source_Group("Source Files\\Modules\\Misc"          FILES ${SOURCEPYTHON_MODULE_MISC_SOURCES})
-Source_Group("Source Files\\Modules\\Entity"        FILES ${SOURCEPYTHON_MODULE_ENTITY_SOURCES})
-Source_Group("Source Files\\Modules\\ClientCmd"     FILES ${SOURCEPYTHON_MODULE_CLIENTCMD_SOURCES})
-Source_Group("Source Files\\Modules\\Binutils"      FILES ${SOURCEPYTHON_MODULE_BINUTILS_SOURCES})
-Source_Group("Source Files\\Util"                   FILES ${SOURCEPYTHON_UTIL_SOURCES})
+Source_Group("Source Files\\Modules\\Engine"                    FILES ${SOURCEPYTHON_MODULE_ENGINE_SOURCES})
+Source_Group("Source Files\\Modules\\Cvar"                      FILES ${SOURCEPYTHON_MODULE_CVAR_SOURCES})
+Source_Group("Source Files\\Modules\\Misc"                      FILES ${SOURCEPYTHON_MODULE_MISC_SOURCES})
+Source_Group("Source Files\\Modules\\Entity"                    FILES ${SOURCEPYTHON_MODULE_ENTITY_SOURCES})
+Source_Group("Source Files\\Modules\\ClientCmd"                 FILES ${SOURCEPYTHON_MODULE_CLIENTCMD_SOURCES})
+Source_Group("Source Files\\Modules\\Binutils"                  FILES ${SOURCEPYTHON_MODULE_BINUTILS_SOURCES})
+Source_Group("Source Files\\Modules\\Usermessages"              FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES})
+Source_Group("Source Files\\Modules\\Usermessages"              FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
+Source_Group("Source Files\\Util"                               FILES ${SOURCEPYTHON_UTIL_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 

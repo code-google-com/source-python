@@ -64,6 +64,7 @@ If(SOURCE_ENGINE EQUAL 3)
          ${SOURCESDK_LIB}/linux/interfaces_i486.a
          ${SOURCESDK_LIB}/linux/libtier0.so
          ${SOURCESDK_LIB}/linux/libvstdlib.so
+         ${SOURCESDK_LIB}/linux32/release/libprotobuf.a
     )
 EndIf()
 
