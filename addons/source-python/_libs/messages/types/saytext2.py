@@ -48,7 +48,7 @@ class SayText2(BaseMessage):
         if not message.startswith(_HexChars):
 
             # Add \x01 to the start of the message
-            message = '\x01' + self.message
+            message = '\x01' + message
 
         # Write the message to the UserMessage
         UserMessage.WriteString(message)
