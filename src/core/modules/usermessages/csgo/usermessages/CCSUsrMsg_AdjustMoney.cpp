@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_AdjustMoney & msg)
 
 void make_CCSUsrMsg_AdjustMoney_bindings()
 {
-    bpl::class_<CCSUsrMsg_AdjustMoney> binder("CCSUsrMsg_AdjustMoney");
+    bpl::class_<CCSUsrMsg_AdjustMoney, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_AdjustMoney");
     binder.def(bpl::init<const CCSUsrMsg_AdjustMoney &>());
 
     void (CCSUsrMsg_AdjustMoney::*copy_from_ptr)(const CCSUsrMsg_AdjustMoney &) = \

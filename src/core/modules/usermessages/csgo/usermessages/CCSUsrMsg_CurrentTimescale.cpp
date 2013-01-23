@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_CurrentTimescale & msg)
 
 void make_CCSUsrMsg_CurrentTimescale_bindings()
 {
-    bpl::class_<CCSUsrMsg_CurrentTimescale> binder("CCSUsrMsg_CurrentTimescale");
+    bpl::class_<CCSUsrMsg_CurrentTimescale, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_CurrentTimescale");
     binder.def(bpl::init<const CCSUsrMsg_CurrentTimescale &>());
 
     void (CCSUsrMsg_CurrentTimescale::*copy_from_ptr)(const CCSUsrMsg_CurrentTimescale &) = \

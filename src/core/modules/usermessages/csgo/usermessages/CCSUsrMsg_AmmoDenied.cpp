@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_AmmoDenied & msg)
 
 void make_CCSUsrMsg_AmmoDenied_bindings()
 {
-    bpl::class_<CCSUsrMsg_AmmoDenied> binder("CCSUsrMsg_AmmoDenied");
+    bpl::class_<CCSUsrMsg_AmmoDenied, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_AmmoDenied");
     binder.def(bpl::init<const CCSUsrMsg_AmmoDenied &>());
 
     void (CCSUsrMsg_AmmoDenied::*copy_from_ptr)(const CCSUsrMsg_AmmoDenied &) = \
@@ -70,9 +70,9 @@ void make_CCSUsrMsg_AmmoDenied_bindings()
     binder.def("SerializeToText", &py_SerializeToText);
     binder.def("ByteSize", &CCSUsrMsg_AmmoDenied::ByteSize);
 
-    binder.def("has_ammoIdx", &CCSUsrMsg_AmmoDenied::has_ammoidx);
-    binder.def("set_ammoIdx", &CCSUsrMsg_AmmoDenied::set_ammoidx);
-    binder.def("clear_ammoIdx", &CCSUsrMsg_AmmoDenied::clear_ammoidx);
-    binder.add_property("ammoIdx", &CCSUsrMsg_AmmoDenied::ammoidx);
+    binder.def("has_ammoidx", &CCSUsrMsg_AmmoDenied::has_ammoidx);
+    binder.def("set_ammoidx", &CCSUsrMsg_AmmoDenied::set_ammoidx);
+    binder.def("clear_ammoidx", &CCSUsrMsg_AmmoDenied::clear_ammoidx);
+    binder.add_property("ammoidx", &CCSUsrMsg_AmmoDenied::ammoidx);
 ;
 }

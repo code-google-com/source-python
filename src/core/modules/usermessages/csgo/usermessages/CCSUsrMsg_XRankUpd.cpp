@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_XRankUpd & msg)
 
 void make_CCSUsrMsg_XRankUpd_bindings()
 {
-    bpl::class_<CCSUsrMsg_XRankUpd> binder("CCSUsrMsg_XRankUpd");
+    bpl::class_<CCSUsrMsg_XRankUpd, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_XRankUpd");
     binder.def(bpl::init<const CCSUsrMsg_XRankUpd &>());
 
     void (CCSUsrMsg_XRankUpd::*copy_from_ptr)(const CCSUsrMsg_XRankUpd &) = \

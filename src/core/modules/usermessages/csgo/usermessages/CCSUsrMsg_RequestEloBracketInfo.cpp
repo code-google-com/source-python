@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_RequestEloBracketInfo & msg)
 
 void make_CCSUsrMsg_RequestEloBracketInfo_bindings()
 {
-    bpl::class_<CCSUsrMsg_RequestEloBracketInfo> binder("CCSUsrMsg_RequestEloBracketInfo");
+    bpl::class_<CCSUsrMsg_RequestEloBracketInfo, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_RequestEloBracketInfo");
     binder.def(bpl::init<const CCSUsrMsg_RequestEloBracketInfo &>());
 
     void (CCSUsrMsg_RequestEloBracketInfo::*copy_from_ptr)(const CCSUsrMsg_RequestEloBracketInfo &) = \

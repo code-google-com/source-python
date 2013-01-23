@@ -1,3 +1,6 @@
+#include <boost/python.hpp>
+#include <boost/python/scope.hpp>
+#include <google/protobuf/message.h>
 #include "../../export_main.h"
 
     void make_CCSUsrMsg_VGUIMenu_bindings();
@@ -64,8 +67,45 @@
     void make_CCSUsrMsg_ServerRankUpdate_RankUpdate_bindings();
     void make_ECstrike15UserMessages_bindings();
 
+
 DECLARE_SP_MODULE(Usermessages)
 {
+    {
+		class dummy_scope_google{};
+        scope google = class_<dummy_scope_google>("google");
+        {
+			class dummy_scope_protobuf{};
+            scope protobuf = class_<dummy_scope_protobuf>("protobuf");
+            {
+                boost::python::class_<google::protobuf::Message, boost::noncopyable> binder("Message", no_init);
+                binder.def("CopyFrom", &google::protobuf::Message::CopyFrom);
+                binder.def("MergeFrom", &google::protobuf::Message::MergeFrom);
+                binder.def("FindInitializationErrors", &google::protobuf::Message::FindInitializationErrors);
+                binder.def("InitializationErrorString", &google::protobuf::Message::InitializationErrorString);
+                binder.def("DiscardUnknownFields", &google::protobuf::Message::DiscardUnknownFields);
+                binder.def("SpaceUsed", &google::protobuf::Message::SpaceUsed);
+                binder.def("DebugString", &google::protobuf::Message::DebugString);
+                binder.def("ShortDebugString", &google::protobuf::Message::ShortDebugString);
+                binder.def("Utf8DebugString", &google::protobuf::Message::Utf8DebugString);
+                binder.def("PrintDebugString", &google::protobuf::Message::PrintDebugString);
+                binder.def("ParseFromFileDescriptor", &google::protobuf::Message::ParseFromFileDescriptor);
+                binder.def("ParsePartialFromFileDescriptor", &google::protobuf::Message::ParsePartialFromFileDescriptor);
+                binder.def("ParseFromIstream", &google::protobuf::Message::ParseFromIstream);
+                binder.def("ParsePartialFromIstream", &google::protobuf::Message::ParsePartialFromIstream);
+                binder.def("SerializeToFileDescriptor", &google::protobuf::Message::SerializeToFileDescriptor);
+                binder.def("SerializePartialToFileDescriptor", &google::protobuf::Message::SerializePartialToFileDescriptor);
+                binder.def("SerializeToOstream", &google::protobuf::Message::SerializeToOstream);
+                binder.def("SerializePartialToOstream", &google::protobuf::Message::SerializePartialToOstream);
+                binder.def("GetTypeName", &google::protobuf::Message::GetTypeName);
+                binder.def("Clear", &google::protobuf::Message::Clear);
+                binder.def("IsInitialized", &google::protobuf::Message::IsInitialized);
+                binder.def("CheckTypeAndMergeFrom", &google::protobuf::Message::CheckTypeAndMergeFrom);
+                binder.def("MergePartialFromCodedStream", &google::protobuf::Message::MergePartialFromCodedStream);
+                binder.def("ByteSize", &google::protobuf::Message::ByteSize);
+                binder.def("SerializeWithCachedSizes", &google::protobuf::Message::SerializeWithCachedSizes);
+            }
+         }
+    }
     ::make_CCSUsrMsg_VGUIMenu_bindings();
     ::make_CCSUsrMsg_Geiger_bindings();
     ::make_CCSUsrMsg_Train_bindings();

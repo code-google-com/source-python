@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_MatchEndConditions & msg)
 
 void make_CCSUsrMsg_MatchEndConditions_bindings()
 {
-    bpl::class_<CCSUsrMsg_MatchEndConditions> binder("CCSUsrMsg_MatchEndConditions");
+    bpl::class_<CCSUsrMsg_MatchEndConditions, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_MatchEndConditions");
     binder.def(bpl::init<const CCSUsrMsg_MatchEndConditions &>());
 
     void (CCSUsrMsg_MatchEndConditions::*copy_from_ptr)(const CCSUsrMsg_MatchEndConditions &) = \

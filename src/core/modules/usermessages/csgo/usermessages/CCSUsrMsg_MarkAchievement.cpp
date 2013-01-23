@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_MarkAchievement & msg)
 
 void make_CCSUsrMsg_MarkAchievement_bindings()
 {
-    bpl::class_<CCSUsrMsg_MarkAchievement> binder("CCSUsrMsg_MarkAchievement");
+    bpl::class_<CCSUsrMsg_MarkAchievement, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_MarkAchievement");
     binder.def(bpl::init<const CCSUsrMsg_MarkAchievement &>());
 
     void (CCSUsrMsg_MarkAchievement::*copy_from_ptr)(const CCSUsrMsg_MarkAchievement &) = \

@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_SendLastKillerDamageToClient & msg)
 
 void make_CCSUsrMsg_SendLastKillerDamageToClient_bindings()
 {
-    bpl::class_<CCSUsrMsg_SendLastKillerDamageToClient> binder("CCSUsrMsg_SendLastKillerDamageToClient");
+    bpl::class_<CCSUsrMsg_SendLastKillerDamageToClient, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_SendLastKillerDamageToClient");
     binder.def(bpl::init<const CCSUsrMsg_SendLastKillerDamageToClient &>());
 
     void (CCSUsrMsg_SendLastKillerDamageToClient::*copy_from_ptr)(const CCSUsrMsg_SendLastKillerDamageToClient &) = \

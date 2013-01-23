@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_ShowMenu & msg)
 
 void make_CCSUsrMsg_ShowMenu_bindings()
 {
-    bpl::class_<CCSUsrMsg_ShowMenu> binder("CCSUsrMsg_ShowMenu");
+    bpl::class_<CCSUsrMsg_ShowMenu, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_ShowMenu");
     binder.def(bpl::init<const CCSUsrMsg_ShowMenu &>());
 
     void (CCSUsrMsg_ShowMenu::*copy_from_ptr)(const CCSUsrMsg_ShowMenu &) = \

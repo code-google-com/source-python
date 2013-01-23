@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_RawAudio & msg)
 
 void make_CCSUsrMsg_RawAudio_bindings()
 {
-    bpl::class_<CCSUsrMsg_RawAudio> binder("CCSUsrMsg_RawAudio");
+    bpl::class_<CCSUsrMsg_RawAudio, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_RawAudio");
     binder.def(bpl::init<const CCSUsrMsg_RawAudio &>());
 
     void (CCSUsrMsg_RawAudio::*copy_from_ptr)(const CCSUsrMsg_RawAudio &) = \

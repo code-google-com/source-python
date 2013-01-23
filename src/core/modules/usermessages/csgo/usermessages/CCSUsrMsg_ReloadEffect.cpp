@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_ReloadEffect & msg)
 
 void make_CCSUsrMsg_ReloadEffect_bindings()
 {
-    bpl::class_<CCSUsrMsg_ReloadEffect> binder("CCSUsrMsg_ReloadEffect");
+    bpl::class_<CCSUsrMsg_ReloadEffect, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_ReloadEffect");
     binder.def(bpl::init<const CCSUsrMsg_ReloadEffect &>());
 
     void (CCSUsrMsg_ReloadEffect::*copy_from_ptr)(const CCSUsrMsg_ReloadEffect &) = \

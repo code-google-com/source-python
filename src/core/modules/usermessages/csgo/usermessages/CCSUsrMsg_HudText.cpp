@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_HudText & msg)
 
 void make_CCSUsrMsg_HudText_bindings()
 {
-    bpl::class_<CCSUsrMsg_HudText> binder("CCSUsrMsg_HudText");
+    bpl::class_<CCSUsrMsg_HudText, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_HudText");
     binder.def(bpl::init<const CCSUsrMsg_HudText &>());
 
     void (CCSUsrMsg_HudText::*copy_from_ptr)(const CCSUsrMsg_HudText &) = \

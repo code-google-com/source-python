@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntit
 
 void make_CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate_bindings()
 {
-    bpl::class_<CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate> binder("CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate");
+    bpl::class_<CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate");
     binder.def(bpl::init<const CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate &>());
 
     void (CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate::*copy_from_ptr)(const CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate &) = \

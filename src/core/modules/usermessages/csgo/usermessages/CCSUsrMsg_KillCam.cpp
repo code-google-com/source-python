@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_KillCam & msg)
 
 void make_CCSUsrMsg_KillCam_bindings()
 {
-    bpl::class_<CCSUsrMsg_KillCam> binder("CCSUsrMsg_KillCam");
+    bpl::class_<CCSUsrMsg_KillCam, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_KillCam");
     binder.def(bpl::init<const CCSUsrMsg_KillCam &>());
 
     void (CCSUsrMsg_KillCam::*copy_from_ptr)(const CCSUsrMsg_KillCam &) = \

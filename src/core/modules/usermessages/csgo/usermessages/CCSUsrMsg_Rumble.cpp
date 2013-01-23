@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_Rumble & msg)
 
 void make_CCSUsrMsg_Rumble_bindings()
 {
-    bpl::class_<CCSUsrMsg_Rumble> binder("CCSUsrMsg_Rumble");
+    bpl::class_<CCSUsrMsg_Rumble, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_Rumble");
     binder.def(bpl::init<const CCSUsrMsg_Rumble &>());
 
     void (CCSUsrMsg_Rumble::*copy_from_ptr)(const CCSUsrMsg_Rumble &) = \

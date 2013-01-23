@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_RequestState & msg)
 
 void make_CCSUsrMsg_RequestState_bindings()
 {
-    bpl::class_<CCSUsrMsg_RequestState> binder("CCSUsrMsg_RequestState");
+    bpl::class_<CCSUsrMsg_RequestState, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_RequestState");
     binder.def(bpl::init<const CCSUsrMsg_RequestState &>());
 
     void (CCSUsrMsg_RequestState::*copy_from_ptr)(const CCSUsrMsg_RequestState &) = \

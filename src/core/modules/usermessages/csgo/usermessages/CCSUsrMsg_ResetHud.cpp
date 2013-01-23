@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_ResetHud & msg)
 
 void make_CCSUsrMsg_ResetHud_bindings()
 {
-    bpl::class_<CCSUsrMsg_ResetHud> binder("CCSUsrMsg_ResetHud");
+    bpl::class_<CCSUsrMsg_ResetHud, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_ResetHud");
     binder.def(bpl::init<const CCSUsrMsg_ResetHud &>());
 
     void (CCSUsrMsg_ResetHud::*copy_from_ptr)(const CCSUsrMsg_ResetHud &) = \

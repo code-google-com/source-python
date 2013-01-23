@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_DisconnectToLobby & msg)
 
 void make_CCSUsrMsg_DisconnectToLobby_bindings()
 {
-    bpl::class_<CCSUsrMsg_DisconnectToLobby> binder("CCSUsrMsg_DisconnectToLobby");
+    bpl::class_<CCSUsrMsg_DisconnectToLobby, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_DisconnectToLobby");
     binder.def(bpl::init<const CCSUsrMsg_DisconnectToLobby &>());
 
     void (CCSUsrMsg_DisconnectToLobby::*copy_from_ptr)(const CCSUsrMsg_DisconnectToLobby &) = \

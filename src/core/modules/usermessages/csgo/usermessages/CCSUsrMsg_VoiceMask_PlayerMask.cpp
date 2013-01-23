@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_VoiceMask_PlayerMask & msg)
 
 void make_CCSUsrMsg_VoiceMask_PlayerMask_bindings()
 {
-    bpl::class_<CCSUsrMsg_VoiceMask_PlayerMask> binder("CCSUsrMsg_VoiceMask_PlayerMask");
+    bpl::class_<CCSUsrMsg_VoiceMask_PlayerMask, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_VoiceMask_PlayerMask");
     binder.def(bpl::init<const CCSUsrMsg_VoiceMask_PlayerMask &>());
 
     void (CCSUsrMsg_VoiceMask_PlayerMask::*copy_from_ptr)(const CCSUsrMsg_VoiceMask_PlayerMask &) = \

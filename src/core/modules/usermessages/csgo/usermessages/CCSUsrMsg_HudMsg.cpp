@@ -87,7 +87,7 @@ std::string py_SerializeToText(CCSUsrMsg_HudMsg & msg)
 
 void make_CCSUsrMsg_HudMsg_bindings()
 {
-    bpl::class_<CCSUsrMsg_HudMsg> binder("CCSUsrMsg_HudMsg");
+    bpl::class_<CCSUsrMsg_HudMsg, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_HudMsg");
     binder.def(bpl::init<const CCSUsrMsg_HudMsg &>());
 
     void (CCSUsrMsg_HudMsg::*copy_from_ptr)(const CCSUsrMsg_HudMsg &) = \

@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_CloseCaptionDirect & msg)
 
 void make_CCSUsrMsg_CloseCaptionDirect_bindings()
 {
-    bpl::class_<CCSUsrMsg_CloseCaptionDirect> binder("CCSUsrMsg_CloseCaptionDirect");
+    bpl::class_<CCSUsrMsg_CloseCaptionDirect, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_CloseCaptionDirect");
     binder.def(bpl::init<const CCSUsrMsg_CloseCaptionDirect &>());
 
     void (CCSUsrMsg_CloseCaptionDirect::*copy_from_ptr)(const CCSUsrMsg_CloseCaptionDirect &) = \

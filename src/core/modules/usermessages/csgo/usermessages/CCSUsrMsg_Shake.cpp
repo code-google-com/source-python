@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_Shake & msg)
 
 void make_CCSUsrMsg_Shake_bindings()
 {
-    bpl::class_<CCSUsrMsg_Shake> binder("CCSUsrMsg_Shake");
+    bpl::class_<CCSUsrMsg_Shake, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_Shake");
     binder.def(bpl::init<const CCSUsrMsg_Shake &>());
 
     void (CCSUsrMsg_Shake::*copy_from_ptr)(const CCSUsrMsg_Shake &) = \

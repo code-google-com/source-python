@@ -115,7 +115,7 @@ std::string py_SerializeToText(CCSUsrMsg_VGUIMenu & msg)
 
 void make_CCSUsrMsg_VGUIMenu_bindings()
 {
-    bpl::class_<CCSUsrMsg_VGUIMenu> binder("CCSUsrMsg_VGUIMenu");
+    bpl::class_<CCSUsrMsg_VGUIMenu, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_VGUIMenu");
     binder.def(bpl::init<const CCSUsrMsg_VGUIMenu &>());
 
     void (CCSUsrMsg_VGUIMenu::*copy_from_ptr)(const CCSUsrMsg_VGUIMenu &) = \

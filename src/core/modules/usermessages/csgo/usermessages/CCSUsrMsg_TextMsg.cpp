@@ -116,7 +116,7 @@ std::string py_SerializeToText(CCSUsrMsg_TextMsg & msg)
 
 void make_CCSUsrMsg_TextMsg_bindings()
 {
-    bpl::class_<CCSUsrMsg_TextMsg> binder("CCSUsrMsg_TextMsg");
+    bpl::class_<CCSUsrMsg_TextMsg, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_TextMsg");
     binder.def(bpl::init<const CCSUsrMsg_TextMsg &>());
 
     void (CCSUsrMsg_TextMsg::*copy_from_ptr)(const CCSUsrMsg_TextMsg &) = \

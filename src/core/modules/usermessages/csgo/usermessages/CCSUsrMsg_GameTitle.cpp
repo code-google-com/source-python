@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_GameTitle & msg)
 
 void make_CCSUsrMsg_GameTitle_bindings()
 {
-    bpl::class_<CCSUsrMsg_GameTitle> binder("CCSUsrMsg_GameTitle");
+    bpl::class_<CCSUsrMsg_GameTitle, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_GameTitle");
     binder.def(bpl::init<const CCSUsrMsg_GameTitle &>());
 
     void (CCSUsrMsg_GameTitle::*copy_from_ptr)(const CCSUsrMsg_GameTitle &) = \

@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_Geiger & msg)
 
 void make_CCSUsrMsg_Geiger_bindings()
 {
-    bpl::class_<CCSUsrMsg_Geiger> binder("CCSUsrMsg_Geiger");
+    bpl::class_<CCSUsrMsg_Geiger, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_Geiger");
     binder.def(bpl::init<const CCSUsrMsg_Geiger &>());
 
     void (CCSUsrMsg_Geiger::*copy_from_ptr)(const CCSUsrMsg_Geiger &) = \

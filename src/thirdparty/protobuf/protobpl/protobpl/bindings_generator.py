@@ -46,7 +46,7 @@ def generate_message(msg_full_name, msg_type, cpp_header, package):
     # field methods enumeration
     for field in msg_type.field:
 
-        args['field_name'] = field.name
+        args['field_name'] = field.name.lower()
 
         if field.type in cpp_type_map:
             args['cpp_type'] = cpp_type_map[field.type]
@@ -74,7 +74,7 @@ def generate_message(msg_full_name, msg_type, cpp_header, package):
     # field bindings enumeration
     for field in msg_type.field:
 
-        args['field_name'] = field.name
+        args['field_name'] = field.name.lower()
         key = (field.label, type_map[field.type])
 
         template = binding_templates.get(key)
@@ -95,7 +95,8 @@ def generate_message(msg_full_name, msg_type, cpp_header, package):
 
 def generate_module(module_name, generated_names, package):
 
-    source = ["#include <boost/python.hpp>\n"]
+    source = ["#include <boost/python.hpp>", "#include <boost/python/scope.hpp>", 
+    "#include <google/protobuf/message.h>", "#include \"../../export_main.h\"\n"]
 
     # namespace components
     for component in package:
@@ -107,8 +108,45 @@ def generate_module(module_name, generated_names, package):
     for component in package:
         source.append('}')
 
-    source.append('\nBOOST_PYTHON_MODULE(_%s)' % module_name)
+    source.append('\nDECLARE_SP_MODULE(%s)' % module_name.split("/")[-1].title())
     source.append('{')
+    
+    source.append('    {')
+    source.append('        class dummy_scope_google{};')
+    source.append('        scope google = class_<dummy_scope_google>("google");')
+    source.append('        {')
+    source.append('            class dummy_scope_protobuf{};')
+    source.append('            scope protobuf = class_<class dummy_scope_protobuf>("protobuf");')
+    source.append('            {')
+    source.append('                boost::python::class_<google::protobuf::Message, boost::noncopyable> binder("Message", no_init);')
+    source.append('                binder.def("CopyFrom", &google::protobuf::Message::CopyFrom);')
+    source.append('                binder.def("MergeFrom", &google::protobuf::Message::MergeFrom);')
+    source.append('                binder.def("FindInitializationErrors", &google::protobuf::Message::FindInitializationErrors);')
+    source.append('                binder.def("InitializationErrorString", &google::protobuf::Message::InitializationErrorString);')
+    source.append('                binder.def("DiscardUnknownFields", &google::protobuf::Message::DiscardUnknownFields);')
+    source.append('                binder.def("SpaceUsed", &google::protobuf::Message::SpaceUsed);')
+    source.append('                binder.def("DebugString", &google::protobuf::Message::DebugString);')
+    source.append('                binder.def("ShortDebugString", &google::protobuf::Message::ShortDebugString);')
+    source.append('                binder.def("Utf8DebugString", &google::protobuf::Message::Utf8DebugString);')
+    source.append('                binder.def("PrintDebugString", &google::protobuf::Message::PrintDebugString);')
+    source.append('                binder.def("ParseFromFileDescriptor", &google::protobuf::Message::ParseFromFileDescriptor);')
+    source.append('                binder.def("ParsePartialFromFileDescriptor", &google::protobuf::Message::ParsePartialFromFileDescriptor);')
+    source.append('                binder.def("ParseFromIstream", &google::protobuf::Message::ParseFromIstream);')
+    source.append('                binder.def("ParsePartialFromIstream", &google::protobuf::Message::ParsePartialFromIstream);')
+    source.append('                binder.def("SerializeToFileDescriptor", &google::protobuf::Message::SerializeToFileDescriptor);')
+    source.append('                binder.def("SerializePartialToFileDescriptor", &google::protobuf::Message::SerializePartialToFileDescriptor);')
+    source.append('                binder.def("SerializeToOstream", &google::protobuf::Message::SerializeToOstream);')
+    source.append('                binder.def("SerializePartialToOstream", &google::protobuf::Message::SerializePartialToOstream);')
+    source.append('                binder.def("GetTypeName", &google::protobuf::Message::GetTypeName);')
+    source.append('                binder.def("Clear", &google::protobuf::Message::Clear);')
+    source.append('                binder.def("IsInitialized", &google::protobuf::Message::IsInitialized);')
+    source.append('                binder.def("CheckTypeAndMergeFrom", &google::protobuf::Message::CheckTypeAndMergeFrom);')
+    source.append('                binder.def("MergePartialFromCodedStream", &google::protobuf::Message::MergePartialFromCodedStream);')
+    source.append('                binder.def("ByteSize", &google::protobuf::Message::ByteSize);')
+    source.append('                binder.def("SerializeWithCachedSizes", &google::protobuf::Message::SerializeWithCachedSizes);')
+    source.append('            }') # protobuf scope
+    source.append('         }') # google scope
+    source.append('    }') # main scope    
 
     scope = '::'.join(package)
 
@@ -264,7 +302,7 @@ std::string py_SerializeToText(%(msg_name)s & msg)
 
 void make_%(msg_name)s_bindings()
 {
-    bpl::class_<%(msg_name)s> binder("%(msg_name)s");
+    bpl::class_<%(msg_name)s, bpl::bases<google::protobuf::Message>> binder("%(msg_name)s");
     binder.def(bpl::init<const %(msg_name)s &>());
 
     void (%(msg_name)s::*copy_from_ptr)(const %(msg_name)s &) = \\

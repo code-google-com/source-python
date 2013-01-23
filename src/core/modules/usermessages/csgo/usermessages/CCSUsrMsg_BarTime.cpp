@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_BarTime & msg)
 
 void make_CCSUsrMsg_BarTime_bindings()
 {
-    bpl::class_<CCSUsrMsg_BarTime> binder("CCSUsrMsg_BarTime");
+    bpl::class_<CCSUsrMsg_BarTime, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_BarTime");
     binder.def(bpl::init<const CCSUsrMsg_BarTime &>());
 
     void (CCSUsrMsg_BarTime::*copy_from_ptr)(const CCSUsrMsg_BarTime &) = \
