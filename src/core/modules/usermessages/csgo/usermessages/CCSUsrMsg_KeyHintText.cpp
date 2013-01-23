@@ -116,7 +116,7 @@ std::string py_SerializeToText(CCSUsrMsg_KeyHintText & msg)
 
 void make_CCSUsrMsg_KeyHintText_bindings()
 {
-    bpl::class_<CCSUsrMsg_KeyHintText> binder("CCSUsrMsg_KeyHintText");
+    bpl::class_<CCSUsrMsg_KeyHintText, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_KeyHintText");
     binder.def(bpl::init<const CCSUsrMsg_KeyHintText &>());
 
     void (CCSUsrMsg_KeyHintText::*copy_from_ptr)(const CCSUsrMsg_KeyHintText &) = \

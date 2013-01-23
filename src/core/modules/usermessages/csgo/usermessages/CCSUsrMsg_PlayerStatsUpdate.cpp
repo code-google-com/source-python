@@ -115,7 +115,7 @@ std::string py_SerializeToText(CCSUsrMsg_PlayerStatsUpdate & msg)
 
 void make_CCSUsrMsg_PlayerStatsUpdate_bindings()
 {
-    bpl::class_<CCSUsrMsg_PlayerStatsUpdate> binder("CCSUsrMsg_PlayerStatsUpdate");
+    bpl::class_<CCSUsrMsg_PlayerStatsUpdate, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_PlayerStatsUpdate");
     binder.def(bpl::init<const CCSUsrMsg_PlayerStatsUpdate &>());
 
     void (CCSUsrMsg_PlayerStatsUpdate::*copy_from_ptr)(const CCSUsrMsg_PlayerStatsUpdate &) = \

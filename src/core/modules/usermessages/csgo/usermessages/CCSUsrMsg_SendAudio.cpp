@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_SendAudio & msg)
 
 void make_CCSUsrMsg_SendAudio_bindings()
 {
-    bpl::class_<CCSUsrMsg_SendAudio> binder("CCSUsrMsg_SendAudio");
+    bpl::class_<CCSUsrMsg_SendAudio, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_SendAudio");
     binder.def(bpl::init<const CCSUsrMsg_SendAudio &>());
 
     void (CCSUsrMsg_SendAudio::*copy_from_ptr)(const CCSUsrMsg_SendAudio &) = \

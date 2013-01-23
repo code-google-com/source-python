@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_DisplayInventory & msg)
 
 void make_CCSUsrMsg_DisplayInventory_bindings()
 {
-    bpl::class_<CCSUsrMsg_DisplayInventory> binder("CCSUsrMsg_DisplayInventory");
+    bpl::class_<CCSUsrMsg_DisplayInventory, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_DisplayInventory");
     binder.def(bpl::init<const CCSUsrMsg_DisplayInventory &>());
 
     void (CCSUsrMsg_DisplayInventory::*copy_from_ptr)(const CCSUsrMsg_DisplayInventory &) = \

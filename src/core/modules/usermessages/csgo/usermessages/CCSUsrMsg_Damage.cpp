@@ -59,7 +59,7 @@ std::string py_SerializeToText(CCSUsrMsg_Damage & msg)
 
 void make_CCSUsrMsg_Damage_bindings()
 {
-    bpl::class_<CCSUsrMsg_Damage> binder("CCSUsrMsg_Damage");
+    bpl::class_<CCSUsrMsg_Damage, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_Damage");
     binder.def(bpl::init<const CCSUsrMsg_Damage &>());
 
     void (CCSUsrMsg_Damage::*copy_from_ptr)(const CCSUsrMsg_Damage &) = \

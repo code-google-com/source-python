@@ -116,7 +116,7 @@ std::string py_SerializeToText(CCSUsrMsg_RadioText & msg)
 
 void make_CCSUsrMsg_RadioText_bindings()
 {
-    bpl::class_<CCSUsrMsg_RadioText> binder("CCSUsrMsg_RadioText");
+    bpl::class_<CCSUsrMsg_RadioText, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_RadioText");
     binder.def(bpl::init<const CCSUsrMsg_RadioText &>());
 
     void (CCSUsrMsg_RadioText::*copy_from_ptr)(const CCSUsrMsg_RadioText &) = \

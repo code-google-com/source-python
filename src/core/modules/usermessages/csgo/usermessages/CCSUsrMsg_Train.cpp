@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_Train & msg)
 
 void make_CCSUsrMsg_Train_bindings()
 {
-    bpl::class_<CCSUsrMsg_Train> binder("CCSUsrMsg_Train");
+    bpl::class_<CCSUsrMsg_Train, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_Train");
     binder.def(bpl::init<const CCSUsrMsg_Train &>());
 
     void (CCSUsrMsg_Train::*copy_from_ptr)(const CCSUsrMsg_Train &) = \

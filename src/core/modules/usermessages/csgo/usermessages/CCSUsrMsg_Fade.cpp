@@ -59,7 +59,7 @@ std::string py_SerializeToText(CCSUsrMsg_Fade & msg)
 
 void make_CCSUsrMsg_Fade_bindings()
 {
-    bpl::class_<CCSUsrMsg_Fade> binder("CCSUsrMsg_Fade");
+    bpl::class_<CCSUsrMsg_Fade, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_Fade");
     binder.def(bpl::init<const CCSUsrMsg_Fade &>());
 
     void (CCSUsrMsg_Fade::*copy_from_ptr)(const CCSUsrMsg_Fade &) = \

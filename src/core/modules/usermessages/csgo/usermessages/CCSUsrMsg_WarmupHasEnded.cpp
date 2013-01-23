@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_WarmupHasEnded & msg)
 
 void make_CCSUsrMsg_WarmupHasEnded_bindings()
 {
-    bpl::class_<CCSUsrMsg_WarmupHasEnded> binder("CCSUsrMsg_WarmupHasEnded");
+    bpl::class_<CCSUsrMsg_WarmupHasEnded, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_WarmupHasEnded");
     binder.def(bpl::init<const CCSUsrMsg_WarmupHasEnded &>());
 
     void (CCSUsrMsg_WarmupHasEnded::*copy_from_ptr)(const CCSUsrMsg_WarmupHasEnded &) = \

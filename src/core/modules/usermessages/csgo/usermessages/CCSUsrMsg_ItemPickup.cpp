@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_ItemPickup & msg)
 
 void make_CCSUsrMsg_ItemPickup_bindings()
 {
-    bpl::class_<CCSUsrMsg_ItemPickup> binder("CCSUsrMsg_ItemPickup");
+    bpl::class_<CCSUsrMsg_ItemPickup, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_ItemPickup");
     binder.def(bpl::init<const CCSUsrMsg_ItemPickup &>());
 
     void (CCSUsrMsg_ItemPickup::*copy_from_ptr)(const CCSUsrMsg_ItemPickup &) = \

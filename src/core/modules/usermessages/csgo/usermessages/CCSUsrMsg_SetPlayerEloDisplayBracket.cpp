@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_SetPlayerEloDisplayBracket & msg)
 
 void make_CCSUsrMsg_SetPlayerEloDisplayBracket_bindings()
 {
-    bpl::class_<CCSUsrMsg_SetPlayerEloDisplayBracket> binder("CCSUsrMsg_SetPlayerEloDisplayBracket");
+    bpl::class_<CCSUsrMsg_SetPlayerEloDisplayBracket, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_SetPlayerEloDisplayBracket");
     binder.def(bpl::init<const CCSUsrMsg_SetPlayerEloDisplayBracket &>());
 
     void (CCSUsrMsg_SetPlayerEloDisplayBracket::*copy_from_ptr)(const CCSUsrMsg_SetPlayerEloDisplayBracket &) = \

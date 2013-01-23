@@ -37,6 +37,7 @@
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 #include "inetchannelinfo.h"
+#include <google/protobuf/message.h>
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
@@ -295,7 +296,12 @@ void Export_IVEngineServer( void )
 			"Finish entity or user message and dispatch it.",
 			reference_existing_object_policy()
 		)
-
+#else
+		CLASS_METHOD(IVEngineServer,
+			SendUserMessage,
+			"Send a google protobuf message to the client.dll",
+			args("filter", "msg_id", "protobuf_message_inst")
+			)
 #endif
 
 		CLASS_METHOD(IVEngineServer,

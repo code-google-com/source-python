@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_MatchStatsUpdate & msg)
 
 void make_CCSUsrMsg_MatchStatsUpdate_bindings()
 {
-    bpl::class_<CCSUsrMsg_MatchStatsUpdate> binder("CCSUsrMsg_MatchStatsUpdate");
+    bpl::class_<CCSUsrMsg_MatchStatsUpdate, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_MatchStatsUpdate");
     binder.def(bpl::init<const CCSUsrMsg_MatchStatsUpdate &>());
 
     void (CCSUsrMsg_MatchStatsUpdate::*copy_from_ptr)(const CCSUsrMsg_MatchStatsUpdate &) = \

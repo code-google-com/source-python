@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_CallVoteFailed & msg)
 
 void make_CCSUsrMsg_CallVoteFailed_bindings()
 {
-    bpl::class_<CCSUsrMsg_CallVoteFailed> binder("CCSUsrMsg_CallVoteFailed");
+    bpl::class_<CCSUsrMsg_CallVoteFailed, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_CallVoteFailed");
     binder.def(bpl::init<const CCSUsrMsg_CallVoteFailed &>());
 
     void (CCSUsrMsg_CallVoteFailed::*copy_from_ptr)(const CCSUsrMsg_CallVoteFailed &) = \

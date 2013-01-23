@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_VGUIMenu_Subkey & msg)
 
 void make_CCSUsrMsg_VGUIMenu_Subkey_bindings()
 {
-    bpl::class_<CCSUsrMsg_VGUIMenu_Subkey> binder("CCSUsrMsg_VGUIMenu_Subkey");
+    bpl::class_<CCSUsrMsg_VGUIMenu_Subkey, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_VGUIMenu_Subkey");
     binder.def(bpl::init<const CCSUsrMsg_VGUIMenu_Subkey &>());
 
     void (CCSUsrMsg_VGUIMenu_Subkey::*copy_from_ptr)(const CCSUsrMsg_VGUIMenu_Subkey &) = \

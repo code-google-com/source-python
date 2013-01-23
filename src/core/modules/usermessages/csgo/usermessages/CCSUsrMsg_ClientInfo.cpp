@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_ClientInfo & msg)
 
 void make_CCSUsrMsg_ClientInfo_bindings()
 {
-    bpl::class_<CCSUsrMsg_ClientInfo> binder("CCSUsrMsg_ClientInfo");
+    bpl::class_<CCSUsrMsg_ClientInfo, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_ClientInfo");
     binder.def(bpl::init<const CCSUsrMsg_ClientInfo &>());
 
     void (CCSUsrMsg_ClientInfo::*copy_from_ptr)(const CCSUsrMsg_ClientInfo &) = \

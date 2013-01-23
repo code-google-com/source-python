@@ -115,7 +115,7 @@ std::string py_SerializeToText(CCSUsrMsg_ProcessSpottedEntityUpdate & msg)
 
 void make_CCSUsrMsg_ProcessSpottedEntityUpdate_bindings()
 {
-    bpl::class_<CCSUsrMsg_ProcessSpottedEntityUpdate> binder("CCSUsrMsg_ProcessSpottedEntityUpdate");
+    bpl::class_<CCSUsrMsg_ProcessSpottedEntityUpdate, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_ProcessSpottedEntityUpdate");
     binder.def(bpl::init<const CCSUsrMsg_ProcessSpottedEntityUpdate &>());
 
     void (CCSUsrMsg_ProcessSpottedEntityUpdate::*copy_from_ptr)(const CCSUsrMsg_ProcessSpottedEntityUpdate &) = \

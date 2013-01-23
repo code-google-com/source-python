@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_HintText & msg)
 
 void make_CCSUsrMsg_HintText_bindings()
 {
-    bpl::class_<CCSUsrMsg_HintText> binder("CCSUsrMsg_HintText");
+    bpl::class_<CCSUsrMsg_HintText, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_HintText");
     binder.def(bpl::init<const CCSUsrMsg_HintText &>());
 
     void (CCSUsrMsg_HintText::*copy_from_ptr)(const CCSUsrMsg_HintText &) = \

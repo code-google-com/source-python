@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_StopSpectatorMode & msg)
 
 void make_CCSUsrMsg_StopSpectatorMode_bindings()
 {
-    bpl::class_<CCSUsrMsg_StopSpectatorMode> binder("CCSUsrMsg_StopSpectatorMode");
+    bpl::class_<CCSUsrMsg_StopSpectatorMode, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_StopSpectatorMode");
     binder.def(bpl::init<const CCSUsrMsg_StopSpectatorMode &>());
 
     void (CCSUsrMsg_StopSpectatorMode::*copy_from_ptr)(const CCSUsrMsg_StopSpectatorMode &) = \

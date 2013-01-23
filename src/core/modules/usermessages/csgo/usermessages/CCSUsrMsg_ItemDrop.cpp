@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_ItemDrop & msg)
 
 void make_CCSUsrMsg_ItemDrop_bindings()
 {
-    bpl::class_<CCSUsrMsg_ItemDrop> binder("CCSUsrMsg_ItemDrop");
+    bpl::class_<CCSUsrMsg_ItemDrop, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_ItemDrop");
     binder.def(bpl::init<const CCSUsrMsg_ItemDrop &>());
 
     void (CCSUsrMsg_ItemDrop::*copy_from_ptr)(const CCSUsrMsg_ItemDrop &) = \

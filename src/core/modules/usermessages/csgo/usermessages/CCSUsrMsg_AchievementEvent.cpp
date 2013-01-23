@@ -1,7 +1,6 @@
 #include <boost/python.hpp>
 #include <google/protobuf/text_format.h>
 #include <google/protobuf/io/zero_copy_stream_impl_lite.h>
-
 #include "public/game/shared/csgo/protobuf/cstrike15_usermessages.pb.h"
 
 namespace bpl = boost::python;
@@ -46,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_AchievementEvent & msg)
 
 void make_CCSUsrMsg_AchievementEvent_bindings()
 {
-    bpl::class_<CCSUsrMsg_AchievementEvent> binder("CCSUsrMsg_AchievementEvent");
+    bpl::class_<CCSUsrMsg_AchievementEvent, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_AchievementEvent");
     binder.def(bpl::init<const CCSUsrMsg_AchievementEvent &>());
 
     void (CCSUsrMsg_AchievementEvent::*copy_from_ptr)(const CCSUsrMsg_AchievementEvent &) = \

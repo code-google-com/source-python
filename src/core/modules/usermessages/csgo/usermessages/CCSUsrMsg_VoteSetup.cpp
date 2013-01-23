@@ -116,7 +116,7 @@ std::string py_SerializeToText(CCSUsrMsg_VoteSetup & msg)
 
 void make_CCSUsrMsg_VoteSetup_bindings()
 {
-    bpl::class_<CCSUsrMsg_VoteSetup> binder("CCSUsrMsg_VoteSetup");
+    bpl::class_<CCSUsrMsg_VoteSetup, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_VoteSetup");
     binder.def(bpl::init<const CCSUsrMsg_VoteSetup &>());
 
     void (CCSUsrMsg_VoteSetup::*copy_from_ptr)(const CCSUsrMsg_VoteSetup &) = \

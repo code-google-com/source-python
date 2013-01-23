@@ -45,7 +45,7 @@ std::string py_SerializeToText(CCSUsrMsg_VoteStart & msg)
 
 void make_CCSUsrMsg_VoteStart_bindings()
 {
-    bpl::class_<CCSUsrMsg_VoteStart> binder("CCSUsrMsg_VoteStart");
+    bpl::class_<CCSUsrMsg_VoteStart, bpl::bases<google::protobuf::Message>> binder("CCSUsrMsg_VoteStart");
     binder.def(bpl::init<const CCSUsrMsg_VoteStart &>());
 
     void (CCSUsrMsg_VoteStart::*copy_from_ptr)(const CCSUsrMsg_VoteStart &) = \
