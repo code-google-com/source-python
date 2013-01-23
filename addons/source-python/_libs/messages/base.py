@@ -3,6 +3,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   String
+from string import Template
+
 # Source.Python Imports
 from Source import Engine
 from Source import Player
@@ -12,6 +16,8 @@ from core import GAME_NAME
 from core.cvar import ServerVar
 #   Filters
 from filters.recipients import get_recipients
+#   Translations
+from translations.strings import TranslationStrings
 
 
 # =============================================================================
@@ -58,7 +64,7 @@ class BaseMessage(object):
             # If not, raise an error
             raise NotImplementedError(
                 'UserMessage type "%s" is' % cls.__name__ +
-                ' not implemented forgame "%s"' % GAME_NAME)
+                ' not implemented for game "%s"' % GAME_NAME)
 
         self = object.__new__(cls)
         self.__init__(*args, **kw)
@@ -82,7 +88,7 @@ class BaseMessage(object):
         recipients = get_recipients(users)
 
         # Does the message contain lang strings?
-        if isinstance(self.message, dict):
+        if isinstance(self.message, TranslationStrings):
 
             # Loop through all items in the recipient filter
             for slot in range(recipients.GetRecipientCount()):
@@ -93,8 +99,12 @@ class BaseMessage(object):
                 # Get a recipient filter with the current index
                 recipients = get_recipients(index)
 
+                # Get the player's language
+                language = GameEngine.GetClientConVarValue(
+                    index, 'cl_language')
+
                 # Get the lang string for the current player
-                message = self._get_player_message(index)
+                message = self.message.get_string(language, **self.tokens)
 
                 # Send the message to the player
                 self._send_message(recipients, message)
@@ -103,17 +113,14 @@ class BaseMessage(object):
         # to all players in the recipient filter?
         else:
 
+            # Get the message
+            message = Template(self.message)
+
+            # Add the tokens to the message
+            message = message.substitute(self.tokens)
+
             # Send the message to the recipients
-            self._send_message(recipients, self.message)
-
-    def _get_player_message(self, index):
-        '''Returns the lang string for the current player index'''
-        
-        # Get the player's language
-        language = GameEngine.GetClientConVarValue(index, 'cl_language')
-
-        # Return the proper lang string for the player
-        return self.message[language]
+            self._send_message(recipients, message)
 
     def _get_usermsg_instance(self, recipients):
         '''Returns the UserMessage instance base on the engine version'''
