@@ -41,14 +41,14 @@ class LangStrings(dict):
         '''Adds all strings as TranslationStrings
             instances and fixes double escaped strings'''
 
-        # Is the given file of the correct extension?
-        if not infile.endswith('.ini'):
+        # Get the path to the given file
+        self._mainfile = TRANSLATION_PATH.joinpath(infile + '.ini')
+
+        # Does the file exist?
+        if not self._mainfile.isfile():
 
             # Raise an error
-            raise 
-
-        # Get the path to the given file
-        self._mainfile = TRANSLATION_PATH.joinpath(infile)
+            raise FileNotFoundError('No file found at %s' % self._mainfile)
 
         # Get the path to the server specific file
         self._serverfile = self._mainfile.parent.joinpath(
