@@ -39,6 +39,8 @@ from paths import CFG_PATH
 from core.base_command import SPCommands
 #   Events
 from events.manager import EventRegistry
+#   Translations
+from translations.manager import LanguageManager
 #   Listeners
 from listeners.tick import TickListeners
 
@@ -60,6 +62,9 @@ def plugin_load():
 
         # Load the auth providers
         SPCommands.call_command('auth', ['load'] + auth_providers)
+
+    # Set the default language
+    LanguageManager._register_default_language(core_settings['LANGUAGE'])
 
 
 def event_fire(GameEvent):
