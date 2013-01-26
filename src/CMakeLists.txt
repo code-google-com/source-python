@@ -171,6 +171,7 @@ Set(SOURCEPYTHON_MODULE_BINUTILS_SOURCES
 # Usermessages module
 # ------------------------------------------------------------------
 
+If(SOURCE_ENGINE EQUAL 3)
 # As these are not in any LIB files for the SDK, I think this is the best way
 # of compiling them for the time being until Allied modders puts them in a .lib
 SET (SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES
@@ -178,6 +179,7 @@ SET (SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES
 )
 
 include("makefiles/game/${GAME}.usermessages.cmake")
+EndIf()
 
 # ------------------------------------------------------------------
 # All module files
