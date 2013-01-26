@@ -97,6 +97,17 @@ class LangStrings(dict):
                 # instance for the current string
                 self[key] = TranslationStrings(set_strings)
 
+                # Get the tokens for the TranslationStrings instance
+                self[key]._get_tokens()
+
+                # Was a discrepancy found when getting tokens?
+                if self[key].tokens is None:
+
+                    # Silently raise an error
+
+                    # Remove the item from the dictionary
+                    del self[key]
+
     def _create_server_file(self):
         '''Creates a server specific langstrings file'''
 
@@ -153,14 +164,74 @@ class LangStrings(dict):
 
 
 class TranslationStrings(dict):
-    '''Dictionary used to store and get language
-        strings for a particular string'''
+    '''Class used to store grouped language strings'''
 
-    def get_string(self, language, **tokens):
+    def _get_tokens(self):
+        '''Gets all tokens for the instance's strings'''
+
+        # Store tokens as an empty dictionary
+        self.tokens = False
+
+        # Loop through all languages provided for the string
+        for language in self:
+
+            # Store an empty dictionary for the current language
+            current_tokens = {}
+
+            # Loop through all tokens in the current string
+            for matching_token in set(
+                Template.pattern.finditer(self[language])):
+
+                # Get the groups for the current string's tokens
+                matching_groups = matching_token.groupdict()
+
+                # Are the groups invalid?
+                if matching_groups['invalid']:
+
+                    # Move to the next token
+                    continue
+
+                # Get the current token string
+                matching_string = matching_token.group()
+
+                # Is the current token escaped?
+                if matching_groups['escaped']:
+
+                    # Replace the token in the string
+                    self[language] = self[language].replace(
+                        matching_string, Template.delimiter)
+
+                # Is the current token named or braced?
+                else:
+
+                    # Get the current token's name
+                    token_name = (matching_token.group('named')
+                        or matching_token.group('braced')
+
+                    # Store the token's name with its token string
+                    current_tokens[token_name] = matching_string
+
+            # Has the instance's tokens been set?
+            if self.tokens != False:
+
+                # Set the instance's tokens to the current tokens
+                self.tokens = current_tokens
+
+            # Do the current tokens equal the instance's tokens
+            elif self.tokens != current_tokens:
+
+                # Set the instance's tokens to None to remove
+                # the instance from the LangStrings dictionary
+                self.tokens = None
+
+                # Return from the loop
+                return
+
+    def get_string(self, language, **given_tokens):
         '''Returns the language string for the given language/tokens'''
 
         # Get the language shortname to be used
-        language = self._get_language(language)
+        language = self.get_language(language)
 
         # Was a valid language found?
         if language is None:
@@ -168,16 +239,25 @@ class TranslationStrings(dict):
             # Return an empty string
             return '' # raise an error silently here, in case looping through players
 
-        # Get the message's Template instance
-        message = Template(self[language])
+        # Get the language specific message
+        message = self[language]
 
-        # Substitute the token in the message
-        message = message.substitute(tokens)
+        # Loop through all tokens
+        for token in given_tokens:
+
+            # Is the current token in the strings token dictionary?
+            if not token in self.tokens:
+
+                # No need to replace this token
+                continue
+
+            # Replace the token
+            message.replace(self.tokens[token], given_tokens[token])
 
         # Return the message
         return message
 
-    def _get_language(self, language):
+    def get_language(self, language):
         '''Returns the language to be used'''
 
         # Get the given language's shortname
