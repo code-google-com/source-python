@@ -44,3 +44,12 @@ class Shake(BaseMessageNoText):
 
         # Send the message and clean up
         GameEngine.MessageEnd()
+
+    def _send_protobuf_message(self, recipients, message):
+        UserMessage = self._get_protobuf_instance()
+        UserMessage.set_command(0)
+        UserMessage.set_local_amplitude(self.magnitude)
+        UserMessage.set_frequency(1.0)
+        UserMessage.set_duration(self.time)
+        GameEngine.SendUserMessage(
+            recipients, MessageTypes[self.__class__.__name__], UserMessage)

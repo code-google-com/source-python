@@ -6,13 +6,14 @@
 # Python Imports
 #   Binascii
 from binascii import unhexlify
+#   Codecs
+from codecs import unicode_escape_decode
 #   Configobj
 from configobj import ConfigObj
 #   String
 from string import Template
 #   Re
-from re import compile
-from re import IGNORECASE
+from re import compile as re_compile
 from re import VERBOSE
 
 # Source.Python Imports
@@ -26,9 +27,9 @@ from translations.manager import LanguageManager
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get an re.compile instance to correct all double escaped strings
-_double_escaped_pattern = compile(r'''(\\(?:(?P<octal>[0-7]{1,3})|
-    x(?P<hexadecimal>[0-9|a-f]{2})|(?P<notation>a|b|e|f|n|r|s|t|v|x)))''',
-    IGNORECASE | VERBOSE)
+_double_escaped_pattern = re_compile(r'''(\\(?:(?P<octal>[0-7]{1,3})|
+    x(?P<hexadecimal>[0-9|a-f|A-F]{2})|(?P<notation>a|b|e|f|n|r|s|t|v)))''',
+    VERBOSE)
 
 
 # =============================================================================
@@ -54,27 +55,29 @@ class LangStrings(dict):
         self._serverfile = self._mainfile.parent.joinpath(
             self._mainfile.namebase + '_server.ini')
 
+        # Get the strings from the main file
+        main_strings = ConfigObj(self._mainfile, encoding=encoding)
+        
         # Does the server specific file exist?
         if not self._serverfile.isfile():
 
             # Create the server specific file
             self._create_server_file()
 
-        # Get the strings from the main file
-        main_strings = ConfigObj(self._mainfile, encoding=encoding)
+        # Otherwise
+        else:
+            
+            # Get any strings from the server specific file
+            server_strings = ConfigObj(self._serverfile, encoding=encoding)
 
-        # Get any strings from the server specific file
-        server_strings = ConfigObj(self._serverfile, encoding=encoding)
-
-        # Merge the two ConfigObj instances together
-        main_strings.merge(server_strings)
+            # Merge the two ConfigObj instances together
+            main_strings.merge(server_strings)
 
         # Loop through all strings
         for key in main_strings:
 
-            # Create an empty dictionary to store
-            # language strings for the current string
-            set_strings = {}
+            # Get a TranslationStrings instance for the current string
+            translation_strings = TranslationStrings()
 
             # Loop through all languages for the current string
             for lang in main_strings[key]:
@@ -90,23 +93,11 @@ class LangStrings(dict):
                     continue
 
                 # Get the language's string and fix any escaped strings
-                set_strings[language] = self._replace_escaped_sequences(
+                translation_strings[language] = self._replace_escaped_sequences(
                     main_strings[key][lang])
 
-                # Add the new dictionary as a TranslationStrings
-                # instance for the current string
-                self[key] = TranslationStrings(set_strings)
-
-                # Get the tokens for the TranslationStrings instance
-                self[key]._get_tokens()
-
-                # Was a discrepancy found when getting tokens?
-                if self[key].tokens is None:
-
-                    # Silently raise an error
-
-                    # Remove the item from the dictionary
-                    del self[key]
+            # Add the TranslationStrings instance for the current string
+            self[key] = translation_strings
 
     def _create_server_file(self):
         '''Creates a server specific langstrings file'''
@@ -164,70 +155,10 @@ class LangStrings(dict):
 
 
 class TranslationStrings(dict):
-    '''Class used to store grouped language strings'''
+    '''Dictionary used to store and get language
+        strings for a particular string'''
 
-    def _get_tokens(self):
-        '''Gets all tokens for the instance's strings'''
-
-        # Store tokens as an empty dictionary
-        self.tokens = False
-
-        # Loop through all languages provided for the string
-        for language in self:
-
-            # Store an empty dictionary for the current language
-            current_tokens = {}
-
-            # Loop through all tokens in the current string
-            for matching_token in set(
-                Template.pattern.finditer(self[language])):
-
-                # Get the groups for the current string's tokens
-                matching_groups = matching_token.groupdict()
-
-                # Are the groups invalid?
-                if matching_groups['invalid']:
-
-                    # Move to the next token
-                    continue
-
-                # Get the current token string
-                matching_string = matching_token.group()
-
-                # Is the current token escaped?
-                if matching_groups['escaped']:
-
-                    # Replace the token in the string
-                    self[language] = self[language].replace(
-                        matching_string, Template.delimiter)
-
-                # Is the current token named or braced?
-                else:
-
-                    # Get the current token's name
-                    token_name = (matching_token.group('named')
-                        or matching_token.group('braced')
-
-                    # Store the token's name with its token string
-                    current_tokens[token_name] = matching_string
-
-            # Has the instance's tokens been set?
-            if self.tokens != False:
-
-                # Set the instance's tokens to the current tokens
-                self.tokens = current_tokens
-
-            # Do the current tokens equal the instance's tokens
-            elif self.tokens != current_tokens:
-
-                # Set the instance's tokens to None to remove
-                # the instance from the LangStrings dictionary
-                self.tokens = None
-
-                # Return from the loop
-                return
-
-    def get_string(self, language, **given_tokens):
+    def get_string(self, language, **tokens):
         '''Returns the language string for the given language/tokens'''
 
         # Get the language shortname to be used
@@ -239,20 +170,11 @@ class TranslationStrings(dict):
             # Return an empty string
             return '' # raise an error silently here, in case looping through players
 
-        # Get the language specific message
-        message = self[language]
+        # Get the message's Template instance
+        message = Template(self[language])
 
-        # Loop through all tokens
-        for token in given_tokens:
-
-            # Is the current token in the strings token dictionary?
-            if not token in self.tokens:
-
-                # No need to replace this token
-                continue
-
-            # Replace the token
-            message.replace(self.tokens[token], given_tokens[token])
+        # Substitute the token in the message
+        message = message.substitute(tokens)
 
         # Return the message
         return message
