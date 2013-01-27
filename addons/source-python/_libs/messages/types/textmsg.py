@@ -20,7 +20,7 @@ class TextMsg(BaseMessage):
     Echo = 2
     CenterMsg = 4
 
-    def __init__(self, message, type=0, users=(), tokens={}):
+    def __init__(self, message, type=0, users=(), **tokens):
         '''Initializes the class instance and stores the given values'''
 
         # Store all the base attributes

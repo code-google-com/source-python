@@ -8,6 +8,7 @@
 from core import GameEngine
 #   Messages
 from messages.base import BaseMessage
+from messages.base import MessageTypes
 
 
 # =============================================================================
@@ -16,13 +17,13 @@ from messages.base import BaseMessage
 class KeyHintText(BaseMessage):
     '''Class used to send KeyHintText messages'''
 
-    def __init__(self, message, users=(), tokens={}):
+    def __init__(self, message, users=(), **tokens):
         '''Initializes the class instance and stores the given values'''
 
         # Store all the base attributes
         self.message = message
         self.users = users
-        self.tokens
+        self.tokens = tokens
 
     def _send_message(self, recipients, message):
         '''Sends the message to the given recipients'''

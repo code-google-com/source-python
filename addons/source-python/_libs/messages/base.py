@@ -140,12 +140,12 @@ class BaseMessage(object):
 
             # Get all languages and recipient indexes for each language
             recipient_languages = self._get_recipients_per_language(recipients)
-
+            
             # Loop through all languages needed to be sent
             for language in recipient_languages:
 
                 # Get a recipient filter instance for the current recipients
-                recipients = get_recipients(recipient_languages[language])
+                recipients = get_recipients(*recipient_languages[language])
 
                 # Get the proper message for the current language
                 message = self.message.get_string(language, **self.tokens)
