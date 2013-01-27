@@ -24,7 +24,7 @@ _HexChars = ('\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07')
 class SayText2(BaseMessage):
     '''Class used to send SayText2 messages'''
 
-    def __init__(self, message, index=0, users=(), tokens={}):
+    def __init__(self, message, index=0, users=(), **tokens):
         '''Initializes the class instance and stores the given values'''
 
         # Store all the base attributes
@@ -61,7 +61,11 @@ class SayText2(BaseMessage):
         UserMessage = self._get_protobuf_instance()
         UserMessage.clear_params()
         UserMessage.set_ent_idx(self.index)
-        UserMessage.set_msg_name(message)
+        
+        # Adding ESCSOH to the start of the message seems to fix colors passed
+        #   at the begining.
+        UserMessage.set_msg_name('\x1B\x01' + message)
+        
         UserMessage.set_chat(False)
         for x in range(4):
             UserMessage.add_params('')

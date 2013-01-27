@@ -17,7 +17,7 @@ from messages.base import MessageTypes
 class HintText(BaseMessage):
     '''Class used to send HintText messages'''
 
-    def __init__(self, message, users=(), tokens={}):
+    def __init__(self, message, users=(), **tokens):
         '''Initializes the class instance and stores the given values'''
 
         # Store all the base attributes
