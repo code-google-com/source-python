@@ -67,6 +67,9 @@ class _MessageTypes(dict):
                 # Add the message name and index to the dictionary
                 self[value] = index
 
+            # Set the message prefix
+            self._message_prefix = _UserMessageData['message_prefix']
+            
         # Is the protobuf system not implemented in the current engine?
         else:
 
@@ -203,7 +206,7 @@ class BaseMessage(object):
     def _get_protobuf_instance(self):
         '''Returns the proper usermessage instance for the usermessage type'''
         return getattr(Usermessages,
-            _UserMessageData['message_prefix'] + self.__class__.__name__)()
+            MessageTypes._message_prefix + self.__class__.__name__)()
 
     def _get_usermsg_instance(self, recipients):
         '''Returns the UserMessage instance base on the engine version'''

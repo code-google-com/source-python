@@ -79,7 +79,7 @@ class _Tag(object):
         '''Returns whether the weapon type contains the tag'''
 
         # Return whether the weapon type contains the tag
-        return self.tag in WeaponManager[weapon].tags
+        return self.tag in weapon.tags
 
 # =============================================================================
 # >> FILTER REGISTRATION
