@@ -1,4 +1,4 @@
-# ../_libs/messages/types/saytext2.py
+# ../_libs/messages/types/showmenu.py
 
 # =============================================================================
 # >> IMPORTS
@@ -14,15 +14,16 @@ from messages.base import MessageTypes
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class SayText2(BaseMessage):
-    '''Class used to send SayText2 messages'''
+class ShowMenu(BaseMessage):
+    '''Class used to send HintText messages'''
 
-    def __init__(self, message, index=0, users=(), **tokens):
+    def __init__(self, message, duration=0, slots=[], users=(), **tokens):
         '''Initializes the class instance and stores the given values'''
 
         # Store all the base attributes
         self.message = message
-        self.index = index
+        self.duration = duration
+        self.slots = slots
         self.users = users
         self.tokens = tokens
 
@@ -32,14 +33,8 @@ class SayText2(BaseMessage):
         # Create the UserMessage
         UserMessage = self._get_usermsg_instance(recipients)
 
-        # Write the index to the UserMessage
-        UserMessage.WriteByte(self.index)
-
-        # Write 1 to the UserMessage
-        UserMessage.WriteByte(1)
-
         # Write the message to the UserMessage
-        UserMessage.WriteString('\x01' + message)
+        UserMessage.WriteString(message)
 
         # Send the message to the recipients
         GameEngine.MessageEnd()
@@ -50,22 +45,15 @@ class SayText2(BaseMessage):
         # Get the usermessage instance
         UserMessage = self._get_protobuf_instance()
 
-        # Set the message's index
-        UserMessage.set_ent_idx(self.index)
+        # Set the slots to be used
+        UserMessage.set_bits_valid_slots(
+            sum((1 << slot for slot in self.slots)))
+
+        # Set the display time
+        UserMessage.set_display_time(self.duration)
 
         # Set the message's text
-        # Adding ESCSOH to the start of the message seems to fix colors passed
-        #   at the begining.
-        UserMessage.set_msg_name('\x1B\x01' + message)
-
-        # Set the chat for the index
-        UserMessage.set_chat(False)
-
-        # Loop through paramaters
-        for x in range(4):
-
-            # Set the parameter to an empty string
-            UserMessage.add_params('')
+        UserMessage.set_menu_string(message)
 
         # Send the message
         GameEngine.SendUserMessage(
