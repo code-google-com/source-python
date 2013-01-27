@@ -10,6 +10,7 @@ from binascii import unhexlify
 from codecs import unicode_escape_decode
 #   Configobj
 from configobj import ConfigObj
+from configobj import Section
 #   String
 from string import Template
 #   Re
@@ -76,6 +77,12 @@ class LangStrings(dict):
         # Loop through all strings
         for key in main_strings:
 
+            # Is the current string not a Section?
+            if not isinstance(main_strings[key], Section):
+                
+                # No need to go further
+                continue
+                
             # Get a TranslationStrings instance for the current string
             translation_strings = TranslationStrings()
 
@@ -99,6 +106,51 @@ class LangStrings(dict):
             # Add the TranslationStrings instance for the current string
             self[key] = translation_strings
 
+        # Is there any default language specified into the main file?
+        if 'DEFAULT_LANGUAGE' in main_strings:
+            
+            # Get the default language
+            default_language = main_strings['DEFAULT_LANGUAGE']
+            
+            # Make sure it is not a Section
+            if not isinstance(default_language, Section):
+                
+                # Get the given language code
+                language_code = LanguageManager.get_language(default_language)
+                
+                # Is the language valid?
+                if not language_code is None:
+                    
+                    # Set the default language
+                    self.default_language = language_code
+                    
+                # Delete the key from the main file as we are done with it
+                del main_strings['DEFAULT_LANGUAGE']
+                
+    def __setattr__(self, attribute, value):
+        '''Override the __setattr__ method to register the default language'''
+        
+        # Is the given attribute the default language?
+        if attribute == 'default_language':
+            
+            # Get the given language code
+            language_code = LanguageManager.get_language(value)
+            
+            # Is the given language code valid?
+            if not language_code is None:
+                
+                # Loop through all strings
+                for key in self:
+                    
+                    # Set the default language to use for that string
+                    self[key]._default_language = language_code
+                    
+                # Override the given value
+                value = language_code
+                
+        # Set the attribute
+        super(LangStrings, self).__setattr__(attribute, value)
+        
     def _create_server_file(self):
         '''Creates a server specific langstrings file'''
 
@@ -195,8 +247,17 @@ class TranslationStrings(dict):
         if LanguageManager.default in self:
 
             # Return the server's default language
-            return LanguageManger.default
+            return LanguageManager.default
 
+        # Is there any default language defined?
+        if hasattr(self, '_default_language'):
+            
+            # Is the default language available for that string?
+            if self._default_language in self:
+                
+                # Return the default language to use
+                return self._default_language
+                
         # Is the server's fallback language in the dictionary?
         if LanguageManager.fallback in self:
 
