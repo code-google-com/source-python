@@ -14,15 +14,14 @@ from messages.base import MessageTypes
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class SayText2(BaseMessage):
-    '''Class used to send SayText2 messages'''
+class SayText(BaseMessage):
+    '''Class used to send SayText messages'''
 
     def __init__(self, message, index=0, users=(), **tokens):
         '''Initializes the class instance and stores the given values'''
 
         # Store all the base attributes
         self.message = message
-        self.index = index
         self.users = users
         self.tokens = tokens
 
@@ -56,16 +55,10 @@ class SayText2(BaseMessage):
         # Set the message's text
         # Adding ESCSOH to the start of the message seems to fix colors passed
         #   at the begining.
-        UserMessage.set_msg_name('\x1B\x01' + message)
+        UserMessage.set_text('\x1B\x01' + message)
 
         # Set the chat for the index
         UserMessage.set_chat(False)
-
-        # Loop through paramaters
-        for x in range(4):
-
-            # Set the parameter to an empty string
-            UserMessage.add_params('')
 
         # Send the message
         GameEngine.SendUserMessage(
