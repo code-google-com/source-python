@@ -4,6 +4,11 @@
 CMake_Minimum_Required(VERSION 2.8)
 
 # ------------------------------------------------------------------
+# Includes the CMake file for the current game.
+# ------------------------------------------------------------------
+include("makefiles/game/${GAME}.cmake")
+
+# ------------------------------------------------------------------
 # Loader
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LOADER_HEADERS
@@ -170,15 +175,14 @@ Set(SOURCEPYTHON_MODULE_BINUTILS_SOURCES
 # ------------------------------------------------------------------
 # Usermessages module
 # ------------------------------------------------------------------
+If(SOURCE_ENGINE GREATER 2)
+    # As these are not in any LIB files for the SDK, I think this is the best way
+    # of compiling them for the time being until Allied modders puts them in a .lib
+    SET (SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES
+        core/modules/usermessages/netmessages.pb.cc
+    )
 
-If(SOURCE_ENGINE EQUAL 3)
-# As these are not in any LIB files for the SDK, I think this is the best way
-# of compiling them for the time being until Allied modders puts them in a .lib
-SET (SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES
-    core/modules/usermessages/netmessages.pb.cc
-)
-
-include("makefiles/game/${GAME}.usermessages.cmake")
+    include("makefiles/game/${GAME}.usermessages.cmake")
 EndIf()
 
 # ------------------------------------------------------------------
