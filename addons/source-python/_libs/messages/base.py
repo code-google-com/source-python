@@ -221,20 +221,20 @@ class BaseMessage(object):
         return GameEngine.UserMessageBegin(
             recipients, self._message_index, None)
 
-    def _check_send_message(self, recipients, message):
+    def _check_send_message(self, *args):
         '''Verifies which type of message system should be used to send'''
 
         # Is the protobuf system not implemented for the current engine?
         if Usermessages is None:
 
             # Use the base UserMessage system to send the message
-            self._send_message(recipients, message)
+            self._send_message(*args)
 
         # Is the protobuf system implemented for the current engine?
         else:
 
             # Use the protobuf system to send the message
-            self._send_protobuf_message(recipients, message)
+            self._send_protobuf_message(*args)
 
 
 class BaseMessageNoText(BaseMessage):

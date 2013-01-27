@@ -45,29 +45,35 @@ class SayText2(BaseMessage):
         # Write 1 to the UserMessage
         UserMessage.WriteByte(1)
 
-        # Does the message start with a hex character?
-        if not message.startswith(_HexChars):
-
-            # Add \x01 to the start of the message
-            message = '\x01' + message
-
         # Write the message to the UserMessage
-        UserMessage.WriteString(message)
+        UserMessage.WriteString('\x01' + message)
 
         # Send the message to the recipients
         GameEngine.MessageEnd()
 
     def _send_protobuf_message(self, recipients, message):
+        '''Sends a protobuf message to the given recipients'''
+
+        # Get the usermessage instance
         UserMessage = self._get_protobuf_instance()
-        UserMessage.clear_params()
+
+        # Set the message's index
         UserMessage.set_ent_idx(self.index)
-        
+
+        # Set the message's text
         # Adding ESCSOH to the start of the message seems to fix colors passed
         #   at the begining.
         UserMessage.set_msg_name('\x1B\x01' + message)
-        
+
+        # Set the chat for the index
         UserMessage.set_chat(False)
+
+        # Loop through paramaters
         for x in range(4):
+
+            # Set the parameter to an empty string
             UserMessage.add_params('')
+
+        # Send the message
         GameEngine.SendUserMessage(
             recipients, MessageTypes[self.__class__.__name__], UserMessage)
