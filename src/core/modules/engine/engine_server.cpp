@@ -87,6 +87,20 @@ int IndexOfUserMessage( char* str )
 }
 
 //---------------------------------------------------------------------------------
+// Returns the index of the given usermessage type
+//---------------------------------------------------------------------------------
+const char *UserMessageOfIndex( int index )
+{
+    char sz_mname[256];
+    int sizereturn;
+    if(servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
+    {
+        return sz_mname;
+    }
+    return NULL;
+}
+
+//---------------------------------------------------------------------------------
 // Prints out all user messages
 //---------------------------------------------------------------------------------
 void DumpUserMessages()
@@ -359,6 +373,10 @@ void Export_IVEngineServer( void )
 		"Returns the index of the given usermessage type",
 		args("str")
 	);
+	BOOST_FUNCTION(UserMessageOfIndex,
+        "Returns the usermessage type of the given index",
+        args("index")
+    );
 	BOOST_FUNCTION(DumpUserMessages,
 		"Prints out all UserMessages with their index and size"
 	);

@@ -35,3 +35,9 @@ class KeyHintText(BaseMessage):
 
         # Send the message to the recipients
         GameEngine.MessageEnd()
+
+    def _send_protobuf_message(self, recipients, message):
+        UserMessage = self._get_protobuf_instance()
+        UserMessage.add_hints(message)
+        GameEngine.SendUserMessage(
+            recipients, MessageTypes[self.__class__.__name__], UserMessage)

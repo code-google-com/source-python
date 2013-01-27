@@ -8,6 +8,7 @@
 from core import GameEngine
 #   Messages
 from messages.base import BaseMessage
+from messages.base import MessageTypes
 
 
 # =============================================================================
@@ -55,3 +56,14 @@ class SayText2(BaseMessage):
 
         # Send the message to the recipients
         GameEngine.MessageEnd()
+
+    def _send_protobuf_message(self, recipients, message):
+        UserMessage = self._get_protobuf_instance()
+        UserMessage.clear_params()
+        UserMessage.set_ent_idx(self.index)
+        UserMessage.set_msg_name(message)
+        UserMessage.set_chat(False)
+        for x in range(4):
+            UserMessage.add_params('')
+        GameEngine.SendUserMessage(
+            recipients, MessageTypes[self.__class__.__name__], UserMessage)

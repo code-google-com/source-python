@@ -8,6 +8,7 @@
 from core import GameEngine
 #   Messages
 from messages.base import BaseMessage
+from messages.base import MessageTypes
 
 
 # =============================================================================
@@ -35,3 +36,9 @@ class HintText(BaseMessage):
 
         # Send the message to the recipients
         GameEngine.MessageEnd()
+
+    def _send_protobuf_message(self, recipients, message):
+        UserMessage = self._get_protobuf_instance()
+        UserMessage.set_text(message)
+        GameEngine.SendUserMessage(
+            recipients, MessageTypes[self.__class__.__name__], UserMessage)

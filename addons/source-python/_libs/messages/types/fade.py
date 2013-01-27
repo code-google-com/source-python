@@ -59,3 +59,12 @@ class Fade(BaseMessageNoText):
 
         # Send the message and clean up
         GameEngine.MessageEnd()
+
+    def _send_protobuf_message(self, recipients, message):
+        UserMessage = self._get_protobuf_instance()
+        UserMessage.set_duration(self.fade_time)
+        UserMessage.set_hold_time(self.hold_time)
+        UserMessage.set_flags(self.fade_type)
+        UserMessage.clr
+        GameEngine.SendUserMessage(
+            recipients, MessageTypes[self.__class__.__name__], UserMessage)
