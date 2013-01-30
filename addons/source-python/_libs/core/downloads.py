@@ -7,6 +7,7 @@
 from Source import Misc
 #   Core
 from core import AutoUnload
+from core import GameEngine
 #   Events
 from events.manager import EventRegistry
 
@@ -31,7 +32,7 @@ class Downloadables(AutoUnload, set):
             return
 
         # Add the item to the downloadables stringtable
-        DownloadablesList.download_table.AddString(item)
+        DownloadablesList._add_to_download_table(item)
 
         # Add the item to the script's downloadables
         super(Downloadables, self).add(item)
@@ -43,7 +44,7 @@ class Downloadables(AutoUnload, set):
         for item in self:
 
             # Add the item to the downloadables stringtable
-            DownloadablesList.download_table.AddString(item)
+            DownloadablesList._add_to_download_table(item)
 
     def _unload_instance(self):
         '''Removes the instance from the downloadables list'''
@@ -61,6 +62,18 @@ class _DownloadablesList(list):
         '''Gets the current instance of the downloadables table'''
         self.download_table = Misc.GetStringTables().FindTable('downloadables')
 
+    def _add_to_download_table(self, item):
+        '''Add the given file to the downloadables table'''
+        
+        # Lock the network string tables
+        locked = GameEngine.LockNetworkStringTables(False)
+        
+        # Add the given file
+        self.download_table.AddString(True, item)
+        
+        # Reset the lock status
+        GameEngine.LockNetworkStringTables(locked)
+        
     def server_spawn(self, GameEvent):
         '''Adds all items stored as downloadables to the stringtable'''
 

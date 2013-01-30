@@ -28,10 +28,7 @@
 // Includes.
 //---------------------------------------------------------------------------------
 #include "../export_main.h"
-#include "core/sp_python.h"
-#include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
-#include "eiface.h"
 #include "networkstringtabledefs.h"
 
 //---------------------------------------------------------------------------------
@@ -42,12 +39,12 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 // External variables to use.
 //---------------------------------------------------------------------------------
-extern INetworkStringTableContainer* networkstringtable;
+extern INetworkStringTableContainer *networkstringtable;
 
 //---------------------------------------------------------------------------------
 // Returns the global INetworkStringTableContainer instance.
 //---------------------------------------------------------------------------------
-INetworkStringTableContainer* GetStringTables( void )
+INetworkStringTableContainer *GetStringTables( void )
 {
 	return networkstringtable;
 }
@@ -55,29 +52,77 @@ INetworkStringTableContainer* GetStringTables( void )
 //---------------------------------------------------------------------------------
 // Add a string to the specified table.
 //---------------------------------------------------------------------------------
-bool INetworkStringTable_AddString( INetworkStringTable* pTable, const char* string )
+int INetworkStringTable_AddString( INetworkStringTable *pTable, bool bIsServer, const char *value, int length = -1, const char *userdata = NULL )
 {
-	if (pTable->GetNumStrings() >= pTable->GetMaxStrings() || pTable->FindStringIndex(string) != INVALID_STRING_INDEX)
-	{
-		return false;
-	}
-	bool bLocked = engine->LockNetworkStringTables(false);
-	pTable->AddString(false, string, strlen(string)+1);
-	engine->LockNetworkStringTables(bLocked);
-	return true;
+	return pTable->AddString(bIsServer, value, length, &userdata);
 }
+
+//---------------------------------------------------------------------------------
+// Sets the userdata of the given string index.
+//---------------------------------------------------------------------------------
+void INetworkStringTable_SetStringUserData( INetworkStringTable *pTable, int stringNumber, int length, const char *userdata )
+{
+	pTable->SetStringUserData(stringNumber, length, userdata);
+}
+
+//---------------------------------------------------------------------------------
+// Returns the userdata of the given string index.
+//---------------------------------------------------------------------------------
+const char *INetworkStringTable_GetStringUserData( INetworkStringTable *pTable, int stringNumber, int length )
+{
+	return (const char *)pTable->GetStringUserData(stringNumber, &length);
+}
+
+//---------------------------------------------------------------------------------
+// Overloads.
+//---------------------------------------------------------------------------------
+BOOST_PYTHON_FUNCTION_OVERLOADS(INetworkStringTable_AddString_Overloads, INetworkStringTable_AddString, 3, 5);
+	
+#if ( SOURCE_ENGINE >= 3 )
+	DECLARE_CLASS_METHOD_OVERLOAD(INetworkStringTableContainer, CreateStringTable, 2, 5);
+#else
+	DECLARE_CLASS_METHOD_OVERLOAD(INetworkStringTableContainer, CreateStringTable, 2, 4);
+	DECLARE_CLASS_METHOD_OVERLOAD(INetworkStringTableContainer, CreateStringTableEx, 2, 5);
+#endif
 
 //---------------------------------------------------------------------------------
 // Wrappers...
 //---------------------------------------------------------------------------------
 void Export_StringTables( void )
 {
+	//-----------------------------------------------------------
+	// Global attributes.
+	//-----------------------------------------------------------
+	BOOST_GLOBAL_ATTRIBUTE("INVALID_STRING_TABLE", INVALID_STRING_TABLE);
 	BOOST_GLOBAL_ATTRIBUTE("INVALID_STRING_INDEX", INVALID_STRING_INDEX);
 
-	// ----------------------------------------------------------
-	// INetworkStringTableContainer
-	// ----------------------------------------------------------
+	//-----------------------------------------------------------
+	// ENetworkStringtableFlags.
+	//-----------------------------------------------------------
+#if (SOURCE_ENGINE >= 3)
+	enum_<ENetworkStringtableFlags>("ENetworkStringtableFlags")
+		.value("NSF_NONE", NSF_NONE)
+		.value("NSF_DICTIONARY_ENABLED", NSF_DICTIONARY_ENABLED)
+		.export_values()
+		;
+#endif
+
+	//-----------------------------------------------------------
+	// INetworkStringTableContainer.
+	//-----------------------------------------------------------
 	BOOST_ABSTRACT_CLASS(INetworkStringTableContainer)
+
+		CLASS_METHOD_OVERLOAD_RET(INetworkStringTableContainer,
+			CreateStringTable,
+			"Creates a string table.",
+			args("tableName", "maxentries", "userdatafixedsize", "userdatanetworkbits", "flags"),
+			reference_existing_object_policy()
+		)
+
+		CLASS_METHOD(INetworkStringTableContainer,
+			RemoveAllTables,
+			"Removes all string tables."
+		)
 
 		CLASS_METHOD(INetworkStringTableContainer,
 			FindTable,
@@ -98,11 +143,34 @@ void Export_StringTables( void )
 			"Returns the length of the container."
 		)
 
+#if ( SOURCE_ENGINE <= 2 )
+		CLASS_METHOD_OVERLOAD_RET(INetworkStringTableContainer,
+			CreateStringTableEx,
+			"Creates a string table.",
+			args("tableName", "maxentries", "userdatafixedsize", "userdatanetworkbits", "bIsFilenames"),
+			reference_existing_object_policy()
+		)
+#endif
+
+		CLASS_METHOD(INetworkStringTableContainer,
+			SetAllowClientSideAddString,
+			"Allows clients to add strings to the given table.",
+			args("table", "bAllowClientSideAddString")
+		)
+
+# if ( SOURCE_ENGINE >= 3 )
+		CLASS_METHOD(INetworkStringTableContainer,
+			CreateDictionary,
+			"Creates a dictionnary based on the given map bsp file?",
+			args("pchMapName")
+		)
+#endif
+
 	BOOST_END_CLASS()
 
-	// ----------------------------------------------------------
-	// INetworkStringTable
-	// ----------------------------------------------------------
+	//-----------------------------------------------------------
+	// INetworkStringTable.
+	//-----------------------------------------------------------
 	BOOST_ABSTRACT_CLASS(INetworkStringTable)
 
 		CLASS_METHOD(INetworkStringTable,
@@ -110,6 +178,11 @@ void Export_StringTables( void )
 			"Returns the name of the table."
 		)
 
+		CLASS_METHOD(INetworkStringTable,
+			GetTableId,
+			"Returns the index of the table."
+		)
+		
 		CLASS_METHOD(INetworkStringTable,
 			GetNumStrings,
 			"Returns the length of the table."
@@ -120,16 +193,47 @@ void Export_StringTables( void )
 			"Returns the maximum length of the table."
 		)
 
-		CLASS_METHOD_TYPEDEF(AddString,
+		CLASS_METHOD(INetworkStringTable,
+			GetEntryBits,
+			"Returns the maximum entries of the table."
+		)
+
+		CLASS_METHOD(INetworkStringTable,
+			SetTick,
+			"Set the tick on which the table has been last modified.",
+			args("tick")
+		)
+
+		CLASS_METHOD(INetworkStringTable,
+			ChangedSinceTick,
+			"Returns True if the table has been modified since the given tick, False otherwise.",
+			args("tick")
+		)
+
+		.def("AddString",
 			INetworkStringTable_AddString,
-			"Add the specified string to the table.",
-			args("value")
+			INetworkStringTable_AddString_Overloads(
+				"Adds a string to the table.",
+				args("bIsServer", "value", "length", "userdata")
+			)
 		)
 
 		CLASS_METHOD(INetworkStringTable,
 			GetString,
 			"Returns the string at the given index.",
 			args("stringNumber")
+		)
+
+		CLASS_METHOD_TYPEDEF(SetStringUserData,
+			INetworkStringTable_SetStringUserData,
+			"Sets the userdata of the given string index.",
+			args("stringNumber", "length", "userdata")
+		)
+
+		CLASS_METHOD_TYPEDEF(GetStringUserData,
+			INetworkStringTable_GetStringUserData,
+			"Returns the userdata of the given string index.",
+			args("stringNumber", "length")
 		)
 
 		CLASS_METHOD(INetworkStringTable,
@@ -139,6 +243,9 @@ void Export_StringTables( void )
 		)
 
 	BOOST_END_CLASS()
-
+	
+	//-----------------------------------------------------------
+	// Global INetworkStringTableContainer accessor.
+	//-----------------------------------------------------------
 	BOOST_FUNCTION(GetStringTables, reference_existing_object_policy());
 }
