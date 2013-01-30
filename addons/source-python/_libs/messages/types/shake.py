@@ -10,6 +10,7 @@ from core import GameEngine
 from messages.base import BaseMessageNoText
 from messages.base import MessageTypes
 
+
 # =============================================================================
 # >> CLASSES
 # =============================================================================
