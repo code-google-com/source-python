@@ -325,6 +325,12 @@ void Export_IVEngineServer( void )
 		)
 
 		CLASS_METHOD(IVEngineServer,
+			LockNetworkStringTables,
+			"Locks/Unlocks the network string tables.",
+			args("lock")
+		)
+
+		CLASS_METHOD(IVEngineServer,
 			GetClientConVarValue,
 			"Get a convar keyvalue for a specific client",
 			args("clientIndex", "name")
