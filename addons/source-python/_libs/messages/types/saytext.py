@@ -1,4 +1,4 @@
-# ../_libs/messages/types/saytext2.py
+# ../_libs/messages/types/saytext.py
 
 # =============================================================================
 # >> IMPORTS

@@ -30,8 +30,8 @@ class _EntitySpecials(object):
     '''Base class used to hold special functionality'''
 
     def damage(
-        self, victim_index, damage=0, damage_type=0,
-        weapon_index=None, hitgroup=0, **keywords):
+            self, victim_index, damage=0, damage_type=0,
+            weapon_index=None, hitgroup=0, **keywords):
         '''Method used to hurt another entity with the given arguments'''
 
         # Import BaseEntity classes
@@ -88,31 +88,33 @@ class _EntitySpecials(object):
         if weapon.classname in _projectile_weapons:
 
             # Set the hInflictor to the weapon's handle
-            Binutils.SetLocInt(take_damage_info +
-                DamageOffsets.hInflictor, weapon.handle.ToInt())
+            Binutils.SetLocInt(
+                take_damage_info + DamageOffsets.hInflictor,
+                weapon.handle.ToInt())
 
         # Is the weapon not a projectile?
         else:
 
             # Set the hInflictor to the entity's handle
-            Binutils.SetLocInt(take_damage_info +
-                DamageOffsets.hInflictor, self.handle.ToInt())
+            Binutils.SetLocInt(
+                take_damage_info + DamageOffsets.hInflictor,
+                self.handle.ToInt())
 
         # Set the hAttacker to the entity's handle
-        Binutils.SetLocInt(take_damage_info +
-            DamageOffsets.hAttacker, self.handle.ToInt())
+        Binutils.SetLocInt(
+            take_damage_info + DamageOffsets.hAttacker, self.handle.ToInt())
 
         # Set the hWeapon to the weapon's handle
-        Binutils.SetLocInt(take_damage_info +
-            DamageOffsets.hWeapon, weapon.handle.ToInt())
+        Binutils.SetLocInt(
+            take_damage_info + DamageOffsets.hWeapon, weapon.handle.ToInt())
 
         # Set the flDamage amount
-        Binutils.SetLocFloat(take_damage_info +
-            DamageOffsets.flDamage, float(damage))
+        Binutils.SetLocFloat(
+            take_damage_info + DamageOffsets.flDamage, float(damage))
 
         # Set the bitsDamageType value
-        Binutils.SetLocInt(take_damage_info +
-            DamageOffsets.bitsDamageType, damage_type)
+        Binutils.SetLocInt(
+            take_damage_info + DamageOffsets.bitsDamageType, damage_type)
 
         # Loop through the given keywords
         for item in keywords:
@@ -121,8 +123,7 @@ class _EntitySpecials(object):
             if item in DamageOffsets:
 
                 # Set the offset's value
-                getattr(
-                    Binutils, 'SetLoc%s' % DamageOffsets[item]['type'])(
+                getattr(Binutils, 'SetLoc%s' % DamageOffsets[item]['type'])(
                     take_damage_info + DamageOffsets[item]['offset'],
                     keywords[item])
 

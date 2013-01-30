@@ -45,8 +45,9 @@ class _CommandRegistration(object):
 class _PlayerCommandRegistration(_CommandRegistration):
     '''Base Player command registration class'''
 
-    def __init__(self, names, level=None,
-      permission=None, flag=None, fail_callback=None):
+    def __init__(
+        self, names, level=None, permission=None,
+            flag=None, fail_callback=None):
         '''Stores the given arguments'''
         self.names = names
         self.args = (level, permission, flag, fail_callback)

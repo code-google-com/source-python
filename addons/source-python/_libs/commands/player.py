@@ -22,7 +22,8 @@ from core.excepthook import ExceptHooks
 class _PlayerCommandRegistry(_CommandRegistry):
     '''Base Player command registration class'''
 
-    def register_command(self, names, callback, level=None,
+    def register_command(
+        self, names, callback, level=None,
             permission=None, flag=None, fail_callback=None):
         '''Registers the given command names to the given callback'''
 
@@ -129,7 +130,7 @@ class _AuthCallback(object):
 
             # Is the player authorized?
             if not AuthManager.is_player_authorized(
-              playerinfo, self.level, self.permission, self.flag):
+                    playerinfo, self.level, self.permission, self.flag):
 
                 # Is there fail callback?
                 if not self.fail_callback is None:

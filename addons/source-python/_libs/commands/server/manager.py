@@ -86,7 +86,7 @@ class _ServerCommandRegistry(_CommandRegistry):
 
                 # Add the command name to the dictionary
                 self._commands[name] = _ServerCommandList(
-                                    name, description, flags)
+                    name, description, flags)
 
             # Add the callback to the command's list
             self._commands[name].append(callback)

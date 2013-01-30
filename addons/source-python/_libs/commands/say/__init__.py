@@ -53,7 +53,8 @@ def _say_commands(CCommand):
     # Was a registered command used?
     if name in SayCommandRegistry._commands:
 
-        return_val =  SayCommandRegistry._commands[
+        # Call the command and get the return value
+        return_val = SayCommandRegistry._commands[
             name]._command_called(index, teamonly, CCommand)
 
     # Loop through all say filters

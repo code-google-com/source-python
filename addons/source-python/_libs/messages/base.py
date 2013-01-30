@@ -69,7 +69,7 @@ class _MessageTypes(dict):
 
             # Set the message prefix
             self._message_prefix = _UserMessageData['message_prefix']
-            
+
         # Is the protobuf system not implemented in the current engine?
         else:
 
@@ -140,7 +140,7 @@ class BaseMessage(object):
 
             # Get all languages and recipient indexes for each language
             recipient_languages = self._get_recipients_per_language(recipients)
-            
+
             # Loop through all languages needed to be sent
             for language in recipient_languages:
 
@@ -196,7 +196,7 @@ class BaseMessage(object):
 
     def _get_player_message(self, index):
         '''Returns the lang string for the current player index'''
-        
+
         # Get the player's language
         language = GameEngine.GetClientConVarValue(index, 'cl_language')
 
@@ -205,7 +205,8 @@ class BaseMessage(object):
 
     def _get_protobuf_instance(self):
         '''Returns the proper usermessage instance for the usermessage type'''
-        return getattr(Usermessages,
+        return getattr(
+            Usermessages,
             MessageTypes._message_prefix + self.__class__.__name__)()
 
     def _get_usermsg_instance(self, recipients):

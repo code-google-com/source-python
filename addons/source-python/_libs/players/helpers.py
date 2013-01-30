@@ -17,6 +17,7 @@ from entities.helpers import *
 # Get an instance of the PlayerInfoManager
 _player_info_manager = Player.GetPlayerInfoManager()
 
+
 # =============================================================================
 # >> HELPER FUNCTIONS
 # =============================================================================

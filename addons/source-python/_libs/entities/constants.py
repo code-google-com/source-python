@@ -51,7 +51,7 @@ class _DamageTypes(_ConstantBase):
 
         # Is the attribute a proper constant?
         if ('damage_types' in _entity_values
-          and attr in _entity_values['damage_types']):
+                and attr in _entity_values['damage_types']):
 
             # Return the constant's value
             return _entity_values['damage_types'][attr]
