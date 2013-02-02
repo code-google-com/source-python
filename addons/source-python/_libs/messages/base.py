@@ -92,6 +92,9 @@ class _MessageTypes(dict):
                 # Add the message name and index to the dictionary
                 self[value] = index
 
+                # Increase the index
+                index += 1
+
 # Get the _MessageTypes instance
 MessageTypes = _MessageTypes()
 

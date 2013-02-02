@@ -64,7 +64,8 @@ def plugin_load():
         SPCommands.call_command('auth', ['load'] + auth_providers)
 
     # Set the default language
-    LanguageManager._register_default_language(core_settings['LANGUAGE'])
+    LanguageManager._register_default_language(
+        core_settings['BASE_SETTINGS']['language'])
 
 
 def event_fire(GameEvent):
