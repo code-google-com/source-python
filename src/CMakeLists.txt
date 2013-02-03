@@ -79,39 +79,60 @@ Set(SOURCEPYTHON_ADDON_FILES
 )
 
 # ------------------------------------------------------------------
-# Modules
+# Generic plugin stuff.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_MODULE_HEADERS
+Set(SOURCEPYTHON_GENERIC_HEADERS
 	core/modules/export_main.h
 	core/modules/cvar/cvar_concommand.h
 )
 
-Set(SOURCEPYTHON_MODULE_SOURCES
+Set(SOURCEPYTHON_GENERIC_SOURCES
 	core/modules/export_main.cpp
 	core/modules/cvar/cvar_concommand.cpp
 )
 
+Set(SOURCEPYTHON_GENERIC_FILES
+	${SOURCEPYTHON_GENERIC_HEADERS}
+	${SOURCEPYTHON_GENERIC_SOURCES}
+)
+
 # ------------------------------------------------------------------
-# All module files
+# Engine module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_ENGINE_MODULE_HEADERS
+	core/modules/engine/eiface_wrap.h
+)
+
+Set(SOURCEPYTHON_ENGINE_MODULE_SOURCES
+)
+
+Set(SOURCEPYTHON_ENGINE_MODULE_FILES
+	${SOURCEPYTHON_ENGINE_MODULE_HEADERS}
+	${SOURCEPYTHON_ENGINE_MODULE_SOURCES}
+)
+
+# ------------------------------------------------------------------
+# All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
-	${SOURCEPYTHON_MODULE_HEADERS}
-	${SOURCEPYTHON_MODULE_SOURCES}
+	${SOURCEPYTHON_ENGINE_MODULE_FILES}
 )
 
 # ------------------------------------------------------------------
 # Create source groups for everything to make our projects nice and 
 # clean.
 # ------------------------------------------------------------------
-Source_Group("Header Files\\Addons"	FILES ${SOURCEPYTHON_ADDON_HEADERS})
-Source_Group("Header Files\\Core"   FILES ${SOURCEPYTHON_CORE_HEADERS})
-Source_Group("Header Files\\Util"   FILES ${SOURCEPYTHON_UTIL_HEADERS})
-Source_Group("Header Files\\Module"	FILES ${SOURCEPYTHON_MODULE_HEADERS})
+Source_Group("Header Files\\Addons"			FILES ${SOURCEPYTHON_ADDON_HEADERS})
+Source_Group("Header Files\\Core"   		FILES ${SOURCEPYTHON_CORE_HEADERS})
+Source_Group("Header Files\\Util"   		FILES ${SOURCEPYTHON_UTIL_HEADERS})
+Source_Group("Header Files\\Generic"		FILES ${SOURCEPYTHON_GENERIC_HEADERS})
+Source_Group("Header Files\\Module\\Engine"	FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
 
-Source_Group("Source Files\\Addons" FILES ${SOURCEPYTHON_ADDON_SOURCES})
-Source_Group("Source Files\\Core"   FILES ${SOURCEPYTHON_CORE_SOURCES})
-Source_Group("Source Files\\Util"   FILES ${SOURCEPYTHON_UTIL_SOURCES})
-Source_Group("Source Files\\Module"	FILES ${SOURCEPYTHON_MODULE_SOURCES})
+Source_Group("Source Files\\Addons" 		FILES ${SOURCEPYTHON_ADDON_SOURCES})
+Source_Group("Source Files\\Core"   		FILES ${SOURCEPYTHON_CORE_SOURCES})
+Source_Group("Source Files\\Util"   		FILES ${SOURCEPYTHON_UTIL_SOURCES})
+Source_Group("Source Files\\Generic"		FILES ${SOURCEPYTHON_GENERIC_SOURCES})
+Source_Group("Source Files\\Module\\Engine"	FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
@@ -126,7 +147,8 @@ Source_Group("Source Files\\Module"	FILES ${SOURCEPYTHON_MODULE_SOURCES})
 Add_Library(core SHARED 
 	${SOURCEPYTHON_CORE_FILES}
     ${SOURCEPYTHON_ADDON_FILES}
-    ${SOURCEPYTHON_MODULE_FILES}
+	${SOURCEPYTHON_GENERIC_FILES}
+	${SOURCEPYTHON_MODULE_FILES}
     ${SOURCEPYTHON_UTIL_FILES}
 )
 
