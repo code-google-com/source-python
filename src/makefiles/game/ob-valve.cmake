@@ -7,3 +7,4 @@
 # Set the engine version.
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE 1)
+Set(SOURCE_GAME "ob")

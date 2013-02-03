@@ -36,6 +36,19 @@
 //---------------------------------------------------------------------------------
 using namespace boost::python;
 
+
+//---------------------------------------------------------------------------------
+// Define checks
+//---------------------------------------------------------------------------------
+
+#if !defined(SOURCE_ENGINE)
+#error("SOURCE_ENGINE define must be globally defined, did we forget?");
+#endif
+
+#if !defined(SOURCE_GAME)
+#error("SOURCE_GAME define must be globally defined, did we forget?");
+#endif
+
 //---------------------------------------------------------------------------------
 // Surround boost python statements with this macro in order to handle exceptions.
 //---------------------------------------------------------------------------------
@@ -187,6 +200,24 @@ using namespace boost::python;
 		struct has_back_reference<classname> : mpl::true_ \
 		{}; \
 	}}
+
+//---------------------------------------------------------------------------------
+// These macros allow us to includ engine / game specific files
+//---------------------------------------------------------------------------------
+
+// Has to be a C++ macro so we can use another define
+// directly after the call to concatenate the objects
+#define GET_ENGINE_VALUE() engine
+
+// Pre-path macros
+#define JOIN_PRE_PATH(pre_path, folder, file_path)		XSTRINGIFY(pre_path ## / ## folder ## / ## file_path)
+#define GAME_INCLUDE_PRE_PATH(pre_path, file_path)		JOIN_PRE_PATH(pre_path, SOURCE_GAME, file_path)
+#define ENGINE_INCLUDE_PRE_PATH(pre_path, file_path)	JOIN_PRE_PATH(pre_path, GET_ENGINE_VALUE()SOURCE_ENGINE, file_path)
+
+// Current working directory macros
+#define JOIN_PATH(folder, file_path)					XSTRINGIFY(folder ## / ## file_path)
+#define GAME_INCLUDE_PATH(file_path)					JOIN_PATH(SOURCE_GAME, file_path)
+#define ENGINE_INCLUDE_PATH(file_path)					JOIN_PATH(GET_ENGINE_VALUE()SOURCE_ENGINE, file_path)
 
 //---------------------------------------------------------------------------------
 // These typedefs save some typing. Use this policy for any functions that return

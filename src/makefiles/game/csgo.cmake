@@ -7,3 +7,4 @@
 # Set the engine version.
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE 3)
+Set(SOURCE_GAME "csgo")
