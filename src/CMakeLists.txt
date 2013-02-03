@@ -101,9 +101,14 @@ Set(SOURCEPYTHON_GENERIC_FILES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENGINE_MODULE_HEADERS
 	core/modules/engine/eiface_wrap.h
+    core/modules/engine/eiface_engine_base.h
+    core/modules/engine/engine${SOURCE_ENGINE}/eiface_engine_implementation.h
 )
 
 Set(SOURCEPYTHON_ENGINE_MODULE_SOURCES
+    core/modules/engine/eiface_wrap.cpp
+    core/modules/engine/eiface_engine_base.cpp
+    core/modules/engine/engine${SOURCE_ENGINE}/eiface_engine_implementation.cpp
 )
 
 Set(SOURCEPYTHON_ENGINE_MODULE_FILES
@@ -171,6 +176,7 @@ EndIf()
 Add_Definitions(
 	-DSOURCE_ENGINE=${SOURCE_ENGINE}
     -DBOOST_PYTHON_MAX_ARITY=18
+    -DSOURCE_GAME=${SOURCE_GAME}
 )
 
 # ------------------------------------------------------------------
