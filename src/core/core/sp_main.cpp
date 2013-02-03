@@ -81,16 +81,13 @@ INetworkStringTableContainer* networkstringtable = NULL;
 //---------------------------------------------------------------------------------
 // External globals
 //---------------------------------------------------------------------------------
-extern DCCallVM* g_pCallVM;
 extern ICvar* g_pCVar;
-
 
 //---------------------------------------------------------------------------------
 // Extern functions
 //---------------------------------------------------------------------------------
 extern void InitCVars();
 extern void ClearAllCommands();
-extern PLUGIN_RESULT DispatchClientCommand(edict_t *pEntity, const CCommand &command);
 
 //---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -273,9 +270,6 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
-	// Allocate dyncall vm.
-	g_pCallVM = dcNewCallVM(2048);
-
 	return true;
 }
 
@@ -298,12 +292,6 @@ void CSourcePython::Unload( void )
 	DisconnectTier2Libraries( );
 	DisconnectTier1Libraries( );
 #endif
-
-	// Remove the dyncall vm.
-	if( g_pCallVM ) {
-		dcFree(g_pCallVM);
-		g_pCallVM = NULL;
-	}
 }
 
 //---------------------------------------------------------------------------------
@@ -449,7 +437,7 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 #if(SOURCE_ENGINE >= 1)
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
 {
-	return DispatchClientCommand(pEntity, args);
+	return PLUGIN_CONTINUE;
 }
 #else
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
