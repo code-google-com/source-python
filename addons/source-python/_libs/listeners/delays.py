@@ -167,5 +167,11 @@ class _TickDelays(dict):
             # If not, remove the delay's time from the dictionary
             del self[delay_object.exec_time]
 
+        # Are there any remaining delays?
+        if not self:
+
+            # Unregister the listener
+            TickListeners.unregister_tick_listener(self._tick)
+
 # Get the _TickDelays instance
 TickDelays = _TickDelays()
