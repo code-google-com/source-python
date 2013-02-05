@@ -60,7 +60,7 @@ class LangStrings(dict):
         main_strings = ConfigObj(self._mainfile, encoding=encoding)
 
         # Does the server specific file exist?
-        if not self._serverfile.isfile():
+        if not self._serverfile.isfile() and not infile.startswith('_core/'):
 
             # Create the server specific file
             self._create_server_file()
@@ -159,11 +159,9 @@ class LangStrings(dict):
         server_file = ConfigObj(self._serverfile)
 
         # Set the initial comments to explain what the file is for
-        server_file.initial_comment = [
-            'This file has been created to host new language translations for',
-            'the ../%s' % self._mainfile.replace(GAME_PATH, ''),
-            'file for this particular server.',
-        ]
+        server_file.initial_comment = _core_strings[
+            'Initial Comment'].get_string(LanguageManager.default,
+            filename=self._mainfile.replace(GAME_PATH, '')).splitlines()
 
         # Write the server specific file
         server_file.write()
