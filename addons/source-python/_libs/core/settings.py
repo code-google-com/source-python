@@ -21,7 +21,7 @@ from translations.strings import LangStrings
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the core language strings
-_core_strings = LangStrings('core_settings_strings')
+_core_strings = LangStrings('_core/core_settings_strings')
 
 # Get a list of auth providers
 _auth_providers = [
