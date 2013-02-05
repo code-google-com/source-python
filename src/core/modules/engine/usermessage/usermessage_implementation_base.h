@@ -24,33 +24,45 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _USERMESSAGE_IMPLEMENTATION_BASE_H_
+#define _USERMESSAGE_IMPLEMENTATION_BASE_H_
 
-//---------------------------------------------------------------------------------
-// Includes
-//---------------------------------------------------------------------------------
+#include "irecipientfilter.h"
 #include "eiface.h"
 
-#include "../eiface_engine_base.h"
+extern IVEngineServer* engine;
 
 //---------------------------------------------------------------------------------
-// Global externs we need.
-//---------------------------------------------------------------------------------
-extern IVEngineServer * engine;
-
-//---------------------------------------------------------------------------------
-// Purpose: Source Engine 3 Specific engine implementation calls
+// Purpose: Abstract interface for all usermessage implementations
 //---------------------------------------------------------------------------------
 
-// CS:GO SDK has a typedef CPlayerBitVec which could mean something different
-// depending on what the ABSOLUTE_MAX_PLAYERS define is set to. Make sure our
-// engine wrapper supports both CPlayerBitVec typedef as well as the old OB
-// method of CBitVec< ABSOLUTE_MAX_PLAYERS >
-class CPlayerBitVecWrapperImplementation : public CPlayerBitVec
-{
-};
-
-class CEngineServerImplementation : public CEngineServerImplementationBase
+abstract_class IUsermessageImplementationBase
 {
 public:
-	virtual KeyValues *get_launch_options();
+	IUsermessageImplementationBase(const IRecipientFilter &recipient_filter, const char *message_name);
+	// Inline virtual destructor -- ensures all usermessages calls the right destructor
+	virtual ~IUsermessageImplementationBase() {}
+
+	// Pure-virtual methods which must be inherited and overwritten in the inherited
+	// classes
+	virtual void set_char(const char *field_name, char field_value) = 0;
+	virtual void set_byte(const char *field_name, unsigned char field_value) = 0;
+	virtual void set_short(const char *field_name, signed short field_value) = 0;
+	virtual void set_long(const char *field_name, signed long field_value) = 0;
+	virtual void set_float(const char *field_name, float field_value) = 0;
+
+	// Unknown sized buffers
+	virtual void set_buffer(const char *field_name, void *buffer, unsigned int num_bytes) = 0;
+	virtual void set_string(const char *field_name, const char *field_value) = 0;
+
+protected:
+	virtual void set_message_index() = 0;
+	virtual void send_message_internal() = 0;
+
+protected:
+	const char *m_message_name;
+	const IRecipientFilter &m_recipient_filter;
+	unsigned int m_message_index;
 };
+
+#endif // _USERMESSAGE_IMPLEMENTATION_BASE_H_

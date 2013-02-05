@@ -1,3 +1,4 @@
+#include "usermessage.h"
 /**
 * =============================================================================
 * Source Python
@@ -24,33 +25,44 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#include "usermessage.h"
 
-//---------------------------------------------------------------------------------
-// Includes
-//---------------------------------------------------------------------------------
-#include "eiface.h"
-
-#include "../eiface_engine_base.h"
-
-//---------------------------------------------------------------------------------
-// Global externs we need.
-//---------------------------------------------------------------------------------
-extern IVEngineServer * engine;
-
-//---------------------------------------------------------------------------------
-// Purpose: Source Engine 3 Specific engine implementation calls
-//---------------------------------------------------------------------------------
-
-// CS:GO SDK has a typedef CPlayerBitVec which could mean something different
-// depending on what the ABSOLUTE_MAX_PLAYERS define is set to. Make sure our
-// engine wrapper supports both CPlayerBitVec typedef as well as the old OB
-// method of CBitVec< ABSOLUTE_MAX_PLAYERS >
-class CPlayerBitVecWrapperImplementation : public CPlayerBitVec
+CUserMessage::CUserMessage(const IRecipientFilter &recipient_filter, const char *message_name ) :
+	CUserMessageImplementation(recipient_filter, message_name),
+	m_sent(false)
 {
-};
+}
 
-class CEngineServerImplementation : public CEngineServerImplementationBase
+CUserMessage::~CUserMessage()
 {
-public:
-	virtual KeyValues *get_launch_options();
-};
+	send_message();
+}
+
+void CUserMessage::send_message()
+{
+	if (m_sent == false)
+	{
+		send_message_internal();
+		m_sent = true;
+	}
+}
+
+bool CUserMessage::has_been_sent() const
+{
+	return m_sent;
+}
+
+const char * CUserMessage::get_message_name() const
+{
+	return m_message_name;
+}
+
+const int CUserMessage::get_message_index() const
+{
+	return m_message_index;
+}
+
+const IRecipientFilter & CUserMessage::get_recipient_filter() const
+{
+	return m_recipient_filter;
+}

@@ -24,33 +24,39 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _USERMESSAGE_IMPLEMENTATION_H_
+#define _USERMESSAGE_IMPLEMENTATION_H_
 
-//---------------------------------------------------------------------------------
-// Includes
-//---------------------------------------------------------------------------------
-#include "eiface.h"
+#include "irecipientfilter.h"
+#include "bitbuf.h"
 
-#include "../eiface_engine_base.h"
+#include "../usermessage_implementation_base.h"
 
-//---------------------------------------------------------------------------------
-// Global externs we need.
-//---------------------------------------------------------------------------------
-extern IVEngineServer * engine;
+extern IServerGameDLL *servergamedll;
 
-//---------------------------------------------------------------------------------
-// Purpose: Source Engine 3 Specific engine implementation calls
-//---------------------------------------------------------------------------------
-
-// CS:GO SDK has a typedef CPlayerBitVec which could mean something different
-// depending on what the ABSOLUTE_MAX_PLAYERS define is set to. Make sure our
-// engine wrapper supports both CPlayerBitVec typedef as well as the old OB
-// method of CBitVec< ABSOLUTE_MAX_PLAYERS >
-class CPlayerBitVecWrapperImplementation : public CPlayerBitVec
-{
-};
-
-class CEngineServerImplementation : public CEngineServerImplementationBase
+class CUserMessageImplementation : public IUsermessageImplementationBase
 {
 public:
-	virtual KeyValues *get_launch_options();
+	CUserMessageImplementation(const IRecipientFilter &recipient_filter, const char *message_name);
+
+	// Pure-virtual methods which must be inherited and overwritten in the inherited
+	// classes
+	virtual void set_char(const char *field_name, char field_value);
+	virtual void set_byte(const char *field_name, unsigned char field_value);
+	virtual void set_short(const char *field_name, signed short field_value);
+	virtual void set_long(const char *field_name, signed long field_value);
+	virtual void set_float(const char *field_name, float field_value);
+
+	// Unknown sized buffers
+	virtual void set_buffer(const char *field_name, void *buffer, unsigned int num_bytes);
+	virtual void set_string(const char *field_name, const char *field_value);
+
+protected:
+	virtual void set_message_index();
+	virtual void send_message_internal();
+
+private:
+	bf_write *m_buffer;
 };
+
+#endif // _USERMESSAGE_IMPLEMENTATION_H_
