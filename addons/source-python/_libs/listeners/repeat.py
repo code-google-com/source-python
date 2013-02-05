@@ -3,6 +3,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Time
+import time
+
 # Source.Python Imports
 #   Listeners
 from listeners.delays import TickDelays
@@ -93,6 +97,9 @@ class Repeat(object):
         # Set the status to paused
         self._status = Status.PAUSED
 
+        # Set the remaining time in the current loop
+        self._loop_time = self._delay.exec_time - time.time()
+
         # Cancel the delay
         TickDelays.cancel_delay(self._delay)
 
@@ -106,7 +113,7 @@ class Repeat(object):
             return
 
         # Start the delay
-        self._delay = TickDelays.delay(self._interval, self._execute)
+        self._delay = TickDelays.delay(self._loop_time, self._execute)
 
     def extend(self, adjustment):
         '''Adds to the number of loops to be made'''
@@ -204,3 +211,8 @@ class Repeat(object):
     def time(self):
         '''Returns the total time it will take to complete the repeat'''
         return self.limit * self._interval
+
+    @property
+    def status(self):
+        '''Returns the status of the repeat'''
+        return self._status
