@@ -21,6 +21,9 @@ class _LanguageManager(ConfigObj):
     # since most addons will have English values
     fallback = 'en'
 
+    # Set the default language to en by default
+    default = 'en'
+
     def _register_default_language(self, language):
         '''Registers the default language for the current server'''
 
@@ -32,12 +35,6 @@ class _LanguageManager(ConfigObj):
 
             # Set the default language
             self.default = language
-
-        # Was no language shortname found?
-        else:
-
-            # Set the default language to English
-            self.default = 'en'
 
     def get_language(self, language):
         '''Returns the shortname for the given language'''
