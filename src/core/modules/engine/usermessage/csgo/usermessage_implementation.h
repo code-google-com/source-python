@@ -24,33 +24,10 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#include "../usermessage_implementation_base.h"
 
-//---------------------------------------------------------------------------------
-// Includes
-//---------------------------------------------------------------------------------
-#include "eiface.h"
-
-#include "../eiface_engine_base.h"
-
-//---------------------------------------------------------------------------------
-// Global externs we need.
-//---------------------------------------------------------------------------------
-extern IVEngineServer * engine;
-
-//---------------------------------------------------------------------------------
-// Purpose: Source Engine 3 Specific engine implementation calls
-//---------------------------------------------------------------------------------
-
-// CS:GO SDK has a typedef CPlayerBitVec which could mean something different
-// depending on what the ABSOLUTE_MAX_PLAYERS define is set to. Make sure our
-// engine wrapper supports both CPlayerBitVec typedef as well as the old OB
-// method of CBitVec< ABSOLUTE_MAX_PLAYERS >
-class CPlayerBitVecWrapperImplementation : public CPlayerBitVec
-{
-};
-
-class CEngineServerImplementation : public CEngineServerImplementationBase
+class CUserMessageImplementation : public IUsermessageImplementationBase
 {
 public:
-	virtual KeyValues *get_launch_options();
+	CUserMessageImplementation(const char *message_name);
 };

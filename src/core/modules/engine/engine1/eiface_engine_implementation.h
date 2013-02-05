@@ -39,6 +39,13 @@ extern IVEngineServer * engine;
 //---------------------------------------------------------------------------------
 // Purpose: Source Engine 1 Specific engine implementation calls
 //---------------------------------------------------------------------------------
+
+// Engine 1 uses CBitVec<ABSOLUTE_PLAYER_LIMIT> all the time as CPlayerBitVec
+// is not a define in the OB SDK
+class CPlayerBitVecWrapperImplementation : public CBitVec<ABSOLUTE_PLAYER_LIMIT>
+{
+};
+
 class CEngineServerImplementation : public CEngineServerImplementationBase
 {
 public:

@@ -246,7 +246,7 @@ void CEngineServer::static_decal( const Vector &originInEntitySpace, int decalIn
 	engine->StaticDecal(originInEntitySpace, decalIndex, entityIndex, modelIndex, lowpriority);
 }
 
-void CEngineServer::message_determine_multicast_recipients( bool usepas, const Vector& origin, CPlayerBitVec& playerbits )
+void CEngineServer::message_determine_multicast_recipients( bool usepas, const Vector& origin, CPlayerBitVecWrapper& playerbits )
 {
 	engine->Message_DetermineMulticastRecipients(usepas, origin, playerbits);
 }

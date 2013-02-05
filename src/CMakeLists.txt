@@ -117,10 +117,31 @@ Set(SOURCEPYTHON_ENGINE_MODULE_FILES
 )
 
 # ------------------------------------------------------------------
+# Engine / Usermessage module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS
+    core/modules/engine/usermessage/usermessage.h
+    core/modules/engine/usermessage/usermessage_implementation_base.h
+    core/modules/engine/usermessage/${SOURCE_GAME}/usermessage_implementation.h
+)
+
+Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES
+    core/modules/engine/usermessage/usermessage.cpp
+    core/modules/engine/usermessage/usermessage_implementation_base.cpp
+    core/modules/engine/usermessage/${SOURCE_GAME}/usermessage_implementation.cpp
+)
+
+Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES
+	${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS}
+	${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES}
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
 	${SOURCEPYTHON_ENGINE_MODULE_FILES}
+    ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES}
 )
 
 # ------------------------------------------------------------------
@@ -132,12 +153,14 @@ Source_Group("Header Files\\Core"   		FILES ${SOURCEPYTHON_CORE_HEADERS})
 Source_Group("Header Files\\Util"   		FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"		FILES ${SOURCEPYTHON_GENERIC_HEADERS})
 Source_Group("Header Files\\Module\\Engine"	FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons" 		FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"   		FILES ${SOURCEPYTHON_CORE_SOURCES})
 Source_Group("Source Files\\Util"   		FILES ${SOURCEPYTHON_UTIL_SOURCES})
 Source_Group("Source Files\\Generic"		FILES ${SOURCEPYTHON_GENERIC_SOURCES})
 Source_Group("Source Files\\Module\\Engine"	FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 

@@ -31,6 +31,7 @@
 //---------------------------------------------------------------------------------
 #include "eiface.h"
 #include "../../utility/wrap_macros.h"
+#include "usermessage/usermessage.h"
 
 // Include the engine specific include
 #include ENGINE_INCLUDE_PATH(eiface_engine_implementation.h)
@@ -39,6 +40,13 @@
 // Global externs we need.
 //---------------------------------------------------------------------------------
 extern IVEngineServer* engine;
+
+//---------------------------------------------------------------------------------
+// Purpose: Allow the engine to decide which class to use for player bit vec
+//---------------------------------------------------------------------------------
+class CPlayerBitVecWrapper : public CPlayerBitVecWrapperImplementation
+{
+};
 
 //---------------------------------------------------------------------------------
 // Purpose: Interface the engine exposes to the game DLL
@@ -106,10 +114,12 @@ public:
 
 	virtual void static_decal( const Vector &originInEntitySpace, int decalIndex, int entityIndex, int modelIndex, bool lowpriority );
 
-	virtual void message_determine_multicast_recipients( bool usepas, const Vector& origin, CPlayerBitVec& playerbits );
+	virtual void message_determine_multicast_recipients( bool usepas, const Vector& origin, CPlayerBitVecWrapper& playerbits );
 	virtual bf_write* entity_message_begin( int ent_index, ServerClass * ent_class, bool reliable );
-	virtual void message_end( void );
-	virtual void send_user_message( IRecipientFilter &filter, int message, const google::protobuf::Message &msg );
+
+	virtual void send_user_message(const CUserMessage &msg);
+	//virtual void message_end( void );
+	//virtual void send_user_message( IRecipientFilter &filter, int message, const google::protobuf::Message &msg );
 	
 	virtual void client_printf( edict_t *pEdict, const char *szMsg );
 	virtual void con_nprintf( int pos, const char* szString );

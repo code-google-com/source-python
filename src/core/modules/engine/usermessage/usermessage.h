@@ -24,33 +24,30 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _USERMESSAGE_H_
+#define _USERMESSAGE_H_
 
-//---------------------------------------------------------------------------------
-// Includes
-//---------------------------------------------------------------------------------
-#include "eiface.h"
+#include "irecipientfilter.h"
 
-#include "../eiface_engine_base.h"
+#include "../../../utility/wrap_macros.h"
 
-//---------------------------------------------------------------------------------
-// Global externs we need.
-//---------------------------------------------------------------------------------
-extern IVEngineServer * engine;
+#include GAME_INCLUDE_PATH(usermessage_implementation.h)
 
-//---------------------------------------------------------------------------------
-// Purpose: Source Engine 3 Specific engine implementation calls
-//---------------------------------------------------------------------------------
-
-// CS:GO SDK has a typedef CPlayerBitVec which could mean something different
-// depending on what the ABSOLUTE_MAX_PLAYERS define is set to. Make sure our
-// engine wrapper supports both CPlayerBitVec typedef as well as the old OB
-// method of CBitVec< ABSOLUTE_MAX_PLAYERS >
-class CPlayerBitVecWrapperImplementation : public CPlayerBitVec
-{
-};
-
-class CEngineServerImplementation : public CEngineServerImplementationBase
+class CUserMessage : public CUserMessageImplementation
 {
 public:
-	virtual KeyValues *get_launch_options();
+	CUserMessage(const IRecipientFilter &recipient_filter, const char *message_name);
+	~CUserMessage();
+
+	virtual void send_message();
+
+	const char *get_message_name() const;
+	const int get_message_index() const;
+	const IRecipientFilter &get_recipient_filter() const;
+	bool has_been_sent() const;
+
+private:
+	bool m_sent;
 };
+
+#endif
