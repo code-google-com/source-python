@@ -144,9 +144,6 @@ class Repeat(object):
         # Add one to the current count
         self._count += 1
 
-        # Call the repeat's callback
-        self.callback(*self.args, **self.kw)
-
         # Are any more loops to be made?
         if self.remaining or not self._limit:
 
@@ -158,6 +155,9 @@ class Repeat(object):
 
             # Set the status to stopped
             self._status = Status.STOPPED
+
+        # Call the repeat's callback
+        self.callback(*self.args, **self.kw)
 
     @property
     def remaining(self):
