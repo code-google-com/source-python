@@ -50,6 +50,9 @@ def _say_commands(CCommand):
     # Get a bool value for whether the command was team-only
     teamonly = CCommand[0] == 'say_team'
 
+    # Set return_val base value
+    return_val = True
+
     # Was a registered command used?
     if name in SayCommandRegistry._commands:
 

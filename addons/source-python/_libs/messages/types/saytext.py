@@ -22,6 +22,7 @@ class SayText(BaseMessage):
 
         # Store all the base attributes
         self.message = message
+        self.index = index
         self.users = users
         self.tokens = tokens
 
