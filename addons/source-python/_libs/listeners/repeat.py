@@ -199,7 +199,7 @@ class Repeat(object):
 
     @property
     def timeleft(self):
-        '''Returns the remaining time till the end of the '''
+        '''Returns the remaining time till the end of the repeat'''
         return self.remaining * self._interval
 
     @property
@@ -208,7 +208,7 @@ class Repeat(object):
         return self._count * self._interval
 
     @property
-    def time(self):
+    def total_time(self):
         '''Returns the total time it will take to complete the repeat'''
         return self.limit * self._interval
 
