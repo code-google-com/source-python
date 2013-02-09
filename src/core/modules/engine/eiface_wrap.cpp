@@ -121,14 +121,14 @@ const char* CEngineServer::get_player_network_id_string( const edict_t *e )
 	return engine->GetPlayerNetworkIDString(e);
 }
 
-bool CEngineServer::is_userid_in_user( int userID )
+bool CEngineServer::is_userid_in_use( int userID )
 {
-	return engine->IsUserIDInUse(userID);
+	return m_engine_server_implementation.is_userid_in_use(userID);
 }
 
 int CEngineServer::get_loading_progress_for_userid( int userID )
 {
-	return engine->GetLoadingProgressForUserID(userID);
+	return m_engine_server_implementation.get_loading_progress_for_userid(userID);
 }
 
 int CEngineServer::get_entity_count( void )
@@ -256,14 +256,9 @@ bf_write* CEngineServer::entity_message_begin( int ent_index, ServerClass * ent_
 	return engine->EntityMessageBegin(ent_index, ent_class, reliable);
 }
 
-void CEngineServer::message_end( void )
+void CEngineServer::send_user_message( CUserMessage &msg )
 {
-	engine->MessageEnd();
-}
-
-void CEngineServer::send_user_message( IRecipientFilter &filter, int message, const google::protobuf::Message &msg )
-{
-	engine->SendUserMessage(filter, message, msg);
+	msg.send_message();
 }
 
 void CEngineServer::client_printf( edict_t *pEdict, const char *szMsg )
@@ -405,7 +400,7 @@ void CEngineServer::log_print( const char *msg )
 
 bool CEngineServer::is_log_enabled()
 {
-	return engine->IsLogEnabled();
+	return m_engine_server_implementation.is_log_enabled();
 }
 
 void CEngineServer::build_entity_cluster_list( edict_t *pEdict, PVSInfo_t *pPVSInfo )
@@ -425,7 +420,7 @@ void CEngineServer::trigger_moved( edict_t *pTriggerEnt, bool testSurroundingBou
 
 ISpatialPartition * CEngineServer::create_spatial_partition( const Vector& worldmin, const Vector& worldmax )
 {
-	return engine->CreateSpatialPartition(worldmin, worldmax);
+	return m_engine_server_implementation.create_spatial_partition(worldmin, worldmax);
 }
 
 void CEngineServer::destroy_spatial_partition( ISpatialPartition *partition )
@@ -450,7 +445,7 @@ bool CEngineServer::is_paused()
 
 float CEngineServer::get_timescale() const
 {
-	return engine->GetTimescale();
+	return m_engine_server_implementation.get_timescale();
 }
 
 void CEngineServer::force_exact_file( const char *s )
@@ -485,7 +480,7 @@ int CEngineServer::is_in_commentary_mode()
 
 bool CEngineServer::is_level_main_menu_background()
 {
-	return engine->IsLevelMainMenuBackground();
+	return m_engine_server_implementation.is_level_main_menu_background();
 }
 
 void CEngineServer::set_area_portal_states( const int *portalNumbers, const int *isOpen, int nPortals )
@@ -560,7 +555,7 @@ bool CEngineServer::is_low_violence()
 
 bool CEngineServer::is_any_client_low_violence()
 {
-	return engine->IsAnyClientLowViolence();
+	return m_engine_server_implementation.is_any_client_low_violence();
 }
 
 QueryCvarCookie_t CEngineServer::start_query_cvar_value( edict_t *pPlayerEntity, const char *pName )
@@ -590,42 +585,42 @@ void CEngineServer::set_dedicated_server_benchmark_mode( bool bBenchmarkMode )
 
 bool CEngineServer::is_split_screen_player( int ent_num )
 {
-	return engine->IsSplitScreenPlayer(ent_num);
+	return m_engine_server_implementation.is_split_screen_player(ent_num);
 }
 
 edict_t * CEngineServer::get_split_screen_player_attach_to_edict( int ent_num )
 {
-	return engine->GetSplitScreenPlayerAttachToEdict(ent_num);
+	return m_engine_server_implementation.get_split_screen_player_attach_to_edict(ent_num);
 }
 
 int CEngineServer::get_num_split_screen_users_attached_to_edict( int ent_num )
 {
-	return engine->GetNumSplitScreenUsersAttachedToEdict(ent_num);
+	return m_engine_server_implementation.get_num_split_screen_users_attached_to_edict(ent_num);
 }
 
 edict_t * CEngineServer::get_split_screen_player_for_edict( int ent_num, int nSlot )
 {
-	return engine->GetSplitScreenPlayerForEdict(ent_num, nSlot);
+	return m_engine_server_implementation.get_split_screen_player_for_edict(ent_num, nSlot);
 }
 
 bool CEngineServer::is_override_load_game_ents_on()
 {
-	return engine->IsOverrideLoadGameEntsOn();
+	return m_engine_server_implementation.is_override_load_game_ents_on();
 }
 
-void CEngineServer::force_flush_entity( int iEntity )
+void CEngineServer::force_flush_entity( int entity )
 {
-	engine->ForceFlushEntity(iEntity);
+	m_engine_server_implementation.force_flush_entity(entity);
 }
 
 ISPSharedMemory * CEngineServer::get_single_player_shared_memory_space( const char *szName, int ent_num /*= MAX_EDICTS */ )
 {
-	return engine->GetSinglePlayerSharedMemorySpace(szName, ent_num);
+	return m_engine_server_implementation.get_single_player_shared_memory_space(szName, ent_num);
 }
 
 void * CEngineServer::alloc_level_static_data( size_t bytes )
 {
-	return engine->AllocLevelStaticData(bytes);
+	return m_engine_server_implementation.alloc_level_static_data(bytes);
 }
 
 int CEngineServer::get_cluster_count()
@@ -640,32 +635,32 @@ int CEngineServer::get_all_cluster_bounds( bbox_t *pBBoxList, int maxBBox )
 
 bool CEngineServer::is_creating_reslist()
 {
-	return engine->IsCreatingReslist();
+	return m_engine_server_implementation.is_creating_reslist();
 }
 
 bool CEngineServer::is_creating_xbox_reslist()
 {
-	return engine->IsCreatingXboxReslist();
+	return m_engine_server_implementation.is_creating_xbox_reslist();
 }
 
 bool CEngineServer::is_dedicated_server_for_xbox()
 {
-	return engine->IsDedicatedServerForXbox();
+	return m_engine_server_implementation.is_dedicated_server_for_xbox();
 }
 
 bool CEngineServer::is_dedicated_server_for_ps3()
 {
-	return engine->IsDedicatedServerForPS3();
+	return m_engine_server_implementation.is_dedicated_server_for_ps3();
 }
 
 void CEngineServer::pause( bool bPause, bool bForce /*= false */ )
 {
-	engine->Pause(bPause, bForce);
+	m_engine_server_implementation.pause(bPause, bForce);
 }
 
 void CEngineServer::set_timescale( float flTimescale )
 {
-	engine->SetTimescale(flTimescale);
+	m_engine_server_implementation.set_timescale(flTimescale);
 }
 
 void CEngineServer::set_gamestats_data( CGamestatsData *pGamestatsData )
@@ -690,42 +685,42 @@ const CSteamID  * CEngineServer::get_game_server_steamid()
 
 void CEngineServer::host_validate_session()
 {
-	engine->HostValidateSession();
+	m_engine_server_implementation.host_validate_session();
 }
 
 void CEngineServer::refresh_screen_if_necessary()
 {
-	engine->RefreshScreenIfNecessary();
+	m_engine_server_implementation.refresh_screen_if_necessary();
 }
 
 bool CEngineServer::has_paintmap()
 {
-	return engine->HasPaintmap();
+	return m_engine_server_implementation.has_paintmap();
 }
 
 bool CEngineServer::sphere_paint_surface( const model_t *pModel, const Vector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent )
 {
-	return engine->SpherePaintSurface(pModel, vPosition, color, flSphereRadius, flPaintCoatPercent);
+	return m_engine_server_implementation.sphere_paint_surface(pModel, vPosition, color, flSphereRadius, flPaintCoatPercent);
 }
 
 void CEngineServer::sphere_trace_paint_surface( const model_t *pModel, const Vector & vPosition, const Vector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors )
 {
-	engine->SphereTracePaintSurface(pModel, vPosition, vContactNormal, flSphereRadius, surfColors);
+	m_engine_server_implementation.sphere_trace_paint_surface(pModel, vPosition, vContactNormal, flSphereRadius, surfColors);
 }
 
 void CEngineServer::remove_all_paint()
 {
-	engine->RemoveAllPaint();
+	m_engine_server_implementation.remove_all_paint();
 }
 
 void CEngineServer::paint_all_surfaces( unsigned char color )
 {
-	engine->PaintAllSurfaces(color);
+	m_engine_server_implementation.paint_all_surfaces(color);
 }
 
 void CEngineServer::remove_paint( const model_t *pModel )
 {
-	engine->RemovePaint(pModel);
+	m_engine_server_implementation.remove_paint(pModel);
 }
 
 void CEngineServer::client_command_key_values( edict_t *pEdict, KeyValues *pCommand )
@@ -735,50 +730,50 @@ void CEngineServer::client_command_key_values( edict_t *pEdict, KeyValues *pComm
 
 uint64 CEngineServer::get_client_xuid( edict_t *pPlayerEdict )
 {
-	return engine->GetClientXUID(pPlayerEdict);
+	return m_engine_server_implementation.get_client_xuid(pPlayerEdict);
 }
 
 bool CEngineServer::is_active_app()
 {
-	return engine->IsActiveApp();
+	return m_engine_server_implementation.is_active_app();
 }
 
 void CEngineServer::set_no_clip_enabled( bool bEnabled )
 {
-	engine->SetNoClipEnabled(bEnabled);
+	m_engine_server_implementation.set_no_clip_enabled(bEnabled);
 }
 
 void CEngineServer::get_paint_map_data_rle( CUtlVector<unsigned int> &mapdata )
 {
-	engine->GetPaintmapDataRLE(mapdata);
+	m_engine_server_implementation.get_paint_map_data_rle(mapdata);
 }
 
 void CEngineServer::load_paint_map_data_rle( CUtlVector<unsigned int> &mapdata )
 {
-	engine->LoadPaintmapDataRLE(mapdata);
+	m_engine_server_implementation.load_paint_map_data_rle(mapdata);
 }
 
 void CEngineServer::send_paint_map_data_to_client( edict_t *pEdict )
 {
-	engine->SendPaintmapDataToClient(pEdict);
+	m_engine_server_implementation.send_paint_map_data_to_client(pEdict);
 }
 
 float CEngineServer::get_latency_for_choreo_sounds()
 {
-	return engine->GetLatencyForChoreoSounds();
+	return m_engine_server_implementation.get_latency_for_choreo_sounds();
 }
 
 int CEngineServer::get_client_cross_play_platform( int client_index )
 {
-	return engine->GetClientCrossPlayPlatform(client_index);
+	return m_engine_server_implementation.get_client_cross_play_platform(client_index);
 }
 
 void CEngineServer::ensure_instance_baseline( int ent_num )
 {
-	engine->EnsureInstanceBaseline(ent_num);
+	m_engine_server_implementation.ensure_instance_baseline(ent_num);
 }
 
 bool CEngineServer::reserver_server_for_queued_game( const char *szReservationPayload )
 {
-	return engine->ReserveServerForQueuedGame(szReservationPayload);
+	return m_engine_server_implementation.reserver_server_for_queued_game(szReservationPayload);
 }

@@ -77,7 +77,7 @@ public:
 
 	virtual int	get_player_userid( const edict_t *e );
 	virtual const char* get_player_network_id_string( const edict_t *e );
-	virtual bool is_userid_in_user( int userID );
+	virtual bool is_userid_in_use( int userID );
 	virtual int get_loading_progress_for_userid( int userID );
 	virtual int get_entity_count( void );
 	virtual INetChannelInfo* get_player_net_info( int playerIndex );
@@ -117,7 +117,7 @@ public:
 	virtual void message_determine_multicast_recipients( bool usepas, const Vector& origin, CPlayerBitVecWrapper& playerbits );
 	virtual bf_write* entity_message_begin( int ent_index, ServerClass * ent_class, bool reliable );
 
-	virtual void send_user_message(const CUserMessage &msg);
+	virtual void send_user_message(CUserMessage &msg);
 	//virtual void message_end( void );
 	//virtual void send_user_message( IRecipientFilter &filter, int message, const google::protobuf::Message &msg );
 	
