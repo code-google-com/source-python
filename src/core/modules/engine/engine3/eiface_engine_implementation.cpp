@@ -30,3 +30,200 @@ KeyValues * CEngineServerImplementation::get_launch_options()
 {
 	return engine->GetLaunchOptions();
 }
+
+bool CEngineServerImplementation::is_userid_in_use( int userID )
+{
+	return engine->IsUserIDInUse(userID);
+}
+
+int CEngineServerImplementation::get_loading_progress_for_userid( int userID )
+{
+	return engine->GetLoadingProgressForUserID(userID);
+}
+
+bool CEngineServerImplementation::is_log_enabled()
+{
+	return engine->IsLogEnabled();
+}
+
+ISpatialPartition * CEngineServerImplementation::create_spatial_partition(
+	const Vector &worldmin, const Vector &worldmax)
+{
+	return engine->CreateSpatialPartition(worldmin, worldmax);
+}
+
+float CEngineServerImplementation::get_timescale() const
+{
+	return engine->GetTimescale();
+}
+
+bool CEngineServerImplementation::is_level_main_menu_background()
+{
+	return engine->IsLevelMainMenuBackground();
+}
+
+bool CEngineServerImplementation::is_any_client_low_violence()
+{
+	return engine->IsAnyClientLowViolence();
+}
+
+bool CEngineServerImplementation::is_split_screen_player(int ent_num)
+{
+	return engine->IsSplitScreenPlayer(ent_num);
+}
+
+edict_t *CEngineServerImplementation::get_split_screen_player_attach_to_edict(int ent_num)
+{
+	return engine->GetSplitScreenPlayerAttachToEdict(ent_num);
+}
+
+int CEngineServerImplementation::get_num_split_screen_users_attached_to_edict(int ent_num)
+{
+	return engine->GetNumSplitScreenUsersAttachedToEdict(ent_num);
+}
+
+edict_t *CEngineServerImplementation::get_split_screen_player_for_edict(int ent_num, int slot)
+{
+	return engine->GetSplitScreenPlayerForEdict(ent_num, slot);
+}
+
+bool CEngineServerImplementation::is_override_load_game_ents_on()
+{
+	return engine->IsOverrideLoadGameEntsOn();
+}
+
+
+void CEngineServerImplementation::force_flush_entity(int ent_index)
+{
+	engine->ForceFlushEntity(ent_index);
+}
+
+ISPSharedMemory *CEngineServerImplementation::get_single_player_shared_memory_space(const char *name, int ent_num)
+{
+	return engine->GetSinglePlayerSharedMemorySpace(name, ent_num);
+}
+
+void *CEngineServerImplementation::alloc_level_static_data(size_t bytes)
+{
+	return engine->AllocLevelStaticData(bytes);
+}
+
+bool CEngineServerImplementation::is_creating_reslist()
+{
+	return engine->IsCreatingReslist();
+}
+
+bool CEngineServerImplementation::is_creating_xbox_reslist()
+{
+	return engine->IsCreatingXboxReslist();
+}
+
+bool CEngineServerImplementation::is_dedicated_server_for_xbox()
+{
+	return engine->IsDedicatedServerForXbox();
+}
+
+bool CEngineServerImplementation::is_dedicated_server_for_ps3()
+{
+	return engine->IsDedicatedServerForPS3();
+}
+
+void CEngineServerImplementation::pause( bool bPause, bool bForce /*= false */ )
+{
+	engine->Pause(bPause, bForce);
+}
+
+void CEngineServerImplementation::set_timescale( float flTimescale )
+{
+	engine->SetTimescale(flTimescale);
+}
+
+void CEngineServerImplementation::host_validate_session()
+{
+	engine->HostValidateSession();
+}
+
+void CEngineServerImplementation::refresh_screen_if_necessary()
+{
+	engine->RefreshScreenIfNecessary();
+}
+
+bool CEngineServerImplementation::has_paintmap()
+{
+	return engine->HasPaintmap();
+}
+
+bool CEngineServerImplementation::sphere_paint_surface( const model_t *pModel, const Vector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent )
+{
+	return engine->SpherePaintSurface(pModel, vPosition, color, flSphereRadius, flPaintCoatPercent);
+}
+
+void CEngineServerImplementation::sphere_trace_paint_surface( const model_t *pModel, const Vector & vPosition, const Vector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors )
+{
+	engine->SphereTracePaintSurface(pModel, vPosition, vContactNormal, flSphereRadius, surfColors);
+}
+
+void CEngineServerImplementation::remove_all_paint()
+{
+	engine->RemoveAllPaint();
+}
+
+void CEngineServerImplementation::paint_all_surfaces( unsigned char color )
+{
+	engine->PaintAllSurfaces(color);
+}
+
+void CEngineServerImplementation::remove_paint( const model_t *pModel )
+{
+	engine->RemovePaint(pModel);
+}
+
+uint64 CEngineServerImplementation::get_client_xuid( edict_t *pPlayerEdict )
+{
+	return engine->GetClientXUID(pPlayerEdict);
+}
+
+bool CEngineServerImplementation::is_active_app()
+{
+	return engine->IsActiveApp();
+}
+
+void CEngineServerImplementation::set_no_clip_enabled( bool bEnabled )
+{
+	engine->SetNoClipEnabled(bEnabled);
+}
+
+void CEngineServerImplementation::get_paint_map_data_rle( CUtlVector<unsigned int> &mapdata )
+{
+	engine->GetPaintmapDataRLE(mapdata);
+}
+
+void CEngineServerImplementation::load_paint_map_data_rle( CUtlVector<unsigned int> &mapdata )
+{
+	engine->LoadPaintmapDataRLE(mapdata);
+}
+
+void CEngineServerImplementation::send_paint_map_data_to_client( edict_t *pEdict )
+{
+	engine->SendPaintmapDataToClient(pEdict);
+}
+
+float CEngineServerImplementation::get_latency_for_choreo_sounds()
+{
+	return engine->GetLatencyForChoreoSounds();
+}
+
+int CEngineServerImplementation::get_client_cross_play_platform( int client_index )
+{
+	return engine->GetClientCrossPlayPlatform(client_index);
+}
+
+void CEngineServerImplementation::ensure_instance_baseline( int ent_num )
+{
+	engine->EnsureInstanceBaseline(ent_num);
+}
+
+bool CEngineServerImplementation::reserver_server_for_queued_game( const char *szReservationPayload )
+{
+	return engine->ReserveServerForQueuedGame(szReservationPayload);
+}

@@ -31,5 +31,4 @@ IUsermessageImplementationBase::IUsermessageImplementationBase(const IRecipientF
 	m_message_name(message_name),
 	m_message_index(0xFFFFFFFF)
 {
-	set_message_index();
 }

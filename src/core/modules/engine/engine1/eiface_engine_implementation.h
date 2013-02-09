@@ -46,6 +46,10 @@ class CPlayerBitVecWrapperImplementation : public CBitVec<ABSOLUTE_PLAYER_LIMIT>
 {
 };
 
+// Single Player shared memory class doesn't exist in OB engine. We only need to 
+// forward declare to allow us to stub a NULL ptr into it.
+abstract_class ISPSharedMemory {};
+
 class CEngineServerImplementation : public CEngineServerImplementationBase
 {
 public:
