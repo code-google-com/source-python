@@ -74,6 +74,13 @@ class BaseEntity(_EntitySpecials):
                 # Return the instance's value for the given attribute
                 return getattr(instance, attr)
 
+        # Is this an inherited class and does
+        # the inheriting class have the property?
+        if self.__class__ != BaseEntity and hasattr(self.__class__, attr):
+
+            # Get the attribute
+            return getattr(self.__class__, attr).fget(self)
+
         # Is the attribute a property of this entity?
         if attr in self.properties:
 
@@ -186,6 +193,13 @@ class BaseEntity(_EntitySpecials):
 
                 # No need to go further
                 return
+
+        # Is this an inherited class and does
+        # the inheriting class have the property?
+        if self.__class__ != BaseEntity and hasattr(self.__class__, attr):
+
+            # Get the attribute
+            return getattr(self.__class__, attr).fset(self, value)
 
         # Is the attribute a property of this entity?
         if attr in self.properties:
