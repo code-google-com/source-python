@@ -8,6 +8,8 @@
 import time
 
 # Source.Python Imports
+#   Core
+from core import AutoUnload
 #   Listeners
 from listeners.delays import TickDelays
 
@@ -20,7 +22,7 @@ class Status(object):
     STOPPED, RUNNING, PAUSED = range(1, 4)
 
 
-class Repeat(object):
+class Repeat(AutoUnload):
     '''Class used to create and call repeats'''
 
     def __init__(self, callback, *args, **kw):
@@ -216,3 +218,7 @@ class Repeat(object):
     def status(self):
         '''Returns the status of the repeat'''
         return self._status
+
+    def _unload_instance(self):
+        '''Stops the repeat'''
+        self.stop()

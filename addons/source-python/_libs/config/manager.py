@@ -39,8 +39,9 @@ class ConfigManager(object):
         self.indention = indention
         self.max_line_length = max_line_length
 
-        # Store the header as an empty string
+        # Store the header and separator
         self.header = ''
+        self.separator = '#'
 
         # Store the section types
         self._cvars = set()
@@ -59,7 +60,7 @@ class ConfigManager(object):
         return CFG_PATH.joinpath(self.filepath + '.cfg')
 
     def cvar(
-            self, name, default=0, flags=0,
+            self, name, default='0', flags=0,
             description='', min_value=None, max_value=None):
         '''Adds/returns a cvar instance to add to the config file'''
 
@@ -180,12 +181,12 @@ class ConfigManager(object):
                     # lines with length less than the max line length
                     for line in self._get_lines(lines):
 
-                        # Strip the // from the line
-                        line = line.lstrip('/').rstrip('/')
+                        # Strip the // and new line characters from the line
+                        line = line.lstrip('/ ').replace('\n', '')
 
                         # Write the current line
                         open_file.write(
-                            '//%s//' % line.center(self.max_line_length - 4))
+                            '//%s//\n' % line.center(self.max_line_length - 4))
 
                 # Write the separator to end the header
                 open_file.write(separator)
@@ -283,8 +284,8 @@ class ConfigManager(object):
                         # lines with length less than the max line length
                         for line in self._get_lines(lines):
 
-                            # Strip the // from the line
-                            line = line.lstrip('/').rstrip('/')
+                            # Strip the // from the line and remove newline
+                            line = line.lstrip('/ ').replace('\n', '')
 
                             # Write the current line
                             open_file.write(
@@ -315,7 +316,7 @@ class ConfigManager(object):
                         for line in self._get_lines(description):
 
                             # Write the current line
-                            open_file.write(line)
+                            open_file.write(line + '\n')
 
                     # Does the command exist in the old config file?
                     if section.name in _old_config:
