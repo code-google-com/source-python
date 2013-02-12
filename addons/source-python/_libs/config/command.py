@@ -1,3 +1,15 @@
+# ../_libs/config/command.py
+
+
+# =============================================================================
+# >> CLASSES
+# =============================================================================
 class CommandManager(object):
-    def __init__(self, name):
+    '''Class used to store a command instance'''
+
+    def __init__(self, name, description):
+        '''Called on instanciation'''
+
+        # Store the base attributes for the command
         self.name = name
+        self.description = description
