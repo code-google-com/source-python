@@ -76,7 +76,7 @@ class ConfigManager(object):
         # Return the CvarManager instance
         return section
 
-    def section(self, name, separator=''):
+    def section(self, name, separator='#'):
         '''Adds/returns a section instance to add to the config file'''
 
         # Get the SectionManager instance for the given arguments
