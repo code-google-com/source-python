@@ -20,7 +20,8 @@ _ServerCvar = Cvar.GetCvar()
 class _ServerVarDictionary(dict):
     '''Dictionary class that holds Cvar.ConVar instances'''
 
-    def _get_instance(self, name, value, flags, desc, min_value, max_value):
+    def _get_instance(
+            self, name, value, flags, description, min_value, max_value):
         '''Retrieves a Cvar.ConVar instance for the given name'''
 
         # Has the name already been added to the dictionary?
@@ -45,14 +46,14 @@ class _ServerVarDictionary(dict):
         if min_value is None and max_value is None:
 
             # Create the ConVar with the given values
-            cvar = Cvar.ConVar(name, value, flags, desc)
+            cvar = Cvar.ConVar(name, value, flags, description)
 
         # Was a min or max value given?
         else:
 
             # Create the ConVar with the given values
             cvar = Cvar.ConVar(
-                name, value, flags, desc,
+                name, value, flags, description,
                 min_value is None, min_value or 0.0,
                 max_value is None, max_value or 0.0)
 
@@ -71,13 +72,13 @@ class ServerVar(object):
 
     def __init__(
             self, name, value='0', flags=0,
-            desc='', min_value=None, max_value=None):
+            description='', min_value=None, max_value=None):
 
         '''Called when a server-var is initilized.'''
 
         # Get the ConVar's instance
         self.cvar = ServerVarDictionary._get_instance(
-            name, value, flags, desc, min_value, max_value)
+            name, value, flags, description, min_value, max_value)
 
     def __getattr__(self, attr):
         '''Gets the value of the given attribute'''

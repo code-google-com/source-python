@@ -269,3 +269,5 @@ class TranslationStrings(dict):
 
         # Return None as the language, as no language has been found
         return None
+
+_core_strings = LangStrings('_core/translations_strings')

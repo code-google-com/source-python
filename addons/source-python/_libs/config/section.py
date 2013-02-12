@@ -1,20 +1,15 @@
-class ConfigSection(object):
-    def __init__(self, name):
-        self.name = name
-        self.text = []
-        self.
+# ../_libs/config/section.py
 
-    def __enter__(self):
-        return self
 
-    def __exit__(self, exc_type, exc_value, trace_back):
-        if exc_type:
-            return False
-        return True
+# =============================================================================
+# >> CLASSES
+# =============================================================================
+class SectionManager(object):
+    '''Class used to store a section instance'''
 
-    def __iter__(self):
-        if len(self.text):
-            for line in self.text:
-                yield line % {'name': self.name}
-        else:
-            yield self.name
+    def __init__(self, name, separator):
+        '''Called on instanciation'''
+
+        # Store the base attributes for the section
+        self._name = name
+        self.separator = separator
