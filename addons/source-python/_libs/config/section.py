@@ -11,5 +11,5 @@ class SectionManager(object):
         '''Called on instanciation'''
 
         # Store the base attributes for the section
-        self._name = name
+        self.name = name
         self.separator = separator
