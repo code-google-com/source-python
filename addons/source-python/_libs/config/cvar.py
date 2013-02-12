@@ -93,5 +93,5 @@ class _ListManager(list):
 
         # Store the base attributes for the list
         self.name = name
-        self.start = ''
-        self.indent = 0
+        self.start = '  * '
+        self.indent = 9
