@@ -1,4 +1,4 @@
-# ../_libs/config/config.py
+# ../_libs/config/manager.py
 
 # =============================================================================
 # >> IMPORTS
@@ -29,10 +29,10 @@ _config_strings = LangStrings('_core/config_strings')
 # >> CLASSES
 # =============================================================================
 class ConfigManager(object):
-    ''''''
+    '''Config Management class used to create a config file'''
 
     def __init__(self, filepath, indention=3, max_line_length=80):
-        ''''''
+        '''Called on instanciation'''
 
         # Store the primary attributes
         self.filepath = filepath
@@ -129,7 +129,7 @@ class ConfigManager(object):
         return True
 
     def write(self):
-        ''''''
+        '''Writes the config file'''
 
         # Get any old values from the existing file
         _old_config = self._parse_old_file()
