@@ -29,5 +29,9 @@
 class CUserMessageImplementation : public IUsermessageImplementationBase
 {
 public:
-	CUserMessageImplementation(const char *message_name);
+	CUserMessageImplementation( const IRecipientFilter &recipient_filter, const char *message_name);
+
+protected:
+	// TODO - implement this shit
+	virtual void set_message_index() {}
 };
