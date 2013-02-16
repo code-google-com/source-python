@@ -109,6 +109,7 @@ Set(SOURCEPYTHON_ENGINE_MODULE_SOURCES
     core/modules/engine/eiface_wrap.cpp
     core/modules/engine/eiface_engine_base.cpp
     core/modules/engine/engine${SOURCE_ENGINE}/eiface_engine_implementation.cpp
+    core/modules/engine/eiface_wrap_python.cpp
 )
 
 Set(SOURCEPYTHON_ENGINE_MODULE_FILES
