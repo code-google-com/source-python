@@ -286,7 +286,7 @@ void CEngineServer::crosshair_angle( const edict_t *pClient, float pitch, float 
 	engine->CrosshairAngle(pClient, pitch, yaw);
 }
 
-char* CEngineServer::get_game_dir( int maxlength )
+const char* CEngineServer::get_game_dir( int maxlength )
 {
 	char* szGetGameDir = new char[maxlength];
 	engine->GetGameDir(szGetGameDir, maxlength);
