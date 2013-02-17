@@ -52,6 +52,9 @@ class _WeaponManager(dict):
         # Store any special names
         self.special_names = ini.get('special names', {})
 
+        # Store projectile names
+        self.projectiles = ini.get('projectiles', {})
+
         # Store tags as a set
         self.tags = set()
 
@@ -96,6 +99,12 @@ class _WeaponManager(dict):
 
             # Get the value of the special name
             name = self.special_names[name]
+
+        # Is the item a member of the projectiles?
+        if name in self.projectiles:
+
+            # Get the value of the projectile name
+            name = self.projectiles[name]
 
         # Does the weapon start with the prefix?
         if not name.startswith(self.prefix):
