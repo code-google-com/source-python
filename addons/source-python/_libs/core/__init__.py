@@ -19,7 +19,7 @@ from paths import GAME_PATH
 GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
 
 # Get the Engine's instance
-GameEngine = Engine.GetEngine()
+GameEngine = Engine.get_engine_interface()
 
 
 # =============================================================================
