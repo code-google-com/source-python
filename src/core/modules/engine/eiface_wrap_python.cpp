@@ -80,6 +80,14 @@ DECLARE_SP_MODULE(Engine)
 void export_engine_interface()
 {
 	// ----------------------------------------------------------
+	// Engine accessor.
+	// ----------------------------------------------------------
+	BOOST_FUNCTION(get_engine_interface,
+		"Returns the engine interface.",
+		reference_existing_object_policy()
+	);
+
+	// ----------------------------------------------------------
 	// The engine interface.
 	// ----------------------------------------------------------
 	BOOST_ABSTRACT_CLASS( CEngineServer )
