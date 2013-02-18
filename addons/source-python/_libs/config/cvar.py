@@ -6,6 +6,9 @@
 # Source.Python Imports
 #   Core
 from core.cvar import ServerVar
+#   Translations
+from translations.manager import LanguageManager
+from translations.strings import TranslationStrings
 
 
 # =============================================================================
@@ -23,9 +26,19 @@ class CvarManager(dict):
         self.default = default
         self.description = description
 
+        # Is the given description a TranslationStrings instance?
+        if isinstance(self.description, TranslationStrings):
+
+            # Store the description as the proper language string
+            self.description = self.description.get_string(
+                LanguageManager.default)
+
         # Get the Cvar instance
         self.cvar = ServerVar(
-            name, default, flags, description, min_value, max_value)
+            self.name, default, flags, self.description, min_value, max_value)
+
+        # Set the attribute to show the default value
+        self.show_default = True
 
         # Store a list to iterate over description fields and text
         self._order = list()
