@@ -106,6 +106,14 @@ class ConfigManager(object):
 
     def text(self, text):
         '''Adds text to the config file'''
+
+        # Is the given text a TranslationStrings instance?
+        if isinstance(text, TranslationStrings):
+
+            # Get the proper language string
+            text = text.get_string(LanguageManager.default)
+
+        # Add the text
         self._sections.append(text)
 
     def __exit__(self, exctype, value, trace_back):
@@ -216,10 +224,15 @@ class ConfigManager(object):
                             # Write the current line
                             open_file.write(line)
 
-                    # Write the cvar's default value
-                    open_file.write(
-                        '//' + spaces + _config_strings['Default'].get_string(
-                        LanguageManager.default) + ' %s\n' % section.default)
+                    # Does the default value need written?
+                    if section.show_default:
+
+                        # Write the cvar's default value
+                        open_file.write(
+                            '//' + spaces +
+                            _config_strings['Default'].get_string(
+                            LanguageManager.default) +
+                            ' %s\n' % section.default)
 
                     # Get the cvar's description language string
                     description = self._get_translation(section.description)

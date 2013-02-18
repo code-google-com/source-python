@@ -210,6 +210,11 @@ class TranslationStrings(dict):
     '''Dictionary used to store and get language
         strings for a particular string'''
 
+    def __init__(self):
+        '''Stores an empty dictionary as the tokens'''
+
+        self.tokens = {}
+
     def get_string(self, language, **tokens):
         '''Returns the language string for the given language/tokens'''
 
@@ -228,8 +233,11 @@ class TranslationStrings(dict):
         # Get the message's Template instance
         message = Template(self[language])
 
+        # Update the stored tokens with the given ones
+        self.tokens.update(tokens)
+
         # Substitute the token in the message
-        message = message.substitute(tokens)
+        message = message.substitute(self.tokens)
 
         # Return the message
         return message
