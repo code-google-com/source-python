@@ -13,7 +13,6 @@ from config.command import CommandManager
 from core import GameEngine
 from core.excepthook import ExceptHooks
 #   Translations
-from translations.manager import LanguageManager
 from translations.strings import LangStrings
 from translations.strings import TranslationStrings
 
@@ -111,7 +110,7 @@ class ConfigManager(object):
         if isinstance(text, TranslationStrings):
 
             # Get the proper language string
-            text = text.get_string(LanguageManager.default)
+            text = text.get_string()
 
         # Add the text
         self._sections.append(text)
@@ -179,11 +178,14 @@ class ConfigManager(object):
                 # Write the separator
                 open_file.write(separator)
 
-                # Get the header's translation
-                header = self._get_translation(self.header)
+                # Is the header a TranslationStrings instance?
+                if isinstance(self.header, TranslationStrings):
+
+                    # Get the proper text for the header
+                    self.header = self.header.get_string()
 
                 # Loop through each line in the header
-                for lines in header.splitlines():
+                for lines in self.header.splitlines():
 
                     # Loop through the current line to get valid
                     # lines with length less than the max line length
@@ -214,9 +216,6 @@ class ConfigManager(object):
                     # Loop through all lines in the section
                     for lines, indent in section:
 
-                        # Get the current line's translation
-                        lines = self._get_translation(lines)
-
                         # Loop through the current line to get valid
                         # lines with length less than the max line length
                         for line in self._get_lines(lines, indent):
@@ -230,16 +229,12 @@ class ConfigManager(object):
                         # Write the cvar's default value
                         open_file.write(
                             '//' + spaces +
-                            _config_strings['Default'].get_string(
-                            LanguageManager.default) +
+                            _config_strings['Default'].get_string() +
                             ' %s\n' % section.default)
-
-                    # Get the cvar's description language string
-                    description = self._get_translation(section.description)
 
                     # Loop through the description to get valid
                     # lines with length less than the max line length
-                    for line in self._get_lines(description):
+                    for line in self._get_lines(section.description):
 
                         # Write the current line
                         open_file.write(line)
@@ -287,11 +282,8 @@ class ConfigManager(object):
                     # Write the separator
                     open_file.write(separator)
 
-                    # Get the section's translation
-                    name = self._get_translation(section.name)
-
                     # Loop through each line in the section
-                    for lines in name.splitlines():
+                    for lines in section.name.splitlines():
 
                         # Loop through the current line to get valid
                         # lines with length less than the max line length
@@ -320,13 +312,9 @@ class ConfigManager(object):
                     # Does the command have a description?
                     if section.description:
 
-                        # Get the description's translation
-                        description = self._get_translation(
-                            section.description)
-
                         # Loop through description to get valid lines
                         # with length less than the max line length
-                        for line in self._get_lines(description):
+                        for line in self._get_lines(section.description):
 
                             # Write the current line
                             open_file.write(line + '\n')
@@ -347,12 +335,9 @@ class ConfigManager(object):
                 # Is the current section just text?
                 else:
 
-                    # Get the translation for the text
-                    lines = self._get_translation(section)
-
                     # Loop through the current line to get valid
                     # lines with length less than the max line length
-                    for line in self._get_lines(lines):
+                    for line in self._get_lines(section):
 
                         # Write the current line
                         open_file.write(line)
@@ -476,6 +461,8 @@ class ConfigManager(object):
             # Return the line and the remainder
             return start, '\n'.join(remainder)
 
+        start = start[:self.max_line_length]
+
         # Use "while" statement to find a "space" to split from
         while start[~0] != ' ' and start:
 
@@ -493,27 +480,6 @@ class ConfigManager(object):
 
         # Return the line and the remainder
         return start, remainder
-
-    @staticmethod
-    def _get_translation(text):
-        '''Returns the proper language string for the given text'''
-
-        # Is the given text a TranslationStrings instance?
-        if isinstance(text, TranslationStrings):
-
-            # Return the server's language string
-            return text.get_string(LanguageManager.default)
-
-        # Is the given text just a string?
-        if isinstance(text, str):
-
-            # Return the text
-            return text
-
-        # Raise an error if the text is not a
-        # string or TranslationStrings instance
-        raise TypeError(
-            'Unsupported type "%s" for config text' % type(text).__name__)
 
 
 class _OldConfig(dict):

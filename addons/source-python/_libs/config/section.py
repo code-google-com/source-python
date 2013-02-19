@@ -5,7 +5,6 @@
 # =============================================================================
 # Source.Python Imports
 #   Translations
-from translations.manager import LanguageManager
 from translations.strings import TranslationStrings
 
 
@@ -26,4 +25,4 @@ class SectionManager(object):
         if isinstance(self.name, TranslationStrings):
 
             # Store the name as the proper language string
-            self.name = self.name.get_string(LanguageManager.default)
+            self.name = self.name.get_string()

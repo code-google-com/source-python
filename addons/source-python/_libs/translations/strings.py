@@ -215,8 +215,14 @@ class TranslationStrings(dict):
 
         self.tokens = {}
 
-    def get_string(self, language, **tokens):
+    def get_string(self, language=None, **tokens):
         '''Returns the language string for the given language/tokens'''
+
+        # Was no language passed?
+        if language is None:
+
+            # Set the language to the server's default
+            language = LanguageManager.default
 
         # Get the language shortname to be used
         language = self.get_language(language)
