@@ -7,7 +7,6 @@
 #   Core
 from core.cvar import ServerVar
 #   Translations
-from translations.manager import LanguageManager
 from translations.strings import TranslationStrings
 
 
@@ -30,8 +29,7 @@ class CvarManager(dict):
         if isinstance(self.description, TranslationStrings):
 
             # Store the description as the proper language string
-            self.description = self.description.get_string(
-                LanguageManager.default)
+            self.description = self.description.get_string()
 
         # Get the Cvar instance
         self.cvar = ServerVar(
@@ -108,3 +106,15 @@ class _ListManager(list):
         self.name = name
         self.start = '  * '
         self.indent = 9
+
+    def append(self, item):
+        '''Override append to add the proper text'''
+
+        # Is the item a TranslationStrings instance?
+        if isinstance(item, TranslationStrings):
+
+            # Get the proper text for the given item
+            item = item.get_string()
+
+        # Add the item to the list
+        super(_ListManager, self).append(item)

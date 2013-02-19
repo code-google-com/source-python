@@ -5,7 +5,6 @@
 # =============================================================================
 # Source.Python Imports
 #   Translations
-from translations.manager import LanguageManager
 from translations.strings import TranslationStrings
 
 
@@ -26,5 +25,4 @@ class CommandManager(object):
         if isinstance(self.description, TranslationStrings):
 
             # Store the description as the proper language string
-            self.description = self.description.get_string(
-                LanguageManager.default)
+            self.description = self.description.get_string()
