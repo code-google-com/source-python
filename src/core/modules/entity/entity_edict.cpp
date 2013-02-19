@@ -51,6 +51,16 @@ extern void SetKeyValueFloat(edict_t* pEdict, const char* szKeyName, float fValu
 extern void SetKeyValueVector(edict_t* pEdict, const char* szKeyName, Vector value);
 extern void DispatchSpawn(edict_t* pEdict);
 
+
+int GetPropInt( edict_t *pEdict, const char *szProp )
+{
+	return (int) *GetPropPointer<int, DPT_Int>(pEdict, szProp);
+}
+
+const char *GetPropString( edict_t *pEdict, const char *szProp )
+{
+	return (const char *)GetPropPointer<char, DPT_String>(pEdict, szProp);
+}
 //---------------------------------------------------------------------------------
 // This function exports CBaseEdict and edict_t
 //---------------------------------------------------------------------------------
@@ -155,7 +165,7 @@ void Export_Edict()
 		// of entities.
 		// ----------------------------------------------------------
 		CLASS_METHOD_TYPEDEF(GetPropInt,
-			&GetPropValue<int, DPT_Int>,
+			&GetPropInt,
 			"Returns the value (as an integer) of a network prop name.",
 			args("szFullPath")
 		)
@@ -175,7 +185,7 @@ void Export_Edict()
 			args("szFullPath")
 		)
 		CLASS_METHOD_TYPEDEF(GetPropString,
-			&GetPropValue<const char*, DPT_String>,
+			&GetPropString,
 			"Returns the value (as a string) of a network prop name.",
 			args("szFullPath")
 		)
