@@ -66,7 +66,7 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
     @property
     def userid(self):
         '''Returns the player's userid'''
-        return Engine.GetPlayerUserID(self.edict)
+        return GameEngine.GetPlayerUserId(self.edict)
 
     @property
     def steamid(self):

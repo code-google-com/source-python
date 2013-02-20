@@ -60,7 +60,7 @@ class LangStrings(dict):
         main_strings = ConfigObj(self._mainfile, encoding=encoding)
 
         # Does the server specific file exist?
-        if not self._serverfile.isfile():
+        if not self._serverfile.isfile() and not infile.startswith('_core/'):
 
             # Create the server specific file
             self._create_server_file()
@@ -159,11 +159,9 @@ class LangStrings(dict):
         server_file = ConfigObj(self._serverfile)
 
         # Set the initial comments to explain what the file is for
-        server_file.initial_comment = [
-            'This file has been created to host new language translations for',
-            'the ../%s' % self._mainfile.replace(GAME_PATH, ''),
-            'file for this particular server.',
-        ]
+        server_file.initial_comment = _core_strings[
+            'Initial Comment'].get_string(LanguageManager.default,
+            filename=self._mainfile.replace(GAME_PATH, '')).splitlines()
 
         # Write the server specific file
         server_file.write()
@@ -212,8 +210,19 @@ class TranslationStrings(dict):
     '''Dictionary used to store and get language
         strings for a particular string'''
 
-    def get_string(self, language, **tokens):
+    def __init__(self):
+        '''Stores an empty dictionary as the tokens'''
+
+        self.tokens = {}
+
+    def get_string(self, language=None, **tokens):
         '''Returns the language string for the given language/tokens'''
+
+        # Was no language passed?
+        if language is None:
+
+            # Set the language to the server's default
+            language = LanguageManager.default
 
         # Get the language shortname to be used
         language = self.get_language(language)
@@ -230,8 +239,11 @@ class TranslationStrings(dict):
         # Get the message's Template instance
         message = Template(self[language])
 
+        # Update the stored tokens with the given ones
+        self.tokens.update(tokens)
+
         # Substitute the token in the message
-        message = message.substitute(tokens)
+        message = message.substitute(self.tokens)
 
         # Return the message
         return message
@@ -271,3 +283,5 @@ class TranslationStrings(dict):
 
         # Return None as the language, as no language has been found
         return None
+
+_core_strings = LangStrings('_core/translations_strings')
