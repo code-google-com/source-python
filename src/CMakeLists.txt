@@ -138,30 +138,44 @@ Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES
 )
 
 # ------------------------------------------------------------------
+# Event module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_EVENT_MODULE_HEADERS
+)
+
+Set(SOURCEPYTHON_EVENT_MODULE_SOURCES
+    core/modules/events/events_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
 	${SOURCEPYTHON_ENGINE_MODULE_FILES}
     ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES}
+    ${SOURCEPYTHON_EVENT_MODULE_HEADERS}
+    ${SOURCEPYTHON_EVENT_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
 # Create source groups for everything to make our projects nice and 
 # clean.
 # ------------------------------------------------------------------
-Source_Group("Header Files\\Addons"			FILES ${SOURCEPYTHON_ADDON_HEADERS})
-Source_Group("Header Files\\Core"   		FILES ${SOURCEPYTHON_CORE_HEADERS})
-Source_Group("Header Files\\Util"   		FILES ${SOURCEPYTHON_UTIL_HEADERS})
-Source_Group("Header Files\\Generic"		FILES ${SOURCEPYTHON_GENERIC_HEADERS})
-Source_Group("Header Files\\Module\\Engine"	FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
+Source_Group("Header Files\\Addons"			                FILES ${SOURCEPYTHON_ADDON_HEADERS})
+Source_Group("Header Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_HEADERS})
+Source_Group("Header Files\\Util"   		                FILES ${SOURCEPYTHON_UTIL_HEADERS})
+Source_Group("Header Files\\Generic"		                FILES ${SOURCEPYTHON_GENERIC_HEADERS})
+Source_Group("Header Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_HEADERS})
 
-Source_Group("Source Files\\Addons" 		FILES ${SOURCEPYTHON_ADDON_SOURCES})
-Source_Group("Source Files\\Core"   		FILES ${SOURCEPYTHON_CORE_SOURCES})
-Source_Group("Source Files\\Util"   		FILES ${SOURCEPYTHON_UTIL_SOURCES})
-Source_Group("Source Files\\Generic"		FILES ${SOURCEPYTHON_GENERIC_SOURCES})
-Source_Group("Source Files\\Module\\Engine"	FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
+Source_Group("Source Files\\Addons" 		                FILES ${SOURCEPYTHON_ADDON_SOURCES})
+Source_Group("Source Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_SOURCES})
+Source_Group("Source Files\\Util"   		                FILES ${SOURCEPYTHON_UTIL_SOURCES})
+Source_Group("Source Files\\Generic"		                FILES ${SOURCEPYTHON_GENERIC_SOURCES})
+Source_Group("Source Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 

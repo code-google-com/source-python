@@ -105,17 +105,17 @@ using namespace boost::python;
 	class_<classname>(XSTRINGIFY(classname))
 
 //---------------------------------------------------------------------------------
+// Use this to wrap a class with a non-default constructor.
+//---------------------------------------------------------------------------------
+#define BOOST_CLASS_CONSTRUCTOR( classname, ... ) \
+	class_<classname>(XSTRINGIFY(classname), init< ##__VA_ARGS__ >())
+
+//---------------------------------------------------------------------------------
 // Use this to wrap a class that should be instantiatable from python, but
 // should never be copied.
 //---------------------------------------------------------------------------------
 #define BOOST_CLASS_NOCOPY( classname ) \
 	class_<classname, boost::noncopyable>(XSTRINGIFY(classname))
-
-//---------------------------------------------------------------------------------
-// Use this to add a constructor to a class.
-//---------------------------------------------------------------------------------
-#define CLASS_CONSTRUCTOR( type, ... )	  \
-	.def(init< type, ##__VA_ARGS__ >())
 
 //---------------------------------------------------------------------------------
 // This finishes off a boost -> python object wrapping.
@@ -129,6 +129,12 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define CLASS_METHOD( classname, methodname, ... ) \
 	.def(XSTRINGIFY(methodname), &classname::methodname, ##__VA_ARGS__)
+
+//---------------------------------------------------------------------------------
+// Use this to wrap pure virtual functions.
+//---------------------------------------------------------------------------------
+#define CLASS_METHOD_PURE_VIRTUAL( classname, methodname, ... ) \
+	.def(XSTRINGIFY(methodname), pure_virtual(&classname::methodname), ##__VA_ARGS__)
 
 //---------------------------------------------------------------------------------
 // Use this macro to bind class functions to "special" functions in python such
@@ -149,6 +155,12 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define CLASS_MEMBER( classname, varname, ... ) \
 	.def_readwrite(XSTRINGIFY(varname), &classname::varname, ##__VA_ARGS__)
+
+//---------------------------------------------------------------------------------
+// Use this to add a constructor to a class.
+//---------------------------------------------------------------------------------
+#define CLASS_CONSTRUCTOR( ... )	  \
+	.def(init< ##__VA_ARGS__ >())
 
 //---------------------------------------------------------------------------------
 // Use this to wrap a method that returns an interface.
