@@ -142,11 +142,8 @@ class _AddonManagementDictionary(dict):
             # If not, simply return
             return
 
-        # Get the addon's instance
-        addon = __import__(addon_import)
-
         # Remove all instances of AutoUnload classes from the addon
-        self._unload_instances(addon, addon_name)
+        self._unload_instances(self[addon_name]._addon, addon_name)
 
         # Loop through all loaded modules
         for module in list(sys.modules):
@@ -216,10 +213,10 @@ class _LoadedAddon(object):
             raise AddonFileNotFoundError
 
         # Import the addon
-        addon = __import__(addon_name + '.' + addon_name)
+        self._addon = __import__(addon_name + '.' + addon_name)
 
         # Store the globals for the addon
-        self.globals = addon.__dict__[addon_name].__dict__
+        self.globals = self._addon.__dict__[addon_name].__dict__
 
         # Does the addon have a load function?
         if 'load' in self.globals:

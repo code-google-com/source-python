@@ -1,20 +1,28 @@
-class ConfigSection(object):
-    def __init__(self, name):
+# ../_libs/config/section.py
+
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Translations
+from translations.strings import TranslationStrings
+
+
+# =============================================================================
+# >> CLASSES
+# =============================================================================
+class SectionManager(object):
+    '''Class used to store a section instance'''
+
+    def __init__(self, name, separator):
+        '''Called on instanciation'''
+
+        # Store the base attributes for the section
         self.name = name
-        self.text = []
-        self.
+        self.separator = separator
 
-    def __enter__(self):
-        return self
+        # Is the given name a TranslationStrings instance?
+        if isinstance(self.name, TranslationStrings):
 
-    def __exit__(self, exc_type, exc_value, trace_back):
-        if exc_type:
-            return False
-        return True
-
-    def __iter__(self):
-        if len(self.text):
-            for line in self.text:
-                yield line % {'name': self.name}
-        else:
-            yield self.name
+            # Store the name as the proper language string
+            self.name = self.name.get_string()

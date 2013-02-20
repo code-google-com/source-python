@@ -37,6 +37,7 @@ from configobj import ConfigObj
 from paths import CFG_PATH
 #   Core
 from core.base_command import SPCommands
+from core.settings import CoreSettings
 #   Events
 from events.manager import EventRegistry
 #   Translations
@@ -51,11 +52,8 @@ from listeners.tick import TickListeners
 def plugin_load():
     '''Called when the plugin is finished loading'''
 
-    # Get the core settings
-    core_settings = ConfigObj(CFG_PATH.joinpath('core_settings.ini'))
-
     # Get the auth providers that should be loaded
-    auth_providers = core_settings['AUTH_SETTINGS']['providers'].split()
+    auth_providers = CoreSettings['AUTH_SETTINGS']['providers'].split()
 
     # Should any providers be loaded?
     if auth_providers:
@@ -65,7 +63,7 @@ def plugin_load():
 
     # Set the default language
     LanguageManager._register_default_language(
-        core_settings['BASE_SETTINGS']['language'])
+        CoreSettings['BASE_SETTINGS']['language'])
 
 
 def event_fire(GameEvent):
