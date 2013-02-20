@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Player
+#from Source import Player
 #   Core
 from core import GameEngine
 #   Entities
@@ -15,7 +15,7 @@ from entities.helpers import *
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get an instance of the PlayerInfoManager
-_player_info_manager = Player.GetPlayerInfoManager()
+#_player_info_manager = Player.GetPlayerInfoManager()
 
 
 # =============================================================================
