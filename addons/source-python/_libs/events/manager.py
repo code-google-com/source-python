@@ -50,7 +50,7 @@ class _EventRegistry(dict):
         '''Calls all callbacks for the current event if any are registered'''
 
         # Get the event's name
-        event_name = GameEvent.GetName()
+        event_name = GameEvent.get_name()
 
         # Does the dictionary contain the event?
         if event_name in self:
