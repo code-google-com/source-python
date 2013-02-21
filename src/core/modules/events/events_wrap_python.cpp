@@ -189,4 +189,9 @@ void export_igameeventmanager()
 		)
 
 	BOOST_END_CLASS()
+
+	BOOST_FUNCTION(get_game_event_manager,
+		"Returns the CGameEventManager singleton.",
+		reference_existing_object_policy()
+	);
 }
