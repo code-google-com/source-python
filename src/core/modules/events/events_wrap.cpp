@@ -184,6 +184,11 @@ void CGameEventListener::FireGameEvent( IGameEvent *event )
 	fire_game_event(&game_event);
 }
 
+int CGameEventListener::GetEventDebugID()
+{
+	return get_event_debug_id();
+}
+
 //---------------------------------------------------------------------------------
 // Methods for CGameEventManager.
 //---------------------------------------------------------------------------------
