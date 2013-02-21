@@ -67,7 +67,7 @@ DECLARE_SP_MODULE(Event)
 //---------------------------------------------------------------------------------
 void export_igameevent()
 {
-	BOOST_CLASS_CONSTRUCTOR(CGameEvent, const char*, bool )
+	BOOST_CLASS_CONSTRUCTOR(CGameEvent, const char*, bool)
 
 		CLASS_METHOD(CGameEvent,
 			get_name,
