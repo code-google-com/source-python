@@ -37,14 +37,18 @@ extern IGameEventManager2* gameeventmanager;
 //---------------------------------------------------------------------------------
 // Game event manager singleton.
 //---------------------------------------------------------------------------------
-CGameEventManager s_GameEventManager(gameeventmanager);
+CGameEventManager* SP_GameEventManager = NULL;
 
 //---------------------------------------------------------------------------------
 // Returns the game event manager singleton.
 //---------------------------------------------------------------------------------
 CGameEventManager* get_game_event_manager()
 {
-	return &s_GameEventManager;
+	if( !SP_GameEventManager ) {
+		SP_GameEventManager = new CGameEventManager(gameeventmanager);
+	}
+
+	return SP_GameEventManager;
 }
 
 //---------------------------------------------------------------------------------
