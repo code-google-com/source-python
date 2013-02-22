@@ -20,20 +20,20 @@ class CvarManager(dict):
             self, name, default, flags, description, min_value, max_value):
         '''Called on instanciation'''
 
-        # Store the base attributes for the cvar
-        self.name = name
-        self.default = default
-        self.description = description
-
         # Is the given description a TranslationStrings instance?
-        if isinstance(self.description, TranslationStrings):
+        if isinstance(description, TranslationStrings):
 
             # Store the description as the proper language string
-            self.description = self.description.get_string()
+            description = description.get_string()
+
+        # Store the base attributes for the cvar
+        self._name = name
+        self._default = default
+        self._description = description
 
         # Get the Cvar instance
-        self.cvar = ServerVar(
-            self.name, default, flags, self.description, min_value, max_value)
+        self._cvar = ServerVar(
+            name, default, flags, description, min_value, max_value)
 
         # Set the attribute to show the default value
         self.show_default = True
@@ -95,6 +95,26 @@ class CvarManager(dict):
             instance to the ordered list'''
         self._order.append(text)
 
+    @property
+    def name(self):
+        '''Returns the cvar's name'''
+        return self._name
+
+    @property
+    def default(self):
+        '''Returns the cvar's default value'''
+        return self._default
+
+    @property
+    def description(self):
+        '''Returns the cvar's description'''
+        return self._description
+
+    @property
+    def cvar(self):
+        '''Returns the cvar's ServerVar instance'''
+        return self._cvar
+
 
 class _ListManager(list):
     '''List class used to store text for a specific descriptor of a Cvar'''
@@ -102,10 +122,21 @@ class _ListManager(list):
     def __init__(self, name):
         '''Called on instanciation'''
 
+        # Is the given name a TranslationStrings instance?
+        if isinstance(name, TranslationStrings):
+
+            # Get the proper text for the given name
+            name = name.get_string()
+
         # Store the base attributes for the list
-        self.name = name
+        self._name = name
         self.start = '  * '
         self.indent = 9
+
+    @property
+    def name(self):
+        '''Returns the name of the list'''
+        return self._name
 
     def append(self, item):
         '''Override append to add the proper text'''

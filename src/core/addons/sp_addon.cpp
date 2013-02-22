@@ -33,6 +33,7 @@
 #include "filesystem.h"
 #include "core/sp_gamedir.h"
 #include "utility/wrap_macros.h"
+#include "modules/events/events_wrap.h"
 
 //---------------------------------------------------------------------------------
 // External variables
@@ -70,7 +71,8 @@ void CAddonManager::FireGameEvent( IGameEvent* event )
 
 	// Execute addon_load.
 	BEGIN_BOOST_PY()
-		mainFile.attr("event_fire")(python::ptr(event));
+		CGameEvent game_event(event);
+		mainFile.attr("event_fire")(python::ptr(&game_event));
 	END_BOOST_PY();
 }
 
