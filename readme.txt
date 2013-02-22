@@ -18,5 +18,3 @@ src/sdks/       - Place any and all source engine SDKs you want to build
 src/thirdparty/ - All third party SDKs such as boost will be placed here.
                   These libraries will be in built form unless
                   we've made changes to their core.
-
-<3
