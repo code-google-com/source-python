@@ -13,7 +13,6 @@ from paths import DATA_PATH
 from core import GAME_NAME
 #   DynCall
 from dyncall.dictionary import SignatureDictionary
-from dyncall.signature import Signature
 
 
 # =============================================================================

@@ -5,7 +5,6 @@
 # =============================================================================
 # Source.Python Imports
 from Source import Engine
-from Source import Entity
 #   Core
 from core import GAME_NAME
 #   Entities

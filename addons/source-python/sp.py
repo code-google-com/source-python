@@ -29,12 +29,7 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Configobj
-from configobj import ConfigObj
-
 # Source.Python Imports
-from paths import CFG_PATH
 #   Core
 from core.base_command import SPCommands
 from core.settings import CoreSettings

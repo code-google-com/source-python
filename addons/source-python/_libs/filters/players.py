@@ -8,7 +8,6 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-from Source import Engine
 from Source import Player
 from core import GameEngine
 from core import GAME_NAME
@@ -33,7 +32,7 @@ from players.helpers import userid_from_playerinfo
 # =============================================================================
 # Get the team's file for the current game
 _game_teams = ConfigObj(
-    DATA_PATH.join('players', 'teams', GAME_NAME + '.ini'), unrepr=True)
+    DATA_PATH.joinpath('players', 'teams', GAME_NAME + '.ini'), unrepr=True)
 
 
 # =============================================================================

@@ -4,7 +4,6 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Engine
 from Source import Player
 #   Core
 from core import GameEngine

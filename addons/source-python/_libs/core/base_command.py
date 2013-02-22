@@ -273,7 +273,7 @@ def _print_credits():
 
     # Get the credits information
     groups = ConfigObj(
-        DATA_PATH.join('credits.ini'), encoding='unicode_escape')
+        DATA_PATH.joinpath('credits.ini'), encoding='unicode_escape')
 
     # Loop through all groups in the credits
     for group in groups:

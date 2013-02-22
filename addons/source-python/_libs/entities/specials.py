@@ -5,6 +5,8 @@
 # =============================================================================
 # Source.Python Imports
 from Source import Binutils
+#   Core
+from core import GAME_NAME
 #   DynCall
 from dyncall.dictionary import SignatureDictionary
 #   Entities

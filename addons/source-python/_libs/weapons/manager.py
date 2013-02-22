@@ -6,8 +6,6 @@
 # Python Imports
 #   Configobj
 from configobj import ConfigObj
-#   Path
-from path import path
 
 # Source.Python Imports
 from paths import DATA_PATH

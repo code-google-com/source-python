@@ -6,9 +6,8 @@
 # Source.Python Imports
 from Source import Entity
 #   Entities
+from entities.entity import BaseEntity
 from entities.helpers import index_from_edict
-#   Weapons
-from weapons.manager import WeaponManager
 
 
 # =============================================================================

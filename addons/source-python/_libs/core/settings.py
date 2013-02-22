@@ -10,7 +10,6 @@ from configobj import ConfigObj
 # Source.Python Imports
 from paths import GAME_PATH
 from paths import CFG_PATH
-from paths import TRANSLATION_PATH
 #   Auth
 from auth.paths import AUTH_PROVIDER_PATH
 #   Translations

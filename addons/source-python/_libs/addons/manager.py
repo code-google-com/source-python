@@ -6,7 +6,6 @@
 # Python Imports
 #   Sys
 import sys
-from traceback import format_exception
 
 # Source.Python Imports
 from paths import ADDON_PATH
@@ -16,8 +15,6 @@ from addons.errors import AddonFileNotFoundError
 from core import AutoUnload
 from core.commands import echo_console
 from core.excepthook import ExceptHooks
-#   Events
-from events.manager import EventRegistry
 
 
 # =============================================================================
@@ -198,7 +195,7 @@ class _LoadedAddon(object):
         echo_console('[SP] Loading "%s"...' % addon_name)
 
         # Get the addon's main file
-        file_path = ADDON_PATH.join(addon_name, addon_name + '.py')
+        file_path = ADDON_PATH.joinpath(addon_name, addon_name + '.py')
 
         # Does the addon's main file exist?
         if not file_path.isfile():
