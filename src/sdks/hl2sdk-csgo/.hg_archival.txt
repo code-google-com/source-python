@@ -1,0 +1,5 @@
+repo: 5476a15192a9d365b3bde48690c1b00da494d054
+node: 9a3c7f5049b674639c2856bc3c352aea4381cf13
+branch: protobuf
+latesttag: null
+latesttagdistance: 62
