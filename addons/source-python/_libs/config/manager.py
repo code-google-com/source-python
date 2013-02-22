@@ -30,13 +30,19 @@ _config_strings = LangStrings('_core/config_strings')
 class ConfigManager(object):
     '''Config Management class used to create a config file'''
 
-    def __init__(self, filepath, indention=3, max_line_length=80):
+    def __init__(self, filepath, indention=3, max_line_length=79):
         '''Called on instanciation'''
 
+        # Does the filepath contain the extension?
+        if filepath.endswith('.cfg'):
+
+            # Remove the extension from the filepath
+            filepath = filepath[:~3]
+
         # Store the primary attributes
-        self.filepath = filepath
-        self.indention = indention
-        self.max_line_length = max_line_length
+        self._filepath = filepath
+        self._indention = indention
+        self._max_line_length = max_line_length
 
         # Store the header and separator
         self.header = ''
@@ -52,6 +58,21 @@ class ConfigManager(object):
     def __enter__(self):
         '''Used when using "with" context management to create the file'''
         return self
+
+    @property
+    def filepath(self):
+        '''Returns the file path for the config file'''
+        return self._filepath
+
+    @property
+    def indention(self):
+        '''Returns the indention value for the config file'''
+        return self._indention
+
+    @property
+    def max_line_length(self):
+        '''Returns the max line length for the config file'''
+        return self._max_line_length
 
     @property
     def fullpath(self):
