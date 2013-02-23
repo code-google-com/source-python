@@ -13,7 +13,7 @@ from dyncall.dictionary import SignatureDictionary
 from entities.constants import DamageOffsets
 from entities.helpers import index_from_inthandle
 #   Filters
-from filters.weapontags import WeaponTagIter
+from filters.weapons import WeaponClassIter
 #   Weapons
 from weapons.errors import WeaponIndexError
 
@@ -22,7 +22,7 @@ from weapons.errors import WeaponIndexError
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get a list of projectiles for the game
-_projectile_weapons = list(WeaponTagIter('grenade', return_types='classname'))
+_projectile_weapons = list(WeaponClassIter('grenade', return_types='classname'))
 
 
 # =============================================================================

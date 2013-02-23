@@ -7,14 +7,14 @@
 #   Entities
 from entities.weapons.weapon import WeaponEntity
 #   Filters
-from filters.weapontags import WeaponTagIter
+from filters.weapons import WeaponClassIter
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store a list of grenade weapons
-grenades = [weapon.name for weapon in WeaponTagIter('grenade')]
+grenades = [weapon.name for weapon in WeaponClassIter('grenade')]
 
 
 # =============================================================================
