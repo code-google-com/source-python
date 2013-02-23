@@ -39,22 +39,22 @@ class _WeaponManager(dict):
         properties = ini['properties']
 
         # Get the game's weapon prefix
-        self.prefix = properties['prefix']
+        self._prefix = properties['prefix']
 
         # Get the game's m_iAmmo property
-        self.ammoprop = properties['ammoprop']
+        self._ammoprop = properties['ammoprop']
 
         # Get the game's m_hMyWeapons property
-        self.myweapons = properties['myweapons']
+        self._myweapons = properties['myweapons']
 
         # Store any special names
-        self.special_names = ini.get('special names', {})
+        self._special_names = ini.get('special names', {})
 
         # Store projectile names
-        self.projectiles = ini.get('projectiles', {})
+        self._projectiles = ini.get('projectiles', {})
 
         # Store tags as a set
-        self.tags = set()
+        self._tags = set()
 
         # Loop through all weapons
         for basename in ini['weapons']:
@@ -66,7 +66,7 @@ class _WeaponManager(dict):
             self[name] = _Weapon(name, basename, ini['weapons'][basename])
 
             # Add the weapon's tags to the set of tags
-            self.tags.update(self[name].tags)
+            self._tags.update(self[name].tags)
 
     def __getitem__(self, item):
         '''Override __getitem__ to format the given name'''
@@ -113,6 +113,36 @@ class _WeaponManager(dict):
         # Return the name
         return name
 
+    @property
+    def prefix(self):
+        '''Returns the weapon prefix value for the server'''
+        return self._prefix
+
+    @property
+    def ammoprop(self):
+        '''Returns the ammoprop property for the server'''
+        return self._ammoprop
+
+    @property
+    def myweapons(self):
+        '''Returns the myweapons property for the server'''
+        return self._myweapons
+
+    @property
+    def special_names(self):
+        '''Returns the special_names for the server'''
+        return self._special_names
+
+    @property
+    def projectiles(self):
+        '''Returns the projectiles for the server'''
+        return self._projectiles
+
+    @property
+    def tags(self):
+        '''Returns the weapon tags for the server'''
+        return self._tags
+
 
 class _Weapon(object):
     '''Class used to store information specific to the given weapon'''
@@ -121,13 +151,13 @@ class _Weapon(object):
         '''Stores the base attributes for the weapon'''
 
         # Store the weapon's full name
-        self.name = name
+        self._name = name
 
         # Store the weapon's base name
-        self.basename = basename
+        self._basename = basename
 
         # Store the weapon's slot number
-        self.slot = properties.get('slot', None)
+        self._slot = properties.get('slot', None)
 
         # Store the weapon's max ammo amount
         self._maxammo = properties.get('maxammo', None)
@@ -136,10 +166,25 @@ class _Weapon(object):
         self.ammoprop = properties.get('ammoprop', None)
 
         # Store the weapon's clip amount
-        self.clip = properties.get('clip', 0)
+        self._clip = properties.get('clip', 0)
 
         # Store the weapon's tags
-        self.tags = properties.get('tags', 'all').split(',')
+        self._tags = properties.get('tags', 'all').split(',')
+
+    @property
+    def name(self):
+        '''Returns the classname of the weapon'''
+        return self._name
+
+    @property
+    def basename(self):
+        '''Returns the basename of the weapon'''
+        return self._basename
+
+    @property
+    def slot(self):
+        '''Returns the slot of the weapon'''
+        return self._slot
 
     @property
     def maxammo(self):
@@ -153,6 +198,21 @@ class _Weapon(object):
 
         # Get the cvar value of the maxammo
         return ServerVar(self._maxammo).GetInt()
+
+    @property
+    def ammoprop(self):
+        '''Returns the ammoprop of the weapon'''
+        return self._ammoprop
+
+    @property
+    def clip(self):
+        '''Returns the clip value of the weapon'''
+        return self._clip
+
+    @property
+    def tags(self):
+        '''Returns the tags of the weapon'''
+        return self._tags
 
 # Does the current game have an ini file?
 if _gamepath.isfile():
