@@ -26,8 +26,8 @@ try:
     # Get the game's _GameWeapons class
     _GameWeapons = _game_instance._GameWeapons
 
-    # If the rest was successful, import WeaponTagIter
-    from filters.weapontags import WeaponTagIter
+    # If the rest was successful, import WeaponClassIter
+    from filters.weapons import WeaponClassIter
 
 # Was an error encountered?
 except:
@@ -377,7 +377,7 @@ class _PlayerWeapons(_GameWeapons):
             # Was a weapon type given and the
             # current weapon is not of that type?
             if ((is_filters or not_filters) and not weapon_class in
-                    list(WeaponTagIter(is_filters, not_filters, 'classname'))):
+                    list(WeaponClassIter(is_filters, not_filters, 'classname'))):
 
                 # Do not yield this index
                 continue
