@@ -58,6 +58,7 @@ CGameEvent::CGameEvent( IGameEvent* game_event )
 {
 	m_game_event = game_event;
 	m_created = false;
+	m_fired = false;
 }
 
 CGameEvent::CGameEvent( const char* name, bool force )
@@ -65,15 +66,19 @@ CGameEvent::CGameEvent( const char* name, bool force )
 	// Have the game event manager create the event.
 	m_game_event = get_game_event_manager()->create_event(name, force)->get_event();
 
-	// Setting this to true indicates that the user called this constructor
-	// manually which means it needs to be freed manually if it goes out 
-	// of scope.
+	// If false at the time of this object's destruction, we must free the event
+	// manually.
+	m_fired = false;
+
+	// Event was created manually.
 	m_created = true;
 }
 
 CGameEvent::~CGameEvent()
 {
-	if( m_created )
+	// Per the documentation in igameevents.h, if the event is not fired,
+	// it needs to be freed by IGameEventManager.
+	if( !m_fired && m_created )
 	{
 		get_game_event_manager()->free_event(this);
 	}
@@ -166,7 +171,7 @@ IGameEvent* CGameEvent::get_event() const
 
 void CGameEvent::fire_event()
 {
-	get_game_event_manager()->fire_event(this);
+	m_fired = get_game_event_manager()->fire_event(this);
 }
 
 //---------------------------------------------------------------------------------
@@ -174,12 +179,12 @@ void CGameEvent::fire_event()
 //---------------------------------------------------------------------------------
 void CGameEventListener::fire_game_event( CGameEvent* game_event )
 {
-	this->get_override("fire_game_event")(game_event);
+	get_override("fire_game_event")(game_event);
 }
 
 int CGameEventListener::get_event_debug_id()
 {
-	return this->get_override("get_event_debug_id")();
+	return EVENT_DEBUG_ID_INIT;
 }
 
 void CGameEventListener::FireGameEvent( IGameEvent *event )
@@ -211,9 +216,9 @@ void CGameEventManager::reset()
 	m_game_event_manager->Reset();
 }
 
-bool CGameEventManager::add_listener( CGameEventListener* game_event_listener, const char* name, bool bServerSide )
+bool CGameEventManager::add_listener( CGameEventListener* game_event_listener, const char* name )
 {
-	return m_game_event_manager->AddListener(game_event_listener, name, bServerSide);
+	return m_game_event_manager->AddListener(game_event_listener, name, true);
 }
 
 bool CGameEventManager::find_listener( CGameEventListener* game_event_listener, const char* name )
@@ -255,4 +260,3 @@ void CGameEventManager::free_event( CGameEvent* game_event )
 		m_game_event_manager->FreeEvent(game_event->get_event());
 	}
 }
-

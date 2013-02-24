@@ -140,6 +140,10 @@ void export_igameevent()
 			args("keyName", "value")
 		)
 
+		CLASS_METHOD(CGameEvent,
+			fire_event,
+			"Fires this event."
+		)
 	BOOST_END_CLASS()
 }
 
@@ -185,7 +189,58 @@ void export_igameeventmanager()
 		CLASS_METHOD(CGameEventManager,
 			add_listener,
 			"Adds a listener for a particular event. Returns true on success.",
-			args("listener", "event_name", "is_server_side")
+			args("listener", "event_name")
+		)
+
+		CLASS_METHOD(CGameEventManager,
+			find_listener,
+			"Returns true if the given listener is listening to the given event.",
+			args("listener", "event_name")
+		)
+
+		CLASS_METHOD(CGameEventManager,
+			remove_listener,
+			"Stops a listener from receiving event notifications for the given event.",
+			args("listener", "event_name")
+		)
+
+		CLASS_METHOD(CGameEventManager,
+			create_event,
+			"Creates an event by name but doesn't fire it. Returns NULL if the event\
+			is not known or no listener is registered for it. Setting should_force to\
+			True forces the creation of the event even if no listener for it is active.",
+			args("event_name", "should_force"),
+			reference_existing_object_policy()
+		)
+
+		CLASS_METHOD(CGameEventManager,
+			fire_event,
+			"Fires a server event created by create_event. If dont_broadcast is set\
+			to False (which it is by default), the event is not sent to clients.\
+			Returns true if the event is fired off successfully.",
+			args("game_event", "dont_broadcast")
+		)
+
+		CLASS_METHOD(CGameEventManager,
+			fire_event_client_side,
+			"Fires an event for the local client only. This should only be used by\
+			client code!",
+			args("game_event")
+		)
+
+		CLASS_METHOD(CGameEventManager,
+			duplicate_event,
+			"Creates a new copy of the given CGameEvent instance. This must be freed\
+			by free_event later.",
+			args("game_event"),
+			reference_existing_object_policy()
+		)
+
+		CLASS_METHOD(CGameEventManager,
+			free_event,
+			"If an event is created but not fired, it must be freed. This method will\
+			do that for you.",
+			args("game_event")
 		)
 
 	BOOST_END_CLASS()
