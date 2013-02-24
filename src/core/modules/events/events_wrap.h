@@ -98,7 +98,7 @@ public:
 	virtual int			load_events_from_file( const char* filename );
 	virtual void		reset();
 
-	virtual bool		add_listener( CGameEventListener* game_event_listener, const char* name, bool bServerSide );
+	virtual bool		add_listener( CGameEventListener* game_event_listener, const char* name );
 	virtual bool		find_listener( CGameEventListener* game_event_listener, const char* name );
 	virtual void		remove_listener( CGameEventListener* game_event_listener );
 
