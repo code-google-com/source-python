@@ -69,6 +69,7 @@ public:
 private:
 	IGameEvent* m_game_event;
 	bool		m_created;
+	bool		m_fired;
 };
 
 //---------------------------------------------------------------------------------
