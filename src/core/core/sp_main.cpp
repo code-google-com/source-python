@@ -166,33 +166,6 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 }
 
 //---------------------------------------------------------------------------------
-// This function parses event files and attaches listeners for them to the main
-// plugin. szRelative
-//---------------------------------------------------------------------------------
-bool AddEventsFromFile( const char* szRelativePath )
-{
-	KeyValues* pEventsFile = new KeyValues("events");
-
-	if( !pEventsFile->LoadFromFile(filesystem, szRelativePath) ) {
-		return false;
-	}
-
-	DevMsg(1, "[SP] Begin event registration for %s.\n", szRelativePath);
-	KeyValues* pCurrent = pEventsFile->GetFirstSubKey();
-	int count = 0;
-	while( pCurrent ) {
-		DevMsg(1, " %d. %s\n", count, pCurrent->GetName());
-		gameeventmanager->AddListener(&g_SourcePythonPlugin, pCurrent->GetName(), true);
-		pCurrent = pCurrent->GetNextKey();
-		count++;
-	}
-
-	pEventsFile->deleteThis();
-	DevMsg(1, "[SP] Event registration finished. A total of %d events were registered.\n", count);
-	return true;
-}
-
-//---------------------------------------------------------------------------------
 // Purpose: constructor/destructor
 //---------------------------------------------------------------------------------
 CSourcePython::CSourcePython()
@@ -241,32 +214,6 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// Initialize python
 	if( !g_PythonManager.Initialize() ) {
 		Msg("Could not initialize python.");
-		return false;
-	}
-
-	// Add all the event listeners.
-	if( !AddEventsFromFile("resource/modevents.res") ) {
-		Msg("[SP] ERROR: Could not load modevents.res\n");
-		return false;
-	}
-
-	if( !AddEventsFromFile("resource/gameevents.res") ) {
-		Msg("[SP] ERROR: Could not load gameevents.res\n");
-		return false;
-	}
-
-	if( !AddEventsFromFile("resource/serverevents.res") ) {
-		Msg("[SP] ERROR: Could not load serverevents.res\n");
-		return false;
-	}
-
-	if( !AddEventsFromFile("resource/hltvevents.res") ) {
-		Msg("[SP] ERROR: Could not load serverevents.res\n");
-		return false;
-	}
-
-	if( !AddEventsFromFile("resource/replayevents.res") ) {
-		Msg("[SP] ERROR: Could not load replayevents.res\n");
 		return false;
 	}
 
@@ -428,7 +375,7 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 	const char * name = event->GetName();
 	DevMsg(1, "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
 
-	g_AddonManager.FireGameEvent(event);
+	//g_AddonManager.FireGameEvent(event);
 }
 
 //---------------------------------------------------------------------------------

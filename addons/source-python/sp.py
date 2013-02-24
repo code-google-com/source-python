@@ -61,13 +61,6 @@ def plugin_load():
         CoreSettings['BASE_SETTINGS']['language'])
 
 
-def event_fire(GameEvent):
-    '''Called when the core catches an event.'''
-
-    # Call the event within the registry
-    EventRegistry.call_event_callbacks(GameEvent)
-
-
 def tick_listener():
     '''Called every tick'''
 
