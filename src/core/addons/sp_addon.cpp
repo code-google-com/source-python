@@ -62,21 +62,6 @@ CAddonManager::~CAddonManager( void )
 }
 
 //---------------------------------------------------------------------------------
-// Fires game event.
-//---------------------------------------------------------------------------------
-void CAddonManager::FireGameEvent( IGameEvent* event )
-{
-	// Pass that on to python.
-	python::object mainFile = g_PythonManager.GetSP();
-
-	// Execute addon_load.
-	BEGIN_BOOST_PY()
-		CGameEvent game_event(event);
-		mainFile.attr("event_fire")(python::ptr(&game_event));
-	END_BOOST_PY();
-}
-
-//---------------------------------------------------------------------------------
 // Calls tick listener.
 //---------------------------------------------------------------------------------
 void CAddonManager::GameFrame()

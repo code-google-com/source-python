@@ -8,8 +8,16 @@
 import sys
 
 # Source.Python Imports
+from Source import Event
 #   Core
 from core.excepthook import ExceptHooks
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the CGameEventManager instance
+GameEventManager = Event.get_game_event_manager()
 
 
 # =============================================================================
@@ -19,14 +27,33 @@ class _EventRegistry(dict):
     '''Dictionary object used to hold Event names with all registered callbacks
     '''
 
+    def __missing__(self, event):
+        '''Adds an event to the dictionary and registers for it'''
+
+        # Get an _EventListener instance
+        listener = self[event] = _EventListener(event)
+
+        # Add the listener to the GameEventManager
+        GameEventManager.add_listener(listener, event)
+
+        # Return the instance
+        return listener
+
     def register_for_event(self, event, callback):
         '''Registers the callback for the given event'''
 
-        # Does the dictionary contain the event?
-        if not event in self:
+        # Is the callback callable?
+        if not callable(callback):
 
-            # Add the event to the dictionary
-            self[event] = _EventManager()
+            raise ValueError('Callback "%s" is not callable' % callback)
+
+        # Is the callback already registered for the given event?
+        if event in self and callback in self[event]:
+
+            # Raise an error
+            raise ValueError(
+                'Event callback "%s" is already ' % callback +
+                'registered for event "%s"' % event)
 
         # Add the callback to the event's registered callback list
         self[event].append(callback)
@@ -34,62 +61,63 @@ class _EventRegistry(dict):
     def unregister_for_event(self, event, callback):
         '''Unregisters the callback for the given event'''
 
-        # Does the dictionary contain the event?
-        if event in self:
+        # Is the event registered?
+        if not event in self:
 
-            # Remove the callback from the event's registered callbacks
-            self[event].remove(callback)
+            # Raise an error
+            raise ValueError('Event "%s" is not registered' % event)
+
+        # Is the callback registered for the event?
+        if not callback in self[event]:
+
+            # Raise an error
+            raise ValueError(
+                'Event callback "%s" is not ' % callback +
+                'registered for the event "%s"' % event)
+
+        # Remove the callback from the event's list
+        self[event].remove(callback)
 
         # Are there any callbacks remaining for the event?
         if not self[event]:
 
+            # Remove the listener from the GameEventManager
+            GameEventManager.remove_listener(self[event], event)
+
             # Remove the event from the dictionary
             del self[event]
-
-    def call_event_callbacks(self, GameEvent):
-        '''Calls all callbacks for the current event if any are registered'''
-
-        # Get the event's name
-        event_name = GameEvent.get_name()
-
-        # Does the dictionary contain the event?
-        if event_name in self:
-
-            # Call each callback for the current event
-            self[event_name]._call_event(GameEvent)
 
 # Get the _EventRegistry instance
 EventRegistry = _EventRegistry()
 
 
-class _EventManager(list):
+class _EventListener(Event.CGameEventListener):
     '''Stores callbacks for the given event'''
 
+    def __init__(self, event):
+        '''
+            Instanciates the class and creates an empty list to store callbacks
+        '''
+        super(_EventListener, self).__init__()
+        self._order = list()
+
+    def __contains__(self, callback):
+        '''Returns whether the callback is in the event's list'''
+        return item in self._order
+
     def append(self, callback):
-        '''Override the append method to verify the
-            callback has not already been registered'''
-
-        # Has the callback been registered for this event?
-        if not callback in self:
-
-            # Add the callback to the list
-            super(_EventManager, self).append(callback)
+        '''Adds the callback to the event's list'''
+        self._order.append(callback)
 
     def remove(self, callback):
-        '''Override the remove method to verify the
-            callback is registered for the event'''
+        '''Removes the callback from the event's list'''
+        self._order.remove(callback)
 
-        # Is the callback registered for this event?
-        if callback in self:
-
-            # Remove the callback from the list
-            super(_EventManager, self).remove(callback)
-
-    def _call_event(self, GameEvent):
+    def fire_game_event(self, GameEvent):
         '''Loops through all callbacks for an event and calls them'''
 
         # Loop through each callback in the event's list
-        for callback in self:
+        for callback in self._order:
 
             # Try to call the callback
             try:
