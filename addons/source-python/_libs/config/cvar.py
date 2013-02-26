@@ -138,14 +138,14 @@ class _ListManager(list):
         '''Returns the name of the list'''
         return self._name
 
-    def append(self, item):
+    def append(self, text):
         '''Override append to add the proper text'''
 
         # Is the item a TranslationStrings instance?
-        if isinstance(item, TranslationStrings):
+        if isinstance(text, TranslationStrings):
 
             # Get the proper text for the given item
-            item = item.get_string()
+            text = text.get_string()
 
         # Add the item to the list
-        super(_ListManager, self).append(item)
+        super(_ListManager, self).append(text)
