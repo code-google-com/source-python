@@ -3,14 +3,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Sys
-import sys
-
 # Source.Python Imports
 from Source import Event
-#   Core
-from core.excepthook import ExceptHooks
+#   Events
+from events.listener import _EventListener
 
 
 # =============================================================================
@@ -34,7 +30,7 @@ class _EventRegistry(dict):
         listener = self[event] = _EventListener(event)
 
         # Add the listener to the GameEventManager
-        GameEventManager.add_listener(listener, event)
+        GameEventManager.add_listener(listener.listener, event)
 
         # Return the instance
         return listener
@@ -45,15 +41,8 @@ class _EventRegistry(dict):
         # Is the callback callable?
         if not callable(callback):
 
-            raise ValueError('Callback "%s" is not callable' % callback)
-
-        # Is the callback already registered for the given event?
-        if event in self and callback in self[event]:
-
             # Raise an error
-            raise ValueError(
-                'Event callback "%s" is already ' % callback +
-                'registered for event "%s"' % event)
+            raise ValueError('Callback "%s" is not callable' % callback)
 
         # Add the callback to the event's registered callback list
         self[event].append(callback)
@@ -67,14 +56,6 @@ class _EventRegistry(dict):
             # Raise an error
             raise ValueError('Event "%s" is not registered' % event)
 
-        # Is the callback registered for the event?
-        if not callback in self[event]:
-
-            # Raise an error
-            raise ValueError(
-                'Event callback "%s" is not ' % callback +
-                'registered for the event "%s"' % event)
-
         # Remove the callback from the event's list
         self[event].remove(callback)
 
@@ -82,54 +63,10 @@ class _EventRegistry(dict):
         if not self[event]:
 
             # Remove the listener from the GameEventManager
-            GameEventManager.remove_listener(self[event], event)
+            GameEventManager.remove_listener(self[event].listener)
 
             # Remove the event from the dictionary
             del self[event]
 
 # Get the _EventRegistry instance
 EventRegistry = _EventRegistry()
-
-
-class _EventListener(Event.CGameEventListener):
-    '''Stores callbacks for the given event'''
-
-    def __init__(self, event):
-        '''
-            Instanciates the class and creates an empty list to store callbacks
-        '''
-        super(_EventListener, self).__init__()
-        self._order = list()
-
-    def __contains__(self, callback):
-        '''Returns whether the callback is in the event's list'''
-        return callback in self._order
-
-    def append(self, callback):
-        '''Adds the callback to the event's list'''
-        self._order.append(callback)
-
-    def remove(self, callback):
-        '''Removes the callback from the event's list'''
-        self._order.remove(callback)
-
-    def fire_game_event(self, GameEvent):
-        '''Loops through all callbacks for an event and calls them'''
-
-        # Loop through each callback in the event's list
-        for callback in self._order:
-
-            # Try to call the callback
-            try:
-
-                # Call the callback
-                callback(GameEvent)
-
-            # Was an error encountered?
-            except:
-
-                # Get the error
-                error = sys.exc_info()
-
-                # Print the exception to the console
-                ExceptHooks.print_exception(*error)
