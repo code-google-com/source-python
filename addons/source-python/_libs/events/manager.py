@@ -103,7 +103,7 @@ class _EventListener(Event.CGameEventListener):
 
     def __contains__(self, callback):
         '''Returns whether the callback is in the event's list'''
-        return item in self._order
+        return callback in self._order
 
     def append(self, callback):
         '''Adds the callback to the event's list'''
