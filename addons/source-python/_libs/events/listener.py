@@ -8,7 +8,7 @@
 import sys
 
 # Source.Python Imports
-from Source import Event
+from Source import event_c
 #   Core
 from core.excepthook import ExceptHooks
 
@@ -26,7 +26,7 @@ class _EventListener(list):
         self.event = event
 
         # Store the listener instance
-        self.listener = Event.CGameEventListener()
+        self.listener = event_c.CGameEventListener()
 
         # Set the listener's fire_game_event method to the instance's method
         self.listener.fire_game_event = self.fire_game_event
@@ -59,7 +59,7 @@ class _EventListener(list):
         # Remove the callback from the list
         super(_EventListener, self).remove(callback)
 
-    def fire_game_event(self, GameEvent):
+    def fire_game_event(self, game_event):
         '''Loops through all callbacks for an event and calls them'''
 
         # Loop through each callback in the event's list
@@ -69,7 +69,7 @@ class _EventListener(list):
             try:
 
                 # Call the callback
-                callback(GameEvent)
+                callback(game_event)
 
             # Was an error encountered?
             except:
