@@ -69,7 +69,7 @@ DECLARE_CLASS_METHOD_OVERLOAD(CEngineServer, precache_generic,			1, 2);
 //---------------------------------------------------------------------------------
 // Exposes the engine module.
 //---------------------------------------------------------------------------------
-DECLARE_SP_MODULE(Engine)
+DECLARE_SP_MODULE(engine_c)
 {
 	export_engine_interface();
 }

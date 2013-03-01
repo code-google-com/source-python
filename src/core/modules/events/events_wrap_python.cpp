@@ -55,7 +55,7 @@ void export_igameeventmanager();
 //---------------------------------------------------------------------------------
 // Exposes the Game Event module.
 //---------------------------------------------------------------------------------
-DECLARE_SP_MODULE(Event)
+DECLARE_SP_MODULE(event_c)
 {
 	export_igameevent();
 	export_igameeventlistener();
