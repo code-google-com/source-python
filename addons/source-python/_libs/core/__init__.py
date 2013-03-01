@@ -8,7 +8,7 @@
 from os import sep
 
 # Source.Python Imports
-from Source import Engine
+from Source import engine_c
 from paths import GAME_PATH
 
 
@@ -19,7 +19,7 @@ from paths import GAME_PATH
 GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
 
 # Get the Engine's instance
-GameEngine = Engine.get_engine_interface()
+GameEngine = engine_c.get_engine_interface()
 
 
 # =============================================================================

@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Event
+from Source import event_c
 #   Events
 from events.listener import _EventListener
 
@@ -13,7 +13,7 @@ from events.listener import _EventListener
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the CGameEventManager instance
-GameEventManager = Event.get_game_event_manager()
+GameEventManager = event_c.get_game_event_manager()
 
 
 # =============================================================================

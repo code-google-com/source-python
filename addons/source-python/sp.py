@@ -33,8 +33,6 @@
 #   Core
 from core.base_command import SPCommands
 from core.settings import CoreSettings
-#   Events
-from events.manager import EventRegistry
 #   Translations
 from translations.manager import LanguageManager
 #   Listeners
