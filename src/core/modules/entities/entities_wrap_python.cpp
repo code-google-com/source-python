@@ -104,11 +104,31 @@ void export_server_unknown()
 }
 void export_server_entity()
 {
+	BOOST_ABSTRACT_CLASS(CServerEntity)
+		
+		CLASS_METHOD(CServerEntity,
+			get_model_index,
+			"Returns the model index for this entity."
+		)
 
+		CLASS_METHOD(CServerEntity,
+			set_model_index,
+			"Sets the model of this entity.",
+			args("model_index")
+		)
+
+		CLASS_METHOD(CServerEntity,
+			get_model_name,
+			"Returns the name of the model this entity is using."
+		)
+
+	BOOST_END_CLASS()
 }
 void export_edict()
 {
 	BOOST_CLASS_CONSTRUCTOR(CEdict, int)
+
+		CLASS_CONSTRUCTOR(const char*, optional<bool>)
 
 		CLASS_METHOD(CEdict,
 			area_num
@@ -133,6 +153,22 @@ void export_edict()
 			clear_free,
 			"Clears the entity free flag."
 		)	
+
+		CLASS_METHOD(CEdict,
+			is_valid,
+			"Returns true if this CEdict object has a valid edict."
+		)
+
+		CLASS_METHOD(CEdict,
+			get_index,
+			"Returns the index of this entity."
+		)
+
+		CLASS_METHOD(CEdict,
+			get_server_entity,
+			"Returns the CServerEntity instance for this CEdict.",
+			manage_new_object_policy()
+		)
 
 	BOOST_END_CLASS()
 }

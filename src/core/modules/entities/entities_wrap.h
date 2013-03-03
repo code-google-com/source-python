@@ -49,12 +49,17 @@ public:
 	// This awful hack allows us to convert pointers returned by
 	// dyncall to the edict class.
 	// CEdict( uintptr_t edict_ptr );
+	
+	// Get edict instances by index.
 	CEdict( int index );
+
+	// Get edict instances by name.
+	CEdict( const char* name, bool bExact = true );
 
 	// For engine use.
 	CEdict( edict_t* edict_ptr );
 
-	// virtual const CServerEntity*			get_iserverentity() const;
+	virtual const CServerEntity*			get_server_entity() const;
 	// virtual const CServerNetworkable*	get_networkable() const;
 	// virtual const CServerUnknown*		get_unknown() const;
 
@@ -65,8 +70,14 @@ public:
 	virtual	void						set_free();
 	virtual void						clear_free();
 
+	// Helper methods.
+	virtual bool						is_valid() const;
+	virtual int							get_index() const;
+
 private:
-	edict_t* m_edict_ptr;
+	edict_t*	m_edict_ptr;
+	bool		m_is_valid;
+	int			m_index;
 };
 
 
@@ -102,6 +113,22 @@ public:
 
 private:
 	IHandleEntity* m_handle_entity;
+};
+
+//---------------------------------------------------------------------------------
+// IServerEntity wrapper class.
+//---------------------------------------------------------------------------------
+class CServerEntity
+{
+public:
+	CServerEntity( IServerEntity* server_entity );
+
+	virtual int get_model_index() const;
+	virtual void set_model_index( int index );
+	virtual const char* get_model_name();
+
+private:
+	IServerEntity* m_server_entity;
 };
 
 

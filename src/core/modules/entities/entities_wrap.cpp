@@ -56,11 +56,54 @@ extern CGlobalVars* gpGlobals;
 CEdict::CEdict( edict_t* edict_ptr )
 {
 	m_edict_ptr = edict_ptr;
+	m_is_valid = (m_edict_ptr != NULL);
 }
 
 CEdict::CEdict( int index )
 {
 	m_edict_ptr = PEntityOfEntIndex(index);
+	m_is_valid = (m_edict_ptr != NULL);
+}
+
+CEdict::CEdict( const char* name, bool bExact /* = true */ )
+{
+	const int max_entities = gpGlobals->maxEntities;
+	for( int i = 0; i < max_entities; i++ )
+	{
+		edict_t* edict = &gpGlobals->pEdicts[i];
+		
+		// Rule out empty edicts.
+		if( !edict || edict->IsFree() ) {
+			continue;
+		}
+
+		// Check the name if we want a partial match.
+		if( !bExact ) 
+		{
+			if( V_stristr(edict->GetClassName(), name) ) 
+			{
+				m_edict_ptr = edict;
+				m_is_valid = true;
+				m_index = i;
+				return;
+			}
+		}
+		else 
+		{
+			// Compare names otherwise.
+			if( V_strcmp(edict->GetClassName(), name) == 0 )
+			{
+				m_edict_ptr = edict;
+				m_is_valid = true;
+				m_index = i;
+				return;
+			}
+		}
+	}
+
+	m_edict_ptr = NULL;
+	m_is_valid = false;
+	m_index = -1;
 }
 
 int CEdict::area_num() const
@@ -86,6 +129,21 @@ void CEdict::set_free()
 void CEdict::clear_free()
 {
 	m_edict_ptr->ClearFree();
+}
+
+bool CEdict::is_valid() const
+{
+	return m_is_valid;
+}
+
+int CEdict::get_index() const
+{
+	return m_index;
+}
+
+const CServerEntity* CEdict::get_server_entity() const
+{
+	return new CServerEntity(m_edict_ptr->GetIServerEntity());
 }
 
 //---------------------------------------------------------------------------------
@@ -133,4 +191,27 @@ const CBaseEntityHandle* CHandleEntity::get_ref_ehandle() const
 	const CBaseHandle& handle = m_handle_entity->GetRefEHandle();
 	const CBaseEntityHandle* new_entity_handle = new CBaseEntityHandle(handle);
 	return new_entity_handle;
+}
+
+//---------------------------------------------------------------------------------
+// CServerEntity code.
+//---------------------------------------------------------------------------------
+CServerEntity::CServerEntity( IServerEntity* server_entity )
+{
+	m_server_entity = server_entity;
+}
+
+int CServerEntity::get_model_index() const
+{
+	return m_server_entity->GetModelIndex();
+}
+
+void CServerEntity::set_model_index( int index )
+{
+	m_server_entity->SetModelIndex(index);
+}
+
+const char* CServerEntity::get_model_name()
+{
+	return m_server_entity->GetModelName().ToCStr();
 }
