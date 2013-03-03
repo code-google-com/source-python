@@ -150,13 +150,29 @@ Set(SOURCEPYTHON_EVENT_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Entities module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_ENTITY_MODULE_HEADERS
+    core/modules/entities/entities_wrap.h
+)
+
+Set(SOURCEPYTHON_ENTITY_MODULE_SOURCES
+    core/modules/entities/entities_wrap.cpp
+    core/modules/entities/entities_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
 	${SOURCEPYTHON_ENGINE_MODULE_FILES}
     ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES}
+    
     ${SOURCEPYTHON_EVENT_MODULE_HEADERS}
     ${SOURCEPYTHON_EVENT_MODULE_SOURCES}
+    
+    ${SOURCEPYTHON_ENTITY_MODULE_HEADERS}
+    ${SOURCEPYTHON_ENTITY_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -170,6 +186,7 @@ Source_Group("Header Files\\Generic"		                FILES ${SOURCEPYTHON_GENER
 Source_Group("Header Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons" 		                FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -178,6 +195,7 @@ Source_Group("Source Files\\Generic"		                FILES ${SOURCEPYTHON_GENER
 Source_Group("Source Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
