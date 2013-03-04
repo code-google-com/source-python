@@ -15,7 +15,7 @@ class CommandManager(object):
     '''Class used to store a command instance'''
 
     def __init__(self, name, description):
-        '''Called on instanciation'''
+        '''Called on instantiation'''
 
         # Is the given description a TranslationStrings instance?
         if isinstance(description, TranslationStrings):
