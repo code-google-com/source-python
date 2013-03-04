@@ -24,7 +24,7 @@ class _Delay(object):
         change arguments, cancel the delay, etc...'''
 
     def __init__(self, seconds, callback, *args, **kw):
-        '''Called when an instance is instanciated'''
+        '''Called when an instance is instantiated'''
 
         # Store the time to execute the callback
         self.exec_time = time.time() + seconds
@@ -70,7 +70,7 @@ class _TickDelays(dict):
     '''Class used to store delays to be called by a tick listener'''
 
     def __init__(self):
-        '''Called when the class is first instanciated'''
+        '''Called when the class is first instantiated'''
 
         # Store an ordered list to sort delays
         self._order = list()

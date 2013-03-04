@@ -25,7 +25,7 @@ class _SPCommands(dict):
     '''Class used for executing "sp" sub-command functionality'''
 
     def __init__(self):
-        '''Called on instanciation'''
+        '''Called on instantiation'''
 
         # Create a list to keep the items in order for iteration
         self._order = list()

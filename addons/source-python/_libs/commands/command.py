@@ -15,7 +15,7 @@ class _CommandAutoUnload(AutoUnload):
     '''Class used to auto-unregister commands on script unload'''
 
     def __init__(self, class_instance):
-        '''Stores the instanciating class' unregister method'''
+        '''Stores the instantiating class' unregister method'''
         self._unload_instance = class_instance._unregister_command
 
 
