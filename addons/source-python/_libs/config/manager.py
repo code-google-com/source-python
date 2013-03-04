@@ -31,7 +31,7 @@ class ConfigManager(object):
     '''Config Management class used to create a config file'''
 
     def __init__(self, filepath, indention=3, max_line_length=79):
-        '''Called on instanciation'''
+        '''Called on instantiation'''
 
         # Does the filepath contain the extension?
         if filepath.endswith('.cfg'):

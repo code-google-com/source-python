@@ -15,7 +15,7 @@ class SectionManager(object):
     '''Class used to store a section instance'''
 
     def __init__(self, name, separator):
-        '''Called on instanciation'''
+        '''Called on instantiation'''
 
         # Is the given name a TranslationStrings instance?
         if isinstance(name, TranslationStrings):

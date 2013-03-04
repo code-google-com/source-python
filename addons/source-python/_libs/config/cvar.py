@@ -18,7 +18,7 @@ class CvarManager(dict):
 
     def __init__(
             self, name, default, flags, description, min_value, max_value):
-        '''Called on instanciation'''
+        '''Called on instantiation'''
 
         # Is the given description a TranslationStrings instance?
         if isinstance(description, TranslationStrings):
@@ -120,7 +120,7 @@ class _ListManager(list):
     '''List class used to store text for a specific descriptor of a Cvar'''
 
     def __init__(self, name):
-        '''Called on instanciation'''
+        '''Called on instantiation'''
 
         # Is the given name a TranslationStrings instance?
         if isinstance(name, TranslationStrings):
