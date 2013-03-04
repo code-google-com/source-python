@@ -1,10 +1,10 @@
-# ../_libs/events/variables.py
+# ../_libs/events/variable.py
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store a dictionary to get default values
-DEFAULT_VALUES = {'bool': bool, 'int': int, 'float': float, 'string': str}
+_DEFAULT_VALUES = {'bool': bool, 'int': int, 'float': float, 'string': str}
 
 
 # =============================================================================
@@ -29,7 +29,7 @@ class _EventVariable(object):
         else:
 
             # Set the default value to the type's default
-            self.default = DEFAULT_VALUES[self._method]()
+            self.default = _DEFAULT_VALUES[self._method]()
 
         # Store the comment
         self.comment = comment
