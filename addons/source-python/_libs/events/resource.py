@@ -115,8 +115,8 @@ class ResourceFile(OrderedDict):
                     # Write the variable with its type and comment
                     open_file.write('        "%s"\t"%s"%s\n' % (
                         variable, self[event][variable].name,
-                        ('\t// %s' % self[event][variable].comment if
-                            self[event][variable].comment else '')))
+                        ('\t// %s' % self[event][variable]._comment if
+                            self[event][variable]._comment else '')))
 
                 # End the group of variables
                 open_file.write('    }\n')

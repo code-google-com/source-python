@@ -23,16 +23,16 @@ class _EventVariable(object):
         if not default is None:
 
             # Set the default value
-            self.default = default
+            self._default = default
 
         # Was no default value passed?
         else:
 
             # Set the default value to the type's default
-            self.default = _DEFAULT_VALUES[self._method]()
+            self._default = _DEFAULT_VALUES[self._method]()
 
         # Store the comment
-        self.comment = comment
+        self._comment = comment
 
         # Set the instance's counter
         self._counter = _EventVariable._creation_counter
@@ -46,31 +46,31 @@ class _EventVariable(object):
         return self.__class__.__name__.lower().replace('type', '')
 
 
-class BoolType(_EventVariable):
+class BoolVariable(_EventVariable):
     '''Class used to store bool event variables'''
     _method = 'bool'
 
 
-class ByteType(_EventVariable):
+class ByteVariable(_EventVariable):
     '''Class used to store byte event variables'''
     _method = 'int'
 
 
-class ShortType(_EventVariable):
+class ShortVariable(_EventVariable):
     '''Class used to store short event variables'''
     _method = 'int'
 
 
-class LongType(_EventVariable):
+class LongVariable(_EventVariable):
     '''Class used to store long event variables'''
     _method = 'float'
 
 
-class FloatType(_EventVariable):
+class FloatVariable(_EventVariable):
     '''Class used to store floating point event variables'''
     _method = 'float'
 
 
-class StringType(_EventVariable):
+class StringVariable(_EventVariable):
     '''Class used to store string event variables'''
     _method = 'string'
