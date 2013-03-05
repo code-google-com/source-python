@@ -14,7 +14,7 @@ class _EventVariable(object):
     '''Base class used for event variable types'''
 
     # Store a base counter to keep track of the order variables are added
-    creation_counter = 0
+    _creation_counter = 0
 
     def __init__(self, comment='', default=None):
         '''Called on instantiation'''
@@ -35,10 +35,10 @@ class _EventVariable(object):
         self.comment = comment
 
         # Set the instance's counter
-        self.counter = _EventVariable.creation_counter
+        self._counter = _EventVariable._creation_counter
 
         # Increase the internal counter
-        _EventVariable.creation_counter += 1
+        _EventVariable._creation_counter += 1
 
     @property
     def name(self):
