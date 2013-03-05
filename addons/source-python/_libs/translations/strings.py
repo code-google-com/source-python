@@ -160,8 +160,9 @@ class LangStrings(dict):
 
         # Set the initial comments to explain what the file is for
         server_file.initial_comment = _core_strings[
-            'Initial Comment'].get_string(LanguageManager.default,
-            filename=self._mainfile.replace(GAME_PATH, '')).splitlines()
+            'Initial Comment'].get_string(
+                LanguageManager.default,
+                filename=self._mainfile.replace(GAME_PATH, '')).splitlines()
 
         # Write the server specific file
         server_file.write()

@@ -22,7 +22,8 @@ from weapons.errors import WeaponIndexError
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get a list of projectiles for the game
-_projectile_weapons = list(WeaponClassIter('grenade', return_types='classname'))
+_projectile_weapons = list(
+    WeaponClassIter('grenade', return_types='classname'))
 
 
 # =============================================================================

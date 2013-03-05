@@ -116,7 +116,7 @@ class ResourceFile(OrderedDict):
                     open_file.write('        "%s"\t"%s"%s\n' % (
                         variable, self[event][variable].name,
                         ('\t// %s' % self[event][variable].comment if
-                        self[event][variable].comment else '')))
+                            self[event][variable].comment else '')))
 
                 # End the group of variables
                 open_file.write('    }\n')

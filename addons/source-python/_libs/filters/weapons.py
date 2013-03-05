@@ -151,7 +151,8 @@ def _return_instance(edict):
 
 # Register the return type functions
 WeaponEdictIterManager.register_return_type('index', index_from_edict)
-WeaponEdictIterManager.register_return_type('basehandle', basehandle_from_edict)
+WeaponEdictIterManager.register_return_type(
+    'basehandle', basehandle_from_edict)
 WeaponEdictIterManager.register_return_type('inthandle', inthandle_from_edict)
 WeaponEdictIterManager.register_return_type('pointer', pointer_from_edict)
 WeaponEdictIterManager.register_return_type('edict', _return_edict)
