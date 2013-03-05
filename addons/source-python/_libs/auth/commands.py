@@ -3,6 +3,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Collections
+from collections import OrderedDict
+
 # Source.Python imports
 #   Auth
 from auth.manager import AuthManager
@@ -13,34 +17,8 @@ from core.commands import echo_console
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _AuthCommands(dict):
+class _AuthCommands(OrderedDict):
     '''Class used for executing "sp auth" sub-command functionality'''
-
-    def __init__(self):
-        '''Called on instantiation'''
-
-        # Create a list to keep the items in order for iteration
-        self._order = list()
-
-    def __setitem__(self, item, value):
-        '''
-            Override the __setitem__ method to add the item to the ordered list
-        '''
-
-        # Add the item to the ordered list
-        self._order.append(item)
-
-        # Add the item to the dictionary
-        super(_AuthCommands, self).__setitem__(item, value)
-
-    def __iter__(self):
-        '''Override the __iter__ method to make sure to use the ordered list'''
-
-        # Loop through the ordered list
-        for item in self._order:
-
-            # Yield the current item
-            yield item
 
     def call_command(self, args):
         '''Executes the given "sp auth" sub-command'''

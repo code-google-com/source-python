@@ -30,9 +30,6 @@ class _AuthManager(dict):
     def load_auth(self, provider):
         '''Loads the given provider'''
 
-        print('LOADING AN AUTH PROVIDER')
-        print('provider: %s' % provider)
-
         # Send a message that the auth provider is being loaded
         echo_console(
             '[SP Auth] ' + _auth_strings[
