@@ -4,6 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Collections
+from collections import OrderedDict
 #   Sys
 import sys
 
@@ -20,10 +22,8 @@ from core.excepthook import ExceptHooks
 # =============================================================================
 # >> MAIN CLASSES
 # =============================================================================
-class _AddonManagementDictionary(dict):
+class _AddonManagementDictionary(OrderedDict):
     '''Stores addon's and their instances'''
-
-    _order = list()
 
     def __missing__(self, addon_name):
         '''Tries to load an addon that is not loaded'''
@@ -72,9 +72,6 @@ class _AddonManagementDictionary(dict):
         # Add the addon to the dictionary with its instance
         self[addon_name] = instance
 
-        # Add the addon's name to the ordered list
-        self._order.append(addon_name)
-
         # Return the given value
         return instance
 
@@ -112,23 +109,11 @@ class _AddonManagementDictionary(dict):
         # Remove all modules from sys.modules
         self._remove_modules(addon_name)
 
-        # Remove the addon from the ordered list
-        self._order.remove(addon_name)
-
         # Remove the addon from the dictionary
         super(_AddonManagementDictionary, self).__delitem__(addon_name)
 
-    def __iter__(self):
-        '''Override the __iter__ method to return
-            items in the order they were loaded'''
-
-        # Loop through all items in the ordered list
-        for addon in self._order:
-
-            # Yield the current item
-            yield addon
-
     def _remove_modules(self, addon_name):
+        '''Recursively removes modules from within the unloading addon'''
 
         # Get the addon's module
         addon_import = addon_name + '.' + addon_name
