@@ -10,6 +10,14 @@ from auth.paths import AUTH_PROVIDER_PATH
 from core.commands import echo_console
 #   Players
 from players.helpers import uniqueid_from_playerinfo
+#   Translations
+from translations.strings import LangStrings
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+_auth_strings = LangStrings('_core/auth_strings')
 
 
 # =============================================================================
@@ -22,16 +30,21 @@ class _AuthManager(dict):
     def load_auth(self, provider):
         '''Loads the given provider'''
 
+        print('LOADING AN AUTH PROVIDER')
+        print('provider: %s' % provider)
+
         # Send a message that the auth provider is being loaded
-        echo_console('SP Auth] Attempting to load provider "%s"' % provider)
+        echo_console(
+            '[SP Auth] ' + _auth_strings[
+            'Loading'].get_string(provider=provider))
 
         # Is the provider loaded?
         if provider in self:
 
             # If so, send a message that the provider is already loaded
             echo_console(
-                '[SP Auth] Unable to load provider "' +
-                '%s", provider is already loaded.' % provider)
+                '[SP Auth] ' + _auth_strings[
+                'Already Loaded'].get_string(provider=provider))
 
             # No need to go further
             return
@@ -41,8 +54,8 @@ class _AuthManager(dict):
 
             # Send a message that the file does not exist
             echo_console(
-                '[SP Auth] Unable to load provider "%s", ' % provider +
-                'missing file ../addons/source-python/auth/%s.py' % provider)
+                '[SP Auth] ' + _auth_strings[
+                'No Module'].get_string(provider=provider))
 
             # No need to go further
             return
@@ -55,21 +68,28 @@ class _AuthManager(dict):
         self[provider].load()
 
         # Send a message that the provider was loaded
-        echo_console('[SP Auth] Successfully loaded provider "%s"' % provider)
+        echo_console(
+            '[SP Auth] ' + _auth_strings[
+            'Load Successful'].get_string(provider=provider))
 
     def unload_auth(self, provider):
         '''Unloads the given provider'''
 
         # Send a message that the auth provider is being unloaded
-        echo_console('SP Auth] Attempting to unload provider "%s"' % provider)
+        echo_console(
+            '[SP Auth] ' + _auth_strings[
+            'Unloading'].get_string(provider=provider))
 
         # Is the provider loaded?
         if not provider in self:
 
             # If not, send a message that the provider is not loaded
             echo_console(
-                '[SP Auth] Unable to unload provider ' +
-                '"%s", provider not loaded.' % provider)
+                '[SP Auth] ' + _auth_strings[
+                'Not Loaded'].get_string(provider=provider))
+
+            # No need to go further
+            return
 
         # Call the providers unload method
         self[provider].unload()
@@ -79,7 +99,8 @@ class _AuthManager(dict):
 
         # Send a message that the provider was unloaded
         echo_console(
-            '[SP Auth] Successfully unloaded provider "%s"' % provider)
+            '[SP Auth] ' + _auth_strings[
+            'Unload Successful'].get_string(provider=provider))
 
     def reload_auth(self, provider):
         '''Reloads the given provider'''
