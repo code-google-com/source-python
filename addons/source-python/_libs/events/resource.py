@@ -61,7 +61,7 @@ class ResourceFile(OrderedDict):
             # Sort the event's variables
             variables = sorted(
                 variables, key=lambda variable:
-                getattr(event, variable).counter)
+                getattr(event, variable)._counter)
 
             # Create an ordered dictionary instance
             self[name] = event._variables = OrderedDict()
