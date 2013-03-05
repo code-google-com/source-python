@@ -64,16 +64,16 @@ class _DownloadablesList(list):
 
     def _add_to_download_table(self, item):
         '''Add the given file to the downloadables table'''
-        
+
         # Lock the network string tables
         locked = GameEngine.LockNetworkStringTables(False)
-        
+
         # Add the given file
         self.download_table.AddString(True, item)
-        
+
         # Reset the lock status
         GameEngine.LockNetworkStringTables(locked)
-        
+
     def server_spawn(self, GameEvent):
         '''Adds all items stored as downloadables to the stringtable'''
 

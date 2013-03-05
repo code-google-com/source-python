@@ -100,9 +100,9 @@ class _CoreSettings(ConfigObj):
         # Set the auth provider comments
         self['AUTH_SETTINGS'].comments['providers'] = _core_strings[
             'providers'].get_string(
-            self._language, providers='\n'.join(_auth_providers),
-            single=_auth_providers[0],
-            multiple=' '.join(_auth_providers[:3])).splitlines()
+                self._language, providers='\n'.join(_auth_providers),
+                single=_auth_providers[0],
+                multiple=' '.join(_auth_providers[:3])).splitlines()
 
 # Get the _CoreSettings instance
 CoreSettings = _CoreSettings(CFG_PATH.joinpath('core_settings.ini'))

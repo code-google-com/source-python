@@ -29,7 +29,7 @@ class CommandManager(object):
 
     @property
     def name(self):
-        '''Returns the commands name'''
+        '''Returns the command's name'''
         return self._name
 
     @property
