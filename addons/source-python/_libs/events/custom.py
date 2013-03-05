@@ -71,7 +71,7 @@ class CustomEvent(object):
 
             # Set the variable to its default value
             super(CustomEvent, self).__setattr__(
-                '_' + variable, getattr(self, variable).default)
+                '_' + variable, getattr(self, variable)._default)
 
     @property
     def name(self):
