@@ -31,8 +31,8 @@
 # =============================================================================
 # Source.Python Imports
 #   Core
-from core.base_command import SPCommands
-from core.settings import CoreSettings
+from _core.commands import SPCommands
+from _core.settings import CoreSettings
 #   Translations
 from translations.manager import LanguageManager
 #   Listeners

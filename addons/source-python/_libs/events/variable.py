@@ -63,7 +63,7 @@ class ShortVariable(_EventVariable):
 
 class LongVariable(_EventVariable):
     '''Class used to store long event variables'''
-    _method = 'float'
+    _method = 'int'
 
 
 class FloatVariable(_EventVariable):

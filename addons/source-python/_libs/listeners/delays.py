@@ -10,8 +10,7 @@ import sys
 import time
 
 # Source.Python Imports
-#   Core
-from core.excepthook import ExceptHooks
+from excepthooks import ExceptHooks
 #   Listeners
 from listeners.tick import TickListeners
 

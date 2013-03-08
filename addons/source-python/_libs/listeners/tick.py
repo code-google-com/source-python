@@ -8,8 +8,7 @@
 import sys
 
 # Source.Python Imports
-#   Core
-from core.excepthook import ExceptHooks
+from excepthooks import ExceptHooks
 
 
 # =============================================================================

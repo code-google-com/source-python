@@ -1,4 +1,4 @@
-# ../_libs/core/__init__.py
+# ../_libs/core.py
 
 # =============================================================================
 # >> IMPORTS
@@ -32,3 +32,16 @@ class AutoUnload(object):
         Each class which inherits this one
         should have a _unload_instance method.
     '''
+
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def echo_console(text):
+    '''echos a message to the server's console'''
+
+    # Loop through each line in the text
+    for line in text.split('\n'):
+
+        # Echo the message
+        GameEngine.server_command('echo "%s"\n' % line.replace('"', "'"))

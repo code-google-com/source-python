@@ -4,10 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python imports
+from core import echo_console
 #   Auth
 from auth.paths import AUTH_PROVIDER_PATH
-#   Core
-from core.commands import echo_console
 #   Players
 from players.helpers import uniqueid_from_playerinfo
 #   Translations
@@ -17,6 +16,7 @@ from translations.strings import LangStrings
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the auth language strings
 _auth_strings = LangStrings('_core/auth_strings')
 
 

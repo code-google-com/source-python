@@ -1,4 +1,4 @@
-# ../_libs/core/excepthook.py
+# ../_libs/excepthooks.py
 
 # =============================================================================
 # >> IMPORTS
@@ -12,9 +12,16 @@ import sys
 from traceback import format_exception
 
 # Source.Python Imports
+from core import echo_console
 from paths import GAME_PATH
-#   Core
-from core.commands import echo_console
+#   Translations
+from translations.strings import LangStrings
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+_excepthook_strings = LangStrings('_core/excepthooks_strings')
 
 
 # =============================================================================
@@ -67,7 +74,7 @@ class _ExceptHooks(list):
         format_error.insert(-1, '')
 
         # Print the leading line of the exception
-        echo_console('\n[SP] caught an exception:')
+        echo_console('\n[SP] ' + _excepthook_strings['Exception'].get_string())
 
         # Loop through each line in the exception
         for line in format_error:

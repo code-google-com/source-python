@@ -4,8 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Engine
-#   Core
+from Source import engine_c
 from core import GAME_NAME
 #   Entities
 from entities.entity import BaseEntity

@@ -4,7 +4,6 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Core
 from core import GameEngine
 #   Messages
 from messages.base import BaseMessageNoText

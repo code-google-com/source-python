@@ -9,12 +9,11 @@ import sys
 
 # Source.Python Imports
 from Source import ClientCmd
+from excepthooks import ExceptHooks
 #   Commands
 from commands.manager import _CommandList
 from commands.player import _AuthCallback
 from commands.player import _PlayerCommandRegistry
-#   Core
-from core.excepthook import ExceptHooks
 #   Players
 from players.helpers import playerinfo_from_edict
 

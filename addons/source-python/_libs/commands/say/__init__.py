@@ -9,13 +9,12 @@ import sys
 
 # Source.Python Imports
 from Source import Shared
+from excepthooks import ExceptHooks
 #   Commands
 from commands.say.command import SayCommand
 from commands.say.filter import SayFilter
 from commands.say.manager import SayCommandRegistry
 from commands.server.command import ServerCommand as _ServerCommand
-#   Core
-from core.excepthook import ExceptHooks
 
 
 # =============================================================================

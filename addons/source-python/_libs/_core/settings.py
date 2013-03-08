@@ -1,4 +1,4 @@
-# ../_libs/core/settings.py
+# ../_libs/_core/settings.py
 
 # =============================================================================
 # >> IMPORTS
@@ -19,7 +19,7 @@ from translations.strings import LangStrings
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the core language strings
+# Get the core settings language strings
 _core_strings = LangStrings('_core/core_settings_strings')
 
 # Get a list of auth providers

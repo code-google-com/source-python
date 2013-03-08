@@ -9,11 +9,10 @@ import sys
 
 # Source.Python Imports
 from Source import Cvar
+from excepthooks import ExceptHooks
 #   Commands
 from commands.manager import _CommandList
 from commands.manager import _CommandRegistry
-#   Core
-from core.excepthook import ExceptHooks
 
 
 # =============================================================================

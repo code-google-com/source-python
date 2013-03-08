@@ -1,11 +1,10 @@
-# ../_libs/core/downloads.py
+# ../_libs/downloads.py
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
 from Source import Misc
-#   Core
 from core import AutoUnload
 from core import GameEngine
 #   Events

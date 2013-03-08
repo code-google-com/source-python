@@ -8,12 +8,11 @@
 import sys
 
 # Source.Python Imports
+from excepthooks import ExceptHooks
 #   Auth
 from auth.manager import AuthManager
 #   Commands
 from commands.manager import _CommandRegistry
-#   Core
-from core.excepthook import ExceptHooks
 
 
 # =============================================================================
