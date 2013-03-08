@@ -10,13 +10,21 @@ from collections import OrderedDict
 import sys
 
 # Source.Python Imports
+from core import AutoUnload
+from core import echo_console
+from excepthooks import ExceptHooks
 from paths import ADDON_PATH
 #   Addons
 from addons.errors import AddonFileNotFoundError
-#   Core
-from core import AutoUnload
-from core.commands import echo_console
-from core.excepthook import ExceptHooks
+#   Translations
+from translations.strings import LangStrings
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the addons language strings
+_addon_strings = LangStrings('_core/addons_strings')
 
 
 # =============================================================================
@@ -54,8 +62,8 @@ class _AddonManagementDictionary(OrderedDict):
                 # Print a message about not using built-in module names
                 # We already know the path exists, so the only way this error
                 # could occur is if it shares its name with a built-in module
-                echo_console(
-                    '[SP] Addon name cannot use name of a built-in module')
+                echo_console('[SP] ' + _addon_strings[
+                    'Built-in'].get_string(addon=addon_name))
 
             # Otherwise
             else:
@@ -85,7 +93,8 @@ class _AddonManagementDictionary(OrderedDict):
             return
 
         # Print message about unloading the addon
-        echo_console('[SP] Unloading "%s"...' % addon_name)
+        echo_console('[SP] ' + _addon_strings[
+            'Unloading'].get_string(addon=addon_name))
 
         # Does the addon have an unload function?
         if 'unload' in self[addon_name].globals:
@@ -177,7 +186,8 @@ class _LoadedAddon(object):
         '''Called when an addon's instance is initialized'''
 
         # Print message that the addon is going to be loaded
-        echo_console('[SP] Loading "%s"...' % addon_name)
+        echo_console('[SP] ' + _addon_strings[
+            'Loading'].get_string(addon=addon_name))
 
         # Get the addon's main file
         file_path = ADDON_PATH.joinpath(addon_name, addon_name + '.py')
@@ -186,9 +196,8 @@ class _LoadedAddon(object):
         if not file_path.isfile():
 
             # Print a message that the addon's main file was not found
-            echo_console(
-                '[SP] Unable to load "%s", missing file ' % addon_name +
-                '../addons/source-python/%s/%s.py' % (addon_name, addon_name))
+            echo_console('[SP] ' + _addon_strings[
+                'No Module'].get_string(addon=addon_name))
 
             # Raise an error, so that the addon
             # is not added to the AddonManager

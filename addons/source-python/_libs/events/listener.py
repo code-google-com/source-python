@@ -9,8 +9,7 @@ import sys
 
 # Source.Python Imports
 from Source import event_c
-#   Core
-from core.excepthook import ExceptHooks
+from excepthooks import ExceptHooks
 
 
 # =============================================================================

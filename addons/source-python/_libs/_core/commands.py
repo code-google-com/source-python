@@ -1,4 +1,4 @@
-# ../_libs/core/base_command.py
+# ../_libs/_core/commands.py
 
 # =============================================================================
 # >> IMPORTS
@@ -10,14 +10,22 @@ from collections import OrderedDict
 from configobj import ConfigObj
 
 # Source.Python Imports
+from core import echo_console
 from paths import DATA_PATH
 #   Addons
 from addons.info import AddonInfo
 from addons.manager import AddonManager
 #   Auth
 from auth.commands import AuthCommands
-#   Core
-from core.commands import echo_console
+#   Translations
+from translations.strings import LangStrings
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the core commands language strings
+_command_strings = LangStrings('_core/core_commands_strings')
 
 
 # =============================================================================
@@ -36,14 +44,15 @@ class _SPCommands(OrderedDict):
             if command:
 
                 # Send a message about the invalid command
-                echo_console('[SP] "%s" is not a valid sub-command.' % command)
+                echo_console('[SP] ' + _command_strings[
+                    'Invalid Command'].get_string(command=command))
 
             # Was no command given?
             else:
 
                 # Send a message that a sub-command is needed
-                echo_console(
-                    '[SP] The "sp" command must be followed by a sub-command.')
+                echo_console('[SP] ' + _command_strings[
+                    'No Command'].get_string())
 
             # Print the help text
             self._print_help()
@@ -59,8 +68,8 @@ class _SPCommands(OrderedDict):
 
                 # Send a message about the sub-command's valid arguments
                 echo_console(
-                    '[SP] Invalid arguments for sub-command "%s' % command +
-                    '": sp %s %s' % (command, ' '.join(self[command].args)))
+                    '[SP] ' + _command_strings['Invalid Arguments'].get_string(
+                        command=command) + ' '.join(self[command].args))
 
                 # Go no further
                 return
@@ -87,8 +96,8 @@ class _SPCommands(OrderedDict):
         '''Prints all "sp" sub-commands.'''
 
         # Send header messages
-        echo_console('[Source.Python] Help:')
-        echo_console('usage: sp <command> [arguments]')
+        echo_console('[SP] ' + _command_strings[
+            'Help'].get_string() + 'sp <command> [arguments]')
         echo_console('=' * 76)
 
         # Loop through all registered sub-commands
@@ -130,7 +139,8 @@ def _load_addon(addon_name):
     if addon_name in AddonManager:
 
         # Send message that the addon is loaded
-        echo_console('[SP] Addon "%s" is already loaded.' % addon_name)
+        echo_console('[SP] ' + _command_strings[
+            'Already Loaded'].get_string(addon=addon_name))
 
         # No need to go further
         return
@@ -142,13 +152,15 @@ def _load_addon(addon_name):
     if addon is None:
 
         # Send message that the addon was not loaded
-        echo_console('[SP] Addon "%s" was unable to be loaded.' % addon_name)
+        echo_console('[SP] ' + _command_strings[
+            'Unable to Load'].get_string(addon=addon_name))
 
         # No need to go further
         return
 
     # Send message that the addon was loaded
-    echo_console('[SP] Successfully loaded "%s"' % addon_name)
+    echo_console('[SP] ' + _command_strings[
+        'Successful Load'].get_string(addon=addon_name))
 
 
 def _unload_addon(addon_name):
@@ -158,9 +170,8 @@ def _unload_addon(addon_name):
     if not addon_name in AddonManager:
 
         # If not, send a message that the addon is not loaded
-        echo_console(
-            '[SP] Addon "%s" cannot ' % addon_name +
-            'be unloaded.  It is not currently loaded.')
+        echo_console('[SP] ' + _command_strings[
+            'Not Loaded'].get_string(addon=addon_name))
 
         # No need to go further
         return
@@ -169,7 +180,8 @@ def _unload_addon(addon_name):
     del AddonManager[addon_name]
 
     # Send message that the addon was unloaded
-    echo_console('[SP] Successfully unloaded "%s"' % addon_name)
+    echo_console('[SP] ' + _command_strings[
+        'Successful Unload'].get_string(addon=addon_name))
 
 
 def _reload_addon(addon_name):
@@ -186,7 +198,7 @@ def _print_addons():
     '''Lists all currently loaded addons.'''
 
     # Send header messages
-    echo_console('[SP] Loaded Addons:')
+    echo_console('[SP] ' + _command_strings['Addons'].get_string())
     echo_console('=' * 61 + '\n')
 
     # Loop through all loaded addons
@@ -244,8 +256,8 @@ def _print_credits():
     '''Lists all credits for Source.Python.'''
 
     # Print header messages
-    print('[SP] Credits:')
-    print('=' * 61 + '\n')
+    echo_console('[SP] ' + _command_strings['Credits'].get_string())
+    echo_console('=' * 61 + '\n')
 
     # Get the credits information
     groups = ConfigObj(
@@ -255,19 +267,19 @@ def _print_credits():
     for group in groups:
 
         # Print the current group's name
-        print('\t' + group + ':')
+        echo_console('\t' + group + ':')
 
         # Loop through all names in the current group
         for name in groups[group].values():
 
             # Print the current name
-            print('\t\t' + name.replace('\\t', '\t'))
+            echo_console('\t\t' + name.replace('\\t', '\t'))
 
         # Print 1 blank line between groups
-        print('')
+        echo_console('')
 
     # Print the ending message
-    print('=' * 61 + '\n')
+    echo_console('=' * 61 + '\n')
 
 # Get the _SPCommands instance
 SPCommands = _SPCommands()

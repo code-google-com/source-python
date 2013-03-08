@@ -8,7 +8,6 @@
 import time
 
 # Source.Python Imports
-#   Core
 from core import AutoUnload
 #   Listeners
 from listeners.delays import TickDelays

@@ -4,14 +4,13 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+from core import GameEngine
+from excepthooks import ExceptHooks
 from paths import CFG_PATH
 #   Config
 from config.cvar import CvarManager
 from config.section import SectionManager
 from config.command import CommandManager
-#   Core
-from core import GameEngine
-from core.excepthook import ExceptHooks
 #   Translations
 from translations.strings import LangStrings
 from translations.strings import TranslationStrings

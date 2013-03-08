@@ -5,7 +5,6 @@
 # =============================================================================
 # Source.Python Imports
 from Source import Player
-#   Core
 from core import GameEngine
 #   Entities
 from entities.entity import BaseEntity

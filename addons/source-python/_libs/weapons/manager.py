@@ -8,10 +8,9 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-from paths import DATA_PATH
-#   Core
 from core import GAME_NAME
-from core.cvar import ServerVar
+from cvars import ServerVar
+from paths import DATA_PATH
 #   Weapons
 from weapons.default import NoWeaponManager
 

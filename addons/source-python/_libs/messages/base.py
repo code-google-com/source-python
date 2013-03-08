@@ -10,10 +10,9 @@ from string import Template
 # Source.Python Imports
 from Source import Engine
 from Source import Player
-#   Core
 from core import GameEngine
 from core import GAME_NAME
-from core.cvar import ServerVar
+from cvars import ServerVar
 #   Filters
 from filters.recipients import get_recipients
 #   Translations

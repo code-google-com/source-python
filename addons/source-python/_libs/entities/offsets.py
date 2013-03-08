@@ -10,9 +10,8 @@ from configobj import ConfigObj
 from os import name as os_name
 
 # Source.Python Imports
-from paths import DATA_PATH
-#   Core
 from core import GAME_NAME
+from paths import DATA_PATH
 
 
 # =============================================================================

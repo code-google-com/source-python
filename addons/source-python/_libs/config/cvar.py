@@ -4,8 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Core
-from core.cvar import ServerVar
+from cvars import ServerVar
 #   Translations
 from translations.strings import TranslationStrings
 
@@ -93,6 +92,14 @@ class CvarManager(dict):
     def text(self, text):
         '''Adds simple text or a TranslationStrings
             instance to the ordered list'''
+
+        # Is the item a TranslationStrings instance?
+        if isinstance(text, TranslationStrings):
+
+            # Get the proper text for the given item
+            text = text.get_string()
+
+        # Add the text to the ordered list
         self._order.append(text)
 
     @property

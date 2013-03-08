@@ -8,9 +8,8 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-from paths import DATA_PATH
-#   Core
 from core import GAME_NAME
+from paths import DATA_PATH
 #   Entities
 from entities.entity import BaseEntity
 
