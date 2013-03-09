@@ -50,27 +50,8 @@ class ResourceFile(OrderedDict):
                 raise TypeError(
                     'Event classes must be sub-classes of CustomEvent')
 
-            # Get the event's name
-            name = event.__name__.lower()
-
-            # Get the event's variables
-            variables = [
-                variable for variable in dir(event) if
-                isinstance(getattr(event, variable), _EventVariable)]
-
-            # Sort the event's variables
-            variables = sorted(
-                variables, key=lambda variable:
-                getattr(event, variable)._counter)
-
-            # Create an ordered dictionary instance
-            self[name] = event._variables = OrderedDict()
-
-            # Loop through the sorted variables
-            for variable in variables:
-
-                # Store the variable in the ordered dictionary
-                self[name][variable] = getattr(event, variable)
+            # Store the event with its variables in the dictionary
+            self[event.__name__.lower()] = event
 
     @property
     def filepath(self):
@@ -110,13 +91,16 @@ class ResourceFile(OrderedDict):
                 open_file.write('    {\n')
 
                 # Loop through the event's variables
-                for variable in self[event]:
+                for variable in self[event]._odict:
+
+                    # Get the variable's instance
+                    instance = self[event]._odict[variable]
 
                     # Write the variable with its type and comment
-                    open_file.write('        "%s"\t"%s"%s\n' % (
-                        variable, self[event][variable].name,
-                        ('\t// %s' % self[event][variable]._comment if
-                            self[event][variable]._comment else '')))
+                    open_file.write(
+                        '        "%s"\t"%s"%s\n' % (variable, instance.name,
+                        ('\t// %s' % instance._comment if
+                        instance._comment else '')))
 
                 # End the group of variables
                 open_file.write('    }\n')
