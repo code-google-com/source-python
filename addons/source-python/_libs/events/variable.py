@@ -13,9 +13,6 @@ _DEFAULT_VALUES = {'bool': bool, 'int': int, 'float': float, 'string': str}
 class _EventVariable(object):
     '''Base class used for event variable types'''
 
-    # Store a base counter to keep track of the order variables are added
-    _creation_counter = 0
-
     def __init__(self, comment='', default=None):
         '''Called on instantiation'''
 
@@ -34,16 +31,10 @@ class _EventVariable(object):
         # Store the comment
         self._comment = comment
 
-        # Set the instance's counter
-        self._counter = _EventVariable._creation_counter
-
-        # Increase the internal counter
-        _EventVariable._creation_counter += 1
-
     @property
     def name(self):
         '''Returns the variable type name'''
-        return self.__class__.__name__.lower().replace('type', '')
+        return self.__class__.__name__.lower().replace('variable', '')
 
 
 class BoolVariable(_EventVariable):
