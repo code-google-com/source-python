@@ -21,6 +21,10 @@ class _CommandRegistry(object):
         '''Create the commands dictionary for this instance'''
         self._commands = dict()
 
+    def is_registered(self, command):
+        '''Returns whether a command is registered'''
+        return command in self._commands
+
 
 class _CommandList(list):
     '''Base list class used to store a list of callbacks for a command'''
