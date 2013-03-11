@@ -97,13 +97,13 @@ class _AddonManagementDictionary(OrderedDict):
             'Unloading'].get_string(addon=addon_name))
 
         # Does the addon have an unload function?
-        if 'unload' in self[addon_name].globals:
+        if 'unload' in self[addon_name]._globals:
 
             # Use a try/except here to still allow the addon to be unloaded
             try:
 
                 # Call the addon's unload function
-                self[addon_name].globals['unload']()
+                self[addon_name]._globals['unload']()
 
             # Was an exception raised?
             except:
@@ -120,6 +120,22 @@ class _AddonManagementDictionary(OrderedDict):
 
         # Remove the addon from the dictionary
         super(_AddonManagementDictionary, self).__delitem__(addon_name)
+
+    def get_addon_instance(self, addon_name):
+        '''Returns an addon's instance if it is loaded'''
+
+        # Is the addon loaded?
+        if addon_name in self:
+
+            # Return the addon's instance
+            return self[addon_name]
+
+        # Return None if the addon is not loaded
+        return None
+
+    def is_loaded(self, addon_name):
+        '''Returns whether an addon is loaded or not'''
+        return addon_name in self
 
     def _remove_modules(self, addon_name):
         '''Recursively removes modules from within the unloading addon'''
@@ -207,10 +223,10 @@ class _LoadedAddon(object):
         self._addon = __import__(addon_name + '.' + addon_name)
 
         # Store the globals for the addon
-        self.globals = self._addon.__dict__[addon_name].__dict__
+        self._globals = self._addon.__dict__[addon_name].__dict__
 
         # Does the addon have a load function?
-        if 'load' in self.globals:
+        if 'load' in self._globals:
 
             # Call the addon's load function
-            self.globals['load']()
+            self._globals['load']()
