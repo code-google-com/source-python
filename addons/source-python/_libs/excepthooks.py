@@ -39,8 +39,16 @@ class _ExceptHooks(list):
             # Add the callback to the list
             super(_ExceptHooks, self).append(callback)
 
-    def print_exception(self, exctype, value, trace_back, callbacks=True):
+    def print_exception(
+            self, exctype=None, value=None,
+            trace_back=None, callbacks=True):
         '''Called when an exception is raised'''
+
+        # Was an exception passed?
+        if exctype is None:
+
+            # Get the exception
+            exctype, value, trace_back = sys.exc_info()
 
         # Do all of the callbacks need looped through?
         if callbacks:
@@ -59,13 +67,10 @@ class _ExceptHooks(list):
                 # Was an exception raised?
                 except:
 
-                    # Get the new exception
-                    error = sys.exc_info()
-
                     # Re-call print_exception with the new error.
                     # Pass False for callbacks, so that
                     # it does not cause an infinite loop.
-                    self.print_exception(*error, callbacks=False)
+                    self.print_exception(callbacks=False)
 
         # Format the exception
         format_error = format_exception(exctype, value, trace_back)
@@ -87,7 +92,8 @@ class _ExceptHooks(list):
             line = line.rstrip()
 
             # Strip the GAME_PATH to make the exception shorter
-            line = line.replace(GAME_PATH, '..%s' % sep)
+            line = line.replace(
+                GAME_PATH, '..%s' % sep).replace(sep + '.' + sep, sep)
 
             # Print the current line
             echo_console(line)

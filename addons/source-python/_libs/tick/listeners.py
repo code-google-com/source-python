@@ -1,12 +1,8 @@
-# ../_libs/listeners/tick.py
+# ../_libs/tick/listeners.py
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Sys
-import sys
-
 # Source.Python Imports
 from excepthooks import ExceptHooks
 
@@ -67,11 +63,8 @@ class _TickListeners(list):
             # Was an error encountered?
             except:
 
-                # Get the error
-                error = sys.exc_info()
-
                 # Print the exception to the console
-                ExceptHooks.print_exception(*error)
+                ExceptHooks.print_exception()
 
     def register_tick_listener(self, callback):
         '''Registers a tick listener'''

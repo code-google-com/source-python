@@ -8,14 +8,16 @@
 from binascii import unhexlify
 #   Codecs
 from codecs import unicode_escape_decode
-#   Configobj
-from configobj import ConfigObj
-from configobj import Section
 #   String
 from string import Template
 #   Re
 from re import compile as re_compile
 from re import VERBOSE
+
+# Site Package Imports
+#   Configobj
+from configobj import ConfigObj
+from configobj import Section
 
 # Source.Python Imports
 from paths import TRANSLATION_PATH

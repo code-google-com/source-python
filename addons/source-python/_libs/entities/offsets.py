@@ -4,10 +4,12 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   ConfigObj
-from configobj import ConfigObj
 #   OS
 from os import name as os_name
+
+# Site Package Imports
+#   ConfigObj
+from configobj import ConfigObj
 
 # Source.Python Imports
 from core import GAME_NAME

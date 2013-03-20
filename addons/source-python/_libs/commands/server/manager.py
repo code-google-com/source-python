@@ -3,10 +3,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Sys
-import sys
-
 # Source.Python Imports
 from Source import Cvar
 from excepthooks import ExceptHooks
@@ -46,8 +42,7 @@ class _ServerCommandList(_CommandList):
                 return_val = return_val and (
                     return_type is None or bool(return_type))
             except:
-                error = sys.exc_info()
-                ExceptHooks.print_exception(*error)
+                ExceptHooks.print_exception()
         if return_val:
             return self._ContinueValue
         return self._BlockValue

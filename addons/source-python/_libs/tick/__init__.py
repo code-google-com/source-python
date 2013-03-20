@@ -1,12 +1,12 @@
-# ../_libs/listeners/__init__.py
+# ../_libs/tick/__init__.py
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
 from core import AutoUnload
-#   Listeners
-from listeners.tick import TickListeners
+#   Tick
+from tick.listeners import TickListeners
 
 
 # =============================================================================

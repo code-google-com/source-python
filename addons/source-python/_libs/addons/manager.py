@@ -108,12 +108,9 @@ class _AddonManagementDictionary(OrderedDict):
             # Was an exception raised?
             except:
 
-                # Get the error
-                error = sys.exc_info()
-
                 # Print the error to console, but
                 # allow the addon to still be unloaded
-                ExceptHooks.print_exception(*error)
+                ExceptHooks.print_exception()
 
         # Remove all modules from sys.modules
         self._remove_modules(addon_name)
