@@ -39,7 +39,6 @@ class _EntitySpecials(object):
         # Import BaseEntity classes
         # Doing this in the global scope causes cross import errors
         from entities.entity import BaseEntity
-        from entities.weapons.weapon import WeaponEntity
         from players.entity import PlayerEntity
 
         # Is the game supported?
@@ -58,8 +57,8 @@ class _EntitySpecials(object):
         # Use try/except in case of an invalid weapon index
         try:
 
-            # Get the weapon's WeaponEntity instance
-            weapon = WeaponEntity(weapon_index)
+            # Get the weapon's BaseEntity instance
+            weapon = BaseEntity(weapon_index, 'weapon')
 
         # Was an error encountered?
         except:

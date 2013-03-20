@@ -17,10 +17,10 @@ class _ModuleData(dict):
         '''Add the module to the dictionary'''
 
         # Add the missing module to the dictionary
-        self[item] = Binutils.FindModuleData(item)
+        value = self[item] = Binutils.FindModuleData(item)
 
         # Return the module's instance
-        return self[item]
+        return value
 
 # Get the _ModuleData instance
 ModuleData = _ModuleData()

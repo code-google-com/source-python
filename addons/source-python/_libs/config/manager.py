@@ -3,6 +3,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Collections
+from collections import defaultdict
+
 # Source.Python Imports
 from core import GameEngine
 from excepthooks import ExceptHooks
@@ -384,8 +388,8 @@ class ConfigManager(object):
     def _parse_old_file(self):
         '''Parses the old config file to get any values already set'''
 
-        # Get the _OldConfig instance
-        _old_config = _OldConfig()
+        # Get a defaultdict instance to store a list of lines
+        _old_config = defaultdict(list)
 
         # Does the file exist?
         if not self.fullpath.isfile():
@@ -500,16 +504,3 @@ class ConfigManager(object):
 
         # Return the line and the remainder
         return start, remainder
-
-
-class _OldConfig(dict):
-    '''Dictionary class used to store values from the old config file'''
-
-    def __missing__(self, item):
-        '''Define __missing__ to add the item as an empty list'''
-
-        # Add the item as an empty list
-        value = self[item] = list()
-
-        # Return the list
-        return value
