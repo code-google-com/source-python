@@ -6,7 +6,7 @@
 # Source.Python Imports
 from Source import Entity
 #   Entities
-from entities.entities.weapon import WeaponEntity
+from entities.entity import BaseEntity
 from entities.helpers import basehandle_from_edict
 from entities.helpers import index_from_edict
 from entities.helpers import inthandle_from_edict
@@ -146,8 +146,8 @@ def _return_edict(edict):
 
 
 def _return_instance(edict):
-    '''Returns the weapon's WeaponEntity instance'''
-    return WeaponEntity(index_from_edict(edict))
+    '''Returns the weapon's BaseEntity instance'''
+    return BaseEntity(index_from_edict(edict), 'weapon')
 
 # Register the return type functions
 WeaponEdictIterManager.register_return_type('index', index_from_edict)

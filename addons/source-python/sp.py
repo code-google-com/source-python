@@ -35,8 +35,8 @@ from _core.commands import SPCommands
 from _core.settings import CoreSettings
 #   Translations
 from translations.manager import LanguageManager
-#   Listeners
-from listeners.tick import TickListeners
+#   Tick
+from tick.listeners import TickListeners
 
 
 # =============================================================================
