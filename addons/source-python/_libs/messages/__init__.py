@@ -4,10 +4,12 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   Path
-from path import path
 #   Sys
 import sys
+
+# Site Package Imports
+#   Path
+from path import path
 
 
 # =============================================================================

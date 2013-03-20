@@ -1,4 +1,4 @@
-# ../_libs/listeners/repeat.py
+# ../_libs/tick/repeat.py
 
 # =============================================================================
 # >> IMPORTS
@@ -9,8 +9,8 @@ import time
 
 # Source.Python Imports
 from core import AutoUnload
-#   Listeners
-from listeners.delays import TickDelays
+#   Tick
+from tick.delays import TickDelays
 
 
 # =============================================================================

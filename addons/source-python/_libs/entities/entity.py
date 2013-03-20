@@ -22,9 +22,9 @@ class BaseEntity(_EntitySpecials):
 
     index = 0
     edict = 0
-    _game_inis = None
+    entities = None
 
-    def __new__(cls, index):
+    def __new__(cls, index, *entities):
         '''Override the __new__ class method to verify the given index
             is of the correct entity type and add the index attribute'''
 
@@ -37,30 +37,17 @@ class BaseEntity(_EntitySpecials):
             # If not raise an error
             raise ValueError('Index "%s" is not a proper index' % index)
 
-        # Verify that the given index is of the correct entity type
-        if not cls._is_valid_index_for_entity_type(edict):
-
-            # If not an index of the correct entity type, raise an error
-            raise ValueError('Index "%s" is not appropriate type' % index)
-
         # Create the object
         self = object.__new__(cls)
 
         # Set the entity's base attributes
         self.index = index
         self.edict = edict
-        self._game_inis = list()
+        self.entities = set(entities)
+        self.entities.add('entity')
 
         # Return the instance
         return self
-
-    def __init__(self, index):
-        '''
-            Override the __init__ method to add "entity" to the _game_inis list
-        '''
-
-        # Add "entity" to the entities list
-        self._game_inis.append('entity')
 
     def __getattr__(self, attr):
         '''Finds if the attribute is valid and returns the appropriate value'''
@@ -173,7 +160,7 @@ class BaseEntity(_EntitySpecials):
         '''Finds if the attribute is value and sets its value'''
 
         # Does the class have the given attribute?
-        if hasattr(BaseEntity, attr):
+        if hasattr(self.__class__, attr):
 
             # Set the attribute
             object.__setattr__(self, attr, value)
@@ -355,31 +342,24 @@ class BaseEntity(_EntitySpecials):
     @property
     def properties(self):
         '''Returns all properties for all entities'''
-        return Properties.get_entity_properties(self._game_inis)
+        return Properties.get_entity_properties(self.entities)
 
     @property
     def keyvalues(self):
         '''Returns all keyvalues for all entities'''
-        return KeyValues.get_entity_keyvalues(self._game_inis)
+        return KeyValues.get_entity_keyvalues(self.entities)
 
     @property
     def offsets(self):
         '''Returns all offsets for all entities'''
-        return Offsets.get_entity_offsets(self._game_inis)
+        return Offsets.get_entity_offsets(self.entities)
 
     @property
     def functions(self):
         '''Returns all dynamic calling functions for all entities'''
-        return Functions.get_entity_functions(self._game_inis)
+        return Functions.get_entity_functions(self.entities)
 
     @property
     def pointer(self):
         '''Returns the entity's pointer'''
         return self.edict.GetUnknown().GetBaseEntity()
-
-    @classmethod
-    def _is_valid_index_for_entity_type(cls, edict):
-        '''Verifies that the given edict is of an entity'''
-
-        # Return whether the given edict has a classname
-        return edict.GetClassName()

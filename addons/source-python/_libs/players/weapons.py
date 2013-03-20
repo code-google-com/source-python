@@ -8,7 +8,6 @@ from Source import engine_c
 from core import GAME_NAME
 #   Entities
 from entities.entity import BaseEntity
-from entities.weapons.weapon import WeaponEntity
 #   Weapons
 from weapons.manager import WeaponManager
 
@@ -78,8 +77,8 @@ class _PlayerWeapons(_GameWeapons):
             # Return 0 as the amount
             return 0
 
-        # Get the WeaponEntity instance for the index
-        weapon = WeaponEntity(index)
+        # Get the BaseEntity instance for the index
+        weapon = BaseEntity(index, 'weapon')
 
         # Return the amount of ammo the player has for the weapon
         return self.GetPropInt(
@@ -121,8 +120,8 @@ class _PlayerWeapons(_GameWeapons):
             # Return 0 as the amount
             return 0
 
-        # Get the WeaponEntity instance for the index
-        weapon = WeaponEntity(index)
+        # Get the BaseEntity instance for the index
+        weapon = BaseEntity(index, 'weapon')
 
         # Return the amount of ammo in the weapon's clip
         return weapon.clip
@@ -164,8 +163,8 @@ class _PlayerWeapons(_GameWeapons):
                 '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
                 'for player "%s"' % self.userid)
 
-        # Get the entity's WeaponEntity instance
-        weapon = WeaponEntity(index)
+        # Get the entity's BaseEntity instance
+        weapon = BaseEntity(index, 'weapon')
 
         # Set the player's ammo value
         self.SetPropInt(
@@ -208,8 +207,8 @@ class _PlayerWeapons(_GameWeapons):
                 '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
                 'for player "%s"' % self.userid)
 
-        # Get the entity's WeaponEntity instance
-        weapon = WeaponEntity(index)
+        # Get the entity's BaseEntity instance
+        weapon = BaseEntity(index, 'weapon')
 
         # Set the weapon's clip value
         weapon.clip = value
@@ -251,8 +250,8 @@ class _PlayerWeapons(_GameWeapons):
                 '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
                 'for player "%s"' % self.userid)
 
-        # Get the entity's WeaponEntity instance
-        weapon = WeaponEntity(index)
+        # Get the entity's BaseEntity instance
+        weapon = BaseEntity(index, 'weapon')
 
         # Get the current ammo value
         current = self.GetPropInt(
@@ -299,8 +298,8 @@ class _PlayerWeapons(_GameWeapons):
                 '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
                 'for player "%s"' % self.userid)
 
-        # Get the entity's WeaponEntity instance
-        weapon = WeaponEntity(index)
+        # Get the entity's BaseEntity instance
+        weapon = BaseEntity(index, 'weapon')
 
         # Add ammo to the weapon's clip
         weapon.clip += value
