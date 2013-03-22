@@ -23,6 +23,7 @@
 #include "bitvec.h"
 #include "engine/iserverplugin.h"
 #include "tier1/bitbuf.h"
+#include "iclient.h"
 
 //-----------------------------------------------------------------------------
 // forward declarations
@@ -59,6 +60,8 @@ class CGamestatsData;
 class CSteamID;
 class ISPSharedMemory;
 class CGamestatsData;
+class CEngineHltvInfo_t;
+class INetMessage;
 
 namespace google
 {
@@ -69,6 +72,8 @@ namespace google
 }
 
 typedef struct player_info_s player_info_t;
+
+typedef uint64 PublishedFileId_t;
 
 //-----------------------------------------------------------------------------
 // defines
@@ -467,11 +472,13 @@ public:
 	
 	virtual float GetLatencyForChoreoSounds() = 0;
 	
-	virtual int GetClientCrossPlayPlatform( int client_index ) = 0;
+	virtual CrossPlayPlatform_t GetClientCrossPlayPlatform( int ent_num ) = 0;
 	
-	virtual void EnsureInstanceBaseline( int ) = 0;
+	virtual void EnsureInstanceBaseline( int ent_num ) = 0;
 	
-	virtual bool ReserveServerForQueuedGame( const char * ) = 0;
+	virtual bool ReserveServerForQueuedGame( const char *szReservationPayload ) = 0;
+	
+	virtual bool GetEngineHltvInfo( CEngineHltvInfo_t &out ) = 0;
 };
 
 #define INTERFACEVERSION_SERVERGAMEDLL				"ServerGameDLL005"
@@ -599,7 +606,15 @@ public:
 	virtual bool			IsValveDS() = 0;
 	virtual KeyValues		*GetExtendedServerInfoForNewClient() = 0;
 	virtual void 			UpdateGCInformation() = 0;
-	virtual void 			ReportGCQueuedMatchStart( int, unsigned int *, int ) = 0;
+	virtual void 			ReportGCQueuedMatchStart( int32 iReservationStage, uint32 *puiConfirmedAccounts, int numConfirmedAccounts ) = 0;
+	
+	virtual PublishedFileId_t	GetUGCMapFileID( const char *mapName ) = 0;
+	virtual void			GetMatchmakingGameData( char *buf, size_t bufSize ) = 0;
+	virtual bool			HasPendingMapDownloads() const = 0;
+	virtual void			UpdateUGCMap( PublishedFileId_t file ) = 0;
+	virtual int				GetMessageEncryptionKey( INetMessage *msg ) = 0;
+	virtual bool			ShouldHoldGameServerReservation( float flTime ) = 0;
+	virtual void			GetNewestSubscribedFiles() = 0;
 };
 
 //-----------------------------------------------------------------------------

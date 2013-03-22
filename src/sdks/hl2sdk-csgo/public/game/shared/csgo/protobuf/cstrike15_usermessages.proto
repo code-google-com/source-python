@@ -107,9 +107,6 @@ enum ECstrike15UserMessages
 	CS_UM_ClientInfo = 39;
 	CS_UM_XRankGet = 40;					// Get ELO Rank Value from Client
 	CS_UM_XRankUpd = 41;					// Update ELO Rank Value on Client
-	CS_UM_SetPlayerEloDisplayBracket = 42;	// Sets the elo bracket to be displayed for the local user
-	CS_UM_RequestEloBracketInfo = 43;		// Ask the client to send up the elo bracket info stored in title data.
-	CS_UM_SetEloBracketInfo = 44;			// Server setting the elo bracket info for a client.
 	CS_UM_CallVoteFailed = 45;
 	CS_UM_VoteStart = 46;
 	CS_UM_VotePass = 47;
@@ -125,6 +122,7 @@ enum ECstrike15UserMessages
 	CS_UM_MarkAchievement = 57;
 	CS_UM_MatchStatsUpdate = 58;
 	CS_UM_ItemDrop = 59;
+	CS_UM_GlowPropTurnOff = 60;
 }
 
 //=============================================================================
@@ -163,6 +161,7 @@ message CCSUsrMsg_SayText
 	optional int32 ent_idx = 1;
 	optional string text = 2;
 	optional bool chat = 3;
+	optional bool textallchat = 4;
 }
 
 message CCSUsrMsg_SayText2
@@ -171,6 +170,7 @@ message CCSUsrMsg_SayText2
 	optional bool chat = 2;
 	optional string msg_name = 3;
 	repeated string params = 4;
+	optional bool textallchat = 5;
 }
 
 message CCSUsrMsg_TextMsg
@@ -366,6 +366,7 @@ message CCSUsrMsg_PlayerStatsUpdate
 message CCSUsrMsg_DisplayInventory
 {
 	optional bool display = 1;
+	optional int32 user_id = 2;
 }
 
 message CCSUsrMsg_XRankGet
@@ -379,24 +380,6 @@ message CCSUsrMsg_XRankUpd
 	optional int32 mode_idx = 1;
 	optional int32 controller = 2;
 	optional int32 ranking = 3;
-}
-
-message CCSUsrMsg_SetPlayerEloDisplayBracket
-{
-	optional int32 bracket = 1;
-}
-
-message CCSUsrMsg_RequestEloBracketInfo
-{
-	optional int32 bracket = 1;
-}
-
-message CCSUsrMsg_SetEloBracketInfo
-{
-	optional int32 game_mode = 1;
-	optional int32 display_bracket = 2;
-	optional int32 prev_bracket = 3;
-	optional int32 num_games_in_bracket = 4;
 }
 
 message CCSUsrMsg_CallVoteFailed
@@ -494,6 +477,11 @@ message CCSUsrMsg_ItemDrop
 {
 	optional int64 itemid = 1;
 	optional bool death = 2;
+}
+
+message CCSUsrMsg_GlowPropTurnOff
+{
+	optional int32 entidx = 1;
 }
 
 //=============================================================================
