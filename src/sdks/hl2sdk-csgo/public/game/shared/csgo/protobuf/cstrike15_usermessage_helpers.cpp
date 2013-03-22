@@ -11,8 +11,8 @@ CCstrike15UsermessageHelpers g_Cstrike15UsermessageHelpers;
 CCstrike15UsermessageHelpers::CCstrike15UsermessageHelpers()
 {
 	// Clear all so that any unused are inited.
-	memset( m_Prototypes, NULL, sizeof(m_Prototypes) );
-	memset( m_IndexNameMap, NULL, sizeof(m_IndexNameMap) );
+	memset( m_Prototypes, 0, sizeof(m_Prototypes) );
+	memset( m_IndexNameMap, 0, sizeof(m_IndexNameMap) );
 
 	SETUP_MESSAGE( VGUIMenu );
 	SETUP_MESSAGE( Geiger );
@@ -54,9 +54,6 @@ CCstrike15UsermessageHelpers::CCstrike15UsermessageHelpers()
 	SETUP_MESSAGE( ClientInfo );
 	SETUP_MESSAGE( XRankGet );
 	SETUP_MESSAGE( XRankUpd );
-	SETUP_MESSAGE( SetPlayerEloDisplayBracket );
-	SETUP_MESSAGE( RequestEloBracketInfo );
-	SETUP_MESSAGE( SetEloBracketInfo );
 	SETUP_MESSAGE( CallVoteFailed );
 	SETUP_MESSAGE( VoteStart );
 	SETUP_MESSAGE( VotePass );
@@ -72,6 +69,7 @@ CCstrike15UsermessageHelpers::CCstrike15UsermessageHelpers()
 	SETUP_MESSAGE( MarkAchievement );
 	SETUP_MESSAGE( MatchStatsUpdate );
 	SETUP_MESSAGE( ItemDrop );
+	SETUP_MESSAGE( GlowPropTurnOff );
 }
 
 const google::protobuf::Message *CCstrike15UsermessageHelpers::GetPrototype( int index ) const
