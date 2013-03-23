@@ -5,7 +5,6 @@
 # =============================================================================
 # Source.Python Imports
 from Source import Binutils
-#   Core
 from core import GAME_NAME
 #   DynCall
 from dyncall.dictionary import SignatureDictionary
@@ -13,7 +12,7 @@ from dyncall.dictionary import SignatureDictionary
 from entities.constants import DamageOffsets
 from entities.helpers import index_from_inthandle
 #   Filters
-from filters.weapontags import WeaponTagIter
+from filters.weapons import WeaponClassIter
 #   Weapons
 from weapons.errors import WeaponIndexError
 
@@ -22,7 +21,8 @@ from weapons.errors import WeaponIndexError
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get a list of projectiles for the game
-_projectile_weapons = list(WeaponTagIter('grenade', return_types='classname'))
+_projectile_weapons = list(
+    WeaponClassIter('grenade', return_types='classname'))
 
 
 # =============================================================================
@@ -39,7 +39,6 @@ class _EntitySpecials(object):
         # Import BaseEntity classes
         # Doing this in the global scope causes cross import errors
         from entities.entity import BaseEntity
-        from entities.weapons.weapon import WeaponEntity
         from players.entity import PlayerEntity
 
         # Is the game supported?
@@ -58,8 +57,8 @@ class _EntitySpecials(object):
         # Use try/except in case of an invalid weapon index
         try:
 
-            # Get the weapon's WeaponEntity instance
-            weapon = WeaponEntity(weapon_index)
+            # Get the weapon's BaseEntity instance
+            weapon = BaseEntity(weapon_index, 'weapon')
 
         # Was an error encountered?
         except:

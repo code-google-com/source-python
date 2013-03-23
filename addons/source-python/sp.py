@@ -31,14 +31,12 @@
 # =============================================================================
 # Source.Python Imports
 #   Core
-from core.base_command import SPCommands
-from core.settings import CoreSettings
-#   Events
-from events.manager import EventRegistry
+from _core.commands import SPCommands
+from _core.settings import CoreSettings
 #   Translations
 from translations.manager import LanguageManager
-#   Listeners
-from listeners.tick import TickListeners
+#   Tick
+from tick.listeners import TickListeners
 
 
 # =============================================================================
@@ -59,13 +57,6 @@ def plugin_load():
     # Set the default language
     LanguageManager._register_default_language(
         CoreSettings['BASE_SETTINGS']['language'])
-
-
-def event_fire(GameEvent):
-    '''Called when the core catches an event.'''
-
-    # Call the event within the registry
-    EventRegistry.call_event_callbacks(GameEvent)
 
 
 def tick_listener():

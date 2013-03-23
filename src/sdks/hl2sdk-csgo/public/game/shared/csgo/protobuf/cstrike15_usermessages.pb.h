@@ -68,9 +68,6 @@ class CCSUsrMsg_PlayerStatsUpdate_Stat;
 class CCSUsrMsg_DisplayInventory;
 class CCSUsrMsg_XRankGet;
 class CCSUsrMsg_XRankUpd;
-class CCSUsrMsg_SetPlayerEloDisplayBracket;
-class CCSUsrMsg_RequestEloBracketInfo;
-class CCSUsrMsg_SetEloBracketInfo;
 class CCSUsrMsg_CallVoteFailed;
 class CCSUsrMsg_VoteStart;
 class CCSUsrMsg_VotePass;
@@ -86,6 +83,7 @@ class CCSUsrMsg_AmmoDenied;
 class CCSUsrMsg_MarkAchievement;
 class CCSUsrMsg_MatchStatsUpdate;
 class CCSUsrMsg_ItemDrop;
+class CCSUsrMsg_GlowPropTurnOff;
 class CCSUsrMsg_ResetHud;
 class CCSUsrMsg_GameTitle;
 class CCSUsrMsg_RequestState;
@@ -136,9 +134,6 @@ enum ECstrike15UserMessages {
   CS_UM_ClientInfo = 39,
   CS_UM_XRankGet = 40,
   CS_UM_XRankUpd = 41,
-  CS_UM_SetPlayerEloDisplayBracket = 42,
-  CS_UM_RequestEloBracketInfo = 43,
-  CS_UM_SetEloBracketInfo = 44,
   CS_UM_CallVoteFailed = 45,
   CS_UM_VoteStart = 46,
   CS_UM_VotePass = 47,
@@ -153,11 +148,12 @@ enum ECstrike15UserMessages {
   CS_UM_AmmoDenied = 56,
   CS_UM_MarkAchievement = 57,
   CS_UM_MatchStatsUpdate = 58,
-  CS_UM_ItemDrop = 59
+  CS_UM_ItemDrop = 59,
+  CS_UM_GlowPropTurnOff = 60
 };
 bool ECstrike15UserMessages_IsValid(int value);
 const ECstrike15UserMessages ECstrike15UserMessages_MIN = CS_UM_VGUIMenu;
-const ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_ItemDrop;
+const ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_GlowPropTurnOff;
 const int ECstrike15UserMessages_ARRAYSIZE = ECstrike15UserMessages_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* ECstrike15UserMessages_descriptor();
@@ -742,6 +738,13 @@ class CCSUsrMsg_SayText : public ::google::protobuf::Message {
   inline bool chat() const;
   inline void set_chat(bool value);
   
+  // optional bool textallchat = 4;
+  inline bool has_textallchat() const;
+  inline void clear_textallchat();
+  static const int kTextallchatFieldNumber = 4;
+  inline bool textallchat() const;
+  inline void set_textallchat(bool value);
+  
   // @@protoc_insertion_point(class_scope:CCSUsrMsg_SayText)
  private:
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
@@ -751,11 +754,12 @@ class CCSUsrMsg_SayText : public ::google::protobuf::Message {
   ::std::string* text_;
   static const ::std::string _default_text_;
   bool chat_;
+  bool textallchat_;
   friend void  protobuf_AddDesc_cstrike15_5fusermessages_2eproto();
   friend void protobuf_AssignDesc_cstrike15_5fusermessages_2eproto();
   friend void protobuf_ShutdownFile_cstrike15_5fusermessages_2eproto();
   
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
   
   // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
   inline bool _has_bit(int index) const {
@@ -867,6 +871,13 @@ class CCSUsrMsg_SayText2 : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& params() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_params();
   
+  // optional bool textallchat = 5;
+  inline bool has_textallchat() const;
+  inline void clear_textallchat();
+  static const int kTextallchatFieldNumber = 5;
+  inline bool textallchat() const;
+  inline void set_textallchat(bool value);
+  
   // @@protoc_insertion_point(class_scope:CCSUsrMsg_SayText2)
  private:
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
@@ -877,11 +888,12 @@ class CCSUsrMsg_SayText2 : public ::google::protobuf::Message {
   ::std::string* msg_name_;
   static const ::std::string _default_msg_name_;
   ::google::protobuf::RepeatedPtrField< ::std::string> params_;
+  bool textallchat_;
   friend void  protobuf_AddDesc_cstrike15_5fusermessages_2eproto();
   friend void protobuf_AssignDesc_cstrike15_5fusermessages_2eproto();
   friend void protobuf_ShutdownFile_cstrike15_5fusermessages_2eproto();
   
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
   
   // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
   inline bool _has_bit(int index) const {
@@ -3782,17 +3794,25 @@ class CCSUsrMsg_DisplayInventory : public ::google::protobuf::Message {
   inline bool display() const;
   inline void set_display(bool value);
   
+  // optional int32 user_id = 2;
+  inline bool has_user_id() const;
+  inline void clear_user_id();
+  static const int kUserIdFieldNumber = 2;
+  inline ::google::protobuf::int32 user_id() const;
+  inline void set_user_id(::google::protobuf::int32 value);
+  
   // @@protoc_insertion_point(class_scope:CCSUsrMsg_DisplayInventory)
  private:
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
   mutable int _cached_size_;
   
   bool display_;
+  ::google::protobuf::int32 user_id_;
   friend void  protobuf_AddDesc_cstrike15_5fusermessages_2eproto();
   friend void protobuf_AssignDesc_cstrike15_5fusermessages_2eproto();
   friend void protobuf_ShutdownFile_cstrike15_5fusermessages_2eproto();
   
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
   
   // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
   inline bool _has_bit(int index) const {
@@ -4009,297 +4029,6 @@ class CCSUsrMsg_XRankUpd : public ::google::protobuf::Message {
   
   void InitAsDefaultInstance();
   static CCSUsrMsg_XRankUpd* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class CCSUsrMsg_SetPlayerEloDisplayBracket : public ::google::protobuf::Message {
- public:
-  CCSUsrMsg_SetPlayerEloDisplayBracket();
-  virtual ~CCSUsrMsg_SetPlayerEloDisplayBracket();
-  
-  CCSUsrMsg_SetPlayerEloDisplayBracket(const CCSUsrMsg_SetPlayerEloDisplayBracket& from);
-  
-  inline CCSUsrMsg_SetPlayerEloDisplayBracket& operator=(const CCSUsrMsg_SetPlayerEloDisplayBracket& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-  
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-  
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const CCSUsrMsg_SetPlayerEloDisplayBracket& default_instance();
-  
-  void Swap(CCSUsrMsg_SetPlayerEloDisplayBracket* other);
-  
-  // implements Message ----------------------------------------------
-  
-  CCSUsrMsg_SetPlayerEloDisplayBracket* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CCSUsrMsg_SetPlayerEloDisplayBracket& from);
-  void MergeFrom(const CCSUsrMsg_SetPlayerEloDisplayBracket& from);
-  void Clear();
-  bool IsInitialized() const;
-  
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-  
-  ::google::protobuf::Metadata GetMetadata() const;
-  
-  // nested types ----------------------------------------------------
-  
-  // accessors -------------------------------------------------------
-  
-  // optional int32 bracket = 1;
-  inline bool has_bracket() const;
-  inline void clear_bracket();
-  static const int kBracketFieldNumber = 1;
-  inline ::google::protobuf::int32 bracket() const;
-  inline void set_bracket(::google::protobuf::int32 value);
-  
-  // @@protoc_insertion_point(class_scope:CCSUsrMsg_SetPlayerEloDisplayBracket)
- private:
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-  mutable int _cached_size_;
-  
-  ::google::protobuf::int32 bracket_;
-  friend void  protobuf_AddDesc_cstrike15_5fusermessages_2eproto();
-  friend void protobuf_AssignDesc_cstrike15_5fusermessages_2eproto();
-  friend void protobuf_ShutdownFile_cstrike15_5fusermessages_2eproto();
-  
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-  
-  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
-  inline bool _has_bit(int index) const {
-    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
-  }
-  inline void _set_bit(int index) {
-    _has_bits_[index / 32] |= (1u << (index % 32));
-  }
-  inline void _clear_bit(int index) {
-    _has_bits_[index / 32] &= ~(1u << (index % 32));
-  }
-  
-  void InitAsDefaultInstance();
-  static CCSUsrMsg_SetPlayerEloDisplayBracket* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class CCSUsrMsg_RequestEloBracketInfo : public ::google::protobuf::Message {
- public:
-  CCSUsrMsg_RequestEloBracketInfo();
-  virtual ~CCSUsrMsg_RequestEloBracketInfo();
-  
-  CCSUsrMsg_RequestEloBracketInfo(const CCSUsrMsg_RequestEloBracketInfo& from);
-  
-  inline CCSUsrMsg_RequestEloBracketInfo& operator=(const CCSUsrMsg_RequestEloBracketInfo& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-  
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-  
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const CCSUsrMsg_RequestEloBracketInfo& default_instance();
-  
-  void Swap(CCSUsrMsg_RequestEloBracketInfo* other);
-  
-  // implements Message ----------------------------------------------
-  
-  CCSUsrMsg_RequestEloBracketInfo* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CCSUsrMsg_RequestEloBracketInfo& from);
-  void MergeFrom(const CCSUsrMsg_RequestEloBracketInfo& from);
-  void Clear();
-  bool IsInitialized() const;
-  
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-  
-  ::google::protobuf::Metadata GetMetadata() const;
-  
-  // nested types ----------------------------------------------------
-  
-  // accessors -------------------------------------------------------
-  
-  // optional int32 bracket = 1;
-  inline bool has_bracket() const;
-  inline void clear_bracket();
-  static const int kBracketFieldNumber = 1;
-  inline ::google::protobuf::int32 bracket() const;
-  inline void set_bracket(::google::protobuf::int32 value);
-  
-  // @@protoc_insertion_point(class_scope:CCSUsrMsg_RequestEloBracketInfo)
- private:
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-  mutable int _cached_size_;
-  
-  ::google::protobuf::int32 bracket_;
-  friend void  protobuf_AddDesc_cstrike15_5fusermessages_2eproto();
-  friend void protobuf_AssignDesc_cstrike15_5fusermessages_2eproto();
-  friend void protobuf_ShutdownFile_cstrike15_5fusermessages_2eproto();
-  
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-  
-  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
-  inline bool _has_bit(int index) const {
-    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
-  }
-  inline void _set_bit(int index) {
-    _has_bits_[index / 32] |= (1u << (index % 32));
-  }
-  inline void _clear_bit(int index) {
-    _has_bits_[index / 32] &= ~(1u << (index % 32));
-  }
-  
-  void InitAsDefaultInstance();
-  static CCSUsrMsg_RequestEloBracketInfo* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class CCSUsrMsg_SetEloBracketInfo : public ::google::protobuf::Message {
- public:
-  CCSUsrMsg_SetEloBracketInfo();
-  virtual ~CCSUsrMsg_SetEloBracketInfo();
-  
-  CCSUsrMsg_SetEloBracketInfo(const CCSUsrMsg_SetEloBracketInfo& from);
-  
-  inline CCSUsrMsg_SetEloBracketInfo& operator=(const CCSUsrMsg_SetEloBracketInfo& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-  
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-  
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const CCSUsrMsg_SetEloBracketInfo& default_instance();
-  
-  void Swap(CCSUsrMsg_SetEloBracketInfo* other);
-  
-  // implements Message ----------------------------------------------
-  
-  CCSUsrMsg_SetEloBracketInfo* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CCSUsrMsg_SetEloBracketInfo& from);
-  void MergeFrom(const CCSUsrMsg_SetEloBracketInfo& from);
-  void Clear();
-  bool IsInitialized() const;
-  
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-  
-  ::google::protobuf::Metadata GetMetadata() const;
-  
-  // nested types ----------------------------------------------------
-  
-  // accessors -------------------------------------------------------
-  
-  // optional int32 game_mode = 1;
-  inline bool has_game_mode() const;
-  inline void clear_game_mode();
-  static const int kGameModeFieldNumber = 1;
-  inline ::google::protobuf::int32 game_mode() const;
-  inline void set_game_mode(::google::protobuf::int32 value);
-  
-  // optional int32 display_bracket = 2;
-  inline bool has_display_bracket() const;
-  inline void clear_display_bracket();
-  static const int kDisplayBracketFieldNumber = 2;
-  inline ::google::protobuf::int32 display_bracket() const;
-  inline void set_display_bracket(::google::protobuf::int32 value);
-  
-  // optional int32 prev_bracket = 3;
-  inline bool has_prev_bracket() const;
-  inline void clear_prev_bracket();
-  static const int kPrevBracketFieldNumber = 3;
-  inline ::google::protobuf::int32 prev_bracket() const;
-  inline void set_prev_bracket(::google::protobuf::int32 value);
-  
-  // optional int32 num_games_in_bracket = 4;
-  inline bool has_num_games_in_bracket() const;
-  inline void clear_num_games_in_bracket();
-  static const int kNumGamesInBracketFieldNumber = 4;
-  inline ::google::protobuf::int32 num_games_in_bracket() const;
-  inline void set_num_games_in_bracket(::google::protobuf::int32 value);
-  
-  // @@protoc_insertion_point(class_scope:CCSUsrMsg_SetEloBracketInfo)
- private:
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-  mutable int _cached_size_;
-  
-  ::google::protobuf::int32 game_mode_;
-  ::google::protobuf::int32 display_bracket_;
-  ::google::protobuf::int32 prev_bracket_;
-  ::google::protobuf::int32 num_games_in_bracket_;
-  friend void  protobuf_AddDesc_cstrike15_5fusermessages_2eproto();
-  friend void protobuf_AssignDesc_cstrike15_5fusermessages_2eproto();
-  friend void protobuf_ShutdownFile_cstrike15_5fusermessages_2eproto();
-  
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
-  
-  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
-  inline bool _has_bit(int index) const {
-    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
-  }
-  inline void _set_bit(int index) {
-    _has_bits_[index / 32] |= (1u << (index % 32));
-  }
-  inline void _clear_bit(int index) {
-    _has_bits_[index / 32] &= ~(1u << (index % 32));
-  }
-  
-  void InitAsDefaultInstance();
-  static CCSUsrMsg_SetEloBracketInfo* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -5862,6 +5591,95 @@ class CCSUsrMsg_ItemDrop : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class CCSUsrMsg_GlowPropTurnOff : public ::google::protobuf::Message {
+ public:
+  CCSUsrMsg_GlowPropTurnOff();
+  virtual ~CCSUsrMsg_GlowPropTurnOff();
+  
+  CCSUsrMsg_GlowPropTurnOff(const CCSUsrMsg_GlowPropTurnOff& from);
+  
+  inline CCSUsrMsg_GlowPropTurnOff& operator=(const CCSUsrMsg_GlowPropTurnOff& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+  
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+  
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CCSUsrMsg_GlowPropTurnOff& default_instance();
+  
+  void Swap(CCSUsrMsg_GlowPropTurnOff* other);
+  
+  // implements Message ----------------------------------------------
+  
+  CCSUsrMsg_GlowPropTurnOff* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CCSUsrMsg_GlowPropTurnOff& from);
+  void MergeFrom(const CCSUsrMsg_GlowPropTurnOff& from);
+  void Clear();
+  bool IsInitialized() const;
+  
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+  
+  ::google::protobuf::Metadata GetMetadata() const;
+  
+  // nested types ----------------------------------------------------
+  
+  // accessors -------------------------------------------------------
+  
+  // optional int32 entidx = 1;
+  inline bool has_entidx() const;
+  inline void clear_entidx();
+  static const int kEntidxFieldNumber = 1;
+  inline ::google::protobuf::int32 entidx() const;
+  inline void set_entidx(::google::protobuf::int32 value);
+  
+  // @@protoc_insertion_point(class_scope:CCSUsrMsg_GlowPropTurnOff)
+ private:
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+  mutable int _cached_size_;
+  
+  ::google::protobuf::int32 entidx_;
+  friend void  protobuf_AddDesc_cstrike15_5fusermessages_2eproto();
+  friend void protobuf_AssignDesc_cstrike15_5fusermessages_2eproto();
+  friend void protobuf_ShutdownFile_cstrike15_5fusermessages_2eproto();
+  
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  
+  // WHY DOES & HAVE LOWER PRECEDENCE THAN != !?
+  inline bool _has_bit(int index) const {
+    return (_has_bits_[index / 32] & (1u << (index % 32))) != 0;
+  }
+  inline void _set_bit(int index) {
+    _has_bits_[index / 32] |= (1u << (index % 32));
+  }
+  inline void _clear_bit(int index) {
+    _has_bits_[index / 32] &= ~(1u << (index % 32));
+  }
+  
+  void InitAsDefaultInstance();
+  static CCSUsrMsg_GlowPropTurnOff* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class CCSUsrMsg_ResetHud : public ::google::protobuf::Message {
  public:
   CCSUsrMsg_ResetHud();
@@ -6914,6 +6732,22 @@ inline void CCSUsrMsg_SayText::set_chat(bool value) {
   chat_ = value;
 }
 
+// optional bool textallchat = 4;
+inline bool CCSUsrMsg_SayText::has_textallchat() const {
+  return _has_bit(3);
+}
+inline void CCSUsrMsg_SayText::clear_textallchat() {
+  textallchat_ = false;
+  _clear_bit(3);
+}
+inline bool CCSUsrMsg_SayText::textallchat() const {
+  return textallchat_;
+}
+inline void CCSUsrMsg_SayText::set_textallchat(bool value) {
+  _set_bit(3);
+  textallchat_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // CCSUsrMsg_SayText2
@@ -7034,6 +6868,22 @@ CCSUsrMsg_SayText2::params() const {
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
 CCSUsrMsg_SayText2::mutable_params() {
   return &params_;
+}
+
+// optional bool textallchat = 5;
+inline bool CCSUsrMsg_SayText2::has_textallchat() const {
+  return _has_bit(4);
+}
+inline void CCSUsrMsg_SayText2::clear_textallchat() {
+  textallchat_ = false;
+  _clear_bit(4);
+}
+inline bool CCSUsrMsg_SayText2::textallchat() const {
+  return textallchat_;
+}
+inline void CCSUsrMsg_SayText2::set_textallchat(bool value) {
+  _set_bit(4);
+  textallchat_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -8702,6 +8552,22 @@ inline void CCSUsrMsg_DisplayInventory::set_display(bool value) {
   display_ = value;
 }
 
+// optional int32 user_id = 2;
+inline bool CCSUsrMsg_DisplayInventory::has_user_id() const {
+  return _has_bit(1);
+}
+inline void CCSUsrMsg_DisplayInventory::clear_user_id() {
+  user_id_ = 0;
+  _clear_bit(1);
+}
+inline ::google::protobuf::int32 CCSUsrMsg_DisplayInventory::user_id() const {
+  return user_id_;
+}
+inline void CCSUsrMsg_DisplayInventory::set_user_id(::google::protobuf::int32 value) {
+  _set_bit(1);
+  user_id_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // CCSUsrMsg_XRankGet
@@ -8788,114 +8654,6 @@ inline ::google::protobuf::int32 CCSUsrMsg_XRankUpd::ranking() const {
 inline void CCSUsrMsg_XRankUpd::set_ranking(::google::protobuf::int32 value) {
   _set_bit(2);
   ranking_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// CCSUsrMsg_SetPlayerEloDisplayBracket
-
-// optional int32 bracket = 1;
-inline bool CCSUsrMsg_SetPlayerEloDisplayBracket::has_bracket() const {
-  return _has_bit(0);
-}
-inline void CCSUsrMsg_SetPlayerEloDisplayBracket::clear_bracket() {
-  bracket_ = 0;
-  _clear_bit(0);
-}
-inline ::google::protobuf::int32 CCSUsrMsg_SetPlayerEloDisplayBracket::bracket() const {
-  return bracket_;
-}
-inline void CCSUsrMsg_SetPlayerEloDisplayBracket::set_bracket(::google::protobuf::int32 value) {
-  _set_bit(0);
-  bracket_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// CCSUsrMsg_RequestEloBracketInfo
-
-// optional int32 bracket = 1;
-inline bool CCSUsrMsg_RequestEloBracketInfo::has_bracket() const {
-  return _has_bit(0);
-}
-inline void CCSUsrMsg_RequestEloBracketInfo::clear_bracket() {
-  bracket_ = 0;
-  _clear_bit(0);
-}
-inline ::google::protobuf::int32 CCSUsrMsg_RequestEloBracketInfo::bracket() const {
-  return bracket_;
-}
-inline void CCSUsrMsg_RequestEloBracketInfo::set_bracket(::google::protobuf::int32 value) {
-  _set_bit(0);
-  bracket_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// CCSUsrMsg_SetEloBracketInfo
-
-// optional int32 game_mode = 1;
-inline bool CCSUsrMsg_SetEloBracketInfo::has_game_mode() const {
-  return _has_bit(0);
-}
-inline void CCSUsrMsg_SetEloBracketInfo::clear_game_mode() {
-  game_mode_ = 0;
-  _clear_bit(0);
-}
-inline ::google::protobuf::int32 CCSUsrMsg_SetEloBracketInfo::game_mode() const {
-  return game_mode_;
-}
-inline void CCSUsrMsg_SetEloBracketInfo::set_game_mode(::google::protobuf::int32 value) {
-  _set_bit(0);
-  game_mode_ = value;
-}
-
-// optional int32 display_bracket = 2;
-inline bool CCSUsrMsg_SetEloBracketInfo::has_display_bracket() const {
-  return _has_bit(1);
-}
-inline void CCSUsrMsg_SetEloBracketInfo::clear_display_bracket() {
-  display_bracket_ = 0;
-  _clear_bit(1);
-}
-inline ::google::protobuf::int32 CCSUsrMsg_SetEloBracketInfo::display_bracket() const {
-  return display_bracket_;
-}
-inline void CCSUsrMsg_SetEloBracketInfo::set_display_bracket(::google::protobuf::int32 value) {
-  _set_bit(1);
-  display_bracket_ = value;
-}
-
-// optional int32 prev_bracket = 3;
-inline bool CCSUsrMsg_SetEloBracketInfo::has_prev_bracket() const {
-  return _has_bit(2);
-}
-inline void CCSUsrMsg_SetEloBracketInfo::clear_prev_bracket() {
-  prev_bracket_ = 0;
-  _clear_bit(2);
-}
-inline ::google::protobuf::int32 CCSUsrMsg_SetEloBracketInfo::prev_bracket() const {
-  return prev_bracket_;
-}
-inline void CCSUsrMsg_SetEloBracketInfo::set_prev_bracket(::google::protobuf::int32 value) {
-  _set_bit(2);
-  prev_bracket_ = value;
-}
-
-// optional int32 num_games_in_bracket = 4;
-inline bool CCSUsrMsg_SetEloBracketInfo::has_num_games_in_bracket() const {
-  return _has_bit(3);
-}
-inline void CCSUsrMsg_SetEloBracketInfo::clear_num_games_in_bracket() {
-  num_games_in_bracket_ = 0;
-  _clear_bit(3);
-}
-inline ::google::protobuf::int32 CCSUsrMsg_SetEloBracketInfo::num_games_in_bracket() const {
-  return num_games_in_bracket_;
-}
-inline void CCSUsrMsg_SetEloBracketInfo::set_num_games_in_bracket(::google::protobuf::int32 value) {
-  _set_bit(3);
-  num_games_in_bracket_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -9829,6 +9587,26 @@ inline bool CCSUsrMsg_ItemDrop::death() const {
 inline void CCSUsrMsg_ItemDrop::set_death(bool value) {
   _set_bit(1);
   death_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// CCSUsrMsg_GlowPropTurnOff
+
+// optional int32 entidx = 1;
+inline bool CCSUsrMsg_GlowPropTurnOff::has_entidx() const {
+  return _has_bit(0);
+}
+inline void CCSUsrMsg_GlowPropTurnOff::clear_entidx() {
+  entidx_ = 0;
+  _clear_bit(0);
+}
+inline ::google::protobuf::int32 CCSUsrMsg_GlowPropTurnOff::entidx() const {
+  return entidx_;
+}
+inline void CCSUsrMsg_GlowPropTurnOff::set_entidx(::google::protobuf::int32 value) {
+  _set_bit(0);
+  entidx_ = value;
 }
 
 // -------------------------------------------------------------------

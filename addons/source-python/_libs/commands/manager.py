@@ -3,13 +3,8 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Sys
-import sys
-
 # Source.Python Imports
-#   Core
-from core.excepthook import ExceptHooks
+from excepthooks import ExceptHooks
 
 
 # =============================================================================
@@ -21,6 +16,10 @@ class _CommandRegistry(object):
     def __init__(self):
         '''Create the commands dictionary for this instance'''
         self._commands = dict()
+
+    def is_registered(self, command):
+        '''Returns whether a command is registered'''
+        return command in self._commands
 
 
 class _CommandList(list):
@@ -88,11 +87,8 @@ class _CommandList(list):
             # Was an error encountered?
             except:
 
-                # Get the error
-                error = sys.exc_info()
-
                 # Print the exception to the console
-                ExceptHooks.print_exception(*error)
+                ExceptHooks.print_exception()
 
         # Should the "CONTINUE" value be returned?
         if return_val:

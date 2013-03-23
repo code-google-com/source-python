@@ -3,44 +3,22 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Collections
+from collections import OrderedDict
+
 # Source.Python imports
+from core import echo_console
 #   Auth
 from auth.manager import AuthManager
-#   Core
-from core.commands import echo_console
+from auth.manager import _auth_strings
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _AuthCommands(dict):
+class _AuthCommands(OrderedDict):
     '''Class used for executing "sp auth" sub-command functionality'''
-
-    def __init__(self):
-        '''Called on instanciation'''
-
-        # Create a list to keep the items in order for iteration
-        self._order = list()
-
-    def __setitem__(self, item, value):
-        '''
-            Override the __setitem__ method to add the item to the ordered list
-        '''
-
-        # Add the item to the ordered list
-        self._order.append(item)
-
-        # Add the item to the dictionary
-        super(_AuthCommands, self).__setitem__(item, value)
-
-    def __iter__(self):
-        '''Override the __iter__ method to make sure to use the ordered list'''
-
-        # Loop through the ordered list
-        for item in self._order:
-
-            # Yield the current item
-            yield item
 
     def call_command(self, args):
         '''Executes the given "sp auth" sub-command'''
@@ -49,9 +27,8 @@ class _AuthCommands(dict):
         if not args:
 
             # Send a message that a sub-command is needed
-            echo_console(
-                '[SP Auth] The "sp auth" command must' +
-                ' be followed by a sub-command.')
+            echo_console('[SP Auth] ' + _auth_strings[
+                'Missing Command'].get_string())
 
             # Print the auth help text
             self._print_auth_help()
@@ -66,8 +43,8 @@ class _AuthCommands(dict):
         if not command in self:
 
             # Send a message about the invalid command
-            echo_console(
-                '[SP Auth] "%s" is not a valid sub-command.' % command)
+            echo_console('[SP Auth] ' + _auth_strings[
+                'Invalid Sub-Command'].get_string(command=command))
 
             # Print the auth help text
             self._print_auth_help()
@@ -91,8 +68,9 @@ class _AuthCommands(dict):
         '''Prints all "sp auth" sub-commands.'''
 
         # Send header messages
-        echo_console('[Source.Python Auth] Help:')
-        echo_console('usage: sp auth <command> [arguments]')
+        echo_console(
+            '[SP Auth] ' + _auth_strings[
+                'Help'].get_string() + 'sp auth <command> [arguments]')
         echo_console('=' * 76)
 
         # Print all "sp auth" sub-commands
@@ -131,9 +109,7 @@ def _load_auth_providers(providers):
     if not providers:
 
         # Send a message about the required argument
-        echo_console(
-            '[SP Auth] The "sp auth load" command requires' +
-            ' at least one auth provider argument.')
+        echo_console('[SP Auth] ' + _auth_strings['Missing Load'].get_string())
 
         # No need to go further
         return
@@ -153,8 +129,7 @@ def _unload_auth_providers(providers):
 
         # Send a message about the required argument
         echo_console(
-            '[SP Auth] The "sp auth unload" command ' +
-            'requires at least one auth provider argument.')
+            '[SP Auth] ' + _auth_strings['Missing Unload'].get_string())
 
         # No need to go further
         return
@@ -186,7 +161,7 @@ def _print_auth_providers():
     '''Lists all currently loaded auth providers.'''
 
     # Send header messages
-    echo_console('[SP Auth] Loaded Auth Providers:')
+    echo_console('[SP Auth] ' + _auth_strings['Providers'].get_string())
     echo_console('=' * 61)
 
     # Loop through all loaded auth providers

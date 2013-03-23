@@ -4,7 +4,6 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Core
 from core import AutoUnload
 #   Events
 from events.manager import EventRegistry

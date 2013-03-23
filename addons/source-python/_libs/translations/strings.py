@@ -8,14 +8,16 @@
 from binascii import unhexlify
 #   Codecs
 from codecs import unicode_escape_decode
-#   Configobj
-from configobj import ConfigObj
-from configobj import Section
 #   String
 from string import Template
 #   Re
 from re import compile as re_compile
 from re import VERBOSE
+
+# Site Package Imports
+#   Configobj
+from configobj import ConfigObj
+from configobj import Section
 
 # Source.Python Imports
 from paths import TRANSLATION_PATH
@@ -159,9 +161,10 @@ class LangStrings(dict):
         server_file = ConfigObj(self._serverfile)
 
         # Set the initial comments to explain what the file is for
-        server_file.initial_comment = _core_strings[
-            'Initial Comment'].get_string(LanguageManager.default,
-            filename=self._mainfile.replace(GAME_PATH, '')).splitlines()
+        server_file.initial_comment = _translation_strings[
+            'Initial Comment'].get_string(
+                LanguageManager.default,
+                filename=self._mainfile.replace(GAME_PATH, '')).splitlines()
 
         # Write the server specific file
         server_file.write()
@@ -284,4 +287,5 @@ class TranslationStrings(dict):
         # Return None as the language, as no language has been found
         return None
 
-_core_strings = LangStrings('_core/translations_strings')
+# Get the translations language strings
+_translation_strings = LangStrings('_core/translations_strings')

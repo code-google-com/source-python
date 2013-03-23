@@ -53,9 +53,6 @@ class CAddonManager
 		// Addon functionality.
 		bool SpCommand( const char* szArgs );
 
-		// Required by IGameEventListener2.
-		void FireGameEvent( IGameEvent* event );
-
 		void GameFrame();
 };
 

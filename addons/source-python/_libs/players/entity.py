@@ -5,7 +5,6 @@
 # =============================================================================
 # Source.Python Imports
 from Source import Player
-#   Core
 from core import GameEngine
 #   Entities
 from entities.entity import BaseEntity
@@ -24,35 +23,20 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
     info = None
 
     def __init__(self, index):
-        '''
-            Override the __init__ method to add "player" to the
-            _game_inis list and set the player's info attribute
-        '''
-
-        # Run the inherited class __init__ method
-        super(PlayerEntity, self).__init__(index)
-
-        # Add "player" to the _game_inis list
-        self._game_inis.append('player')
+        '''Override the __init__ method to set the
+            "entities" attribute and set the PlayerInfo'''
 
         # Set the player's info attribute
         self.info = Player.PlayerOfIndex(index)
 
-    def __setattr__(self, attr, value):
-        '''Override __setattr__ to determine if PlayerEntity
-            has the attribute instead of BaseEntity'''
+        # Is the IPlayerInfo instance valid?
+        if self.info is None:
 
-        # Does the class have the given attribute?
-        if hasattr(PlayerEntity, attr):
+            raise ValueError(
+                'Invalid IPlayerInfo instance for index "%s"' % index)
 
-            # Set the attribute
-            object.__setattr__(self, attr, value)
-
-        # Otherwise
-        else:
-
-            # Set the attribute's value, if it can be found
-            super(PlayerEntity, self).__setattr__(attr, value)
+        # Set the entities attribute
+        self.entities = frozenset(['entity', 'player'])
 
     @property
     def instances(self):
@@ -107,10 +91,3 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
 
     # Set the "team" property methods
     team = property(get_team, set_team)
-
-    @classmethod
-    def _is_valid_index_for_entity_type(cls, edict):
-        '''Verifies that the given edict is of a player'''
-
-        # Return whether the given edict is one of a player entity
-        return edict.GetClassName() == 'player'
