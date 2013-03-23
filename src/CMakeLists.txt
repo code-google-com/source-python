@@ -79,157 +79,123 @@ Set(SOURCEPYTHON_ADDON_FILES
 )
 
 # ------------------------------------------------------------------
-# Modules
+# Generic plugin stuff.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_MODULE_HEADERS
-    core/modules/export_main.h
-    core/modules/export_player.h
-    core/modules/engine/engine_trace.h
-    core/modules/cvar/cvar_concommand.h
-    core/modules/clientcmd/clientcmd_manager.h
+Set(SOURCEPYTHON_GENERIC_HEADERS
+	core/modules/export_main.h
+	core/modules/cvar/cvar_concommand.h
 )
 
-Set(SOURCEPYTHON_MODULE_SOURCES
-    core/modules/export_events.cpp
-    core/modules/export_main.cpp
-	core/modules/export_player.cpp
-	core/modules/export_shared.cpp
+Set(SOURCEPYTHON_GENERIC_SOURCES
+	core/modules/export_main.cpp
+	core/modules/cvar/cvar_concommand.cpp
 )
 
-# ------------------------------------------------------------------
-# Engine module
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_MODULE_ENGINE_SOURCES
-    core/modules/engine/engine_main.cpp
-    core/modules/engine/engine_server.cpp
-    core/modules/engine/engine_basehandle.cpp
-    core/modules/engine/engine_misc.cpp
-    core/modules/engine/engine_sound.cpp
-    core/modules/engine/engine_trace.cpp
+Set(SOURCEPYTHON_GENERIC_FILES
+	${SOURCEPYTHON_GENERIC_HEADERS}
+	${SOURCEPYTHON_GENERIC_SOURCES}
 )
 
 # ------------------------------------------------------------------
-# Cvar module
+# Engine module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_MODULE_CVAR_SOURCES
-    core/modules/cvar/cvar_concommandbase.cpp
-    core/modules/cvar/cvar_concommand.cpp
-    core/modules/cvar/cvar_convar.cpp
-    core/modules/cvar/cvar_flags.cpp
-    core/modules/cvar/cvar_icvar.cpp
-    core/modules/cvar/cvar_main.cpp
+Set(SOURCEPYTHON_ENGINE_MODULE_HEADERS
+	core/modules/engine/eiface_wrap.h
+    core/modules/engine/eiface_engine_base.h
+    core/modules/engine/engine${SOURCE_ENGINE}/eiface_engine_implementation.h
+)
+
+Set(SOURCEPYTHON_ENGINE_MODULE_SOURCES
+    core/modules/engine/eiface_wrap.cpp
+    core/modules/engine/eiface_engine_base.cpp
+    core/modules/engine/engine${SOURCE_ENGINE}/eiface_engine_implementation.cpp
+    core/modules/engine/eiface_wrap_python.cpp
+)
+
+Set(SOURCEPYTHON_ENGINE_MODULE_FILES
+	${SOURCEPYTHON_ENGINE_MODULE_HEADERS}
+	${SOURCEPYTHON_ENGINE_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
-# ClientCmd module
+# Engine / Usermessage module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_MODULE_CLIENTCMD_SOURCES
-    core/modules/clientcmd/clientcmd_manager.cpp
-    core/modules/clientcmd/clientcmd_main.cpp
+Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS
+    core/modules/engine/usermessage/usermessage.h
+    core/modules/engine/usermessage/usermessage_implementation_base.h
+    core/modules/engine/usermessage/${SOURCE_GAME}/usermessage_implementation.h
+)
+
+Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES
+    core/modules/engine/usermessage/usermessage.cpp
+    core/modules/engine/usermessage/usermessage_implementation_base.cpp
+    core/modules/engine/usermessage/${SOURCE_GAME}/usermessage_implementation.cpp
+)
+
+Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES
+	${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS}
+	${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
-# Misc module
+# Event module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_MODULE_MISC_SOURCES
-    core/modules/misc/misc_main.cpp
-    core/modules/misc/misc_effects.cpp
-    core/modules/misc/misc_stringtables.cpp
+Set(SOURCEPYTHON_EVENT_MODULE_HEADERS
+    core/modules/events/events_wrap.h
+)
+
+Set(SOURCEPYTHON_EVENT_MODULE_SOURCES
+    core/modules/events/events_wrap.cpp
+    core/modules/events/events_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
-# Entity module
+# Entities module
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_MODULE_ENTITY_HEADERS
-    core/modules/entity/entity_generator.h
-    core/modules/entity/entity_props.h
+Set(SOURCEPYTHON_ENTITY_MODULE_HEADERS
+    core/modules/entities/entities_wrap.h
 )
 
-Set(SOURCEPYTHON_MODULE_ENTITY_SOURCES
-    core/modules/entity/entity_main.cpp
-    core/modules/entity/entity_edict.cpp
-    core/modules/entity/entity_generator.cpp
-    core/modules/entity/entity_props.cpp
-    core/modules/entity/entity_factory.cpp
-)
-
-Set(SOURCEPYTHON_MODULE_ENTITY_FILES
-    ${SOURCEPYTHON_MODULE_ENTITY_HEADERS}
-    ${SOURCEPYTHON_MODULE_ENTITY_SOURCES}
+Set(SOURCEPYTHON_ENTITY_MODULE_SOURCES
+    core/modules/entities/entities_wrap.cpp
+    core/modules/entities/entities_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
-# Binutils module
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_MODULE_BINUTILS_HEADERS
-    core/modules/binutils/binutils_scanner.h
-)
-
-Set(SOURCEPYTHON_MODULE_BINUTILS_SOURCES
-    core/modules/binutils/binutils_scanner.cpp
-    core/modules/binutils/binutils_main.cpp
-    core/modules/binutils/binutils_dyncall.cpp
-    core/modules/binutils/binutils_memtools.cpp
-)
-
-# ------------------------------------------------------------------
-# Usermessages module
-# ------------------------------------------------------------------
-If(SOURCE_ENGINE GREATER 2)
-    # As these are not in any LIB files for the SDK, I think this is the best way
-    # of compiling them for the time being until Allied modders puts them in a .lib
-    SET (SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES
-        core/modules/usermessages/netmessages.pb.cc
-    )
-
-    include("makefiles/game/${GAME}.usermessages.cmake")
-EndIf()
-
-# ------------------------------------------------------------------
-# All module files
+# All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
-    ${SOURCEPYTHON_MODULE_HEADERS}
-    ${SOURCEPYTHON_MODULE_SOURCES}
+	${SOURCEPYTHON_ENGINE_MODULE_FILES}
+    ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES}
     
-    ${SOURCEPYTHON_MODULE_BINUTILS_HEADERS}
-    ${SOURCEPYTHON_MODULE_USERMESSAGES_HEADERS}
-    ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_HEADERS}
+    ${SOURCEPYTHON_EVENT_MODULE_HEADERS}
+    ${SOURCEPYTHON_EVENT_MODULE_SOURCES}
     
-    
-    ${SOURCEPYTHON_MODULE_ENGINE_SOURCES}
-    ${SOURCEPYTHON_MODULE_CVAR_SOURCES}
-    ${SOURCEPYTHON_MODULE_CLIENTCMD_SOURCES}    
-    ${SOURCEPYTHON_MODULE_MISC_SOURCES}
-    ${SOURCEPYTHON_MODULE_ENTITY_SOURCES}
-    ${SOURCEPYTHON_MODULE_BINUTILS_SOURCES}
-    ${SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES}
-    ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
+    ${SOURCEPYTHON_ENTITY_MODULE_HEADERS}
+    ${SOURCEPYTHON_ENTITY_MODULE_SOURCES}
+)
 
 # ------------------------------------------------------------------
 # Create source groups for everything to make our projects nice and 
 # clean.
 # ------------------------------------------------------------------
-Source_Group("Header Files\\Addons"                             FILES ${SOURCEPYTHON_ADDON_HEADERS})
-Source_Group("Header Files\\Core"                               FILES ${SOURCEPYTHON_CORE_HEADERS})
-Source_Group("Header Files\\Util"                               FILES ${SOURCEPYTHON_UTIL_HEADERS})
-Source_Group("Header Files\\Modules"                            FILES ${SOURCEPYTHON_MODULE_HEADERS})
-Source_Group("Header Files\\Modules\\Entity"                    FILES ${SOURCEPYTHON_MODULE_ENTITY_HEADERS})
-Source_Group("Header Files\\Modules\\Binutils"                  FILES ${SOURCEPYTHON_MODULE_BINUTILS_HEADERS})
+Source_Group("Header Files\\Addons"			                FILES ${SOURCEPYTHON_ADDON_HEADERS})
+Source_Group("Header Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_HEADERS})
+Source_Group("Header Files\\Util"   		                FILES ${SOURCEPYTHON_UTIL_HEADERS})
+Source_Group("Header Files\\Generic"		                FILES ${SOURCEPYTHON_GENERIC_HEADERS})
+Source_Group("Header Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_HEADERS})
 
-Source_Group("Source Files\\Addons"                             FILES ${SOURCEPYTHON_ADDON_SOURCES})
-Source_Group("Source Files\\Core"                               FILES ${SOURCEPYTHON_CORE_SOURCES})
-Source_Group("Source Files\\Modules"                            FILES ${SOURCEPYTHON_MODULE_SOURCES})
-
-Source_Group("Source Files\\Modules\\Engine"                    FILES ${SOURCEPYTHON_MODULE_ENGINE_SOURCES})
-Source_Group("Source Files\\Modules\\Cvar"                      FILES ${SOURCEPYTHON_MODULE_CVAR_SOURCES})
-Source_Group("Source Files\\Modules\\Misc"                      FILES ${SOURCEPYTHON_MODULE_MISC_SOURCES})
-Source_Group("Source Files\\Modules\\Entity"                    FILES ${SOURCEPYTHON_MODULE_ENTITY_SOURCES})
-Source_Group("Source Files\\Modules\\ClientCmd"                 FILES ${SOURCEPYTHON_MODULE_CLIENTCMD_SOURCES})
-Source_Group("Source Files\\Modules\\Binutils"                  FILES ${SOURCEPYTHON_MODULE_BINUTILS_SOURCES})
-Source_Group("Source Files\\Modules\\Usermessages"              FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_SOURCES})
-Source_Group("Source Files\\Modules\\Usermessages"              FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
-Source_Group("Source Files\\Util"                               FILES ${SOURCEPYTHON_UTIL_SOURCES})
+Source_Group("Source Files\\Addons" 		                FILES ${SOURCEPYTHON_ADDON_SOURCES})
+Source_Group("Source Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_SOURCES})
+Source_Group("Source Files\\Util"   		                FILES ${SOURCEPYTHON_UTIL_SOURCES})
+Source_Group("Source Files\\Generic"		                FILES ${SOURCEPYTHON_GENERIC_SOURCES})
+Source_Group("Source Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
@@ -244,7 +210,8 @@ Source_Group("Source Files\\Util"                               FILES ${SOURCEPY
 Add_Library(core SHARED 
 	${SOURCEPYTHON_CORE_FILES}
     ${SOURCEPYTHON_ADDON_FILES}
-    ${SOURCEPYTHON_MODULE_FILES}
+	${SOURCEPYTHON_GENERIC_FILES}
+	${SOURCEPYTHON_MODULE_FILES}
     ${SOURCEPYTHON_UTIL_FILES}
 )
 
@@ -267,6 +234,7 @@ EndIf()
 Add_Definitions(
 	-DSOURCE_ENGINE=${SOURCE_ENGINE}
     -DBOOST_PYTHON_MAX_ARITY=18
+    -DSOURCE_GAME=${SOURCE_GAME}
 )
 
 # ------------------------------------------------------------------

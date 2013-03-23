@@ -4,7 +4,6 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Core
 from core import AutoUnload
 #   Commands
 from commands.say.manager import SayCommandRegistry

@@ -81,16 +81,13 @@ INetworkStringTableContainer* networkstringtable = NULL;
 //---------------------------------------------------------------------------------
 // External globals
 //---------------------------------------------------------------------------------
-extern DCCallVM* g_pCallVM;
 extern ICvar* g_pCVar;
-
 
 //---------------------------------------------------------------------------------
 // Extern functions
 //---------------------------------------------------------------------------------
 extern void InitCVars();
 extern void ClearAllCommands();
-extern PLUGIN_RESULT DispatchClientCommand(edict_t *pEntity, const CCommand &command);
 
 //---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -169,33 +166,6 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 }
 
 //---------------------------------------------------------------------------------
-// This function parses event files and attaches listeners for them to the main
-// plugin. szRelative
-//---------------------------------------------------------------------------------
-bool AddEventsFromFile( const char* szRelativePath )
-{
-	KeyValues* pEventsFile = new KeyValues("events");
-
-	if( !pEventsFile->LoadFromFile(filesystem, szRelativePath) ) {
-		return false;
-	}
-
-	DevMsg(1, "[SP] Begin event registration for %s.\n", szRelativePath);
-	KeyValues* pCurrent = pEventsFile->GetFirstSubKey();
-	int count = 0;
-	while( pCurrent ) {
-		DevMsg(1, " %d. %s\n", count, pCurrent->GetName());
-		gameeventmanager->AddListener(&g_SourcePythonPlugin, pCurrent->GetName(), true);
-		pCurrent = pCurrent->GetNextKey();
-		count++;
-	}
-
-	pEventsFile->deleteThis();
-	DevMsg(1, "[SP] Event registration finished. A total of %d events were registered.\n", count);
-	return true;
-}
-
-//---------------------------------------------------------------------------------
 // Purpose: constructor/destructor
 //---------------------------------------------------------------------------------
 CSourcePython::CSourcePython()
@@ -247,35 +217,6 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
-	// Add all the event listeners.
-	if( !AddEventsFromFile("resource/modevents.res") ) {
-		Msg("[SP] ERROR: Could not load modevents.res\n");
-		return false;
-	}
-
-	if( !AddEventsFromFile("resource/gameevents.res") ) {
-		Msg("[SP] ERROR: Could not load gameevents.res\n");
-		return false;
-	}
-
-	if( !AddEventsFromFile("resource/serverevents.res") ) {
-		Msg("[SP] ERROR: Could not load serverevents.res\n");
-		return false;
-	}
-
-	if( !AddEventsFromFile("resource/hltvevents.res") ) {
-		Msg("[SP] ERROR: Could not load serverevents.res\n");
-		return false;
-	}
-
-	if( !AddEventsFromFile("resource/replayevents.res") ) {
-		Msg("[SP] ERROR: Could not load replayevents.res\n");
-		return false;
-	}
-
-	// Allocate dyncall vm.
-	g_pCallVM = dcNewCallVM(2048);
-
 	return true;
 }
 
@@ -298,12 +239,6 @@ void CSourcePython::Unload( void )
 	DisconnectTier2Libraries( );
 	DisconnectTier1Libraries( );
 #endif
-
-	// Remove the dyncall vm.
-	if( g_pCallVM ) {
-		dcFree(g_pCallVM);
-		g_pCallVM = NULL;
-	}
 }
 
 //---------------------------------------------------------------------------------
@@ -440,7 +375,7 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 	const char * name = event->GetName();
 	DevMsg(1, "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
 
-	g_AddonManager.FireGameEvent(event);
+	//g_AddonManager.FireGameEvent(event);
 }
 
 //---------------------------------------------------------------------------------
@@ -449,7 +384,7 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 #if(SOURCE_ENGINE >= 1)
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
 {
-	return DispatchClientCommand(pEntity, args);
+	return PLUGIN_CONTINUE;
 }
 #else
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )

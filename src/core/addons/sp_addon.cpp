@@ -33,6 +33,7 @@
 #include "filesystem.h"
 #include "core/sp_gamedir.h"
 #include "utility/wrap_macros.h"
+#include "modules/events/events_wrap.h"
 
 //---------------------------------------------------------------------------------
 // External variables
@@ -58,20 +59,6 @@ CAddonManager::CAddonManager( void )
 CAddonManager::~CAddonManager( void )
 {
 
-}
-
-//---------------------------------------------------------------------------------
-// Fires game event.
-//---------------------------------------------------------------------------------
-void CAddonManager::FireGameEvent( IGameEvent* event )
-{
-	// Pass that on to python.
-	python::object mainFile = g_PythonManager.GetSP();
-
-	// Execute addon_load.
-	BEGIN_BOOST_PY()
-		mainFile.attr("event_fire")(python::ptr(event));
-	END_BOOST_PY();
 }
 
 //---------------------------------------------------------------------------------

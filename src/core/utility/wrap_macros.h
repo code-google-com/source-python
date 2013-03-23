@@ -36,6 +36,19 @@
 //---------------------------------------------------------------------------------
 using namespace boost::python;
 
+
+//---------------------------------------------------------------------------------
+// Define checks
+//---------------------------------------------------------------------------------
+
+#if !defined(SOURCE_ENGINE)
+#error("SOURCE_ENGINE define must be globally defined, did we forget?");
+#endif
+
+#if !defined(SOURCE_GAME)
+#error("SOURCE_GAME define must be globally defined, did we forget?");
+#endif
+
 //---------------------------------------------------------------------------------
 // Surround boost python statements with this macro in order to handle exceptions.
 //---------------------------------------------------------------------------------
@@ -92,17 +105,17 @@ using namespace boost::python;
 	class_<classname>(XSTRINGIFY(classname))
 
 //---------------------------------------------------------------------------------
+// Use this to wrap a class with a non-default constructor.
+//---------------------------------------------------------------------------------
+#define BOOST_CLASS_CONSTRUCTOR( classname, ... ) \
+	class_<classname>(XSTRINGIFY(classname), init< ##__VA_ARGS__ >())
+
+//---------------------------------------------------------------------------------
 // Use this to wrap a class that should be instantiatable from python, but
 // should never be copied.
 //---------------------------------------------------------------------------------
 #define BOOST_CLASS_NOCOPY( classname ) \
 	class_<classname, boost::noncopyable>(XSTRINGIFY(classname))
-
-//---------------------------------------------------------------------------------
-// Use this to add a constructor to a class.
-//---------------------------------------------------------------------------------
-#define CLASS_CONSTRUCTOR( type, ... )	  \
-	.def(init< type, ##__VA_ARGS__ >())
 
 //---------------------------------------------------------------------------------
 // This finishes off a boost -> python object wrapping.
@@ -116,6 +129,12 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define CLASS_METHOD( classname, methodname, ... ) \
 	.def(XSTRINGIFY(methodname), &classname::methodname, ##__VA_ARGS__)
+
+//---------------------------------------------------------------------------------
+// Use this to wrap pure virtual functions.
+//---------------------------------------------------------------------------------
+#define CLASS_METHOD_PURE_VIRTUAL( classname, methodname, ... ) \
+	.def(XSTRINGIFY(methodname), pure_virtual(&classname::methodname), ##__VA_ARGS__)
 
 //---------------------------------------------------------------------------------
 // Use this macro to bind class functions to "special" functions in python such
@@ -136,6 +155,12 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define CLASS_MEMBER( classname, varname, ... ) \
 	.def_readwrite(XSTRINGIFY(varname), &classname::varname, ##__VA_ARGS__)
+
+//---------------------------------------------------------------------------------
+// Use this to add a constructor to a class.
+//---------------------------------------------------------------------------------
+#define CLASS_CONSTRUCTOR( ... )	  \
+	.def(init< ##__VA_ARGS__ >())
 
 //---------------------------------------------------------------------------------
 // Use this to wrap a method that returns an interface.
@@ -187,6 +212,24 @@ using namespace boost::python;
 		struct has_back_reference<classname> : mpl::true_ \
 		{}; \
 	}}
+
+//---------------------------------------------------------------------------------
+// These macros allow us to includ engine / game specific files
+//---------------------------------------------------------------------------------
+
+// Has to be a C++ macro so we can use another define
+// directly after the call to concatenate the objects
+#define GET_ENGINE_VALUE() engine
+
+// Pre-path macros
+#define JOIN_PRE_PATH(pre_path, folder, file_path)		XSTRINGIFY(pre_path ## / ## folder ## / ## file_path)
+#define GAME_INCLUDE_PRE_PATH(pre_path, file_path)		JOIN_PRE_PATH(pre_path, SOURCE_GAME, file_path)
+#define ENGINE_INCLUDE_PRE_PATH(pre_path, file_path)	JOIN_PRE_PATH(pre_path, GET_ENGINE_VALUE()SOURCE_ENGINE, file_path)
+
+// Current working directory macros
+#define JOIN_PATH(folder, file_path)					XSTRINGIFY(folder ## / ## file_path)
+#define GAME_INCLUDE_PATH(file_path)					JOIN_PATH(SOURCE_GAME, file_path)
+#define ENGINE_INCLUDE_PATH(file_path)					JOIN_PATH(GET_ENGINE_VALUE()SOURCE_ENGINE, file_path)
 
 //---------------------------------------------------------------------------------
 // These typedefs save some typing. Use this policy for any functions that return

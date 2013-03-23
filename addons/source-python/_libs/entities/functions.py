@@ -3,14 +3,13 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Site Package Imports
 #   ConfigObj
 from configobj import ConfigObj
 
 # Source.Python Imports
-from paths import DATA_PATH
-#   Core
 from core import GAME_NAME
+from paths import DATA_PATH
 #   DynCall
 from dyncall.dictionary import SignatureDictionary
 

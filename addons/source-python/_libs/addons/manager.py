@@ -4,26 +4,34 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Collections
+from collections import OrderedDict
 #   Sys
 import sys
 
 # Source.Python Imports
+from core import AutoUnload
+from core import echo_console
+from excepthooks import ExceptHooks
 from paths import ADDON_PATH
 #   Addons
 from addons.errors import AddonFileNotFoundError
-#   Core
-from core import AutoUnload
-from core.commands import echo_console
-from core.excepthook import ExceptHooks
+#   Translations
+from translations.strings import LangStrings
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the addons language strings
+_addon_strings = LangStrings('_core/addons_strings')
 
 
 # =============================================================================
 # >> MAIN CLASSES
 # =============================================================================
-class _AddonManagementDictionary(dict):
+class _AddonManagementDictionary(OrderedDict):
     '''Stores addon's and their instances'''
-
-    _order = list()
 
     def __missing__(self, addon_name):
         '''Tries to load an addon that is not loaded'''
@@ -54,8 +62,8 @@ class _AddonManagementDictionary(dict):
                 # Print a message about not using built-in module names
                 # We already know the path exists, so the only way this error
                 # could occur is if it shares its name with a built-in module
-                echo_console(
-                    '[SP] Addon name cannot use name of a built-in module')
+                echo_console('[SP] ' + _addon_strings[
+                    'Built-in'].get_string(addon=addon_name))
 
             # Otherwise
             else:
@@ -72,9 +80,6 @@ class _AddonManagementDictionary(dict):
         # Add the addon to the dictionary with its instance
         self[addon_name] = instance
 
-        # Add the addon's name to the ordered list
-        self._order.append(addon_name)
-
         # Return the given value
         return instance
 
@@ -88,47 +93,49 @@ class _AddonManagementDictionary(dict):
             return
 
         # Print message about unloading the addon
-        echo_console('[SP] Unloading "%s"...' % addon_name)
+        echo_console('[SP] ' + _addon_strings[
+            'Unloading'].get_string(addon=addon_name))
 
         # Does the addon have an unload function?
-        if 'unload' in self[addon_name].globals:
+        if 'unload' in self[addon_name]._globals:
 
             # Use a try/except here to still allow the addon to be unloaded
             try:
 
                 # Call the addon's unload function
-                self[addon_name].globals['unload']()
+                self[addon_name]._globals['unload']()
 
             # Was an exception raised?
             except:
 
-                # Get the error
-                error = sys.exc_info()
-
                 # Print the error to console, but
                 # allow the addon to still be unloaded
-                ExceptHooks.print_exception(*error)
+                ExceptHooks.print_exception()
 
         # Remove all modules from sys.modules
         self._remove_modules(addon_name)
 
-        # Remove the addon from the ordered list
-        self._order.remove(addon_name)
-
         # Remove the addon from the dictionary
         super(_AddonManagementDictionary, self).__delitem__(addon_name)
 
-    def __iter__(self):
-        '''Override the __iter__ method to return
-            items in the order they were loaded'''
+    def get_addon_instance(self, addon_name):
+        '''Returns an addon's instance if it is loaded'''
 
-        # Loop through all items in the ordered list
-        for addon in self._order:
+        # Is the addon loaded?
+        if addon_name in self:
 
-            # Yield the current item
-            yield addon
+            # Return the addon's instance
+            return self[addon_name]
+
+        # Return None if the addon is not loaded
+        return None
+
+    def is_loaded(self, addon_name):
+        '''Returns whether an addon is loaded or not'''
+        return addon_name in self
 
     def _remove_modules(self, addon_name):
+        '''Recursively removes modules from within the unloading addon'''
 
         # Get the addon's module
         addon_import = addon_name + '.' + addon_name
@@ -192,7 +199,8 @@ class _LoadedAddon(object):
         '''Called when an addon's instance is initialized'''
 
         # Print message that the addon is going to be loaded
-        echo_console('[SP] Loading "%s"...' % addon_name)
+        echo_console('[SP] ' + _addon_strings[
+            'Loading'].get_string(addon=addon_name))
 
         # Get the addon's main file
         file_path = ADDON_PATH.joinpath(addon_name, addon_name + '.py')
@@ -201,9 +209,8 @@ class _LoadedAddon(object):
         if not file_path.isfile():
 
             # Print a message that the addon's main file was not found
-            echo_console(
-                '[SP] Unable to load "%s", missing file ' % addon_name +
-                '../addons/source-python/%s/%s.py' % (addon_name, addon_name))
+            echo_console('[SP] ' + _addon_strings[
+                'No Module'].get_string(addon=addon_name))
 
             # Raise an error, so that the addon
             # is not added to the AddonManager
@@ -213,10 +220,10 @@ class _LoadedAddon(object):
         self._addon = __import__(addon_name + '.' + addon_name)
 
         # Store the globals for the addon
-        self.globals = self._addon.__dict__[addon_name].__dict__
+        self._globals = self._addon.__dict__[addon_name].__dict__
 
         # Does the addon have a load function?
-        if 'load' in self.globals:
+        if 'load' in self._globals:
 
             # Call the addon's load function
-            self.globals['load']()
+            self._globals['load']()

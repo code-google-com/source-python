@@ -3,15 +3,18 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Collections
+from collections import defaultdict
+
 # Source.Python Imports
+from core import GameEngine
+from excepthooks import ExceptHooks
 from paths import CFG_PATH
 #   Config
 from config.cvar import CvarManager
 from config.section import SectionManager
 from config.command import CommandManager
-#   Core
-from core import GameEngine
-from core.excepthook import ExceptHooks
 #   Translations
 from translations.strings import LangStrings
 from translations.strings import TranslationStrings
@@ -30,13 +33,19 @@ _config_strings = LangStrings('_core/config_strings')
 class ConfigManager(object):
     '''Config Management class used to create a config file'''
 
-    def __init__(self, filepath, indention=3, max_line_length=80):
-        '''Called on instanciation'''
+    def __init__(self, filepath, indention=3, max_line_length=79):
+        '''Called on instantiation'''
+
+        # Does the filepath contain the extension?
+        if filepath.endswith('.cfg'):
+
+            # Remove the extension from the filepath
+            filepath = filepath[:~3]
 
         # Store the primary attributes
-        self.filepath = filepath
-        self.indention = indention
-        self.max_line_length = max_line_length
+        self._filepath = filepath
+        self._indention = indention
+        self._max_line_length = max_line_length
 
         # Store the header and separator
         self.header = ''
@@ -52,6 +61,21 @@ class ConfigManager(object):
     def __enter__(self):
         '''Used when using "with" context management to create the file'''
         return self
+
+    @property
+    def filepath(self):
+        '''Returns the file path for the config file'''
+        return self._filepath
+
+    @property
+    def indention(self):
+        '''Returns the indention value for the config file'''
+        return self._indention
+
+    @property
+    def max_line_length(self):
+        '''Returns the max line length for the config file'''
+        return self._max_line_length
 
     @property
     def fullpath(self):
@@ -364,8 +388,8 @@ class ConfigManager(object):
     def _parse_old_file(self):
         '''Parses the old config file to get any values already set'''
 
-        # Get the _OldConfig instance
-        _old_config = _OldConfig()
+        # Get a defaultdict instance to store a list of lines
+        _old_config = defaultdict(list)
 
         # Does the file exist?
         if not self.fullpath.isfile():
@@ -480,16 +504,3 @@ class ConfigManager(object):
 
         # Return the line and the remainder
         return start, remainder
-
-
-class _OldConfig(dict):
-    '''Dictionary class used to store values from the old config file'''
-
-    def __missing__(self, item):
-        '''Define __missing__ to add the item as an empty list'''
-
-        # Add the item as an empty list
-        value = self[item] = list()
-
-        # Return the list
-        return value

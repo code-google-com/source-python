@@ -7,6 +7,7 @@
 from core import GameEngine
 #   Messages
 from messages.base import BaseMessageNoText
+from messages.base import MessageTypes
 
 
 # =============================================================================

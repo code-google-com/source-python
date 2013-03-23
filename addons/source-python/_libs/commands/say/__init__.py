@@ -3,19 +3,14 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Sys
-import sys
-
 # Source.Python Imports
 from Source import Shared
+from excepthooks import ExceptHooks
 #   Commands
 from commands.say.command import SayCommand
 from commands.say.filter import SayFilter
 from commands.say.manager import SayCommandRegistry
 from commands.server.command import ServerCommand as _ServerCommand
-#   Core
-from core.excepthook import ExceptHooks
 
 
 # =============================================================================
@@ -78,11 +73,8 @@ def _say_commands(CCommand):
         # Was an error encountered?
         except:
 
-            # Get the error
-            error = sys.exc_info()
-
             # Print the exception to the console
-            ExceptHooks.print_exception(*error)
+            ExceptHooks.print_exception()
 
     # Return the return value set by Say Commands
     return return_val
