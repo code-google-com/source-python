@@ -43,6 +43,7 @@ void export_handle_entity();
 void export_server_unknown();
 void export_server_entity();
 void export_edict();
+void export_send_prop();
 
 //---------------------------------------------------------------------------------
 // Entity module definition.
@@ -53,6 +54,7 @@ DECLARE_SP_MODULE(entity_c)
 	export_handle_entity();
 	export_server_unknown();
 	export_server_entity();
+	export_send_prop();
 	export_edict();
 }
 
@@ -98,10 +100,18 @@ void export_handle_entity()
 
 	BOOST_END_CLASS()
 }
+
+//---------------------------------------------------------------------------------
+// Exports CServerUnknown.
+//---------------------------------------------------------------------------------
 void export_server_unknown()
 {
 
 }
+
+//---------------------------------------------------------------------------------
+// Exports CServerEntity.
+//---------------------------------------------------------------------------------
 void export_server_entity()
 {
 	BOOST_ABSTRACT_CLASS(CServerEntity)
@@ -124,6 +134,10 @@ void export_server_entity()
 
 	BOOST_END_CLASS()
 }
+
+//---------------------------------------------------------------------------------
+// Exports CEdict.
+//---------------------------------------------------------------------------------
 void export_edict()
 {
 	BOOST_CLASS_CONSTRUCTOR(CEdict, int)
@@ -165,10 +179,64 @@ void export_edict()
 		)
 
 		CLASS_METHOD(CEdict,
-			get_server_entity,
-			"Returns the CServerEntity instance for this CEdict.",
+			get_prop,
+			"Returns a sendprop based on the given name.",
+			args("prop_name"),
 			manage_new_object_policy()
 		)
 
+	BOOST_END_CLASS()
+}
+
+//---------------------------------------------------------------------------------
+// Exports CSendProp.
+//---------------------------------------------------------------------------------
+void export_send_prop()
+{
+	// Wrap the send prop type.
+	BOOST_ENUM( SendPropType )
+		ENUM_VALUE( "DPT_Int", DPT_Int )
+		ENUM_VALUE( "DPT_Float", DPT_Float )
+		ENUM_VALUE( "DPT_Vector", DPT_Vector )
+		ENUM_VALUE( "DPT_VectorXY", DPT_VectorXY )
+		ENUM_VALUE( "DPT_String", DPT_String )
+		ENUM_VALUE( "DPT_Array", DPT_Array )
+		ENUM_VALUE( "DPT_DataTable", DPT_DataTable )
+		ENUM_VALUE( "DPT_Int64", DPT_Int64 )
+		ENUM_VALUE( "DPT_NUMSendPropTypes", DPT_NUMSendPropTypes )
+	BOOST_END_CLASS()
+
+	// Can only be instantiated by C++, never python.
+	// Scripts should be accessing CSendProp instances from
+	// a CEdict instance.
+	BOOST_ABSTRACT_CLASS(CSendProp)
+
+		CLASS_METHOD(CSendProp,
+			get_prop_type,
+			"Returns the type of this prop."
+		)
+
+		CLASS_METHOD(CSendProp,
+			set_prop_int,
+			"Sets this prop's integer value.",
+			args("value")
+		)
+
+		CLASS_METHOD(CSendProp,
+			set_prop_float,
+			"Sets this prop's floating point value.",
+			args("value")
+		)
+
+		CLASS_METHOD(CSendProp,
+			get_prop_int,
+			"Returns this prop's value as an integer."
+		)
+
+		CLASS_METHOD(CSendProp,
+			get_prop_float,
+			"Returns this prop's floating point value."
+		)
+		
 	BOOST_END_CLASS()
 }

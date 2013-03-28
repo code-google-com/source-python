@@ -30,6 +30,7 @@
 // Includes.
 //---------------------------------------------------------------------------------
 #include "edict.h"
+#include "server_class.h"
 #include <cstdint>
 
 //---------------------------------------------------------------------------------
@@ -38,6 +39,8 @@
 class CServerEntity;
 class CServerNetworkable;
 class CServerUnknown;
+class CServerClass;
+class CSendProp;
 
 //---------------------------------------------------------------------------------
 // The base class for all entities.
@@ -59,10 +62,6 @@ public:
 	// For engine use.
 	CEdict( edict_t* edict_ptr );
 
-	virtual const CServerEntity*			get_server_entity() const;
-	// virtual const CServerNetworkable*	get_networkable() const;
-	// virtual const CServerUnknown*		get_unknown() const;
-
 	virtual int							area_num() const;
 	virtual const char*					get_class_name() const;
 
@@ -74,12 +73,43 @@ public:
 	virtual bool						is_valid() const;
 	virtual int							get_index() const;
 
+	// Send property methods.
+	virtual CSendProp*					get_prop( const char* prop_name ) const;
+
 private:
 	edict_t*	m_edict_ptr;
 	bool		m_is_valid;
 	int			m_index;
 };
 
+
+//---------------------------------------------------------------------------------
+// Custom SendProp wrapper.
+//---------------------------------------------------------------------------------
+class CSendProp
+{
+public:
+	CSendProp( edict_t* edict, const char* prop_name );
+
+	SendPropType	get_prop_type();
+
+	void			set_prop_int( int value );
+	void			set_prop_float( float value );
+
+	int				get_prop_int();
+	float			get_prop_float();
+
+private:
+	// Offset from the beginning of the network table that
+	// this prop is located at.
+	unsigned int	m_prop_offset;
+
+	// Base entity instance.
+	CBaseEntity*	m_base_entity;
+
+	// The actual send prop object.
+	SendProp*		m_send_prop;
+};
 
 //---------------------------------------------------------------------------------
 // CBaseHandleEntity wrapper class.
@@ -123,13 +153,12 @@ class CServerEntity
 public:
 	CServerEntity( IServerEntity* server_entity );
 
-	virtual int get_model_index() const;
-	virtual void set_model_index( int index );
+	virtual int			get_model_index() const;
+	virtual void		set_model_index( int index );
 	virtual const char* get_model_name();
 
 private:
 	IServerEntity* m_server_entity;
 };
-
 
 #endif
