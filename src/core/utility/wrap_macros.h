@@ -75,6 +75,18 @@ using namespace boost::python;
 #define STRINGIFY(s) #s
 
 //---------------------------------------------------------------------------------
+// Use this to begin wrapping an enumeration.
+//---------------------------------------------------------------------------------
+#define BOOST_ENUM( enumname ) \
+	enum_<enumname>(XSTRINGIFY(enumname))
+
+//---------------------------------------------------------------------------------
+// Use this to wrap an enum value.
+//---------------------------------------------------------------------------------
+#define ENUM_VALUE( name, val ) \
+	.value(name, val)
+
+//---------------------------------------------------------------------------------
 // Use this to begin wrapping an abstract class.
 //---------------------------------------------------------------------------------
 #define BOOST_ABSTRACT_CLASS( classname ) \
