@@ -30,6 +30,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "utlhash.h"
+#include "dt_send.h"
 
 //---------------------------------------------------------------------------------
 // Every SendProp has a name and an offset. We'll use this for the prop offset
@@ -39,7 +40,7 @@ class CPropOffset
 {
 public:
 	const char*		prop_name;
-	unsigned int	prop_offset;
+	SendProp*		prop;
 };
 
 //---------------------------------------------------------------------------------
@@ -67,10 +68,11 @@ public:
 
 public:
 	// Returns a prop offset by name.
-	unsigned int get_offset( const char* prop_name, bool& was_found );
+	// unsigned int get_offset( const char* prop_name, bool& was_found );
+	SendProp* get_prop( const char* prop_name );
 
 	// Inserts a prop offset into the hash table.
-	void insert_offset( const char* name, unsigned int offset );
+	void insert_offset( const char* name, SendProp* prop );
 
 	// Removes a prop offset by name.
 	void remove_offset( const char* prop_name );
@@ -80,5 +82,10 @@ public:
 // Globals
 //---------------------------------------------------------------------------------
 extern CSendPropHashTable* PropHashTable();
+
+//---------------------------------------------------------------------------------
+// Helper functions
+//---------------------------------------------------------------------------------
+SendProp* UTIL_FindSendProp( SendTable* send_table, const char* prop_name );
 
 #endif // _ENTITIES_PROPS_H

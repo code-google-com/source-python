@@ -229,6 +229,12 @@ void export_send_prop()
 		)
 
 		CLASS_METHOD(CSendProp,
+			set_prop_string,
+			"Sets this prop's string value.",
+			args("value")
+		)
+
+		CLASS_METHOD(CSendProp,
 			get_prop_int,
 			"Returns this prop's value as an integer."
 		)
@@ -238,5 +244,10 @@ void export_send_prop()
 			"Returns this prop's floating point value."
 		)
 		
+		CLASS_METHOD(CSendProp,
+			get_prop_string,
+			"Returns this prop's string value."
+		)
+
 	BOOST_END_CLASS()
 }

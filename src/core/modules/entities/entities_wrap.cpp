@@ -48,126 +48,6 @@ const IChangeInfoAccessor *CBaseEdict::GetChangeAccessor() const
 }
 
 //---------------------------------------------------------------------------------
-// Utility function to find send table props.
-//---------------------------------------------------------------------------------
-SendProp* UTIL_FindSendProp( SendTable* send_table, const char* prop_name )
-{
-	for( int prop_idx = 0; prop_idx < send_table->GetNumProps(); prop_idx++ )
-	{
-		// Get the property at this location.
-		SendProp* prop = send_table->GetProp(prop_idx);
-
-		// Return if we found the prop.
-		if( V_strcmp(prop->GetName(), prop_name) == 0 )
-		{
-			return prop;
-		}
-
-		// If this prop is a data table, recurse down the line.
-		if( prop->GetDataTable() )
-		{
-			return UTIL_FindSendProp(prop->GetDataTable(), prop_name);
-		}
-	}
-
-	// If we hit this line, we couldn't find the prop.
-	DevMsg(2, "[SP]: UTIL_FindSendProp(%x, %s); could not find send prop!\n",
-		send_table, prop_name);
-
-	return NULL;
-}
-
-//---------------------------------------------------------------------------------
-// Loops through a data table and prints out the property information, recursively
-// if necessary.
-//---------------------------------------------------------------------------------
-void DumpServerClassProps(SendTable* pTable, int iTabLevel)
-{
-	if (iTabLevel > 16)
-	{
-		return;
-	}
-
-	static const char* szTabs = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
-
-	int iNumProps = pTable->GetNumProps();
-	Msg(" [%d properties]:\n", iNumProps);
-	for(int i=0; i < iNumProps; ++i)
-	{
-		char* szType;
-		SendProp* pProp = pTable->GetProp(i);
-		switch (pProp->GetType())
-		{
-		case DPT_Int:
-			szType = "int";
-			break;
-		case DPT_Float:
-			szType = "float";
-			break;
-		case DPT_Vector:
-			szType = "vector";
-			break;
-		case DPT_VectorXY:
-			szType = "vectorXY";
-			break;
-		case DPT_String:
-			szType = "string";
-			break;
-		case DPT_Array:
-			szType = "array";
-			break;
-		case DPT_DataTable:
-			szType = "datatable";
-			break;
-		case DPT_Int64:
-			szType = "int64";
-			break;
-		default:
-			szType = "**Unknown**";
-			break;
-		}
-
-		Msg("%*.*s%s %s (offset %d) ", iTabLevel, iTabLevel, szTabs, szType, pProp->GetName(), pProp->GetOffset());
-		if (pProp->GetType() == DPT_DataTable && strcmp(pProp->GetName(), "baseclass") != 0)
-		{
-			DumpServerClassProps(pProp->GetDataTable(), iTabLevel + 1);
-		}
-		else
-		{
-			Msg("\n");
-		}
-	}
-}
-
-//---------------------------------------------------------------------------------
-// Helpful function to dump all of the server classes and their respective
-// properties.
-//---------------------------------------------------------------------------------
-void DumpServerClasses()
-{
-	// Need this external.
-	extern IServerGameDLL* servergamedll;
-
-	// Iterate through all of the send tables.
-	SendTable* pSendTable = NULL;
-	ServerClass* pCurrentServerClass = servergamedll->GetAllServerClasses();
-	while (pCurrentServerClass)
-	{
-		Msg("%s %d", pCurrentServerClass->GetName(), pCurrentServerClass->m_InstanceBaselineIndex);
-		DumpServerClassProps(pCurrentServerClass->m_pTable, 1);
-		pCurrentServerClass = pCurrentServerClass->m_pNext;
-	}
-}
-
-//---------------------------------------------------------------------------------
-// Console command to dump server props.
-//---------------------------------------------------------------------------------
-CON_COMMAND( sp_dump_props, "Dumps entity properties." )
-{
-	DumpServerClasses();
-}
-
-//---------------------------------------------------------------------------------
 // External variables.
 //---------------------------------------------------------------------------------
 extern CGlobalVars* gpGlobals;
@@ -343,40 +223,51 @@ const char* CServerEntity::get_model_name()
 //---------------------------------------------------------------------------------
 CSendProp::CSendProp( edict_t* edict, const char* prop_name )
 {
+	// Set default values.
+	m_send_prop = NULL;
+	m_prop_offset = 0;
+	m_edict = edict;
+
+	if( !m_edict )
+	{
+		DevMsg(1, "[SP]: m_edict was not valid!\n");
+		return;
+	}
+
 	// Get the base entity. This saves us from having to call
 	// this code repeatedly.
-	IServerUnknown* entity_unknown = edict->GetUnknown();
+	IServerUnknown* entity_unknown = m_edict->GetUnknown();
 	m_base_entity = entity_unknown->GetBaseEntity();
 
-	// See if we have the prop in the hash table.
-	bool bFound = false;
-	unsigned int prop_offset = 
-		PropHashTable()->get_offset(prop_name, bFound);
+	// First search the hash table to see if we have a prop
+	// with the same name.
+	m_send_prop = PropHashTable()->get_prop(prop_name);
 	
 	// If we didn't find it, search the send table manually.
-	if( !bFound )
+	if( !m_send_prop )
 	{
+		// Get the send table for this entity.
 		ServerClass* server_class = edict->GetNetworkable()->GetServerClass();
 		SendTable* send_table = server_class->m_pTable;
-		SendProp* prop = UTIL_FindSendProp(send_table, prop_name);
 
-		if( prop )
+		// Search for the prop in the send table.
+		m_send_prop = UTIL_FindSendProp(send_table, prop_name);
+
+		if( m_send_prop )
 		{
-			// Store the values in the class.
-			m_send_prop = prop;
+			// Cache off the prop offset so we don't have to keep
+			// calling GetOffset repeatedly.
 			m_prop_offset = m_send_prop->GetOffset();
 
 			// Store the value in the prop hash table.
-			PropHashTable()->insert_offset(prop_name, m_prop_offset);
-
-			// Done.
-			return;
+			PropHashTable()->insert_offset(prop_name, m_send_prop);
 		}
 	}
-
-	// Guess we didn't find it.
-	m_prop_offset = 0;
-	m_prop_offset = NULL;
+	else
+	{
+		// Prop was valid. Store off the offset.
+		m_prop_offset = m_send_prop->GetOffset();
+	}
 }
 
 SendPropType CSendProp::get_prop_type()
@@ -393,7 +284,11 @@ void CSendProp::set_prop_int( int value )
 {
 	if( m_send_prop && (get_prop_type() == DPT_Int) )
 	{
+		// Set the value.
 		*(int *)((char *)m_base_entity + m_prop_offset) = value;
+
+		// Force a network update.
+		m_edict->StateChanged(m_prop_offset);
 	}
 }
 
@@ -401,7 +296,26 @@ void CSendProp::set_prop_float( float value )
 {
 	if( m_send_prop && (get_prop_type() == DPT_Float) )
 	{
+		// Set the value.
 		*(float *)((char *)m_base_entity + m_prop_offset) = value;
+
+		// Force a network update.
+		m_edict->StateChanged(m_prop_offset);
+	}
+}
+
+void CSendProp::set_prop_string( const char* value )
+{
+	if( m_send_prop && (get_prop_type() == DPT_String) )
+	{
+		// Get the address of the string buffer.
+		char* data_buffer = (char *)((char *)m_base_entity + m_prop_offset);
+
+		// Write the string to the buffer.
+		V_strncpy(data_buffer, value, DT_MAX_STRING_BUFFERSIZE);
+
+		// Force a network update.
+		m_edict->StateChanged(m_prop_offset);
 	}
 }
 
@@ -424,3 +338,14 @@ float CSendProp::get_prop_float()
 
 	return -1.0f;
 }
+
+const char* CSendProp::get_prop_string()
+{
+	if( m_send_prop && (get_prop_type() == DPT_String) )
+	{
+		return (const char *)((char *)m_base_entity + m_prop_offset);
+	}
+
+	return "";
+}
+
