@@ -27,13 +27,24 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
+
+// Required to fix compilation errors after including cdll_int.h
+#if defined( _WIN32 )
+#include <Windows.h>
+#endif
+
 #include "modules/export_main.h"
-#include "eiface_wrap.h"
+#include "dt_send.h"
+#include "server_class.h"
+#include "iscratchpad3d.h"
+#include "cdll_int.h"
+#include "con_nprint.h"
 #include "inetchannelinfo.h"
 #include "iachievementmgr.h"
 #include "client_textmessage.h"
 #include "GameStats.h"
 #include "steam/steamclientpublic.h"
+#include "eiface_wrap.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use

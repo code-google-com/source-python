@@ -74,9 +74,9 @@ EndIf()
 Set(CMAKE_CXX_FLAGS "-D_LINUX -DPOSIX -DLINUX -Dstricmp=strcasecmp -D_stricmp=strcasecmp")
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp") 
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_snprintf=snprintf -D_vsnprintf=vsnprintf -D_alloca=alloca")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrcmpi=strcasecmp -Wall -Wno-uninitialized")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -DHAVE_STDINT_H -m32 -DCOMPILER_GCC")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-non-virtual-dtor -fno-threadsafe-statics -v")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrcmpi=strcasecmp -Wall -Wno-uninitialized -Wno-switch -Wno-unused")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -DCOMPILER_GCC -fno-strict-aliasing -std=c++0x")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-non-virtual-dtor -Wno-overloaded-virtual -fno-threadsafe-statics -v")
 
 # ------------------------------------------------------------------
 # Debug / Release compiler flags.

@@ -50,6 +50,7 @@ Set(PROTOBUF_INCLUDE	${PROTOBUF}/src)
 # ------------------------------------------------------------------
 Include_Directories(
     ${SOURCESDK}
+    ${SOURCESDK}/common
     ${SOURCESDK}/game/shared
     ${SOURCESDK}/game/server
     ${SOURCESDK}/public

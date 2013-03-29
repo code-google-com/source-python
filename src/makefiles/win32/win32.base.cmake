@@ -27,7 +27,7 @@ Include_Directories(
 # ------------------------------------------------------------------
 # Required to get SP to compile on MSVC for csgo.
 # ------------------------------------------------------------------
-Add_Definitions(-DCOMPILER_MSVC -DCOMPILER_MSVC32)
+Add_Definitions(-DCOMPILER_MSVC -DCOMPILER_MSVC32 -D_WIN32)
 
 # ------------------------------------------------------------------
 # Release / Debug flags.

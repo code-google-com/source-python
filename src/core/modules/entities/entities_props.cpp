@@ -84,12 +84,14 @@ CSendPropHashTable::CSendPropHashTable() :
 CSendPropHashTable::~CSendPropHashTable()
 {
 	// Free the names of the props since we use strdup.
+#if 0
 	for( int i = 0; i < m_prop_table.Count(); i++ )
 	{
 		CPropOffset* prop_offset = &m_prop_table[i];
-		delete prop_offset->prop_name;
-		prop_offset->prop_name = nullptr;
+		free((void *)prop_offset->prop_name);
+		prop_offset->prop_name = NULL;
 	}
+#endif
 }
 
 bool CSendPropHashTable::hash_compare( const CPropOffset& a, const CPropOffset& b )

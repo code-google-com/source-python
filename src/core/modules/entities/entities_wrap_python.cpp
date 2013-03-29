@@ -68,7 +68,7 @@ void export_base_entity_handle()
 		CLASS_CONSTRUCTOR(CBaseHandle)
 
 		CLASS_METHOD(CBaseEntityHandle,
-			is_valid,
+			is_valid
 		)
 
 		CLASS_METHOD(CBaseEntityHandle,
