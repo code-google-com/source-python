@@ -95,9 +95,11 @@ public:
 
 	void			set_prop_int( int value );
 	void			set_prop_float( float value );
+	void			set_prop_string( const char* value );
 
 	int				get_prop_int();
 	float			get_prop_float();
+	const char*		get_prop_string();
 
 private:
 	// Offset from the beginning of the network table that
@@ -106,6 +108,9 @@ private:
 
 	// Base entity instance.
 	CBaseEntity*	m_base_entity;
+
+	// Edict instance.
+	edict_t*		m_edict;
 
 	// The actual send prop object.
 	SendProp*		m_send_prop;

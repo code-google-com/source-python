@@ -38,6 +38,34 @@ CSendPropHashTable* PropHashTable()
 	return &s_PropHashTable;
 }
 
+//---------------------------------------------------------------------------------
+// Utility function to find send table props.
+//---------------------------------------------------------------------------------
+SendProp* UTIL_FindSendProp( SendTable* send_table, const char* prop_name )
+{
+	int			prop_count = send_table->GetNumProps();
+	SendProp*	prop;
+
+	for( int i = 0; i < prop_count; i++ )
+	{
+		prop = send_table->GetProp(i);
+		if( V_strcmp(prop->GetName(), prop_name) == 0 )
+		{
+			return prop;
+		}
+
+		if( prop->GetDataTable() )
+		{
+			if((prop = UTIL_FindSendProp(prop->GetDataTable(), prop_name)) != NULL)
+			{
+				return prop;
+			}
+		}
+	}
+
+	return NULL;
+}
+
 //----------------------------------------------------------------------------------
 // CSendPropHashtable code.
 //----------------------------------------------------------------------------------
@@ -69,28 +97,71 @@ bool CSendPropHashTable::hash_compare( const CPropOffset& a, const CPropOffset& 
 	return (V_strcmp(a.prop_name, b.prop_name) == 0);
 }
 
-unsigned int CSendPropHashTable::hash_key( const CPropOffset& a )
-{
-	const char* prop_name = a.prop_name;
-	unsigned int hash = 98317;
-	unsigned int c;
+//----------------------------------------------------------------------------------
+// This amazing hash function borrowed from:
+// http://www.azillionmonkeys.com/qed/hash.html
+//----------------------------------------------------------------------------------
+#define get16bits(d) ((((unsigned int)(((const unsigned char *)(d))[1])) << 8)\
+	+(unsigned int)(((const unsigned char *)(d))[0]) )
 
-	while( c= *prop_name++ )
-	{
-		hash = ((hash << 5) + hash) + c;
+unsigned int SuperFastHash (const char * data, int len) {
+	unsigned hash = len, tmp;
+	int rem;
+
+	if (len <= 0 || data == NULL) return 0;
+
+	rem = len & 3;
+	len >>= 2;
+
+	/* Main loop */
+	for (;len > 0; len--) {
+		hash  += get16bits (data);
+		tmp    = (get16bits (data+2) << 11) ^ hash;
+		hash   = (hash << 16) ^ tmp;
+		data  += 2*sizeof (unsigned short);
+		hash  += hash >> 11;
 	}
+
+	/* Handle end cases */
+	switch (rem) {
+	case 3: hash += get16bits (data);
+		hash ^= hash << 16;
+		hash ^= ((signed char)data[sizeof (unsigned short)]) << 18;
+		hash += hash >> 11;
+		break;
+	case 2: hash += get16bits (data);
+		hash ^= hash << 11;
+		hash += hash >> 17;
+		break;
+	case 1: hash += (signed char)*data;
+		hash ^= hash << 10;
+		hash += hash >> 1;
+	}
+
+	/* Force "avalanching" of final 127 bits */
+	hash ^= hash << 3;
+	hash += hash >> 5;
+	hash ^= hash << 4;
+	hash += hash >> 17;
+	hash ^= hash << 25;
+	hash += hash >> 6;
 
 	return hash;
 }
 
-unsigned int CSendPropHashTable::get_offset( const char* prop_name, bool& was_found )
+unsigned int CSendPropHashTable::hash_key( const CPropOffset& a )
+{
+	return SuperFastHash(a.prop_name, V_strlen(a.prop_name));
+}
+
+SendProp* CSendPropHashTable::get_prop( const char* prop_name )
 {
 	// Construct a temporary hash table element
 	// to search with.
 	CPropOffset prop_offset_data;
 	
 	prop_offset_data.prop_name = prop_name;
-	prop_offset_data.prop_offset = 0;
+	prop_offset_data.prop = NULL;
 
 	// Search the table.
 	UtlHashHandle_t prop_offset_handle = 
@@ -99,16 +170,14 @@ unsigned int CSendPropHashTable::get_offset( const char* prop_name, bool& was_fo
 	// Return the value if we found one.
 	if( prop_offset_handle != m_prop_table.InvalidHandle() )
 	{
-		was_found = true;
-		return m_prop_table.Element(prop_offset_handle).prop_offset;
+		return m_prop_table.Element(prop_offset_handle).prop;
 	}
 
 	// Could not find the requested prop.
-	was_found = false;
-	return 0;
+	return NULL;
 }
 
-void CSendPropHashTable::insert_offset( const char* name, unsigned int offset )
+void CSendPropHashTable::insert_offset( const char* name, SendProp* prop )
 {
 	// Construct the prop structure. Since this is basically a
 	// struct, no need to deep copy.
@@ -119,7 +188,7 @@ void CSendPropHashTable::insert_offset( const char* name, unsigned int offset )
 	prop_data.prop_name = strdup(name);
 
 	// Store off the offset.
-	prop_data.prop_offset = offset;
+	prop_data.prop = prop;
 
 	// Put this data in the table.
 	m_prop_table.Insert(prop_data);
@@ -131,7 +200,7 @@ void CSendPropHashTable::remove_offset( const char* prop_name )
 	CPropOffset prop_offset;
 
 	prop_offset.prop_name = prop_name;
-	prop_offset.prop_offset = 0;
+	prop_offset.prop = NULL;
 
 	// Find the index of the element.
 	UtlHashHandle_t prop_offset_handle = 
