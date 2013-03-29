@@ -154,9 +154,11 @@ Set(SOURCEPYTHON_EVENT_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENTITY_MODULE_HEADERS
     core/modules/entities/entities_wrap.h
+    core/modules/entities/entities_props.h
 )
 
 Set(SOURCEPYTHON_ENTITY_MODULE_SOURCES
+    core/modules/entities/entities_props.cpp
     core/modules/entities/entities_wrap.cpp
     core/modules/entities/entities_wrap_python.cpp
 )
