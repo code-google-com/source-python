@@ -809,14 +809,14 @@ TEST(GeneratedEnumTest, MinAndMax) {
   EXPECT_EQ(12589235, unittest::TestSparseEnum_ARRAYSIZE);
 
   // Make sure we can take the address of _MIN, _MAX and _ARRAYSIZE.
-  void* nullptr = 0;  // NULL may be integer-type, not pointer-type.
-  EXPECT_NE(nullptr, &unittest::TestAllTypes::NestedEnum_MIN);
-  EXPECT_NE(nullptr, &unittest::TestAllTypes::NestedEnum_MAX);
-  EXPECT_NE(nullptr, &unittest::TestAllTypes::NestedEnum_ARRAYSIZE);
+  void* nullptr2 = 0;  // NULL may be integer-type, not pointer-type.
+  EXPECT_NE(nullptr2, &unittest::TestAllTypes::NestedEnum_MIN);
+  EXPECT_NE(nullptr2, &unittest::TestAllTypes::NestedEnum_MAX);
+  EXPECT_NE(nullptr2, &unittest::TestAllTypes::NestedEnum_ARRAYSIZE);
 
-  EXPECT_NE(nullptr, &unittest::ForeignEnum_MIN);
-  EXPECT_NE(nullptr, &unittest::ForeignEnum_MAX);
-  EXPECT_NE(nullptr, &unittest::ForeignEnum_ARRAYSIZE);
+  EXPECT_NE(nullptr2, &unittest::ForeignEnum_MIN);
+  EXPECT_NE(nullptr2, &unittest::ForeignEnum_MAX);
+  EXPECT_NE(nullptr2, &unittest::ForeignEnum_ARRAYSIZE);
 
   // Make sure we can use _MIN, _MAX and _ARRAYSIZE as switch cases.
   switch (unittest::SPARSE_A) {
