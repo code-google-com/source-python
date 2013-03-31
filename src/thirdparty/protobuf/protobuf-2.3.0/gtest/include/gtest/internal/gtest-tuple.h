@@ -703,6 +703,8 @@ inline GTEST_10_TUPLE_(T) make_tuple(const T0& f0, const T1& f1, const T2& f2,
 
 // 6.1.3.3 Tuple helper classes.
 
+namespace gtuple {
+
 template <typename Tuple> struct tuple_size;
 
 template <GTEST_0_TYPENAMES_(T)>
@@ -738,13 +740,16 @@ struct tuple_size<GTEST_9_TUPLE_(T)> { static const int value = 9; };
 template <GTEST_10_TYPENAMES_(T)>
 struct tuple_size<GTEST_10_TUPLE_(T)> { static const int value = 10; };
 
+
 template <int k, class Tuple>
 struct tuple_element {
   typedef typename gtest_internal::TupleElement<
       k < (tuple_size<Tuple>::value), k, Tuple>::type type;
 };
+// WHY GOOGLE WHY!!!! WHY YOU USE "using namespace std;"... You destroyed me a little inside...
+} // namespace gtuple
 
-#define GTEST_TUPLE_ELEMENT_(k, Tuple) typename tuple_element<k, Tuple >::type
+#define GTEST_TUPLE_ELEMENT_(k, Tuple) typename gtuple::tuple_element<k, Tuple >::type
 
 // 6.1.3.4 Element access.
 

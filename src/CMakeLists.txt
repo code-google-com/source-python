@@ -128,6 +128,7 @@ Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS
 
 Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES
     core/modules/engine/usermessage/usermessage.cpp
+    core/modules/engine/usermessage/usermessage_wrap_python.cpp
     core/modules/engine/usermessage/usermessage_implementation_base.cpp
     core/modules/engine/usermessage/${SOURCE_GAME}/usermessage_implementation.cpp
 )
@@ -135,6 +136,7 @@ Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES
 Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES
 	${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS}
 	${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES}
+    ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -196,6 +198,7 @@ Source_Group("Source Files\\Util"   		                FILES ${SOURCEPYTHON_UTIL_
 Source_Group("Source Files\\Generic"		                FILES ${SOURCEPYTHON_GENERIC_SOURCES})
 Source_Group("Source Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Engine\\Usermessages\\${GAME}"	FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
 Source_Group("Source Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_SOURCES})
 
