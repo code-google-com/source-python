@@ -35,7 +35,7 @@
 class CUserMessageImplementation : public IUsermessageImplementationBase
 {
 public:
-	CUserMessageImplementation( const IRecipientFilter &recipient_filter, const char *message_name);
+	CUserMessageImplementation( const CMRecipientFilter &recipient_filter, const char *message_name);
 
 	// Pure-virtual methods which must be inherited and overwritten in the inherited
 	// classes
@@ -92,9 +92,11 @@ private:
 
 	template < typename _T_INPUT, typename _T_CAST >
 	void set_typed_value(
-		void (google::protobuf::Reflection::*setter_delegate)(google::protobuf::Message* message,const google::protobuf::FieldDescriptor* field, int idx, _T_CAST value) const, 
+		void (google::protobuf::Reflection::*setter_delegate)(google::protobuf::Message* message,const google::protobuf::FieldDescriptor* field, int idx, _T_CAST value) const,
+		void (google::protobuf::Reflection::*adder_delegate)(google::protobuf::Message* message,const google::protobuf::FieldDescriptor* field, _T_CAST value) const,
 		const char *field_name,
 		_T_INPUT value,
+		_T_CAST default_value,
 		int idx)
 	{
 		if (m_message != NULL)
@@ -104,21 +106,30 @@ private:
 				const google::protobuf::FieldDescriptor *descriptor(m_message->GetDescriptor()->FindFieldByName(field_name));
 				if (descriptor != NULL)
 				{
+					
+					for (int field_size(m_message->GetReflection()->FieldSize(*m_message, descriptor));
+						 field_size <= idx; ++field_size)
+					{
+						// Resize the array
+						DevMsg(0, "SP-LOG: Adding parameter %d to field '%s' in usermessage message '%s'\n", field_size, field_name, m_message_name);
+						(*m_message->GetReflection().*adder_delegate)(m_message, descriptor, default_value);
+					}
+					DevMsg(0, "SP-LOG: Setting parameter %d to field '%s' in usermessage message '%s'\n", idx, field_name, m_message_name);
 					(*m_message->GetReflection().*setter_delegate)(m_message, descriptor, idx, static_cast< _T_CAST >(value));
 				}
 				else
 				{
-					DevMsg(0, "SP-ERROR: Could not find field name '%s' for usermessage '%s'", field_name, m_message_name);
+					DevMsg(0, "SP-ERROR: Could not find field name '%s' for usermessage '%s'\n", field_name, m_message_name);
 				}
 			}
 			else
 			{
-				DevMsg(0, "SP-ERROR: Could not find descriptor or reflection for usermessage '%s'", m_message_name);
+				DevMsg(0, "SP-ERROR: Could not find descriptor or reflection for usermessage '%s'\n", m_message_name);
 			}
 		}
 		else
 		{
-			DevMsg(0, "SP-ERROR: Could not find message name '%s'", m_message_name);
+			DevMsg(0, "SP-ERROR: Could not find message name '%s'\n", m_message_name);
 		}
 	}
 

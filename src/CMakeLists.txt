@@ -30,11 +30,14 @@ Set(SOURCEPYTHON_LOADER_FILES
 Set(SOURCEPYTHON_UTIL_HEADERS
     core/utility/wrap_macros.h
 	core/utility/mrecipientfilter.h
+    core/utility/mrecipientfilter_wrap.h
     core/utility/ipythongenerator.h
 )
 
 Set(SOURCEPYTHON_UTIL_SOURCES
 	core/utility/mrecipientfilter.cpp
+    core/utility/mrecipientfilter_wrap.cpp
+    core/utility/mrecipientfilter_wrap_python.cpp
 )
 
 Set(SOURCEPYTHON_UTIL_FILES

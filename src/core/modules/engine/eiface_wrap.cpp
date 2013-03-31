@@ -338,7 +338,7 @@ void CEngineServer::set_area_portal_state( int portalNumber, int isOpen )
 	engine->SetAreaPortalState(portalNumber, isOpen);
 }
 
-void CEngineServer::playback_temp_entity( IRecipientFilter& filter, float delay, const void *pSender, const SendTable *pST, int classID )
+void CEngineServer::playback_temp_entity( CMRecipientFilter& filter, float delay, const void *pSender, const SendTable *pST, int classID )
 {
 	engine->PlaybackTempEntity(filter, delay, pSender, pST, classID);
 }

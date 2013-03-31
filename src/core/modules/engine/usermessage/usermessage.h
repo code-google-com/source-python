@@ -36,15 +36,29 @@
 class CUserMessage : public CUserMessageImplementation
 {
 public:
-	CUserMessage(const IRecipientFilter &recipient_filter, const char *message_name);
+	CUserMessage(const CMRecipientFilter &recipient_filter, const char *message_name);
 	~CUserMessage();
 
 	virtual void send_message();
 
 	const char *get_message_name() const;
 	const int get_message_index() const;
-	const IRecipientFilter &get_recipient_filter() const;
+	const CMRecipientFilter &get_recipient_filter() const;
 	bool has_been_sent() const;
+
+	// Virtual function call override (calls to base class)
+	// Pure-virtual methods which must be inherited and overwritten in the inherited
+	// classes
+	virtual void set_char(const char *field_name, char field_value, int index=-1);
+	virtual void set_byte(const char *field_name, unsigned char field_value, int index=-1);
+	virtual void set_short(const char *field_name, signed short field_value, int index=-1);
+	virtual void set_long(const char *field_name, signed long field_value, int index=-1);
+	virtual void set_float(const char *field_name, float field_value, int index=-1);
+	virtual void set_bool(const char *field_name, bool field_value, int index=-1);
+
+	// Unknown sized buffers
+	virtual void set_buffer(const char *field_name, void *buffer, unsigned int num_bytes, int index=-1);
+	virtual void set_string(const char *field_name, const char *field_value, int index=-1);
 
 private:
 	bool m_sent;

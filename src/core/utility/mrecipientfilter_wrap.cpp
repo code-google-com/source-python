@@ -22,13 +22,48 @@
 * by the Valve Corporation.  You must obey the GNU General Public License in
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
+*
+* Original source:
+* https://developer.valvesoftware.com/wiki/Ingame_menu_for_server_plugins_(CS:S_only)
 */
 
-#include "usermessage_implementation_base.h"
+#include "mrecipientfilter_wrap.h"
 
-IUsermessageImplementationBase::IUsermessageImplementationBase(const CMRecipientFilter &recipient_filter, const char *message_name ) :
-	m_recipient_filter(recipient_filter),
-	m_message_name(message_name),
-	m_message_index(-1)
+
+CMRecipientFilter::CMRecipientFilter()
 {
+}
+
+CMRecipientFilter::~CMRecipientFilter()
+{
+}
+
+bool CMRecipientFilter::is_reliable( void ) const
+{
+	return IsReliable();
+}
+
+bool CMRecipientFilter::is_init_message( void ) const
+{
+	return IsInitMessage();
+}
+
+int CMRecipientFilter::get_recipient_count( void ) const
+{
+	return GetRecipientCount();
+}
+
+int CMRecipientFilter::get_recipient_index( int slot ) const
+{
+	return GetRecipientIndex(slot);
+}
+
+void CMRecipientFilter::add_all_players()
+{
+	AddAllPlayers();
+}
+
+void CMRecipientFilter::add_recipient( int iPlayer )
+{
+	AddRecipient(iPlayer);
 }

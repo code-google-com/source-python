@@ -30,7 +30,7 @@
 #include "public/game/shared/csgo/protobuf/cstrike15_usermessages.pb.h"
 #include "public/game/shared/csgo/protobuf/cstrike15_usermessage_helpers.h"
 
-CUserMessageImplementation::CUserMessageImplementation( const IRecipientFilter &recipient_filter, const char *message_name ) :
+CUserMessageImplementation::CUserMessageImplementation( const CMRecipientFilter &recipient_filter, const char *message_name ) :
 	IUsermessageImplementationBase(recipient_filter, message_name),
 	m_message(NULL)
 {
@@ -47,7 +47,7 @@ void CUserMessageImplementation::send_message_internal()
 {
 	if (m_message != NULL  && m_message_index != -1)
 	{
-		engine->SendUserMessage(const_cast<IRecipientFilter&>(m_recipient_filter), m_message_index, *m_message);
+		engine->SendUserMessage(const_cast<CMRecipientFilter&>(m_recipient_filter), m_message_index, *m_message);
 	}
 	else
 	{
@@ -64,7 +64,10 @@ void CUserMessageImplementation::set_bool( const char *field_name, bool field_va
 	}
 	else
 	{
-		set_typed_value<bool, bool>(&google::protobuf::Reflection::SetRepeatedBool, field_name, field_value, index);
+		set_typed_value<bool, bool>(
+			&google::protobuf::Reflection::SetRepeatedBool, 
+			&google::protobuf::Reflection::AddBool, 
+			field_name, field_value, false, index);
 	}
 }
 
@@ -76,7 +79,10 @@ void CUserMessageImplementation::set_char( const char *field_name, char field_va
 	}
 	else
 	{
-		set_typed_value<char, google::protobuf::int32>(&google::protobuf::Reflection::SetRepeatedInt32, field_name, field_value, index);
+		set_typed_value<char, google::protobuf::int32>(
+			&google::protobuf::Reflection::SetRepeatedInt32, 
+			&google::protobuf::Reflection::AddInt32, 
+			field_name, field_value, 0, index);
 	}
 }
 
@@ -88,7 +94,10 @@ void CUserMessageImplementation::set_byte( const char *field_name, unsigned char
 	}
 	else
 	{
-		set_typed_value<unsigned char, google::protobuf::int32>(&google::protobuf::Reflection::SetRepeatedInt32, field_name, field_value, index);
+		set_typed_value<unsigned char, google::protobuf::int32>(
+			&google::protobuf::Reflection::SetRepeatedInt32, 
+			&google::protobuf::Reflection::AddInt32, 
+			field_name, field_value, 0, index);
 	}
 }
 
@@ -100,7 +109,10 @@ void CUserMessageImplementation::set_short( const char *field_name, signed short
 	}
 	else
 	{
-		set_typed_value<signed short, google::protobuf::int32>(&google::protobuf::Reflection::SetRepeatedInt32, field_name, field_value, index);
+		set_typed_value<signed short, google::protobuf::int32>(
+			&google::protobuf::Reflection::SetRepeatedInt32, 
+			&google::protobuf::Reflection::AddInt32, 
+			field_name, field_value, 0, index);
 	}
 }
 
@@ -108,11 +120,14 @@ void CUserMessageImplementation::set_long( const char *field_name, signed long f
 {
 	if (index == -1)
 	{
-		set_typed_value<signed short, google::protobuf::int32>(&google::protobuf::Reflection::SetInt32, field_name, field_value);
+		set_typed_value<signed long, google::protobuf::int32>(&google::protobuf::Reflection::SetInt32, field_name, field_value);
 	}
 	else
 	{
-		set_typed_value<signed short, google::protobuf::int32>(&google::protobuf::Reflection::SetRepeatedInt32, field_name, field_value, index);
+		set_typed_value<signed long, google::protobuf::int32>(
+			&google::protobuf::Reflection::SetRepeatedInt32, 
+			&google::protobuf::Reflection::AddInt32, 
+			field_name, field_value, 0, index);
 	}
 }
 
@@ -124,7 +139,10 @@ void CUserMessageImplementation::set_float( const char *field_name, float field_
 	}
 	else
 	{
-		set_typed_value<float, float>(&google::protobuf::Reflection::SetRepeatedFloat, field_name, field_value, index);
+		set_typed_value<float, float>(
+			&google::protobuf::Reflection::SetRepeatedFloat, 
+			&google::protobuf::Reflection::AddFloat, 
+			field_name, field_value, 0.0f, index);
 	}
 }
 
@@ -141,6 +159,9 @@ void CUserMessageImplementation::set_string( const char *field_name, const char 
 	}
 	else
 	{
-		set_typed_value<const char *, const std::string &>(&google::protobuf::Reflection::SetRepeatedString, field_name, field_value, index);
+		set_typed_value<const char *, const std::string &>(
+			&google::protobuf::Reflection::SetRepeatedString, 
+			&google::protobuf::Reflection::AddString, 
+			field_name, field_value, "", index);
 	}
 }
