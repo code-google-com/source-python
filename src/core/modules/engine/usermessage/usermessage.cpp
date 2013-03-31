@@ -26,7 +26,7 @@
 
 #include "usermessage.h"
 
-CUserMessage::CUserMessage(const IRecipientFilter &recipient_filter, const char *message_name ) :
+CUserMessage::CUserMessage(const CMRecipientFilter &recipient_filter, const char *message_name ) :
 	CUserMessageImplementation(recipient_filter, message_name),
 	m_sent(false)
 {
@@ -62,7 +62,47 @@ const int CUserMessage::get_message_index() const
 	return m_message_index;
 }
 
-const IRecipientFilter & CUserMessage::get_recipient_filter() const
+const CMRecipientFilter & CUserMessage::get_recipient_filter() const
 {
 	return m_recipient_filter;
+}
+
+void CUserMessage::set_char( const char *field_name, char field_value, int index/*=-1*/ )
+{
+	CUserMessageImplementation::set_char(field_name, field_value, index);
+}
+
+void CUserMessage::set_byte( const char *field_name, unsigned char field_value, int index/*=-1*/ )
+{
+	CUserMessageImplementation::set_byte(field_name, field_value, index);
+}
+
+void CUserMessage::set_short( const char *field_name, signed short field_value, int index/*=-1*/ )
+{
+	CUserMessageImplementation::set_short(field_name, field_value, index);
+}
+
+void CUserMessage::set_long( const char *field_name, signed long field_value, int index/*=-1*/ )
+{
+	CUserMessageImplementation::set_long(field_name, field_value, index);
+}
+
+void CUserMessage::set_float( const char *field_name, float field_value, int index/*=-1*/ )
+{
+	CUserMessageImplementation::set_float(field_name, field_value, index);
+}
+
+void CUserMessage::set_bool( const char *field_name, bool field_value, int index/*=-1*/ )
+{
+	CUserMessageImplementation::set_bool(field_name, field_value, index);
+}
+
+void CUserMessage::set_buffer( const char *field_name, void *buffer, unsigned int num_bytes, int index/*=-1*/ )
+{
+	CUserMessageImplementation::set_buffer(field_name, buffer, num_bytes, index);
+}
+
+void CUserMessage::set_string( const char *field_name, const char *field_value, int index/*=-1*/ )
+{
+	CUserMessageImplementation::set_string(field_name, field_value, index);
 }

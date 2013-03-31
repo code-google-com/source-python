@@ -148,7 +148,7 @@ public:
 
 	virtual void set_area_portal_state( int portalNumber, int isOpen );
 
-	virtual void playback_temp_entity( IRecipientFilter& filter, float delay, const void *pSender, const SendTable *pST, int classID  );
+	virtual void playback_temp_entity( CMRecipientFilter& filter, float delay, const void *pSender, const SendTable *pST, int classID  );
 	
 	virtual int check_head_node_visible( int nodenum, const byte *pvs, int vissize );
 	virtual int	check_areas_connected( int area1, int area2 );
