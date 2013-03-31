@@ -45,15 +45,16 @@ public:
 
 	// Pure-virtual methods which must be inherited and overwritten in the inherited
 	// classes
-	virtual void set_char(const char *field_name, char field_value) = 0;
-	virtual void set_byte(const char *field_name, unsigned char field_value) = 0;
-	virtual void set_short(const char *field_name, signed short field_value) = 0;
-	virtual void set_long(const char *field_name, signed long field_value) = 0;
-	virtual void set_float(const char *field_name, float field_value) = 0;
+	virtual void set_char(const char *field_name, char field_value, int index=-1) = 0;
+	virtual void set_byte(const char *field_name, unsigned char field_value, int index=-1) = 0;
+	virtual void set_short(const char *field_name, signed short field_value, int index=-1) = 0;
+	virtual void set_long(const char *field_name, signed long field_value, int index=-1) = 0;
+	virtual void set_float(const char *field_name, float field_value, int index=-1) = 0;
+	virtual void set_bool(const char *field_name, bool field_value, int index=-1) = 0;
 
 	// Unknown sized buffers
-	virtual void set_buffer(const char *field_name, void *buffer, unsigned int num_bytes) = 0;
-	virtual void set_string(const char *field_name, const char *field_value) = 0;
+	virtual void set_buffer(const char *field_name, void *buffer, unsigned int num_bytes, int index=-1) = 0;
+	virtual void set_string(const char *field_name, const char *field_value, int index=-1) = 0;
 
 protected:
 	virtual void set_message_index() = 0;
@@ -62,7 +63,7 @@ protected:
 protected:
 	const char *m_message_name;
 	const IRecipientFilter &m_recipient_filter;
-	unsigned int m_message_index;
+	int m_message_index;
 };
 
 #endif // _USERMESSAGE_IMPLEMENTATION_BASE_H_

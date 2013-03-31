@@ -40,13 +40,13 @@ Set(CMAKE_CXX_FLAGS_RELEASE "/D_NDEBUG /MD /wd4005 /MP")
 # delay loaded in.
 # ------------------------------------------------------------------
 Set_Target_Properties(source-python PROPERTIES
-    LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
-    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
+    LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMTD.lib /NODEFAULTLIB:LIBCMT.lib /NODEFAULTLIB:LIBCPMTD.lib"
+    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCMT.lib  /NODEFAULTLIB:LIBCPMT.lib"
 )
 
 Set_Target_Properties(core PROPERTIES
-    LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
-    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMT.lib"
+    LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMTD.lib /NODEFAULTLIB:LIBCMT.lib /NODEFAULTLIB:LIBCPMTD.lib"
+    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCMT.lib /NODEFAULTLIB:LIBCPMT.lib"
 )
 
 # ------------------------------------------------------------------
@@ -69,7 +69,6 @@ If( SOURCE_ENGINE GREATER 2 )
 	Set(SOURCEPYTHON_LINK_LIBRARIES
 		${SOURCEPYTHON_LINK_LIBRARIES}
 		${SOURCESDK_LIB}/public/interfaces.lib
-        ${SOURCESDK_LIB}/win32/release/vs2010/libprotobuf.lib
 	)
 Endif()
 
@@ -81,6 +80,13 @@ Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
     debug ${BOOSTSDK_LIB}/libboost_python-vc100-mt-gyd-1_53.lib
 )
 
+If( SOURCE_ENGINE GREATER 2 )
+    SET(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
+        ${SOURCEPYTHON_LINK_LIBRARIES_DEBUG}
+        debug ${SOURCESDK_LIB}/win32/debug/vs2010/libprotobuf.lib
+    )
+Endif()
+
 # ------------------------------------------------------------------
 # Release link libraries
 # ------------------------------------------------------------------
@@ -88,3 +94,10 @@ Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
     optimized ${PYTHONSDK_LIB}/python33.lib 
     optimized ${BOOSTSDK_LIB}/libboost_python-vc100-mt-1_53.lib
 )
+
+If( SOURCE_ENGINE GREATER 2 )
+    SET(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
+        ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE}
+        optimized ${SOURCESDK_LIB}/win32/release/vs2010/libprotobuf.lib
+    )
+Endif()
