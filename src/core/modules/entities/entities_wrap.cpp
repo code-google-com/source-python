@@ -270,7 +270,7 @@ CSendProp::CSendProp( edict_t* edict, const char* prop_name )
 	}
 }
 
-SendPropType CSendProp::get_prop_type()
+SendPropType CSendProp::get_type()
 {
 	if( m_send_prop )
 	{
@@ -280,9 +280,9 @@ SendPropType CSendProp::get_prop_type()
 	return (SendPropType)-1;
 }
 
-void CSendProp::set_prop_int( int value )
+void CSendProp::set_int( int value )
 {
-	if( m_send_prop && (get_prop_type() == DPT_Int) )
+	if( m_send_prop && (get_type() == DPT_Int) )
 	{
 		// Set the value.
 		*(int *)((char *)m_base_entity + m_prop_offset) = value;
@@ -292,9 +292,9 @@ void CSendProp::set_prop_int( int value )
 	}
 }
 
-void CSendProp::set_prop_float( float value )
+void CSendProp::set_float( float value )
 {
-	if( m_send_prop && (get_prop_type() == DPT_Float) )
+	if( m_send_prop && (get_type() == DPT_Float) )
 	{
 		// Set the value.
 		*(float *)((char *)m_base_entity + m_prop_offset) = value;
@@ -304,9 +304,9 @@ void CSendProp::set_prop_float( float value )
 	}
 }
 
-void CSendProp::set_prop_string( const char* value )
+void CSendProp::set_string( const char* value )
 {
-	if( m_send_prop && (get_prop_type() == DPT_String) )
+	if( m_send_prop && (get_type() == DPT_String) )
 	{
 		// Get the address of the string buffer.
 		char* data_buffer = (char *)((char *)m_base_entity + m_prop_offset);
@@ -319,9 +319,9 @@ void CSendProp::set_prop_string( const char* value )
 	}
 }
 
-int CSendProp::get_prop_int()
+int CSendProp::get_int()
 {
-	if( m_send_prop && (get_prop_type() == DPT_Int) )
+	if( m_send_prop && (get_type() == DPT_Int) )
 	{
 		return *(int *)((char *)m_base_entity + m_prop_offset);
 	}
@@ -329,9 +329,9 @@ int CSendProp::get_prop_int()
 	return -1;
 }
 
-float CSendProp::get_prop_float()
+float CSendProp::get_float()
 {
-	if( m_send_prop && (get_prop_type() == DPT_Float) )
+	if( m_send_prop && (get_type() == DPT_Float) )
 	{
 		return *(float *)((char *)m_base_entity + m_prop_offset);
 	}
@@ -339,9 +339,9 @@ float CSendProp::get_prop_float()
 	return -1.0f;
 }
 
-const char* CSendProp::get_prop_string()
+const char* CSendProp::get_string()
 {
-	if( m_send_prop && (get_prop_type() == DPT_String) )
+	if( m_send_prop && (get_type() == DPT_String) )
 	{
 		return (const char *)((char *)m_base_entity + m_prop_offset);
 	}
