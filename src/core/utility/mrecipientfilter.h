@@ -53,6 +53,8 @@ public:
 	virtual int GetRecipientIndex( int slot ) const;
 	void AddAllPlayers();
 	void AddRecipient(int iPlayer);
+	void RemoveRecipient(int iPlayer);
+	void RemoveAllPlayers();
 
 private:
 	CUtlVector<int> m_Recipients;

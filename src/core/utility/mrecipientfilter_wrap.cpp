@@ -67,3 +67,13 @@ void CMRecipientFilter::add_recipient( int iPlayer )
 {
 	AddRecipient(iPlayer);
 }
+
+void CMRecipientFilter::remove_all_players()
+{
+	RemoveAllPlayers();
+}
+
+void CMRecipientFilter::remove_recipient( int iPlayer )
+{
+	RemoveRecipient(iPlayer);
+}

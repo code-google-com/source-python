@@ -120,3 +120,13 @@ void MRecipientFilter::AddRecipient(int iPlayer)
 
 	m_Recipients.AddToTail(iPlayer);
 }
+
+void MRecipientFilter::RemoveRecipient( int iPlayer )
+{
+	m_Recipients.FindAndFastRemove(iPlayer);
+}
+
+void MRecipientFilter::RemoveAllPlayers()
+{
+	m_Recipients.RemoveAll();
+}

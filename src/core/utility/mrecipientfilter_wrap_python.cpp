@@ -84,5 +84,16 @@ void export_mrecipientfilter_interface()
 			args("iPlayer")
 		)
 
+		CLASS_METHOD(CMRecipientFilter,
+			remove_all_players,
+			"Removes all the players on the server from the filter"
+		)
+
+		CLASS_METHOD(CMRecipientFilter,
+			remove_recipient,
+			"Removes the index of the player from the filter",
+			args("iPlayer")
+		)
+
 	BOOST_END_CLASS()
 }

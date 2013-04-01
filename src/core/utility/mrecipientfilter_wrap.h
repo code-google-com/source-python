@@ -45,6 +45,8 @@ public:
 	virtual int get_recipient_index( int slot ) const;
 	void add_all_players();
 	void add_recipient(int iPlayer);
+	void remove_all_players();
+	void remove_recipient(int iPlayer);
 };
 
 #endif // __MRECIPIENT_FILTER_WRAP_H__
