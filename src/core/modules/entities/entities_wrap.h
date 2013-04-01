@@ -91,15 +91,15 @@ class CSendProp
 public:
 	CSendProp( edict_t* edict, const char* prop_name );
 
-	SendPropType	get_prop_type();
+	SendPropType	get_type();
 
-	void			set_prop_int( int value );
-	void			set_prop_float( float value );
-	void			set_prop_string( const char* value );
+	void			set_int( int value );
+	void			set_float( float value );
+	void			set_string( const char* value );
 
-	int				get_prop_int();
-	float			get_prop_float();
-	const char*		get_prop_string();
+	int				get_int();
+	float			get_float();
+	const char*		get_string();
 
 private:
 	// Offset from the beginning of the network table that
