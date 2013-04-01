@@ -212,40 +212,40 @@ void export_send_prop()
 	BOOST_ABSTRACT_CLASS(CSendProp)
 
 		CLASS_METHOD(CSendProp,
-			get_prop_type,
+			get_type,
 			"Returns the type of this prop."
 		)
 
 		CLASS_METHOD(CSendProp,
-			set_prop_int,
+			set_int,
 			"Sets this prop's integer value.",
 			args("value")
 		)
 
 		CLASS_METHOD(CSendProp,
-			set_prop_float,
+			set_float,
 			"Sets this prop's floating point value.",
 			args("value")
 		)
 
 		CLASS_METHOD(CSendProp,
-			set_prop_string,
+			set_string,
 			"Sets this prop's string value.",
 			args("value")
 		)
 
 		CLASS_METHOD(CSendProp,
-			get_prop_int,
+			get_int,
 			"Returns this prop's value as an integer."
 		)
 
 		CLASS_METHOD(CSendProp,
-			get_prop_float,
+			get_float,
 			"Returns this prop's floating point value."
 		)
 		
 		CLASS_METHOD(CSendProp,
-			get_prop_string,
+			get_string,
 			"Returns this prop's string value."
 		)
 

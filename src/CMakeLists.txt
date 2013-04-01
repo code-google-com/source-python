@@ -4,9 +4,10 @@
 CMake_Minimum_Required(VERSION 2.8)
 
 # ------------------------------------------------------------------
-# Includes the CMake file for the current game.
+# Makefile includes.
 # ------------------------------------------------------------------
 include("makefiles/game/${GAME}.cmake")
+include("makefiles/shared.cmake")
 
 # ------------------------------------------------------------------
 # Loader
@@ -169,6 +170,19 @@ Set(SOURCEPYTHON_ENTITY_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Keyvalues module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_KEYVALUES_MODULE_HEADERS
+    core/modules/keyvalues/keyvalues_wrap.h
+)
+
+Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
+    core/modules/keyvalues/keyvalues_wrap.cpp
+    core/modules/keyvalues/keyvalues_wrap_python.cpp
+    ${SOURCESDK}/tier1/KeyValues.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -180,6 +194,9 @@ Set(SOURCEPYTHON_MODULE_FILES
     
     ${SOURCEPYTHON_ENTITY_MODULE_HEADERS}
     ${SOURCEPYTHON_ENTITY_MODULE_SOURCES}
+    
+    ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS}
+    ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -194,6 +211,7 @@ Source_Group("Header Files\\Module\\Engine"	                FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons" 		                FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -204,6 +222,7 @@ Source_Group("Source Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_E
 Source_Group("Source Files\\Module\\Engine\\Usermessages\\${GAME}"	FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
 Source_Group("Source Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
