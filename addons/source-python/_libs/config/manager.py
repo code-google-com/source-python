@@ -431,76 +431,9 @@ class ConfigManager(object):
         return _old_config
 
     def _get_lines(self, lines, indention=0):
-        '''Yields lines that are less than the file's max line length'''
-
-        # Get the first line and the remainder
-        first_line, remainder = self._get_line(
-            '//' + ' ' * (self.indention - 2) + lines)
-
-        # Does the line exist?
-        if first_line.strip('/ '):
-
-            # Yield the line
-            yield first_line + '\n'
-
-        # Is there no text in the line?
-        else:
-
-            # Yield an empty line
-            yield '\n'
-
-        # Use "while" statement to yield all lines less than file's max length
-        while remainder:
-
-            # Get the current line and the remainder
-            current_line, remainder = self._get_line(
-                '//' + ' ' * (self.indention if not indention
-                else indention - 2) + remainder)
-
-            # Does the line exist?
-            if current_line.strip('/ '):
-
-                # Yield the line
-                yield current_line + '\n'
-
-            # Is there not text in the line?
-            else:
-
-                # Yield an empty line
-                yield '\n'
-
-    def _get_line(self, line):
-        '''Returns a line with less than the
-            file's max length and the remainder'''
-
-        # Get the first line
-        start = the_line = line.splitlines()[0]
-
-        # Get the remainder
-        remainder = line.splitlines()[1:]
-
-        # Is the first line less than the file's max length?
-        if len(start) < self.max_line_length:
-
-            # Return the line and the remainder
-            return start, '\n'.join(remainder)
-
-        start = start[:self.max_line_length]
-
-        # Use "while" statement to find a "space" to split from
-        while start[~0] != ' ' and start:
-
-            # Move the end of the line down one spot
-            start = start[:~0]
-
-        # Is there any text in the line?
-        if not start.strip(' '):
-
-            # If not, set the line to the original line
-            start = the_line
-
-        # Get the remainder
-        remainder = line.split(start, 1)[1]
-
-        # Return the line and the remainder
-        return start, remainder
+        '''Yields a list of lines that are
+            less than the file's max line length'''
+        return textwrap.TextWrapper(
+            self.max_line_length, '//' + ' ' * (self.indention - 2),
+            '//' + ' ' * (self.indention if indention is None
+                else indention - 2)).wrap(lines)
