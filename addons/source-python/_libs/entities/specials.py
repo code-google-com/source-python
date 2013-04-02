@@ -54,18 +54,8 @@ class _EntitySpecials(object):
             # Get the player's active weapon
             weapon_index = index_from_inthandle(self.active_weapon)
 
-        # Use try/except in case of an invalid weapon index
-        try:
-
-            # Get the weapon's BaseEntity instance
-            weapon = BaseEntity(weapon_index, 'weapon')
-
-        # Was an error encountered?
-        except:
-
-            # Raise an error
-            raise WeaponIndexError(
-                'Invalid index "%s" for weapon' % weapon_index)
+        # Get the weapon's BaseEntity instance
+        weapon = BaseEntity(weapon_index)
 
         # Get the victim's BaseEntity instance.
         victim = BaseEntity(victim_index)

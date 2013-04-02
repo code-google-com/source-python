@@ -4,8 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Binutils
-from Source import Engine
+#from Source import Binutils
+from Source import entity_c
 #   Entities
 from entities.functions import Functions
 from entities.keyvalues import KeyValues
@@ -29,13 +29,13 @@ class BaseEntity(_EntitySpecials):
             is of the correct entity type and add the index attribute'''
 
         # Get the given indexes edict
-        edict = Engine.PEntityOfEntIndex(index)
+        edict = entity_c.CEdict(index)
 
         # Is the edict valid?
-        if edict is None:
+        if edict.is_free() or not edict.is_valid():
 
             # If not raise an error
-            raise ValueError('Index "%s" is not a proper index' % index)
+            raise ValueError('Index "%s" is not a proper entity index' % index)
 
         # Create the object
         self = object.__new__(cls)
@@ -98,20 +98,20 @@ class BaseEntity(_EntitySpecials):
     def _get_property(self, item):
         '''Gets the value of the given property'''
 
+        # Get the property's instance
+        prop = self.edict.get_prop(self.properties[item].prop)
+
         # Get the property's type
         prop_type = self.properties[item].type
 
         # Is the property's type a known type?
-        if not hasattr(self.edict, 'GetProp%s' % prop_type):
+        if not hasattr(prop, 'get_%s' % prop_type):
 
             # If not a proper type, raise an error
             raise TypeError('Invalid property type "%s"' % prop_type)
 
-        # Get the property's prop
-        prop = self.properties[item].prop
-
         # Get the property's value
-        value = getattr(self.edict, 'GetProp%s' % prop_type)(prop)
+        value = getattr(prop, 'get_%s' % prop_type)()
 
         # Is the property a True/False property?
         if 'True' in self.properties[item]:
@@ -215,17 +215,17 @@ class BaseEntity(_EntitySpecials):
     def _set_property(self, item, value):
         '''Sets the value of the given propery'''
 
+        # Get the property's instance
+        prop = self.edict.get_prop(self.properties[item].prop)
+
         # Get the property's type
         prop_type = self.properties[item].type
 
         # Is the property's type a known type?
-        if not hasattr(self.edict, 'SetProp%s' % prop_type):
+        if not hasattr(prop, 'set_%s' % prop_type):
 
             # Raise an error
             raise TypeError('Invalid property type "%s"' % prop_type)
-
-        # Get the property's prop
-        prop = self.properties[item].prop
 
         # Is the property a True/False property?
         if 'True' in self.properties[item]:
@@ -234,7 +234,7 @@ class BaseEntity(_EntitySpecials):
             value = self.properties[item][str(bool(value))]
 
         # Set the property's value
-        getattr(self.edict, 'SetProp%s' % prop_type)(prop, value)
+        getattr(prop, 'set_%s' % prop_type)(value)
 
     def _set_keyvalue(self, item, value):
         '''Sets the value of the given keyvalue'''

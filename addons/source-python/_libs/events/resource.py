@@ -8,7 +8,6 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from Source import event_c
 from paths import EVENT_PATH
 #   Events
 from events.custom import CustomEvent

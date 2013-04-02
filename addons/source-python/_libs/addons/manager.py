@@ -146,8 +146,20 @@ class _AddonManagementDictionary(OrderedDict):
             # If not, simply return
             return
 
+        # Is the addon in the dictionary?
+        if addon_name in self:
+
+            # Get the addon's instance
+            instance = self[addon_name]._addon
+
+        # Is the addon not in the dictionary?
+        else:
+
+            # Get the addon's instance
+            instance = __import__(addon_name + '.' + addon_name)
+
         # Remove all instances of AutoUnload classes from the addon
-        self._unload_instances(self[addon_name]._addon, addon_name)
+        self._unload_instances(instance, addon_name)
 
         # Loop through all loaded modules
         for module in list(sys.modules):
