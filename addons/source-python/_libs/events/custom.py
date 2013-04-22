@@ -8,7 +8,7 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from Source import event_c
+from event_c import CGameEvent
 
 
 # =============================================================================
@@ -85,7 +85,7 @@ class CustomEvent(metaclass=_EventMeta):
         '''Fires the event with the stored variable values'''
 
         # Get the event's instance
-        event = event_c.CGameEvent(self.name, True)
+        event = CGameEvent(self.name, True)
 
         # Loop through the event's variables
         for variable in self._odict:

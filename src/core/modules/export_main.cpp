@@ -47,14 +47,6 @@ SourcePythonModule_t g_SourcePythonModules[MAX_SOURCEPYTHON_MODULES];
 //---------------------------------------------------------------------------------
 int CSPModule::nextFreeModule = 0;
 
-//---------------------------------------------------------------------------------
-// The ES module. Never remove this function as we need it in order to be able
-// to execute 'import sp; from sp import event'.
-//---------------------------------------------------------------------------------
-BOOST_PYTHON_MODULE(Source)
-{
-
-}
 
 //---------------------------------------------------------------------------------
 // Initializes all python modules
@@ -62,12 +54,10 @@ BOOST_PYTHON_MODULE(Source)
 void modulsp_init( void )
 {
 	BEGIN_BOOST_PY()
-		// Get the Source.Python module
-		object spmodule(borrowed(PyImport_AddModule("Source")));
-		// object spmodule(g_PythonManager.GetSP());
 
-		// Now iterate through all submodules and add them.
+		// Now iterate through all modules and add them.
 		for( int i = 0; i < MAX_SOURCEPYTHON_MODULES; i++ ) {
+
 			// Break out if we are at the end.
 			if( !g_SourcePythonModules[i].szName ) {
 				return;
@@ -77,22 +67,16 @@ void modulsp_init( void )
 			char* szModuleName = g_SourcePythonModules[i].szName;
 
 			// Debug info.
-			DevMsg(1, "[SP] Initializing %s submodule\n", szModuleName);
+			DevMsg(1, "[SP] Initializing %s module\n", szModuleName);
 
 			// Set the new module as the current scope.
 			object newmodule(borrowed(PyImport_AddModule(szModuleName)));
 
-			// Add the module to the es module.
-			spmodule.attr(szModuleName) = newmodule;
-
-			// We're now working with the submodule.
+			// We're now working with the module.
 			scope moduleScope = newmodule;
 
 			// Run the module's init function.
 			g_SourcePythonModules[i].initFunc();
-
-			// Add the module to the import table.
-			// PyImport_AppendInittab(g_SourcePythonModules[i].szName, g_SourcePythonModules[i].initFunc);
 		}
 	END_BOOST_PY_NORET()
 }
