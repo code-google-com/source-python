@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import event_c
+from event_c import CGameEventListener
 from excepthooks import ExceptHooks
 
 
@@ -21,7 +21,7 @@ class _EventListener(list):
         self.event = event
 
         # Store the listener instance
-        self.listener = event_c.CGameEventListener()
+        self.listener = CGameEventListener()
 
         # Set the listener's fire_game_event method to the instance's method
         self.listener.fire_game_event = self.fire_game_event
