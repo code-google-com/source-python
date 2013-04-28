@@ -77,3 +77,8 @@ void CMRecipientFilter::remove_recipient( int iPlayer )
 {
 	RemoveRecipient(iPlayer);
 }
+
+bool CMRecipientFilter::has_recipient( int iPlayer )
+{
+	return HasRecipient(iPlayer);
+}

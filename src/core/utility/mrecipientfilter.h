@@ -55,6 +55,7 @@ public:
 	void AddRecipient(int iPlayer);
 	void RemoveRecipient(int iPlayer);
 	void RemoveAllPlayers();
+	bool HasRecipient(int iPlayer);
 
 private:
 	CUtlVector<int> m_Recipients;

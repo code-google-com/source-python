@@ -118,6 +118,13 @@ void MRecipientFilter::AddRecipient(int iPlayer)
 	if(!pPlayer || pPlayer->IsFree())
 		return;
 
+	// Get and compare the classnames. Skip non-player
+	// entities.
+	const char* classname = pPlayer->GetClassName();
+	if( strcmp(classname, "player") != 0 ) {
+		return;
+	}
+
 	m_Recipients.AddToTail(iPlayer);
 }
 
@@ -129,4 +136,9 @@ void MRecipientFilter::RemoveRecipient( int iPlayer )
 void MRecipientFilter::RemoveAllPlayers()
 {
 	m_Recipients.RemoveAll();
+}
+
+bool MRecipientFilter::HasRecipient( int iPlayer )
+{
+	return m_Recipients.HasElement(iPlayer);
 }
