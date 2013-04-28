@@ -95,5 +95,11 @@ void export_mrecipientfilter_interface()
 			args("iPlayer")
 		)
 
+		CLASS_METHOD(CMRecipientFilter,
+			has_recipient,
+			"Returns true if the given index is in the recipient, false otherwise.",
+			args("iPlayer")
+		)
+		
 	BOOST_END_CLASS()
 }
