@@ -62,16 +62,17 @@ public:
 	// For engine use.
 	CEdict( edict_t* edict_ptr );
 
-	virtual int							area_num() const;
-	virtual const char*					get_class_name() const;
+	virtual int						area_num() const;
+	virtual const char*				get_class_name() const;
 
 	virtual bool						is_free() const;
-	virtual	void						set_free();
+	virtual	void					set_free();
 	virtual void						clear_free();
 
 	// Helper methods.
 	virtual bool						is_valid() const;
-	virtual int							get_index() const;
+	virtual int						get_index() const;
+	virtual CServerNetworkable*		get_networkable() const;
 
 	// Send property methods.
 	virtual CSendProp*					get_prop( const char* prop_name ) const;
@@ -99,7 +100,7 @@ public:
 
 	int				get_int();
 	float			get_float();
-	const char*		get_string();
+	const char*	get_string();
 
 private:
 	// Offset from the beginning of the network table that
@@ -151,6 +152,22 @@ private:
 };
 
 //---------------------------------------------------------------------------------
+// IServerNetworkable wrapper class.
+//---------------------------------------------------------------------------------
+class CServerNetworkable
+{
+public:
+	CServerNetworkable( IServerNetworkable* server_networkable );
+
+	CHandleEntity* get_entity_handle();
+	CEdict* get_edict();
+	virtual const char* get_class_name();
+
+private:
+	IServerNetworkable* m_server_networkable;
+};
+
+//---------------------------------------------------------------------------------
 // IServerEntity wrapper class.
 //---------------------------------------------------------------------------------
 class CServerEntity
@@ -159,8 +176,8 @@ public:
 	CServerEntity( IServerEntity* server_entity );
 
 	virtual int			get_model_index() const;
-	virtual void		set_model_index( int index );
-	virtual const char* get_model_name();
+	virtual void			set_model_index( int index );
+	virtual const char*	get_model_name();
 
 private:
 	IServerEntity* m_server_entity;

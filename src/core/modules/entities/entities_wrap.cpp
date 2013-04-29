@@ -143,6 +143,13 @@ int CEdict::get_index() const
 	return m_index;
 }
 
+CServerNetworkable* CEdict::get_networkable() const
+{
+	IServerNetworkable* networkable = m_edict_ptr->GetNetworkable();
+	CServerNetworkable* new_networkable = new CServerNetworkable(networkable);
+	return new_networkable;
+}
+
 CSendProp* CEdict::get_prop( const char* prop_name ) const
 {
 	return new CSendProp(m_edict_ptr, prop_name);
@@ -178,6 +185,33 @@ int CBaseEntityHandle::get_serial_number() const
 int CBaseEntityHandle::to_int() const
 {
 	return m_base_handle.ToInt();
+}
+
+//---------------------------------------------------------------------------------
+// CServerNetworkable code.
+//---------------------------------------------------------------------------------
+CServerNetworkable::CServerNetworkable( IServerNetworkable* server_networkable )
+{
+	m_server_networkable = server_networkable;
+}
+
+CHandleEntity* CServerNetworkable::get_entity_handle()
+{
+	IHandleEntity* handle = m_server_networkable->GetEntityHandle();
+	CHandleEntity* new_handle = new CHandleEntity(handle);
+	return new_handle;
+}
+
+CEdict* CServerNetworkable::get_edict()
+{
+	edict_t* edict = m_server_networkable->GetEdict();
+	CEdict* new_edict = new CEdict(edict);
+	return new_edict;
+}
+
+const char* CServerNetworkable::get_class_name()
+{
+	return m_server_networkable->GetClassName();
 }
 
 //---------------------------------------------------------------------------------
