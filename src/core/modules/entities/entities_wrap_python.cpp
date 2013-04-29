@@ -42,6 +42,7 @@ void export_base_entity_handle();
 void export_handle_entity();
 void export_server_unknown();
 void export_server_entity();
+void export_server_networkable();
 void export_edict();
 void export_send_prop();
 
@@ -54,6 +55,7 @@ DECLARE_SP_MODULE(entity_c)
 	export_handle_entity();
 	export_server_unknown();
 	export_server_entity();
+	export_server_networkable();
 	export_send_prop();
 	export_edict();
 }
@@ -136,6 +138,33 @@ void export_server_entity()
 }
 
 //---------------------------------------------------------------------------------
+// Exports CServerNetworkable.
+//---------------------------------------------------------------------------------
+void export_server_networkable()
+{
+	BOOST_ABSTRACT_CLASS(CServerNetworkable)
+
+		CLASS_METHOD(CServerNetworkable,
+			get_entity_handle,
+			"Returns the CHandleEntity instance of this entity.",
+			manage_new_object_policy()
+		)
+
+		CLASS_METHOD(CServerNetworkable,
+			get_edict,
+			"Returns the CEdict instance of this entity.",
+			manage_new_object_policy()
+		)
+
+		CLASS_METHOD(CServerNetworkable,
+			get_class_name,
+			"Returns the class name of this entity."
+		)
+
+	BOOST_END_CLASS()
+}
+
+//---------------------------------------------------------------------------------
 // Exports CEdict.
 //---------------------------------------------------------------------------------
 void export_edict()
@@ -176,6 +205,12 @@ void export_edict()
 		CLASS_METHOD(CEdict,
 			get_index,
 			"Returns the index of this entity."
+		)
+
+		CLASS_METHOD(CEdict,
+			get_networkable,
+			"Returns the CServerNetworkable instance for this entity.",
+			manage_new_object_policy()
 		)
 
 		CLASS_METHOD(CEdict,
