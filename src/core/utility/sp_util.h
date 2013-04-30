@@ -182,7 +182,7 @@ inline unsigned int IndexOfIntHandle(int iHandle)
 //---------------------------------------------------------------------------------
 // Returns the index of a pointer
 //---------------------------------------------------------------------------------
-inline unsigned int IndexOfPointer(int iPointer)
+inline unsigned int index_of_pointer(int iPointer)
 {
 	IServerUnknown *pUnknown = (IServerUnknown *)iPointer;
 	IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();

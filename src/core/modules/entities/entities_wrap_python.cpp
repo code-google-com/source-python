@@ -29,6 +29,7 @@
 //---------------------------------------------------------------------------------
 #include "entities_wrap.h"
 #include "modules/export_main.h"
+#include "utility/sp_util.h"
 
 //---------------------------------------------------------------------------------
 // Namespaces to use.
@@ -127,6 +128,10 @@ void export_server_unknown()
 		)
 
 	BOOST_END_CLASS()
+
+	BOOST_FUNCTION(index_of_pointer,
+		"Returns the index of the given BaseEntity pointer"
+	);
 }
 
 //---------------------------------------------------------------------------------
