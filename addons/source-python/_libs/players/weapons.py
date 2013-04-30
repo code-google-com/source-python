@@ -21,17 +21,20 @@ try:
     # Get the game's file's instance
     _game_instance = __import__('players.games.%s' % GAME_NAME, fromlist=[''])
 
+# Was an ImportError encountered?
+except ImportError:
+
+    # Set the game's _GameWeapons class to the basic "object" type
+    _GameWeapons = object
+
+# Was no ImportError encountered?
+else:
+
     # Get the game's _GameWeapons class
     _GameWeapons = _game_instance._GameWeapons
 
     # If the rest was successful, import WeaponClassIter
     from filters.weapons import WeaponClassIter
-
-# Was an error encountered?
-except:
-
-    # Set the game's _GameWeapons class to the basic "object" type
-    _GameWeapons = object
 
 
 # =============================================================================
