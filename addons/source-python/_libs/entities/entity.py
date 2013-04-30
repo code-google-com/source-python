@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 #from Source import Binutils
-from Source import entity_c
+from entity_c import CEdict
 #   Entities
 from entities.functions import Functions
 from entities.keyvalues import KeyValues
@@ -29,7 +29,7 @@ class BaseEntity(_EntitySpecials):
             is of the correct entity type and add the index attribute'''
 
         # Get the given indexes edict
-        edict = entity_c.CEdict(index)
+        edict = CEdict(index)
 
         # Is the edict valid?
         if edict.is_free() or not edict.is_valid():
@@ -330,14 +330,20 @@ class BaseEntity(_EntitySpecials):
         yield self.edict
 
     @property
-    def handle(self):
-        '''Returns the entity's handle instance'''
-        return self.edict.GetNetworkable().GetEntityHandle().GetRefEHandle()
+    def basehandle(self):
+        '''Returns the entity's CBaseEntityHandle instance'''
+        return self.edict.get_networkable(
+            ).get_entity_handle().get_ref_ehandle()
+
+    @property
+    def inthandle(self):
+        '''Returns the entity's integer handle'''
+        return self.basehandle.to_int()
 
     @property
     def classname(self):
         '''Returns the classname of the entity'''
-        return self.edict.GetClassName()
+        return self.edict.get_class_name()
 
     @property
     def properties(self):
@@ -362,4 +368,4 @@ class BaseEntity(_EntitySpecials):
     @property
     def pointer(self):
         '''Returns the entity's pointer'''
-        return self.edict.GetUnknown().GetBaseEntity()
+        return self.edict.get_unknown().get_base_entity()
