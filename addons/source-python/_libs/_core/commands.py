@@ -272,10 +272,11 @@ def _print_credits():
         echo_console('\t' + group + ':')
 
         # Loop through all names in the current group
-        for name in groups[group].values():
+        for name in groups[group]:
 
             # Print the current name
-            echo_console('\t\t' + name.replace('\\t', '\t'))
+            echo_console('\t\t' + name + ' ' * (
+                20 - len(name)) + groups[group][name])
 
         # Print 1 blank line between groups
         echo_console('')
