@@ -108,7 +108,25 @@ void export_handle_entity()
 //---------------------------------------------------------------------------------
 void export_server_unknown()
 {
+	BOOST_ABSTRACT_CLASS(CServerUnknown)
 
+		/*CLASS_METHOD(CServerUnknown,
+			get_collideable,
+			"Returns the ICollideable object for this entity."
+		)*/
+
+		CLASS_METHOD(CServerUnknown,
+			get_networkable,
+			"Returns the CServerNetworkable object for this entity.",
+			manage_new_object_policy()
+		)
+
+		CLASS_METHOD(CServerUnknown,
+			get_base_entity,
+			"Returns the CBasEntity object for this entity."
+		)
+
+	BOOST_END_CLASS()
 }
 
 //---------------------------------------------------------------------------------
@@ -210,6 +228,12 @@ void export_edict()
 		CLASS_METHOD(CEdict,
 			get_networkable,
 			"Returns the CServerNetworkable instance for this entity.",
+			manage_new_object_policy()
+		)
+
+		CLASS_METHOD(CEdict,
+			get_unknown,
+			"Returns the CServerUnknown instance for this entity.",
 			manage_new_object_policy()
 		)
 

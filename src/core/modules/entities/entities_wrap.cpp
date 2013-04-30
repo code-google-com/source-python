@@ -59,12 +59,14 @@ CEdict::CEdict( edict_t* edict_ptr )
 {
 	m_edict_ptr = edict_ptr;
 	m_is_valid = (m_edict_ptr != NULL);
+	m_index = IndexOfEdict(m_edict_ptr);
 }
 
 CEdict::CEdict( int index )
 {
 	m_edict_ptr = PEntityOfEntIndex(index);
 	m_is_valid = (m_edict_ptr != NULL);
+	m_index = index;
 }
 
 CEdict::CEdict( const char* name, bool bExact /* = true */ )
@@ -150,6 +152,13 @@ CServerNetworkable* CEdict::get_networkable() const
 	return new_networkable;
 }
 
+CServerUnknown* CEdict::get_unknown() const
+{
+	IServerUnknown* unknown = m_edict_ptr->GetUnknown();
+	CServerUnknown* new_unknown = new CServerUnknown(unknown);
+	return new_unknown;
+}
+
 CSendProp* CEdict::get_prop( const char* prop_name ) const
 {
 	return new CSendProp(m_edict_ptr, prop_name);
@@ -227,6 +236,31 @@ const CBaseEntityHandle* CHandleEntity::get_ref_ehandle() const
 	const CBaseHandle& handle = m_handle_entity->GetRefEHandle();
 	const CBaseEntityHandle* new_entity_handle = new CBaseEntityHandle(handle);
 	return new_entity_handle;
+}
+
+//---------------------------------------------------------------------------------
+// CServerUnknown code.
+//---------------------------------------------------------------------------------
+CServerUnknown::CServerUnknown( IServerUnknown* server_unknown )
+{
+	m_server_unknown = server_unknown;
+}
+
+/*ICollideable* CServerUnknown::get_collideable()
+{
+	return m_server_unknown->GetCollideable();
+}*/
+
+CServerNetworkable* CServerUnknown::get_networkable()
+{
+	IServerNetworkable* networkable = m_server_unknown->GetNetworkable();
+	CServerNetworkable* new_networkable = new CServerNetworkable(networkable);
+	return new_networkable;
+}
+
+unsigned long CServerUnknown::get_base_entity()
+{
+	return (unsigned long)(m_server_unknown->GetBaseEntity());
 }
 
 //---------------------------------------------------------------------------------
