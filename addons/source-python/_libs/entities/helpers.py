@@ -4,7 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-# from Source import engine_c
+from entity_c import CBaseEntityHandle
+from entity_c import CEdict
+from entity_c import index_of_pointer
 
 
 # =============================================================================
@@ -12,27 +14,27 @@
 # =============================================================================
 def index_from_edict(edict):
     '''Returns an index from the given edict'''
-    return Engine.IndexOfEdict(edict)
+    return edict.get_index()
 
 
 def index_from_basehandle(bhandle):
     '''Returns an index from the given BaseHandle instance'''
-    return bhandle.GetEntryIndex()
+    return bhandle.get_entry_index()
 
 
 def index_from_inthandle(ihandle):
     '''Returns an index from the given handle in int form'''
-    return Engine.IndexOfIntHandle(ihandle)
+    return index_from_basehandle(basehandle_from_inthandle(ihandle))
 
 
 def index_from_pointer(pointer):
     '''Returns an index from the given BaseEntity pointer'''
-    return Engine.IndexOfPointer(pointer)
+    return index_of_pointer(pointer)
 
 
 def edict_from_index(index):
     '''Returns an edict from the given index'''
-    return Engine.PEntityOfEntIndex(index)
+    return CEdict(index)
 
 
 def edict_from_basehandle(bhandle):
@@ -47,7 +49,7 @@ def edict_from_inthandle(ihandle):
 
 def edict_from_pointer(pointer):
     '''Returns an edict from the given BaseEntity pointer'''
-    return edict_from_index(index_from_pointer(pointer))
+    return edict_from_index(index_of_pointer(pointer))
 
 
 def basehandle_from_index(index):
@@ -57,17 +59,17 @@ def basehandle_from_index(index):
 
 def basehandle_from_edict(edict):
     '''Returns a BaseHandle instance from the given edict'''
-    return edict.GetNetworkable().GetEntityHandle().GetRefEHandle()
+    return edict.get_networkable().get_entity_handle().get_ref_ehandle()
 
 
 def basehandle_from_inthandle(ihandle):
     '''Returns a BaseHandle instance from the given handle in int form'''
-    return basehandle_from_edict(edict_from_inthandle(ihandle))
+    return CBaseEntityHandle(ihandle)
 
 
 def basehandle_from_pointer(pointer):
     '''Returns a BaseHandle instance from the given BaseEntity pointer'''
-    return basehandle_from_edict(edict_from_pointer(pointer))
+    return basehandle_from_index(index_of_pointer(pointer))
 
 
 def inthandle_from_index(index):
@@ -82,12 +84,12 @@ def inthandle_from_edict(edict):
 
 def inthandle_from_basehandle(bhandle):
     '''Returns a handle in int form from the given BaseHandle instance'''
-    return bhandle.ToInt()
+    return bhandle.to_int()
 
 
 def inthandle_from_pointer(pointer):
     '''Returns a handle in int form from the given BaseEntity pointer'''
-    return inthandle_from_basehandle(basehandle_from_pointer(pointer))
+    return inthandle_from_index(index_of_pointer(pointer))
 
 
 def pointer_from_index(index):
@@ -97,7 +99,7 @@ def pointer_from_index(index):
 
 def pointer_from_edict(edict):
     '''Returns a BaseEntity pointer from the given edict'''
-    return edict.GetUnknown().GetBaseEntity()
+    return edict.get_unknown().get_base_entity()
 
 
 def pointer_from_basehandle(bhandle):
