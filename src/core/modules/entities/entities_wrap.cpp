@@ -159,6 +159,13 @@ CServerUnknown* CEdict::get_unknown() const
 	return new_unknown;
 }
 
+CServerEntity* CEdict::get_server_entity() const
+{
+	IServerEntity* server_entity = m_edict_ptr->GetIServerEntity();
+	CServerEntity* new_server_entity = new CServerEntity(server_entity);
+	return new_server_entity;
+}
+
 CSendProp* CEdict::get_prop( const char* prop_name ) const
 {
 	return new CSendProp(m_edict_ptr, prop_name);

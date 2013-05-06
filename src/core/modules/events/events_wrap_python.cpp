@@ -200,8 +200,8 @@ void export_igameeventmanager()
 
 		CLASS_METHOD(CGameEventManager,
 			remove_listener,
-			"Stops a listener from receiving event notifications for the given event.",
-			args("listener", "event_name")
+			"Stops a listener from receiving event notifications.",
+			args("listener")
 		)
 
 		CLASS_METHOD(CGameEventManager,
@@ -209,7 +209,7 @@ void export_igameeventmanager()
 			"Creates an event by name but doesn't fire it. Returns NULL if the event\
 			is not known or no listener is registered for it. Setting should_force to\
 			True forces the creation of the event even if no listener for it is active.",
-			args("event_name", "should_force"),
+			args("event_name", "bForce"),
 			reference_existing_object_policy()
 		)
 

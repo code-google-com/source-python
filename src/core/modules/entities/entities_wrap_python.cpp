@@ -243,6 +243,12 @@ void export_edict()
 		)
 
 		CLASS_METHOD(CEdict,
+			get_server_entity,
+			"Returns the CServerEntity instance for this entity.",
+			manage_new_object_policy()
+		)
+
+		CLASS_METHOD(CEdict,
 			get_prop,
 			"Returns a sendprop based on the given name.",
 			args("prop_name"),

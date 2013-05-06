@@ -74,6 +74,7 @@ public:
 	virtual int						get_index() const;
 	virtual CServerNetworkable*		get_networkable() const;
 	virtual CServerUnknown*			get_unknown() const;
+	virtual CServerEntity*				get_server_entity() const;
 
 	// Send property methods.
 	virtual CSendProp*					get_prop( const char* prop_name ) const;
