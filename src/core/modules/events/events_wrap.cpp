@@ -216,24 +216,24 @@ void CGameEventManager::reset()
 	m_game_event_manager->Reset();
 }
 
-bool CGameEventManager::add_listener( CGameEventListener* game_event_listener, const char* name )
+bool CGameEventManager::add_listener( CGameEventListener* listener, const char* event_name )
 {
-	return m_game_event_manager->AddListener(game_event_listener, name, true);
+	return m_game_event_manager->AddListener(listener, event_name, true);
 }
 
-bool CGameEventManager::find_listener( CGameEventListener* game_event_listener, const char* name )
+bool CGameEventManager::find_listener( CGameEventListener* listener, const char* event_name )
 {
-	return m_game_event_manager->FindListener(game_event_listener, name);
+	return m_game_event_manager->FindListener(listener, event_name);
 }
 
-void CGameEventManager::remove_listener( CGameEventListener* game_event_listener )
+void CGameEventManager::remove_listener( CGameEventListener* listener )
 {
-	m_game_event_manager->RemoveListener(game_event_listener);
+	m_game_event_manager->RemoveListener(listener);
 }
 
-CGameEvent* CGameEventManager::create_event( const char* name, bool bForce /*= false*/, int* pCookie /*= NULL */ )
+CGameEvent* CGameEventManager::create_event( const char* event_name, bool bForce /*= false*/, int* pCookie /*= NULL */ )
 {
-	IGameEvent* game_event = m_game_event_manager->CreateEvent(name, bForce, pCookie);
+	IGameEvent* game_event = m_game_event_manager->CreateEvent(event_name, bForce, pCookie);
 	return new CGameEvent(game_event);
 }
 

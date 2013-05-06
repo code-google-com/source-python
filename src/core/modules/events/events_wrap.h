@@ -99,11 +99,11 @@ public:
 	virtual int			load_events_from_file( const char* filename );
 	virtual void		reset();
 
-	virtual bool		add_listener( CGameEventListener* game_event_listener, const char* name );
-	virtual bool		find_listener( CGameEventListener* game_event_listener, const char* name );
-	virtual void		remove_listener( CGameEventListener* game_event_listener );
+	virtual bool		add_listener( CGameEventListener* listener, const char* event_name );
+	virtual bool		find_listener( CGameEventListener* listener, const char* event_name );
+	virtual void		remove_listener( CGameEventListener* listener );
 
-	virtual CGameEvent* create_event( const char* name, bool bForce = false, int* pCookie = NULL );
+	virtual CGameEvent* create_event( const char* event_name, bool bForce = false, int* pCookie = NULL );
 	
 	virtual bool		fire_event( CGameEvent* game_event, bool dont_broadcast = false );
 	virtual bool		fire_event_client_side( CGameEvent* game_event );
