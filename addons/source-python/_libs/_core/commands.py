@@ -210,10 +210,10 @@ def _print_addons():
         info = None
 
         # Loop through all global objects in the addon
-        for object_name in AddonManager[addon].globals:
+        for object_name in AddonManager[addon]._globals:
 
             # Get the current object's instance
-            instance = AddonManager[addon].globals[object_name]
+            instance = AddonManager[addon]._globals[object_name]
 
             # Is the current object an AddonInfo instance?
             if isinstance(instance, AddonInfo):

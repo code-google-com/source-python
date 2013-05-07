@@ -4,17 +4,10 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#from Source import Player
+from player_c import CPlayerInfo
 from core import GameEngine
 #   Entities
 from entities.helpers import *
-
-
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Get an instance of the PlayerInfoManager
-#_player_info_manager = Player.GetPlayerInfoManager()
 
 
 # =============================================================================
@@ -37,7 +30,7 @@ def edict_from_userid(userid):
 
 def edict_from_playerinfo(playerinfo):
     '''Returns an edict from the given IPlayerInfo instance'''
-    return Player.EdictOfPlayer(playerinfo)
+    return playerinfo.get_edict()
 
 
 def basehandle_from_userid(userid):
@@ -57,7 +50,7 @@ def inthandle_from_userid(userid):
 
 def inthandle_from_playerinfo(playerinfo):
     '''Returns a handle in int form from the given IPlayerInfo instance'''
-    return inthandle_from_basehandle(basehandle_from_playerinfo(playerinfo))
+    return inthandle_from_edict(edict_from_playerinfo(playerinfo))
 
 
 def pointer_from_userid(userid):
@@ -77,7 +70,7 @@ def userid_from_index(index):
 
 def userid_from_edict(edict):
     '''Returns a userid from the given edict'''
-    return GameEngine.GetPlayerUserId(edict)
+    return userid_from_playerinfo(playerinfo_from_edict(edict))
 
 
 def userid_from_basehandle(bhandle):
@@ -97,37 +90,37 @@ def userid_from_pointer(pointer):
 
 def userid_from_playerinfo(playerinfo):
     '''Returns a userid from the given IPlayerInfo instance'''
-    return playerinfo.GetUserID()
+    return playerinfo.get_userid()
 
 
 def playerinfo_from_index(index):
     '''Returns an IPlayerInfo instance from the given index'''
-    return Player.PlayerOfIndex(index)
+    return playerinfo_from_edict(edict_from_index(index))
 
 
 def playerinfo_from_edict(edict):
     '''Returns an IPlayerInfo instance from the given edict'''
-    return _player_info_manager.GetPlayerInfo(edict)
+    return CPlayerInfo(edict)
 
 
 def playerinfo_from_basehandle(bhandle):
     '''Returns an IPlayerInfo instance from the given BaseHandle instance'''
-    return playerinfo_from_index(index_from_basehandle(bhandle))
+    return playerinfo_from_edict(edict_from_basehandle(bhandle))
 
 
 def playerinfo_from_inthandle(ihandle):
     '''Returns an IPlayerInfo instance from the given handle in int form'''
-    return playerinfo_from_index(index_from_inthandle(ihandle))
+    return playerinfo_from_edict(edict_from_inthandle(ihandle))
 
 
 def playerinfo_from_pointer(pointer):
     '''Returns an IPlayerInfo instance from the given BaseEntity pointer'''
-    return playerinfo_from_index(index_from_pointer(pointer))
+    return playerinfo_from_edict(edict_from_pointer(pointer))
 
 
 def playerinfo_from_userid(userid):
     '''Returns an IPlayerInfo instance from the given userid'''
-    return Player.PlayerOfUserid(userid)
+    return CPlayerInfo(userid)
 
 
 # =============================================================================
