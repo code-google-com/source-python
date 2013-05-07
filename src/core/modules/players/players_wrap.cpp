@@ -45,7 +45,8 @@ CPlayerInfo::CPlayerInfo( IPlayerInfo* iplayerinfo )
 {
 	m_iplayerinfo_ptr = iplayerinfo;
 	edict_t* edict = EdictOfPlayer(m_iplayerinfo_ptr);
-	CEdict m_edict_ptr = CEdict(edict);
+	CEdict* m_edict = new CEdict(edict);
+	m_edict_ptr = m_edict;
 }
 
 CPlayerInfo::CPlayerInfo( CEdict* edict_ptr )
@@ -60,7 +61,8 @@ CPlayerInfo::CPlayerInfo( int userid )
 {
 	m_iplayerinfo_ptr = PlayerOfUserid(userid);
 	edict_t* edict = EdictOfPlayer(m_iplayerinfo_ptr);
-	CEdict m_edict_ptr = CEdict(edict);
+	CEdict* m_edict = new CEdict(edict);
+	m_edict_ptr = m_edict;
 }
 
 const char* CPlayerInfo::get_name() const
