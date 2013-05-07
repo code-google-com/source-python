@@ -44,23 +44,23 @@ extern IPlayerInfoManager* playerinfomanager;
 CPlayerInfo::CPlayerInfo( IPlayerInfo* iplayerinfo )
 {
 	m_iplayerinfo_ptr = iplayerinfo;
-	//edict_t* edict = EdictOfPlayer(m_iplayerinfo_ptr);
-	//CEdict m_edict_ptr = CEdict(edict);
+	edict_t* edict = EdictOfPlayer(m_iplayerinfo_ptr);
+	CEdict m_edict_ptr = CEdict(edict);
 }
 
-/*CPlayerInfo::CPlayerInfo( CEdict* edict_ptr )
+CPlayerInfo::CPlayerInfo( CEdict* edict_ptr )
 {
 	m_edict_ptr = edict_ptr;
 	int index = m_edict_ptr->get_index();
 	edict_t* edict = PEntityOfEntIndex(index);
 	m_iplayerinfo_ptr = playerinfomanager->GetPlayerInfo(edict);
-}*/
+}
 
 CPlayerInfo::CPlayerInfo( int userid )
 {
 	m_iplayerinfo_ptr = PlayerOfUserid(userid);
-	//edict_t* edict = EdictOfPlayer(m_iplayerinfo_ptr);
-	//CEdict m_edict_ptr = CEdict(edict);
+	edict_t* edict = EdictOfPlayer(m_iplayerinfo_ptr);
+	CEdict m_edict_ptr = CEdict(edict);
 }
 
 const char* CPlayerInfo::get_name() const
@@ -178,7 +178,7 @@ int CPlayerInfo::get_max_health() const
 	return m_iplayerinfo_ptr->GetMaxHealth();
 }
 
-/*CEdict* CPlayerInfo::get_edict() const
+CEdict* CPlayerInfo::get_edict() const
 {
 	return m_edict_ptr;
-}*/
+}

@@ -56,6 +56,8 @@ void export_playerinfo()
 {
 	BOOST_CLASS_CONSTRUCTOR(CPlayerInfo, int)
 
+		CLASS_CONSTRUCTOR(CEdict*)
+
 		CLASS_METHOD(CPlayerInfo,
 			get_name,
 			"Returns the player's name"
@@ -172,10 +174,11 @@ void export_playerinfo()
 			"Returns the player's maximum health."
 		)
 
-		/*CLASS_METHOD(CPlayerInfo,
+		CLASS_METHOD(CPlayerInfo,
 			get_edict,
-			"Returns the player's CEdict instance."
-		)*/
+			"Returns the player's CEdict instance.",
+			manage_new_object_policy()
+		)
 
 	BOOST_END_CLASS()
 }
