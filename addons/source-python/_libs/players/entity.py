@@ -49,27 +49,27 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
     @property
     def userid(self):
         '''Returns the player's userid'''
-        return GameEngine.GetPlayerUserId(self.edict)
+        return self.info.get_userid()
 
     @property
     def steamid(self):
         '''Returns the player's SteamID'''
-        return self.info.GetNetworkIDString()
+        return self.info.get_networkid_string()
 
     @property
     def name(self):
         '''Returns the player's name'''
-        return self.info.GetName()
+        return self.info.get_name()
 
     @property
     def isdead(self):
         '''Returns if the player is dead or alive'''
-        return self.info.IsDead()
+        return self.info.is_dead()
 
     @property
     def language(self):
         '''Returns the player's language'''
-        return GameEngine.GetClientConVarValue(self.index, 'cl_language')
+        return GameEngine.get_client_convar_value(self.index, 'cl_language')
 
     @property
     def uniqueid(self):
@@ -83,11 +83,11 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
 
     def get_team(self):
         '''Returns the player's team'''
-        return self.info.GetTeamIndex()
+        return self.info.get_team_index()
 
     def set_team(self, value):
         '''Sets a players team'''
-        self.info.ChangeTeam(value)
+        self.info.change_team(value)
 
     # Set the "team" property methods
     team = property(get_team, set_team)

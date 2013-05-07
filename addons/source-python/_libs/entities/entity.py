@@ -162,6 +162,15 @@ class BaseEntity(_EntitySpecials):
         # Does the class have the given attribute?
         if hasattr(self.__class__, attr):
 
+            # Is this an inherited class?
+            if self.__class__ != BaseEntity:
+
+                # Get the attribute and set its value
+                getattr(self.__class__, attr).fset(self, value)
+
+                # No need to go further
+                return
+
             # Set the attribute
             object.__setattr__(self, attr, value)
 
@@ -180,13 +189,6 @@ class BaseEntity(_EntitySpecials):
 
                 # No need to go further
                 return
-
-        # Is this an inherited class and does
-        # the inheriting class have the property?
-        if self.__class__ != BaseEntity and hasattr(self.__class__, attr):
-
-            # Get the attribute
-            return getattr(self.__class__, attr).fset(self, value)
 
         # Is the attribute a property of this entity?
         if attr in self.properties:
@@ -231,7 +233,7 @@ class BaseEntity(_EntitySpecials):
         if 'True' in self.properties[item]:
 
             # Get the exact value to set the property to
-            value = self.properties[item][str(bool(value))]
+            value = self.properties[item][str(value)]
 
         # Set the property's value
         getattr(prop, 'set_%s' % prop_type)(value)
@@ -346,6 +348,11 @@ class BaseEntity(_EntitySpecials):
         return self.edict.get_class_name()
 
     @property
+    def pointer(self):
+        '''Returns the entity's pointer'''
+        return self.edict.get_unknown().get_base_entity()
+
+    @property
     def properties(self):
         '''Returns all properties for all entities'''
         return Properties.get_entity_properties(self.entities)
@@ -364,8 +371,3 @@ class BaseEntity(_EntitySpecials):
     def functions(self):
         '''Returns all dynamic calling functions for all entities'''
         return Functions.get_entity_functions(self.entities)
-
-    @property
-    def pointer(self):
-        '''Returns the entity's pointer'''
-        return self.edict.get_unknown().get_base_entity()
