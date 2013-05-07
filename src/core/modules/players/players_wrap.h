@@ -44,7 +44,7 @@ public:
 	CPlayerInfo( int userid );
 
 	// Get CPlayerInfo instances by CEdict
-	// CPlayerInfo( CEdict* edict_ptr );
+	CPlayerInfo( CEdict* edict_ptr );
 
 	// For engine use.
 	CPlayerInfo( IPlayerInfo* playerinfo );
@@ -72,10 +72,10 @@ public:
 	virtual const char* 		get_model_name() const;
 	virtual int 				get_health() const;
 	virtual int 				get_max_health() const;
-	//virtual CEdict*			get_edict() const;
+	virtual CEdict*			get_edict() const;
 
 private:
-	//CEdict*			m_edict_ptr;
+	CEdict*			m_edict_ptr;
 	IPlayerInfo*	m_iplayerinfo_ptr;
 };
 
