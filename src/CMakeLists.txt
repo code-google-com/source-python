@@ -183,6 +183,18 @@ Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Players module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
+    core/modules/players/players_wrap.h
+)
+
+Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
+    core/modules/players/players_wrap.cpp
+    core/modules/players/players_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -197,6 +209,9 @@ Set(SOURCEPYTHON_MODULE_FILES
     
     ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS}
     ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES}
+
+    ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS}
+    ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -212,6 +227,7 @@ Source_Group("Header Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_E
 Source_Group("Header Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons" 		                FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -223,6 +239,7 @@ Source_Group("Source Files\\Module\\Engine\\Usermessages\\${GAME}"	FILES ${SOURC
 Source_Group("Source Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
