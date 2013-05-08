@@ -258,7 +258,7 @@ class TranslationStrings(dict):
         language = LanguageManager.get_language(language)
 
         # Was a language found?
-        if not language is None:
+        if not language is None and language in self:
 
             # Return the language
             return language

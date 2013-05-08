@@ -164,7 +164,7 @@ void CGameEventListener::fire_game_event( CGameEvent* game_event )
 
 int CGameEventListener::get_event_debug_id()
 {
-	return EVENT_DEBUG_ID_INIT;
+	return 0; // EVENT_DEBUG_ID_INIT;
 }
 
 void CGameEventListener::FireGameEvent( IGameEvent *event )
@@ -213,7 +213,7 @@ void CGameEventManager::remove_listener( CGameEventListener* listener )
 
 CGameEvent* CGameEventManager::create_event( const char* event_name, bool bForce /*= false*/, int* pCookie /*= NULL */ )
 {
-	IGameEvent* game_event = m_game_event_manager->CreateEvent(event_name, bForce, pCookie);
+	IGameEvent* game_event = m_game_event_manager->CreateEvent(event_name, bForce); // , pCookie);
 	return new CGameEvent(game_event);
 }
 

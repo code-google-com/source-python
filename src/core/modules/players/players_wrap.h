@@ -29,6 +29,7 @@
 // ----------------------------------------------------------------------------
 // Includes.
 // ----------------------------------------------------------------------------
+#include "edict.h"
 #include "game/server/iplayerinfo.h"
 #include "mathlib/vector.h"
 #include "modules/entities/entities_wrap.h"

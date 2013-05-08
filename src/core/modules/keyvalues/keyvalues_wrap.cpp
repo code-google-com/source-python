@@ -270,7 +270,7 @@ bool CKeyValues::get_bool( const char* key_name, bool default_value /*= false */
 {
 	if( m_key_values )
 	{
-		return m_key_values->GetBool(key_name, default_value);
+		return false; // m_key_values->GetBool(key_name, default_value);
 	}
 
 	return default_value;
@@ -322,7 +322,7 @@ void CKeyValues::set_bool( const char* key_name, bool value )
 {
 	if( m_key_values )
 	{
-		m_key_values->SetBool(key_name, value);
+		// m_key_values->SetBool(key_name, value);
 	}
 }
 

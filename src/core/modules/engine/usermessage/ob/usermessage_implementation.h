@@ -27,7 +27,6 @@
 #ifndef _USERMESSAGE_IMPLEMENTATION_H_
 #define _USERMESSAGE_IMPLEMENTATION_H_
 
-#include "irecipientfilter.h"
 #include "bitbuf.h"
 
 #include "../usermessage_implementation_base.h"
@@ -37,19 +36,20 @@ extern IServerGameDLL *servergamedll;
 class CUserMessageImplementation : public IUsermessageImplementationBase
 {
 public:
-	CUserMessageImplementation(const IRecipientFilter &recipient_filter, const char *message_name);
+	CUserMessageImplementation(const CMRecipientFilter &recipient_filter, const char *message_name);
 
 	// Pure-virtual methods which must be inherited and overwritten in the inherited
 	// classes
-	virtual void set_char(const char *field_name, char field_value);
-	virtual void set_byte(const char *field_name, unsigned char field_value);
-	virtual void set_short(const char *field_name, signed short field_value);
-	virtual void set_long(const char *field_name, signed long field_value);
-	virtual void set_float(const char *field_name, float field_value);
+	virtual void set_bool(const char *field_name, bool field_value, int index=-1);
+	virtual void set_char(const char *field_name, char field_value, int index=-1);
+	virtual void set_byte(const char *field_name, unsigned char field_value, int index=-1);
+	virtual void set_short(const char *field_name, int field_value, int index=-1);
+	virtual void set_long(const char *field_name, signed long field_value, int index=-1);
+	virtual void set_float(const char *field_name, float field_value, int index=-1);
 
 	// Unknown sized buffers
-	virtual void set_buffer(const char *field_name, void *buffer, unsigned int num_bytes);
-	virtual void set_string(const char *field_name, const char *field_value);
+	virtual void set_buffer(const char *field_name, void *buffer, unsigned int num_bytes, int index=-1);
+	virtual void set_string(const char *field_name, const char *field_value, int index=-1);
 
 protected:
 	virtual void set_message_index();

@@ -130,7 +130,7 @@ void MRecipientFilter::AddRecipient(int iPlayer)
 
 void MRecipientFilter::RemoveRecipient( int iPlayer )
 {
-	m_Recipients.FindAndFastRemove(iPlayer);
+	m_Recipients.FindAndRemove(iPlayer);
 }
 
 void MRecipientFilter::RemoveAllPlayers()

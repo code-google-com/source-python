@@ -29,6 +29,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "eiface.h"
+#include "GameStats.h"
 
 #include "../eiface_engine_base.h"
 

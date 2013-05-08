@@ -42,7 +42,6 @@
 #include "inetchannelinfo.h"
 #include "iachievementmgr.h"
 #include "client_textmessage.h"
-#include "GameStats.h"
 #include "steam/steamclientpublic.h"
 #include "eiface_wrap.h"
 

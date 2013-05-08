@@ -272,7 +272,7 @@ void export_send_prop()
 		ENUM_VALUE( "DPT_String", DPT_String )
 		ENUM_VALUE( "DPT_Array", DPT_Array )
 		ENUM_VALUE( "DPT_DataTable", DPT_DataTable )
-		ENUM_VALUE( "DPT_Int64", DPT_Int64 )
+		// ENUM_VALUE( "DPT_Int64", DPT_Int64 )
 		ENUM_VALUE( "DPT_NUMSendPropTypes", DPT_NUMSendPropTypes )
 	BOOST_END_CLASS()
 

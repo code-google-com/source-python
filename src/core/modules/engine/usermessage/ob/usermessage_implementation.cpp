@@ -26,12 +26,15 @@
 
 #include "usermessage_implementation.h"
 
-CUserMessageImplementation::CUserMessageImplementation(const IRecipientFilter &recipient_filter, const char *message_name ) :
+CUserMessageImplementation::CUserMessageImplementation(const CMRecipientFilter &recipient_filter, const char *message_name ) :
 IUsermessageImplementationBase(recipient_filter, message_name)
 {
+	// Set the message index.
+	set_message_index();
+	
 	// TODO - Check if we should pass this as a non-const so we don't have to const-cast it. I'm sure I saw a constructor
 	// somewhere requiring this to be passed as a const-ref somewhere
-	engine->UserMessageBegin(&const_cast<IRecipientFilter&>(recipient_filter), m_message_index);
+	m_buffer = engine->UserMessageBegin(&const_cast<CMRecipientFilter&>(recipient_filter), m_message_index);
 }
 
 void CUserMessageImplementation::send_message_internal()
@@ -39,37 +42,42 @@ void CUserMessageImplementation::send_message_internal()
 	engine->MessageEnd();
 }
 
-void CUserMessageImplementation::set_char( const char *field_name, char field_value )
+void CUserMessageImplementation::set_bool( const char *field_name, bool field_value, int index/*=-1*/ )
+{
+	m_buffer->WriteByte(static_cast<bool>(field_value));
+}
+
+void CUserMessageImplementation::set_char( const char *field_name, char field_value, int index/*=-1*/ )
 {
 	m_buffer->WriteChar(static_cast<int>(field_value));
 }
 
-void CUserMessageImplementation::set_byte( const char *field_name, unsigned char field_value )
+void CUserMessageImplementation::set_byte( const char *field_name, unsigned char field_value, int index/*=-1*/ )
 {
 	m_buffer->WriteByte(static_cast<unsigned int>(field_value));
 }
 
-void CUserMessageImplementation::set_short( const char *field_name, signed short field_value )
+void CUserMessageImplementation::set_short( const char *field_name, int field_value, int index/*=-1*/ )
 {
 	m_buffer->WriteShort(static_cast<int>(field_value));
 }
 
-void CUserMessageImplementation::set_long( const char *field_name, signed long field_value )
+void CUserMessageImplementation::set_long( const char *field_name, signed long field_value, int index/*=-1*/ )
 {
 	m_buffer->WriteLong(static_cast<long>(field_value));
 }
 
-void CUserMessageImplementation::set_float( const char *field_name, float field_value )
+void CUserMessageImplementation::set_float( const char *field_name, float field_value, int index/*=-1*/ )
 {
 	m_buffer->WriteFloat(field_value);
 }
 
-void CUserMessageImplementation::set_buffer( const char *field_name, void *buffer, unsigned int num_bytes )
+void CUserMessageImplementation::set_buffer( const char *field_name, void *buffer, unsigned int num_bytes, int index/*=-1*/ )
 {
 	m_buffer->WriteBytes(buffer, static_cast<int>(num_bytes));
 }
 
-void CUserMessageImplementation::set_string( const char *field_name, const char *field_value )
+void CUserMessageImplementation::set_string( const char *field_name, const char *field_value, int index/*=-1*/ )
 {
 	m_buffer->WriteString(field_value);
 }
@@ -84,6 +92,8 @@ void CUserMessageImplementation::set_message_index()
 		if (strcmp(m_message_name, sz_mname) == 0)
 		{
 			m_message_index = index;
+			break;
 		}
+		index++;
 	}
 }
