@@ -30,7 +30,6 @@ CUserMessage::CUserMessage(const CMRecipientFilter &recipient_filter, const char
 	CUserMessageImplementation(recipient_filter, message_name),
 	m_sent(false)
 {
-	set_message_index();
 }
 
 CUserMessage::~CUserMessage()

@@ -86,4 +86,5 @@ CPlayerInfo* Players::getNext()
 			return pPlayerInfo;
 		}
 	}
+	return NULL;
 }

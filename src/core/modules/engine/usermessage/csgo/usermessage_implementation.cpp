@@ -34,6 +34,9 @@ CUserMessageImplementation::CUserMessageImplementation( const CMRecipientFilter 
 	IUsermessageImplementationBase(recipient_filter, message_name),
 	m_message(NULL)
 {
+	// Set the message index.
+	set_message_index();
+	
 	// Eugh - I need to go take a shower after const casting...
 	m_message = const_cast<google::protobuf::Message*>(g_Cstrike15UsermessageHelpers.GetPrototype(message_name));
 }

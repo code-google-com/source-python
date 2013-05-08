@@ -27,7 +27,6 @@
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
-#include "game/server/iplayerinfo.h"
 #include "players_wrap.h"
 #include "mathlib/vector.h"
 #include "modules/entities/entities_wrap.h"

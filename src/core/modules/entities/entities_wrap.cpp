@@ -33,6 +33,7 @@
 #include "server_class.h"
 #include "dt_common.h"
 #include "utility/sp_util.h"
+#include "edict.h"
 
 //---------------------------------------------------------------------------------
 // If these aren't defined, we get linker errors about CBaseEdict.
@@ -74,7 +75,7 @@ CEdict::CEdict( const char* name, bool bExact /* = true */ )
 	const int max_entities = gpGlobals->maxEntities;
 	for( int i = 0; i < max_entities; i++ )
 	{
-		edict_t* edict = &gpGlobals->pEdicts[i];
+		edict_t* edict = PEntityOfEntIndex(i); // &gpGlobals->pEdicts[i];
 		
 		// Rule out empty edicts.
 		if( !edict || edict->IsFree() ) {
@@ -363,7 +364,7 @@ void CSendProp::set_int( int value )
 		*(int *)((char *)m_base_entity + m_prop_offset) = value;
 
 		// Force a network update.
-		m_edict->StateChanged(m_prop_offset);
+		m_edict->StateChanged();
 	}
 }
 
@@ -375,7 +376,7 @@ void CSendProp::set_float( float value )
 		*(float *)((char *)m_base_entity + m_prop_offset) = value;
 
 		// Force a network update.
-		m_edict->StateChanged(m_prop_offset);
+		m_edict->StateChanged();
 	}
 }
 
@@ -390,7 +391,7 @@ void CSendProp::set_string( const char* value )
 		V_strncpy(data_buffer, value, DT_MAX_STRING_BUFFERSIZE);
 
 		// Force a network update.
-		m_edict->StateChanged(m_prop_offset);
+		m_edict->StateChanged();
 	}
 }
 
