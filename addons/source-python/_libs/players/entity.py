@@ -36,7 +36,7 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
                 'Invalid IPlayerInfo instance for index "%s"' % index)
 
         # Set the entities attribute
-        self.entities = frozenset(['entity', 'player'])
+        self._entities = frozenset(['entity', 'player'])
 
     @property
     def instances(self):

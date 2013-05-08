@@ -43,8 +43,7 @@ class BaseEntity(_EntitySpecials):
         # Set the entity's base attributes
         self.index = index
         self.edict = edict
-        self.entities = set(entities)
-        self.entities.add('entity')
+        self._entities = frozenset(list(entities) + ['entity'])
 
         # Return the instance
         return self
@@ -355,19 +354,19 @@ class BaseEntity(_EntitySpecials):
     @property
     def properties(self):
         '''Returns all properties for all entities'''
-        return Properties.get_entity_properties(self.entities)
+        return Properties.get_entity_properties(self._entities)
 
     @property
     def keyvalues(self):
         '''Returns all keyvalues for all entities'''
-        return KeyValues.get_entity_keyvalues(self.entities)
+        return KeyValues.get_entity_keyvalues(self._entities)
 
     @property
     def offsets(self):
         '''Returns all offsets for all entities'''
-        return Offsets.get_entity_offsets(self.entities)
+        return Offsets.get_entity_offsets(self._entities)
 
     @property
     def functions(self):
         '''Returns all dynamic calling functions for all entities'''
-        return Functions.get_entity_functions(self.entities)
+        return Functions.get_entity_functions(self._entities)

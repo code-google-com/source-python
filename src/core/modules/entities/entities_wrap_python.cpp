@@ -27,6 +27,7 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
+#include "entities_generator_wrap.h"
 #include "entities_wrap.h"
 #include "modules/export_main.h"
 #include "utility/sp_util.h"
@@ -46,6 +47,7 @@ void export_server_entity();
 void export_server_networkable();
 void export_edict();
 void export_send_prop();
+void export_entity_generator();
 
 //---------------------------------------------------------------------------------
 // Entity module definition.
@@ -59,6 +61,7 @@ DECLARE_SP_MODULE(entity_c)
 	export_server_networkable();
 	export_send_prop();
 	export_edict();
+	export_entity_generator();
 }
 
 //---------------------------------------------------------------------------------
@@ -319,5 +322,13 @@ void export_send_prop()
 			"Returns this prop's string value."
 		)
 
+	BOOST_END_CLASS()
+}
+
+void export_entity_generator()
+{
+	BOOST_GENERATOR_CLASS(Entities)
+		CLASS_CONSTRUCTOR(const char*)
+		CLASS_CONSTRUCTOR(const char*, bool)
 	BOOST_END_CLASS()
 }
