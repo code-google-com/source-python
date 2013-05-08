@@ -27,6 +27,7 @@
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
+#include "players_generator_wrap.h"
 #include "players_wrap.h"
 #include "modules/entities/entities_wrap.h"
 #include "modules/export_main.h"
@@ -40,6 +41,7 @@ using namespace boost::python;
 // Exposer functions.
 // ----------------------------------------------------------------------------
 void export_playerinfo();
+void export_player_generator();
 
 // ----------------------------------------------------------------------------
 // Entity module definition.
@@ -47,6 +49,7 @@ void export_playerinfo();
 DECLARE_SP_MODULE(player_c)
 {
 	export_playerinfo();
+	export_player_generator();
 }
 
 // ----------------------------------------------------------------------------
@@ -180,5 +183,11 @@ void export_playerinfo()
 			manage_new_object_policy()
 		)
 
+	BOOST_END_CLASS()
+}
+
+void export_player_generator()
+{
+	BOOST_GENERATOR_CLASS(Players)
 	BOOST_END_CLASS()
 }

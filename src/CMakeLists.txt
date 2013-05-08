@@ -187,11 +187,13 @@ Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
     core/modules/players/players_wrap.h
+    core/modules/players/players_generator_wrap.h
 )
 
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
     core/modules/players/players_wrap.cpp
     core/modules/players/players_wrap_python.cpp
+    core/modules/players/players_generator_wrap.cpp
 )
 
 # ------------------------------------------------------------------

@@ -50,17 +50,13 @@ public:
 
 	virtual bool			get_bool( const char *keyName = NULL, bool defaultValue = false );
 	virtual int				get_int( const char *keyName = NULL, int defaultValue = 0 );
-	virtual uint64			get_uint64( const char *keyName = NULL, uint64 defaultValue = 0 );
 	virtual float			get_float( const char *keyName = NULL, float defaultValue = 0.0f );
 	virtual const char*		get_string( const char *keyName = NULL, const char *defaultValue = "" );
-	virtual const wchar_t * get_wstring(char const *keyName = NULL, const wchar_t *defaultValue = L"");
 
 	virtual void			set_bool( const char *keyName, bool value );
 	virtual void			set_int( const char *keyName, int value );
-	virtual void			set_uint64( const char *keyName, uint64 value );
 	virtual void			set_float( const char *keyName, float value );
 	virtual void			set_string( const char *keyName, const char *value );
-	virtual void			set_wstring( const char *keyName, const wchar_t *value );
 
 	// Custom methods.
 	IGameEvent*				get_event() const;

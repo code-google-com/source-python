@@ -114,11 +114,6 @@ int CGameEvent::get_int( const char *keyName /*= NULL*/, int defaultValue /*= 0 
 	return m_game_event->GetInt(keyName, defaultValue);
 }
 
-uint64 CGameEvent::get_uint64( const char *keyName /*= NULL*/, uint64 defaultValue /*= 0 */ )
-{
-	return m_game_event->GetUint64(keyName, defaultValue);
-}
-
 float CGameEvent::get_float( const char *keyName /*= NULL*/, float defaultValue /*= 0.0f */ )
 {
 	return m_game_event->GetFloat(keyName, defaultValue);
@@ -127,11 +122,6 @@ float CGameEvent::get_float( const char *keyName /*= NULL*/, float defaultValue 
 const char* CGameEvent::get_string( const char *keyName /*= NULL*/, const char *defaultValue /*= "" */ )
 {
 	return m_game_event->GetString(keyName, defaultValue);
-}
-
-const wchar_t * CGameEvent::get_wstring( char const *keyName /*= NULL*/, const wchar_t *defaultValue /*= L""*/ )
-{
-	return m_game_event->GetWString(keyName, defaultValue);
 }
 
 void CGameEvent::set_bool( const char *keyName, bool value )
@@ -144,11 +134,6 @@ void CGameEvent::set_int( const char *keyName, int value )
 	m_game_event->SetInt(keyName, value);
 }
 
-void CGameEvent::set_uint64( const char *keyName, uint64 value )
-{
-	m_game_event->SetUint64(keyName, value);
-}
-
 void CGameEvent::set_float( const char *keyName, float value )
 {
 	m_game_event->SetFloat(keyName, value);
@@ -157,11 +142,6 @@ void CGameEvent::set_float( const char *keyName, float value )
 void CGameEvent::set_string( const char *keyName, const char *value )
 {
 	m_game_event->SetString(keyName, value);
-}
-
-void CGameEvent::set_wstring( const char *keyName, const wchar_t *value )
-{
-	m_game_event->SetWString(keyName, value);
 }
 
 IGameEvent* CGameEvent::get_event() const
