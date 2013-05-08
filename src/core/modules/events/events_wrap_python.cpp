@@ -41,7 +41,6 @@
 DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, is_empty, 0, 1)
 DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, get_bool, 0, 2)
 DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, get_int, 0, 2)
-DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, get_uint64, 0, 2)
 DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, get_float, 0, 2)
 DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, get_string, 0, 2)
 
@@ -101,11 +100,6 @@ void export_igameevent()
 		)
 
 		CLASS_METHOD_OVERLOAD(CGameEvent,
-			get_uint64,
-			args("keyName", "defaultValue")
-		)
-
-		CLASS_METHOD_OVERLOAD(CGameEvent,
 			get_float,
 			args("keyName", "defaultValue")
 		)
@@ -122,11 +116,6 @@ void export_igameevent()
 
 		CLASS_METHOD(CGameEvent,
 			set_int,
-			args("keyName", "value")
-		)
-
-		CLASS_METHOD(CGameEvent,
-			set_uint64,
 			args("keyName", "value")
 		)
 
