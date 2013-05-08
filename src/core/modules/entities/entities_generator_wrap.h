@@ -24,62 +24,43 @@
 * Development Team grants this exception to all derivative works.
 */
 
-// ----------------------------------------------------------------------------
-// Includes
-// ----------------------------------------------------------------------------
-#include "players_generator_wrap.h"
-#include "players_wrap.h"
-#include "utility/sp_util.h"
-#include "game/server/iplayerinfo.h"
-#include "boost/python/iterator.hpp"
+#ifndef _EXPORT_EDICT_GENERATOR_H
+#define _EXPORT_EDICT_GENERATOR_H
 
 // ----------------------------------------------------------------------------
-// External variables.
+// Includes.
 // ----------------------------------------------------------------------------
-extern IPlayerInfoManager* playerinfomanager;
+#include "utility/wrap_macros.h"
+#include "utility/ipythongenerator.h"
 
 // ----------------------------------------------------------------------------
-// Players Constructor.
+// Forward declaration.
 // ----------------------------------------------------------------------------
-Players::Players( PyObject* self ):
-	IPythonGenerator<CPlayerInfo>(self),
-	m_iEntityIndex(0)
+class CEdict;
+
+// ----------------------------------------------------------------------------
+// Declare the generator class.
+// ----------------------------------------------------------------------------
+class Entities: public IPythonGenerator<CEdict>
 {
-}
+public:
+	Entities(PyObject* self);
+	Entities(PyObject* self, const Entities& rhs);
+	Entities(PyObject* self, const char* szClassName);
+	Entities(PyObject* self, const char* szClassName, bool exactMatch);
+	virtual ~Entities();
 
-// ----------------------------------------------------------------------------
-// Players Copy-Constructor.
-// ----------------------------------------------------------------------------
-Players::Players( PyObject* self, const Players& rhs ):
-	IPythonGenerator<CPlayerInfo>(self),
-	m_iEntityIndex(rhs.m_iEntityIndex)
-{
-}
+protected:
+	virtual CEdict* getNext();
 
-// ----------------------------------------------------------------------------
-// Players Destructor.
-// ----------------------------------------------------------------------------
-Players::~Players()
-{
-}
+private:
+	int m_iEntityIndex;
+	void makeStringCopy(const char* szClassName, unsigned int uiClassNameLen);
+	const char* m_szClassName;
+	unsigned int m_uiClassNameLen;
+	bool m_bExactMatch;
+};
 
-// ----------------------------------------------------------------------------
-// Returns the next valid CPlayerInfo instance.
-// ----------------------------------------------------------------------------
-CPlayerInfo* Players::getNext()
-{
-	IPlayerInfo* pIPlayerInfo = NULL;
-	CPlayerInfo* pPlayerInfo = NULL;
-	while(m_iEntityIndex < gpGlobals->maxClients)
-	{
-		m_iEntityIndex++;
-		edict_t* pEdict = PEntityOfEntIndex(m_iEntityIndex);
-		pIPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
-		if ( pIPlayerInfo )
-		{
-			pPlayerInfo = new CPlayerInfo(pIPlayerInfo);
-			return pPlayerInfo;
-		}
-	}
-	return NULL;
-}
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(Entities)
+
+#endif
