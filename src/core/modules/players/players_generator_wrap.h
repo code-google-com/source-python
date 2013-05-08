@@ -41,12 +41,12 @@ class CPlayerInfo;
 // ----------------------------------------------------------------------------
 // Declare the generator class.
 // ----------------------------------------------------------------------------
-class Players: public IPythonGenerator<CPlayerInfo>
+class CPlayerGenerator: public IPythonGenerator<CPlayerInfo>
 {
 public:
-	Players(PyObject* self);
-	Players(PyObject* self, const Players& rhs);
-	virtual ~Players();
+	CPlayerGenerator(PyObject* self);
+	CPlayerGenerator(PyObject* self, const CPlayerGenerator& rhs);
+	virtual ~CPlayerGenerator();
 
 protected:
 	virtual CPlayerInfo* getNext();
@@ -55,6 +55,6 @@ private:
 	int m_iEntityIndex;
 };
 
-BOOST_SPECIALIZE_HAS_BACK_REFERENCE(Players)
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CPlayerGenerator)
 
 #endif

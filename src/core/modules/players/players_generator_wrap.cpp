@@ -39,34 +39,34 @@
 extern IPlayerInfoManager* playerinfomanager;
 
 // ----------------------------------------------------------------------------
-// Players Constructor.
+// CPlayerGenerator Constructor.
 // ----------------------------------------------------------------------------
-Players::Players( PyObject* self ):
+CPlayerGenerator::CPlayerGenerator( PyObject* self ):
 	IPythonGenerator<CPlayerInfo>(self),
 	m_iEntityIndex(0)
 {
 }
 
 // ----------------------------------------------------------------------------
-// Players Copy-Constructor.
+// CPlayerGenerator Copy-Constructor.
 // ----------------------------------------------------------------------------
-Players::Players( PyObject* self, const Players& rhs ):
+CPlayerGenerator::CPlayerGenerator( PyObject* self, const CPlayerGenerator& rhs ):
 	IPythonGenerator<CPlayerInfo>(self),
 	m_iEntityIndex(rhs.m_iEntityIndex)
 {
 }
 
 // ----------------------------------------------------------------------------
-// Players Destructor.
+// CPlayerGenerator Destructor.
 // ----------------------------------------------------------------------------
-Players::~Players()
+CPlayerGenerator::~CPlayerGenerator()
 {
 }
 
 // ----------------------------------------------------------------------------
 // Returns the next valid CPlayerInfo instance.
 // ----------------------------------------------------------------------------
-CPlayerInfo* Players::getNext()
+CPlayerInfo* CPlayerGenerator::getNext()
 {
 	IPlayerInfo* pIPlayerInfo = NULL;
 	CPlayerInfo* pPlayerInfo = NULL;

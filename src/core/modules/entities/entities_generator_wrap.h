@@ -41,14 +41,14 @@ class CEdict;
 // ----------------------------------------------------------------------------
 // Declare the generator class.
 // ----------------------------------------------------------------------------
-class Entities: public IPythonGenerator<CEdict>
+class CEntityGenerator: public IPythonGenerator<CEdict>
 {
 public:
-	Entities(PyObject* self);
-	Entities(PyObject* self, const Entities& rhs);
-	Entities(PyObject* self, const char* szClassName);
-	Entities(PyObject* self, const char* szClassName, bool exactMatch);
-	virtual ~Entities();
+	CEntityGenerator(PyObject* self);
+	CEntityGenerator(PyObject* self, const CEntityGenerator& rhs);
+	CEntityGenerator(PyObject* self, const char* szClassName);
+	CEntityGenerator(PyObject* self, const char* szClassName, bool exactMatch);
+	virtual ~CEntityGenerator();
 
 protected:
 	virtual CEdict* getNext();
@@ -61,6 +61,6 @@ private:
 	bool m_bExactMatch;
 };
 
-BOOST_SPECIALIZE_HAS_BACK_REFERENCE(Entities)
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CEntityGenerator)
 
 #endif

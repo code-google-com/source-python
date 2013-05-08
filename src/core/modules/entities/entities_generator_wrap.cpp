@@ -33,9 +33,9 @@
 #include "boost/python/iterator.hpp"
 
 // ----------------------------------------------------------------------------
-// Entities Constructor.
+// CEntityGenerator Constructor.
 // ----------------------------------------------------------------------------
-Entities::Entities( PyObject* self ):
+CEntityGenerator::CEntityGenerator( PyObject* self ):
 	IPythonGenerator<CEdict>(self),
 	m_iEntityIndex(0),
 	m_szClassName(NULL),
@@ -45,9 +45,9 @@ Entities::Entities( PyObject* self ):
 }
 
 // ----------------------------------------------------------------------------
-// Entities Copy-Constructor.
+// CEntityGenerator Copy-Constructor.
 // ----------------------------------------------------------------------------
-Entities::Entities( PyObject* self, const Entities& rhs ):
+CEntityGenerator::CEntityGenerator( PyObject* self, const CEntityGenerator& rhs ):
 	IPythonGenerator<CEdict>(self),
 	m_iEntityIndex(rhs.m_iEntityIndex),
 	m_uiClassNameLen(rhs.m_uiClassNameLen),
@@ -57,9 +57,9 @@ Entities::Entities( PyObject* self, const Entities& rhs ):
 }
 
 // ----------------------------------------------------------------------------
-// Entities Constructor (takes a filter string).
+// CEntityGenerator Constructor (takes a filter string).
 // ----------------------------------------------------------------------------
-Entities::Entities(PyObject* self, const char* szClassName):
+CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName):
 	IPythonGenerator<CEdict>(self),
 	m_iEntityIndex(0),
 	m_uiClassNameLen(strlen(szClassName)),
@@ -69,9 +69,9 @@ Entities::Entities(PyObject* self, const char* szClassName):
 }
 
 // ----------------------------------------------------------------------------
-// Entities Constructor (takes a filter string and a boolean flag).
+// CEntityGenerator Constructor (takes a filter string and a boolean flag).
 // ----------------------------------------------------------------------------
-Entities::Entities(PyObject* self, const char* szClassName, bool bExactMatch):
+CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName, bool bExactMatch):
 	IPythonGenerator<CEdict>(self),
 	m_iEntityIndex(0),
 	m_uiClassNameLen(strlen(szClassName)),
@@ -81,9 +81,9 @@ Entities::Entities(PyObject* self, const char* szClassName, bool bExactMatch):
 }
 
 // ----------------------------------------------------------------------------
-// Entities Destructor.
+// CEntityGenerator Destructor.
 // ----------------------------------------------------------------------------
-Entities::~Entities()
+CEntityGenerator::~CEntityGenerator()
 {
 	delete[] m_szClassName;
 }
@@ -91,7 +91,7 @@ Entities::~Entities()
 // ----------------------------------------------------------------------------
 // Returns the next valid CEdict instance.
 // ----------------------------------------------------------------------------
-CEdict* Entities::getNext()
+CEdict* CEntityGenerator::getNext()
 {
 	edict_t* pEdict = NULL;
 	CEdict* pCEdict = NULL;
@@ -126,7 +126,7 @@ CEdict* Entities::getNext()
 //---------------------------------------------------------------------------------
 // Private function, creates a copy of the class name string.
 //---------------------------------------------------------------------------------
-void Entities::makeStringCopy(const char* szClassName, unsigned int uiClassNameLen)
+void CEntityGenerator::makeStringCopy(const char* szClassName, unsigned int uiClassNameLen)
 {
 	if (uiClassNameLen > 0)
 	{
