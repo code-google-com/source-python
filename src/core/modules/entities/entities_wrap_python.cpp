@@ -327,7 +327,7 @@ void export_send_prop()
 
 void export_entity_generator()
 {
-	BOOST_GENERATOR_CLASS(Entities)
+	BOOST_GENERATOR_CLASS(CEntityGenerator)
 		CLASS_CONSTRUCTOR(const char*)
 		CLASS_CONSTRUCTOR(const char*, bool)
 	BOOST_END_CLASS()

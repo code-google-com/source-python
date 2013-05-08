@@ -188,6 +188,6 @@ void export_playerinfo()
 
 void export_player_generator()
 {
-	BOOST_GENERATOR_CLASS(Players)
+	BOOST_GENERATOR_CLASS(CPlayerGenerator)
 	BOOST_END_CLASS()
 }
