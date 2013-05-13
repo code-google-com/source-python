@@ -1,59 +1,56 @@
 # ../_libs/messages/types/showmenu.py
 
-# =============================================================================
+# ============================================================================
 # >> IMPORTS
-# =============================================================================
+# ============================================================================
 # Source.Python Imports
-from core import GameEngine
 #   Messages
 from messages.base import BaseMessage
-from messages.base import MessageTypes
 
 
-# =============================================================================
+# ============================================================================
 # >> CLASSES
-# =============================================================================
+# ============================================================================
 class ShowMenu(BaseMessage):
-    '''Class used to send HintText messages'''
-
-    def __init__(self, message, duration=0, slots=[], users=(), **tokens):
-        '''Initializes the class instance and stores the given values'''
-
-        # Store all the base attributes
-        self.message = message
-        self.duration = duration
-        self.slots = slots
-        self.users = users
-        self.tokens = tokens
-
-    def _send_message(self, recipients, message):
-        '''Sends the message to the given recipients'''
-
-        # Create the UserMessage
-        UserMessage = self._get_usermsg_instance(recipients)
-
-        # Write the message to the UserMessage
-        UserMessage.WriteString(message)
-
-        # Send the message to the recipients
-        GameEngine.MessageEnd()
-
-    def _send_protobuf_message(self, recipients, message):
-        '''Sends a protobuf message to the given recipients'''
-
-        # Get the usermessage instance
-        UserMessage = self._get_protobuf_instance()
-
-        # Set the slots to be used
-        UserMessage.set_bits_valid_slots(
-            sum((1 << slot for slot in self.slots)))
-
-        # Set the display time
-        UserMessage.set_display_time(self.duration)
-
-        # Set the message's text
-        UserMessage.set_menu_string(message)
-
-        # Send the message
-        GameEngine.SendUserMessage(
-            recipients, MessageTypes[self.__class__.__name__], UserMessage)
+    '''Class used to send a ShowMenu message'''
+    
+    def _prepare_parameter(self, parameter_name, parameter_value):
+        '''Prepare the given parameter value'''
+        
+        # Is the given parameter 'slots'?
+        if parameter_name == 'slots':
+            
+            # Is the given value not an integer?
+            if not isinstance(parameter_value, int):
+                
+                # Get a variable to store the validated slots
+                validated_slots = 0
+                
+                # Loop trhough all valid slots
+                for slot in range(*map(int, self._valid_slots_range)):
+                    
+                    # Is the current slot not given?
+                    if slot not in parameter_value:
+                        
+                        # No need to go further
+                        continue
+                        
+                    # Add the current slot to the validated ones
+                    validated_slots += 1 << (slot - 1)
+                    
+                # Override the given value
+                parameter_value = validated_slots
+                
+        # Prepare the given value
+        return super(ShowMenu, self)._prepare_parameter(parameter_name,
+            parameter_value)
+            
+            
+    def _send_message(self, recipient, **kwargs):
+        '''Send the message to the given recipient filter'''
+        
+        # TODO: Once we can listen menuselect, refresh the menu based on
+        #   self._refreshing_time till we get a selection.
+        
+        # Send the message to the given recipient
+        super(ShowMenu, self)._send_message(recipient, **kwargs)
