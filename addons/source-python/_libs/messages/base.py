@@ -1,272 +1,589 @@
 # ../_libs/messages/base.py
 
-# =============================================================================
+# ============================================================================
 # >> IMPORTS
-# =============================================================================
+# ============================================================================
 # Python Imports
-#   String
-from string import Template
+#   Collections
+from collections import ChainMap
+from collections import defaultdict
+from collections import OrderedDict
+#   ConfigObj
+from configobj import ConfigObj
+from configobj import Section
+#   Imports
+from imp import load_source
+#   Path
+from path import path
 
 # Source.Python Imports
-from Source import Engine
-from Source import Player
+from core import echo_console
 from core import GameEngine
-from core import GAME_NAME
-from cvars import ServerVar
+from excepthooks import ExceptHooks
+#   UserMessage
+from usermessage_c import CUserMessage
 #   Filters
-from filters.recipients import get_recipients
+from filters.recipients import RecipientFilter
 #   Translations
 from translations.strings import TranslationStrings
 
-# Try to import Usermessages for the protobuf system
-try:
-    from Source import Usermessages
-except:
-    Usermessages = None
 
-
-# =============================================================================
+# ============================================================================
+# >> GLOBAL VARIABLES
+# ============================================================================
+# Store the fieldtype converters
+_fieldtypes = dict(bool=bool, char=str, byte=int, short=int, long=int,
+    float=float, buffer=object, string=str)
+    
+    
+# ============================================================================
 # >> CLASSES
-# =============================================================================
-class _MessageTypes(dict):
-    '''Dictionary class used to store UserMessage types with their index'''
-
-    def __init__(self):
-        '''Gets all user message indexes and stores them in the dictionary'''
-
-        # Is the protobuf system implemented for the current engine?
-        if not Usermessages is None:
-
-            # Import necessary objects
-            from configobj import ConfigObj
-            from paths import DATA_PATH
-
-            # Get the messages data
-            _UserMessageData = ConfigObj(
-                DATA_PATH.joinpath('messages', GAME_NAME + '.ini'))
-
-            # Get the class that stores usermessages
-            _UserMessageTypes = getattr(
-                Usermessages, _UserMessageData['Usermessages'])
-
-            # Get the message names
-            _UserMessageNames = dict(zip(
-                _UserMessageTypes.names.values(),
-                _UserMessageTypes.names.keys()))
-
-            # Loop through all usermessage indexes
-            for index in _UserMessageTypes.values:
-
-                # Get the message's full name
-                value = _UserMessageNames[_UserMessageTypes.values[index]]
-
-                # Remove the prefix from the message name
-                value = value.replace(_UserMessageData['type_prefix'], '')
-
-                # Add the message name and index to the dictionary
-                self[value] = index
-
-            # Set the message prefix
-            self._message_prefix = _UserMessageData['message_prefix']
-
-        # Is the protobuf system not implemented in the current engine?
-        else:
-
-            # Set a base value to increment
-            index = 0
-
-            # Use a while statement to increment the index
-            while True:
-
-                # Get the message name of the current index
-                value = Engine.UserMessageOfIndex(index)
-
-                # Is the index invalid?
-                if value is None:
-
-                    # Break at this point, since the
-                    # last index has been reached
-                    break
-
-                # Add the message name and index to the dictionary
-                self[value] = index
-
-                # Increase the index
-                index += 1
-
-# Get the _MessageTypes instance
-MessageTypes = _MessageTypes()
-
-
-class BaseMessage(object):
+# ============================================================================
+class _UserMessages(dict):
+    '''Class used to store the message classes'''
+    
+    def __init__(self, file_path, *args, **kwargs):
+        '''Parse the given files and store the parsed message classes'''
+        
+        # Parse the given file
+        parsed_messages = ConfigObj(file_path)
+        
+        # Loop through all given arguments
+        for file_path in args:
+            
+            # Parse and merge the current file
+            parsed_messages.merge(ConfigObj(file_path))
+            
+        # Get the ../messages/types/ base path
+        base_path = path(__file__).parent.joinpath('types')
+        
+        # Loop through all messages
+        for message_name, message_data in parsed_messages.items():
+            
+            # Get the current message class data
+            class_data = message_data.get('MESSAGE_CLASS', None)
+            
+            # Any class to import?
+            if class_data is not None:
+                
+                # Import the current message class
+                message_class = getattr(load_source(message_name,
+                    base_path.joinpath(class_data[0])), class_data[1])
+                    
+                # Delete the class data as we are done with it
+                del message_data['MESSAGE_CLASS']
+                
+            # Otherwise
+            else:
+                
+                # Use the base class
+                message_class = BaseMessage
+                
+            # Get an ordered dictionnary to store the parameters
+            required_parameters = OrderedDict()
+            
+            # Get the required parameters
+            message_parameters = message_data.get('REQUIRED_PARAMETERS',
+                None)
+                
+            # Get a set to store the translatable parameters
+            translatable_parameters = set()
+            
+            # Any required parameters?
+            if message_parameters is not None:
+                
+                # Delete the required parameters from the message data
+                del message_data['REQUIRED_PARAMETERS']
+                
+                # Loop through all required parameters
+                for parameter_name in message_parameters:
+                    
+                    # Get the current parameter data
+                    parameter_data = message_data.get(parameter_name)
+                    
+                    # Delete the current parameter data
+                    del message_data[parameter_name]
+                    
+                    # Get the current parameter length
+                    parameter_length = int(parameter_data.get('length', '1'))
+                    
+                    # Is the current parameter larger than one value?
+                    if parameter_length > 1:
+                        
+                        # Get the the current parameter values
+                        default_values = parameter_data['default_values']
+                        
+                        # Loop through all required values
+                        for parameter_index, parameter_type in zip(range(
+                            parameter_length), parameter_data['types']):
+                            
+                            # Convert the current value
+                            default_values[parameter_index] = _fieldtypes[
+                                parameter_type](default_values[
+                                    parameter_index])
+                                    
+                        # Store the current parameter data
+                        required_parameters[parameter_name] = dict(
+                            default_values=default_values,
+                                types=parameter_data['types'])
+                                
+                    # Otherwise
+                    else:
+                        
+                        # Get the current parameter type
+                        parameter_type = parameter_data['type']
+                        
+                        # Is the current parameter translatable?
+                        if parameter_type == 'string':
+                            
+                            # Add the current parameter to the translatables
+                            translatable_parameters.add(parameter_name)
+                            
+                        # Store the current parameter data
+                        required_parameters[parameter_name] = dict(
+                            default_value=_fieldtypes[parameter_type](
+                                parameter_data['default_value']),
+                                    type=parameter_type)
+                                    
+                    # Store more data
+                    required_parameters[parameter_name].update(dict(
+                        length=parameter_length,
+                            field_name=parameter_data.get('field_name', '')))
+                            
+            # Get a dictionnary to store the special parameters
+            special_parameters = dict()
+            
+            # Get the special parameters
+            message_parameters = message_data.get('SPECIAL_PARAMETERS', None)
+            
+            # Any special parameters?
+            if message_parameters is not None:
+                
+                # Delete the special parameters from the message data
+                del message_data['SPECIAL_PARAMETERS']
+                
+                # Loop through all special parameters
+                for parameter_name in message_parameters:
+                    
+                    # Set the current parameter value
+                    special_parameters[parameter_name] = message_data.get(
+                        parameter_name, None)
+                        
+                    # Is the current parameter value None?
+                    if special_parameters[parameter_name] is None:
+                        
+                        # No need to go further
+                        continue
+                        
+                    # Delete the current parameter data
+                    del message_data[parameter_name]
+                    
+            # Store the current message class
+            self[message_name] = type(message_name, (message_class,), dict(
+                _message_name=message_name,
+                    _required_parameters=required_parameters,
+                        _translatable_parameters=translatable_parameters,
+                            _special_parameters=special_parameters,
+                                **message_data))
+                                
+                                
+class BaseMessage(dict):
     '''Base message class'''
-
-    def __new__(cls, *args, **kw):
-        '''Verifies that the message type exists for the
-            current game before returning a class instance'''
-
-        # Get the message type
-        index = MessageTypes[cls.__name__]
-
-        # Was the message type found?
-        if index == -1:
-
-            # If not, raise an error
-            raise NotImplementedError(
-                'UserMessage type "%s" is' % cls.__name__ +
-                ' not implemented for game "%s"' % GAME_NAME)
-
-        self = object.__new__(cls)
-        self.__init__(*args, **kw)
-
-        # Set the class' message index
-        self._message_index = index
-
-        # Return the class
-        return self
-
-    def send(self, users=None):
-        '''Called when the message should be sent to users'''
-
-        # Were any users passed?
-        if users is None:
-
-            # Use the instance's specified users
-            users = self.users
-
-        # Get a recipient filter for the given users
-        recipients = get_recipients(users)
-
-        # Does the message contain lang strings?
-        if isinstance(self.message, TranslationStrings):
-
-            # Get all languages and recipient indexes for each language
-            recipient_languages = self._get_recipients_per_language(recipients)
-
-            # Loop through all languages needed to be sent
-            for language in recipient_languages:
-
-                # Get a recipient filter instance for the current recipients
-                recipients = get_recipients(*recipient_languages[language])
-
-                # Get the proper message for the current language
-                message = self.message.get_string(language, **self.tokens)
-
+    
+    def __init__(self, *args, **kwargs):
+        '''Parse and store the given parameters'''
+        
+        # Get a list of the given arguments
+        arguments = list(args)
+        
+        # Loop through all required parameters
+        for parameter_name in self._required_parameters:
+            
+            # Get the current parameter data
+            parameter_data = self._required_parameters[parameter_name]
+            
+            # Get the current parameter length
+            parameter_length = parameter_data['length']
+            
+            # Is the current parameter larger than one value?
+            if parameter_length > 1:
+                
+                # Get the current parameter default values
+                default_values = parameter_data['default_values']
+                
+                # Is the current parameter given as keyword?
+                if parameter_name in kwargs:
+                    
+                    # Get the given values
+                    parameter_values = kwargs[parameter_name]
+                    
+                    # Delete the current parameter from the keywords
+                    del kwargs[parameter_name]
+                    
+                # Otherwise, any arguments?
+                elif arguments:
+                    
+                    # Get the given values
+                    parameter_values = arguments[:parameter_length]
+                    
+                    # Get the given parameters length
+                    values_length = len(parameter_values)
+                    
+                    # Remove the values from the given arguments
+                    arguments = arguments[values_length:]
+                    
+                    # Make sure we have enough values
+                    parameter_values += default_values[values_length:]
+                    
+                # Otherwise
+                else:
+                    
+                    # use the default values
+                    parameter_values = default_values
+                    
+                # Set the current parameter value
+                self[parameter_name] = parameter_values
+                
+            # Otherwise
+            else:
+                
+                # Is the current parameter given as keyword?
+                if parameter_name in kwargs:
+                    
+                    # Get the current parameter value
+                    parameter_value = kwargs[parameter_name]
+                    
+                    # Delete the keyword as we are done with it
+                    del kwargs[parameter_name]
+                    
+                # Otherwise, any arguments?
+                elif arguments:
+                    
+                    # Get the given value
+                    parameter_value = arguments.pop()
+                    
+                # Otherwise
+                else:
+                    
+                    # Use the default value
+                    parameter_value = parameter_data['default_value']
+                    
+                # Set the current parameter value
+                self[parameter_name] = parameter_value
+                
+        # Get a set to store the given users
+        users = set()
+        
+        # Is the users given as keyword?
+        if 'users' in kwargs:
+            
+            # Get the given users
+            users = kwargs['users']
+            
+            # Delete the users from the keywords
+            del kwargs['users']
+            
+        # Otherwise, any arguments?
+        elif arguments:
+            
+            # Get the given users
+            users = arguments
+            
+        # Set the given users
+        super(BaseMessage, self).__setattr__('users', users)
+        
+        # Loop through all special parameters
+        for parameter_name in self._special_parameters:
+            
+            # Get a variable to store the current parameter value
+            parameter_value = self._special_parameters[parameter_name]
+            
+            # Is the current parameter not given?
+            if parameter_name in kwargs:
+                
+                # Get the given value
+                parameter_value = kwargs[parameter_name]
+                
+                # Delete the current parameter from the keywords
+                del kwargs[parameter_name]
+                
+            # Store the given value
+            self[parameter_name] = parameter_value
+            
+        # Set the given tokens
+        super(BaseMessage, self).__setattr__('tokens', kwargs)
+        
+        
+    def __getattr__(self, attribute):
+        '''Return the given parameter value'''
+        
+        # Try to return from an attribute first
+        try:
+            
+            # Return the given attribute value
+            return super(BaseMessage, self).__getattr__(attribute)
+            
+        # Was the given attribute not valid?
+        except AttributeError:
+            
+            # Return the given parameter value
+            return self[attribute]
+            
+            
+    def __setattr__(self, attribute, value):
+        '''Set the given parameter value'''
+        
+        # Is the given attribute valid?
+        if attribute in self.__dict__:
+            
+            # Set the given attribute value
+            super(BaseMessage, self).__setattr__(attribute, value)
+            
+        # Otherwise
+        else:
+            
+            # Set the given parameter value
+            self[attribute] = value
+            
+            
+    def __getitem__(self, item):
+        '''Return teh given parameter value'''
+        
+        # Is the given item a valid parameter?
+        if item in self or item in self._special_parameters:
+            
+            # Return the value of the given parameter
+            return super(BaseMessage, self).__getitem__(item)
+            
+        # Otherwise, is the given item matching a token?
+        elif item in self.tokens:
+            
+            # Return the value of the given token
+            return self.tokens[item]
+            
+        # Raise an error
+        raise KeyError('"%s" is not a valid "%s" parameter.' % (item,
+            self._message_name))
+            
+            
+    def __setitem__(self, item, value):
+        '''Set the given parameter to the given value'''
+        
+        # Is the given item a valid parameter?
+        if (item in self._required_parameters or
+            item in self._special_parameters):
+            
+            # Set the given parameter to the given value
+            super(BaseMessage, self).__setitem__(item, value)
+            
+        # Otherwise
+        else:
+            
+            # Assume it is a token
+            self.tokens[item] = value
+            
+            
+    def _prepare_parameter(self, parameter_name, parameter_value):
+        '''Prepare the given parameter value'''
+        
+        # Get the given parameter data
+        parameter_data = self._required_parameters[parameter_name]
+        
+        # Get the given parameter length
+        parameter_length = parameter_data['length']
+        
+        # Is the current parameter larger than one value?
+        if parameter_length > 1:
+            
+            # Is the given value not iterable?
+            if not hasattr(parameter_value, '__iter__'):
+                
+                # Convert the given parametervalue to a tuple
+                parameter_value = (parameter_value,)
+                
+            # Get a list of the given values
+            parameter_values = list(parameter_value)
+            
+            # Get the length of the values
+            values_length = len(parameter_values)
+            
+            # Not enough values?
+            if values_length < parameter_length:
+                
+                # Make sure we have enough value
+                parameter_values += parameter_data['default_values'][
+                    values_length:]
+                    
+            # Loop through all values
+            for parameter_index, parameter_type, parameter_value in zip(
+                range(parameter_length), parameter_data['types'],
+                    parameter_values):
+                    
+                # Convert the current value
+                parameter_values[parameter_index] = _fieldtypes[
+                    parameter_type](parameter_value)
+                    
+            # Set the return value
+            return_value = parameter_values
+            
+        # Otherwise
+        else:
+            
+            # Convert the given value
+            return_value = _fieldtypes[parameter_data['type']](
+                parameter_value)
+                
+        # Return the prepared value
+        return return_value
+        
+        
+    @staticmethod
+    def _write_field_value(usermsg, field_type, field_name, field_value,
+        field_index=-1):
+        '''Write the given field value to the given message'''
+        getattr(usermsg, 'set_' + field_type)(field_name, field_value,
+            field_index)
+            
+    def _send_message(self, recipient, **kwargs):
+        '''Send the message to the given recipient filter'''
+        
+        # Get a CUserMessage instance
+        usermsg = CUserMessage(recipient, self._message_name)
+        
+        # Loop through all required parameters
+        for parameter_name in self._required_parameters:
+            
+            # Get the current parameter data
+            parameter_data = self._required_parameters[parameter_name]
+            
+            # Get the current parameter length
+            parameter_length = parameter_data['length']
+            
+            # Is the current parameter larger than one value?
+            if parameter_length > 1:
+                
+                # Try to prepare the current parameter values
+                try:
+                    
+                    # Prepare the given values
+                    parameter_values = self._prepare_parameter(parameter_name,
+                        kwargs[parameter_name])
+                        
+                # I'm not really fan of this but, to prevent crashes, we need
+                #   to hook any exceptions that may occurs...
+                except:
+                    
+                    # Print the exception to the console
+                    ExceptHooks.print_exception()
+                    
+                    # Print a debugging message
+                    echo_console('"%s" is not a valid value for "%s.%s".' % (
+                        kwargs[parameter_name], self._message_name,
+                            parameter_name))
+                            
+                    # Use the default values
+                    parameter_values = self._prepare_parameter(parameter_name,
+                        parameter_data['default_values'])
+                        
+                # Get the current parameter field name
+                field_name = parameter_data['field_name']
+                
+                # Loop through all values
+                for parameter_index, parameter_type, parameter_value in zip(
+                    range(parameter_length), parameter_data['types'],
+                        parameter_values):
+                        
+                    # Write the current parameter
+                    self._write_field_value(usermsg, parameter_type,
+                        field_name, parameter_value, parameter_index)
+                        
+            # Otherwise
+            else:
+                
+                # Try to convert the given value
+                try:
+                    
+                    # Prepare the current parameter
+                    parameter_value = self._prepare_parameter(parameter_name,
+                        kwargs[parameter_name])
+                        
+                # I'm not really fan of this but, to prevent crashes, we need
+                #   to hook any exceptions that may occurs...
+                except:
+                    
+                    # Print the exception to the console
+                    ExceptHooks.print_exception()
+                    
+                    # Print a debugging message
+                    echo_console('"%s" is not a valid value for "%s.%s".' % (
+                        kwargs[parameter_name], self._message_name,
+                            parameter_name))
+                            
+                    # Use the default value
+                    parameter_value = self._prepare_parameter(parameter_name,
+                        parameter_data['default_value'])
+                        
+                # Write the current parameter
+                self._write_field_value(usermsg, parameter_data['type'],
+                    parameter_data['field_name'], parameter_value)
+                    
+        # Send the message
+        usermsg.send_message()
+        
+        
+    def send(self, *args, **kwargs):
+        '''Send the message to the given users'''
+        
+        # Get a recipient filter of the given users
+        recipient = RecipientFilter(*(args or self.users))
+        
+        # Any parameter to translate?
+        if self._translatable_parameters:
+            
+            # Get a default dictionnary to store the players
+            languages = defaultdict(set)
+            
+            # Get a mapping of the given tokens
+            tokens = ChainMap(kwargs, self.tokens)
+            
+            # Loop through all indexes
+            for index in recipient:
+                
+                # Add the current index
+                languages[GameEngine.get_client_convar_value(index,
+                    'cl_language')].add(index)
+                    
+            # Loop through all languages
+            for language, users in languages.items():
+                
+                # Get a dictionnary to store the translated strings
+                translated_parameters = dict()
+                
+                # Loop through all translatable parameter
+                for parameter_name in self._translatable_parameters:
+                    
+                    # Get the current parameter value
+                    parameter_value = self[parameter_name]
+                    
+                    # Is the current parameter not translatable?
+                    if not isinstance(parameter_value, TranslationStrings):
+                        
+                        # No need to go further
+                        continue
+                        
+                    # Translate the current parameter
+                    translated_parameters[parameter_name
+                        ] = parameter_value.get_string(language, **tokens)
+                        
+                # Update the recipient filter
+                recipient.update(*users)
+                
                 # Send the message
-                self._check_send_message(recipients, message)
-
-        # Is the message simply supposed to be sent
-        # to all players in the recipient filter?
+                self._send_message(recipient, **ChainMap(
+                    translated_parameters, self))
+                    
+        # Otherwise
         else:
-
-            # Get the message
-            message = Template(self.message)
-
-            # Add the tokens to the message
-            message = message.substitute(self.tokens)
-
-            # Send the message to the recipients
-            self._check_send_message(recipients, message)
-
-    def _get_recipients_per_language(self, recipients):
-        '''Returns a dictionary of player languages
-            with each player index for a language'''
-
-        # Get an instance of RecipientLanguages
-        recipient_languages = _RecipientLanguages()
-
-        # Loop through all slots in the given recipient filter
-        for slot in range(recipients.GetRecipientCount()):
-
-            # Get the current slot's index
-            index = recipients.GetRecipientIndex(slot)
-
-            # Get the player's language
-            language = GameEngine.GetClientConVarValue(index, 'cl_language')
-
-            # Get the proper language for the current message for the player
-            language = self.message.get_language(language)
-
-            # Was a valid language found?
-            if not language is None:
-
-                # Add the index to the player's language's list
-                recipient_languages[language].append(index)
-
-        # Return the RecipientLanguages instance
-        return recipient_languages
-
-    def _get_player_message(self, index):
-        '''Returns the lang string for the current player index'''
-
-        # Get the player's language
-        language = GameEngine.GetClientConVarValue(index, 'cl_language')
-
-        # Return the proper lang string for the player
-        return self.message[language]
-
-    def _get_protobuf_instance(self):
-        '''Returns the proper usermessage instance for the usermessage type'''
-        return getattr(
-            Usermessages,
-            MessageTypes._message_prefix + self.__class__.__name__)()
-
-    def _get_usermsg_instance(self, recipients):
-        '''Returns the UserMessage instance base on the engine version'''
-
-        # Is this an older engine?
-        if ServerVar('sp_engine_ver').GetInt() < 3:
-
-            # Return using the older version of UserMessageBegin
-            return GameEngine.UserMessageBegin(recipients, self._message_index)
-
-        # Return using the newest version of UserMessageBegin
-        return GameEngine.UserMessageBegin(
-            recipients, self._message_index, None)
-
-    def _check_send_message(self, *args):
-        '''Verifies which type of message system should be used to send'''
-
-        # Is the protobuf system not implemented for the current engine?
-        if Usermessages is None:
-
-            # Use the base UserMessage system to send the message
-            self._send_message(*args)
-
-        # Is the protobuf system implemented for the current engine?
-        else:
-
-            # Use the protobuf system to send the message
-            self._send_protobuf_message(*args)
-
-
-class BaseMessageNoText(BaseMessage):
-    '''Base class used for UserMessages that do not send text'''
-
-    def send(self, users=None):
-        '''Called when the message should be sent to users'''
-
-        # Were any users passed?
-        if users is None:
-
-            # Use the instance's specified users
-            users = self.users
-
-        # Get a recipient filter for the given users
-        recipients = get_recipients(users)
-
-        # Send the message to the recipients
-        self._check_send_message(recipients)
-
-
-class _RecipientLanguages(dict):
-    '''Class used to store languages with player indexes for that language'''
-
-    def __missing__(self, item):
-        '''Overrides the __missing__ method to set the given item to a list'''
-
-        # Set the language to a list
-        value = self[item] = list()
-
-        # Return the list
-        return value
+            
+            # Send the message
+            self._send_message(recipient, **self)
