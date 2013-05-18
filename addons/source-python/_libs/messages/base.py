@@ -437,12 +437,12 @@ class BaseMessage(dict):
         return return_value
         
         
-    @staticmethod
-    def _write_field_value(usermsg, field_type, field_name, field_value,
-        field_index=-1):
+    def _write_field_value(self, parameter_name, usermsg, field_type,
+        field_name, field_value, field_index=-1):
         '''Write the given field value to the given message'''
         getattr(usermsg, 'set_' + field_type)(field_name, field_value,
             field_index)
+            
             
     def _send_message(self, recipient, **kwargs):
         '''Send the message to the given recipient filter'''
@@ -494,9 +494,10 @@ class BaseMessage(dict):
                         parameter_values):
                         
                     # Write the current parameter
-                    self._write_field_value(usermsg, parameter_type,
-                        field_name, parameter_value, parameter_index)
-                        
+                    self._write_field_value(parameter_name, usermsg,
+                        parameter_type, field_name, parameter_value,
+                            parameter_index)
+                            
             # Otherwise
             else:
                 
@@ -524,9 +525,10 @@ class BaseMessage(dict):
                         parameter_data['default_value'])
                         
                 # Write the current parameter
-                self._write_field_value(usermsg, parameter_data['type'],
-                    parameter_data['field_name'], parameter_value)
-                    
+                self._write_field_value(parameter_name, usermsg,
+                    parameter_data['type'], parameter_data['field_name'],
+                        parameter_value)
+                        
         # Send the message
         usermsg.send_message()
         
