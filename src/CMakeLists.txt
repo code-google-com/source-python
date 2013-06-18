@@ -199,6 +199,18 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Tick Listener module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS
+    core/modules/ticklisteners/ticklisteners_wrap.h
+)
+
+Set(SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES
+    core/modules/ticklisteners/ticklisteners_wrap.cpp
+    core/modules/ticklisteners/ticklisteners_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -216,6 +228,9 @@ Set(SOURCEPYTHON_MODULE_FILES
 
     ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS}
     ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES}
+
+    ${SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS}
+    ${SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -232,6 +247,7 @@ Source_Group("Header Files\\Module\\Event"	                FILES ${SOURCEPYTHON_
 Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\TickListeners"          FILES ${SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons" 		                FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -244,6 +260,7 @@ Source_Group("Source Files\\Module\\Event"	                FILES ${SOURCEPYTHON_
 Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\TickListeners"          FILES ${SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
