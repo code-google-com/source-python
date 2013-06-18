@@ -4,13 +4,14 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+from tick_c import CTickListenerManager
 from excepthooks import ExceptHooks
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _TickListeners(list):
+class _TickListeners(CTickListenerManager):
     '''Registers/unregisters tick listeners and fires them each tick'''
 
     def append(self, callback):
@@ -24,7 +25,7 @@ class _TickListeners(list):
                 'Cannot register tick-listener "' +
                 '%s", callback is already registered.' % callback.__name__)
 
-        # Is the listener callable?
+        # Is the listener callback?
         if not callable(callback):
 
             # If not, raise an error that the callback must be callable
@@ -32,7 +33,7 @@ class _TickListeners(list):
                 "'" + type(callback).__name__ + "' object is not callable")
 
         # Add the listener to the list
-        super(_TickListeners, self).append(callback)
+        self.add_listener(callback)
 
     def remove(self, callback):
         '''Removes a listener from the list'''
@@ -46,7 +47,24 @@ class _TickListeners(list):
                 '%s", callback is not registered.' % callback.__name__)
 
         # Remove the listener from the list
-        super(_TickListeners, self).remove(callback)
+        self.remove_listener(callback)
+
+    def __contains__(self, callback):
+        '''Returns whether or not the callback is registered'''
+        return self.is_registered(callback)
+
+    def __len__(self):
+        '''Returns the number of callbacks that are registered'''
+        return self.count()
+
+    def __iter__(self):
+        '''Iterates over all of the registered callbacks'''
+
+        # 
+        for index in range(len(self)):
+
+            # 
+            yield self.get_value_from_index(index)
 
     def call_tick_listeners(self):
         '''Calls all tick listeners in order'''

@@ -33,7 +33,7 @@
 #include "filesystem.h"
 #include "core/sp_gamedir.h"
 #include "utility/wrap_macros.h"
-#include "modules/events/events_wrap.h"
+#include "modules/ticklisteners/ticklisteners_wrap.h"
 
 //---------------------------------------------------------------------------------
 // External variables
@@ -66,13 +66,8 @@ CAddonManager::~CAddonManager( void )
 //---------------------------------------------------------------------------------
 void CAddonManager::GameFrame()
 {
-	// Pass that on to python.
-	python::object mainFile = g_PythonManager.GetSP();
-
-	// Execute tick_listener.
-	BEGIN_BOOST_PY()
-		mainFile.attr("tick_listener")();
-	END_BOOST_PY();
+	// Dispatch all tick listeners
+	CTickListenerManager().call_tick_listeners();
 }
 
 //---------------------------------------------------------------------------------
