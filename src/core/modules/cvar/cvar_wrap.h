@@ -112,10 +112,8 @@ public:
 	const char *get_name();
 	const char *get_help_text();
 
-	ConCommandBase* get_pointer();
-
 private:
-	ConCommandBase* m_ConCommandBase_ptr;
+	const char *m_Name;
 };
 
 //-----------------------------------------------------------------------------
