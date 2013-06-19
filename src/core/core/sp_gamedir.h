@@ -57,7 +57,7 @@ class CGamePaths
 		bool Initialize( void );
 
 		char* GetGameDir( void );
-		char* GetESDir( void );
+		char* GetSPDir( void );
 };
 
 //---------------------------------------------------------------------------------
