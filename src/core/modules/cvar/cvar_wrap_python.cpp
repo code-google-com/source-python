@@ -137,6 +137,12 @@ void export_convar()
 		)
 
 		CLASS_METHOD(CConVar,
+			remove_flags,
+			"Removes the given flags from the ConVar",
+			args("iFlags")
+		)
+
+		CLASS_METHOD(CConVar,
 			get_flags,
 			"Returns all flags for the ConVar"
 		)

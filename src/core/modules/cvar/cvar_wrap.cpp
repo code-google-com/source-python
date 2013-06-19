@@ -110,6 +110,12 @@ void CConVar::add_flags( int iFlags )
 	convar->AddFlags(iFlags);
 }
 
+void CConVar::remove_flags( int iFlags )
+{
+	ConCommandBase *convar = cvar->FindCommandBase(m_Name);
+	convar->RemoveFlags(iFlags);
+}
+
 int CConVar::get_flags()
 {
 	ConVar *convar = cvar->FindVar(m_Name);

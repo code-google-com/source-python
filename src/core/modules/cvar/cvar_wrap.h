@@ -64,6 +64,7 @@ public:
 
 	bool is_flag_set( int iFlag );
 	void add_flags( int iFlags );
+	void remove_flags( int iFlags );
 	int get_flags();
 
 	bool is_command();
