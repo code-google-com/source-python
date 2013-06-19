@@ -95,8 +95,7 @@ const char* CConVar::get_help_text()
 
 const char *CConVar::get_name()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
-	return convar->GetName();
+	return m_Name;
 }
 
 bool CConVar::is_flag_set( int iFlag )
@@ -221,12 +220,12 @@ CConCommandBase::CConCommandBase( const char *pName,
 		ConCommandBase *command = new ConCommandBase(pName, strdup(pHelpString), flags);
 	}
 
-	m_ConCommandBase_ptr = command;
+	m_Name = pName;
 }
 
 CConCommandBase::CConCommandBase( ConCommandBase* pConCommandBase )
 {
-	m_ConCommandBase_ptr = pConCommandBase;
+	m_Name = pConCommandBase->GetName();
 }
 
 //-----------------------------------------------------------------------------
@@ -234,47 +233,49 @@ CConCommandBase::CConCommandBase( ConCommandBase* pConCommandBase )
 //-----------------------------------------------------------------------------
 bool CConCommandBase::is_command()
 {
-	return m_ConCommandBase_ptr->IsCommand();
+	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	return command->IsCommand();
 }
 
 bool CConCommandBase::is_registered()
 {
-	return m_ConCommandBase_ptr->IsRegistered();
+	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	return command->IsRegistered();
 }
 
 bool CConCommandBase::is_flag_set( int iFlag )
 {
-	return m_ConCommandBase_ptr->IsFlagSet(iFlag);
+	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	return command->IsFlagSet(iFlag);
 }
 
 void CConCommandBase::add_flags( int iFlags )
 {
-	m_ConCommandBase_ptr->AddFlags(iFlags);
+	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	command->AddFlags(iFlags);
 }
 
 void CConCommandBase::remove_flags( int iFlags )
 {
-	m_ConCommandBase_ptr->RemoveFlags(iFlags);
+	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	command->RemoveFlags(iFlags);
 }
 
 int CConCommandBase::get_flags()
 {
-	return m_ConCommandBase_ptr->GetFlags();
+	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	return command->GetFlags();
 }
 
 const char *CConCommandBase::get_name()
 {
-	return m_ConCommandBase_ptr->GetName();
+	return m_Name;
 }
 
 const char *CConCommandBase::get_help_text()
 {
-	return m_ConCommandBase_ptr->GetHelpText();
-}
-
-ConCommandBase* CConCommandBase::get_pointer()
-{
-	return m_ConCommandBase_ptr;
+	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	return command->GetHelpText();
 }
 
 //-----------------------------------------------------------------------------
@@ -318,12 +319,14 @@ const char *CServerCommand::get_arg( int iIndex )
 //-----------------------------------------------------------------------------
 void CCvar::register_con_command( CConCommandBase *pCommandBase )
 {
-	cvar->RegisterConCommand(pCommandBase->get_pointer());
+	ConCommandBase* command = cvar->FindCommandBase(pCommandBase->get_name());
+	cvar->RegisterConCommand(command);
 }
 
 void CCvar::unregister_con_command( CConCommandBase *pCommandBase )
 {
-	cvar->UnregisterConCommand(pCommandBase->get_pointer());
+	ConCommandBase* command = cvar->FindCommandBase(pCommandBase->get_name());
+	cvar->UnregisterConCommand(command);
 }
 
 CConCommandBase *CCvar::find_command_base( const char *szName )
