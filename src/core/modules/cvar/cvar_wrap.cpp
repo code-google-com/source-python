@@ -77,10 +77,8 @@ CConVar::CConVar( const char *pName, const char *pDefaultValue, int flags,
 	ConVar *convar = cvar->FindVar(pName);
 	if( !convar )
 	{
-		char szHelpString[] = "";
-		strcpy(szHelpString, pHelpString);
 		ConVar *convar = new ConVar(pName, pDefaultValue, flags,
-			szHelpString, bMin, fMin, bMax, fMax);
+			strdup(pHelpString), bMin, fMin, bMax, fMax);
 	}
 
 	m_Name = pName;
@@ -220,9 +218,7 @@ CConCommandBase::CConCommandBase( const char *pName,
 	ConCommandBase *command = cvar->FindCommandBase(pName);
 	if( !command )
 	{
-		char szHelpString[] = "";
-		strcpy(szHelpString, pHelpString);
-		ConCommandBase *command = new ConCommandBase(pName, szHelpString, flags);
+		ConCommandBase *command = new ConCommandBase(pName, strdup(pHelpString), flags);
 	}
 
 	m_ConCommandBase_ptr = command;
