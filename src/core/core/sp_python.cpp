@@ -53,12 +53,12 @@ CPythonManager g_PythonManager;
 // PyMODINIT_FUNC PyInit_sp( void );
 
 //---------------------------------------------------------------------------------
-// Adds a path to sys.path (relative to g_GamePaths.GetESDir()).
+// Adds a path to sys.path (relative to g_GamePaths.GetSPDir()).
 //---------------------------------------------------------------------------------
 void AddToSysPath( const char* path )
 {
 	char szFolderPath[MAX_GAME_PATH];
-	V_snprintf(szFolderPath, MAX_GAME_PATH, "sys.path.insert(1, r\"%s/%s\")", g_GamePaths.GetESDir(), path);
+	V_snprintf(szFolderPath, MAX_GAME_PATH, "sys.path.insert(1, r\"%s/%s\")", g_GamePaths.GetSPDir(), path);
 	V_FixSlashes(szFolderPath);
 
 	DevMsg(1, "[SP] Adding %s to path\n", szFolderPath);
@@ -72,7 +72,7 @@ bool CPythonManager::Initialize( void )
 {
 	// Construct a path to the python engine directory.
 	char szPythonHome[MAX_GAME_PATH];
-	V_snprintf(szPythonHome, MAX_GAME_PATH, "%s/_engines", g_GamePaths.GetESDir());
+	V_snprintf(szPythonHome, MAX_GAME_PATH, "%s/_engines", g_GamePaths.GetSPDir());
 	V_FixSlashes(szPythonHome);
 	DevMsg(1, "[SP] Python home path set to %s\n", szPythonHome);
 

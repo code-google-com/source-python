@@ -75,7 +75,7 @@ char* CGamePaths::GetGameDir( void )
 //---------------------------------------------------------------------------------
 // Returns the path to the source-python addon directory.
 //---------------------------------------------------------------------------------
-char* CGamePaths::GetESDir( void )
+char* CGamePaths::GetSPDir( void )
 {
 	return m_szSPDir;
 }
