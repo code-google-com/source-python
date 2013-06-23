@@ -23,46 +23,39 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _CVAR_CONCOMMAND_H
-#define _CVAR_CONCOMMAND_H
+#ifndef _SERVER_COMMAND_H
+#define _SERVER_COMMAND_H
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Includes
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #include "boost/unordered_map.hpp"
 #include "utlvector.h"
-#include "utility/sp_util.h"
-#include "core/sp_python.h"
-#include "utility/wrap_macros.h"
 #include "convar.h"
+#include "utility/sp_util.h"
+#include "utility/wrap_macros.h"
 
-//---------------------------------------------------------------------------------
-// Namespaces to use.
-//---------------------------------------------------------------------------------
-using namespace boost::python;
-
-//---------------------------------------------------------------------------------
-// ConCommandManager class
-//---------------------------------------------------------------------------------
-class ConCommandManager: public ConCommand
+//-----------------------------------------------------------------------------
+// Server Command Manager class.
+//-----------------------------------------------------------------------------
+class ServerCommandManager : public ConCommand
 {
 public:
-	static ConCommandManager* CreateCommand(const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	~ConCommandManager();
+	static ServerCommandManager* CreateCommand(const char* szName, const char* szHelpString, int iFlags);
+	~ServerCommandManager();
 	virtual void Init();
 
-	void AddToStart(PyObject* pCallable);
-	void AddToEnd(PyObject* pCallable);
-	void Remove(PyObject* pCallable);
+	void add_callback(PyObject* pCallable);
+	void remove_callback(PyObject* pCallable);
 
 protected:
-	virtual void Dispatch(const CCommand &command);
+	void Dispatch(const CCommand &command);
 
 private:
-	ConCommandManager(ConCommand* pGameCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	CUtlVector<PyObject*>	m_vecCallables;
-	ConCommand*				m_pGameCommand;
-	unsigned int			m_uiGameCommandIndex;
+	ServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
+	CUtlVector<PyObject*> m_vecCallables;
+	const char* m_Name;
+	ConCommand* m_pOldCommand;
 };
 
-#endif // _CVAR_CONCOMMAND_H
+#endif // _SERVER_COMMAND_H

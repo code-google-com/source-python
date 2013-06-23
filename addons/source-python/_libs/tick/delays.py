@@ -8,9 +8,8 @@
 import time
 
 # Source.Python Imports
+from tick_c import CTickListenerManager
 from excepthooks import ExceptHooks
-#   Tick
-from tick.listeners import TickListeners
 
 
 # =============================================================================
@@ -76,7 +75,7 @@ class _TickDelays(dict):
         if not self:
 
             # Register the tick listener
-            TickListeners.register_tick_listener(self._tick)
+            CTickListenerManager.register_listener(self._tick)
 
         # Add the item to the dictionary as a _Times instance
         self[item] = _Times()
@@ -152,7 +151,7 @@ class _TickDelays(dict):
         if not self:
 
             # Unregister the tick listener
-            TickListeners.unregister_tick_listener(self._tick)
+            CTickListenerManager.unregister_listener(self._tick)
 
     def cancel_delay(self, delay_object):
         '''Method used to cancel a delay'''
@@ -183,7 +182,7 @@ class _TickDelays(dict):
         if not self:
 
             # Unregister the listener
-            TickListeners.unregister_tick_listener(self._tick)
+            CTickListenerManager.unregister_listener(self._tick)
 
 # Get the _TickDelays instance
 TickDelays = _TickDelays()

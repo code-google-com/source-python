@@ -49,6 +49,8 @@
 #include "public/toolframework/itoolentity.h"
 #include "dyncall.h"
 #include "networkstringtabledefs.h"
+#include "edict.h"
+#include "convar.h"
 
 //---------------------------------------------------------------------------------
 // Disable warnings.
@@ -86,8 +88,9 @@ extern ICvar* g_pCVar;
 //---------------------------------------------------------------------------------
 // Extern functions
 //---------------------------------------------------------------------------------
-extern void InitCVars();
+extern void InitCommands();
 extern void ClearAllCommands();
+extern PLUGIN_RESULT DispatchClientCommand(edict_t *pEntity, const CCommand &command);
 
 //---------------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -203,7 +206,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	gpGlobals = playerinfomanager->GetGlobalVars();
 
 	MathLib_Init( 2.2f, 2.2f, 0.0f, 2.0f );
-	InitCVars();
+	InitCommands();
 
 	// Initialize game paths.
 	if( !g_GamePaths.Initialize() ) {
@@ -384,7 +387,7 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 #if(SOURCE_ENGINE >= 1)
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
 {
-	return PLUGIN_CONTINUE;
+	return DispatchClientCommand(pEntity, args);
 }
 #else
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )

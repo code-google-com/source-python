@@ -35,8 +35,6 @@ from _core.commands import SPCommands
 from _core.settings import CoreSettings
 #   Translations
 from translations.manager import LanguageManager
-#   Tick
-from tick.listeners import TickListeners
 
 
 # =============================================================================
@@ -57,13 +55,6 @@ def plugin_load():
     # Set the default language
     LanguageManager._register_default_language(
         CoreSettings['BASE_SETTINGS']['language'])
-
-
-def tick_listener():
-    '''Called every tick'''
-
-    # Call all tick listeners
-    TickListeners.call_tick_listeners()
 
 
 # =============================================================================

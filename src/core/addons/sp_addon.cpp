@@ -67,7 +67,7 @@ CAddonManager::~CAddonManager( void )
 void CAddonManager::GameFrame()
 {
 	// Dispatch all tick listeners
-	CTickListenerManager().call_tick_listeners();
+	get_tick_listener_manager()->call_tick_listeners();
 }
 
 //---------------------------------------------------------------------------------

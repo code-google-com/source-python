@@ -48,42 +48,24 @@ DECLARE_SP_MODULE(tick_c)
 //-----------------------------------------------------------------------------
 void export_ticklistener()
 {
-	BOOST_CLASS_NOCOPY(CTickListenerManager)
+	BOOST_ABSTRACT_CLASS(CTickListenerManager)
 
 		CLASS_METHOD(CTickListenerManager,
-			add_listener,
+			register_listener,
 			"Adds the given callable to the end of the tick listener vector.",
 			args("pCallable")
 		)
 
 		CLASS_METHOD(CTickListenerManager,
-			remove_listener,
+			unregister_listener,
 			"Removes the given callable from the tick listener vector.",
 			args("pCallable")
 		)
 
-		CLASS_METHOD(CTickListenerManager,
-			is_registered,
-			"Returns whether or not the given callable is registered.",
-			args("pCallable")
-		)
-
-		CLASS_METHOD(CTickListenerManager,
-			count,
-			"Returns the number of registered callbacks."
-		)
-
-		CLASS_METHOD(CTickListenerManager,
-			get_value_from_index,
-			"Returns the callback from the given index.",
-			args("iIndex")
-		)
-
-		CLASS_METHOD(CTickListenerManager,
-			call_tick_listeners,
-			"Calls all registered listeners.  Exposed to be overwritten by Python API."
-		)
-
 	BOOST_END_CLASS()
 
+	BOOST_FUNCTION(get_tick_listener_manager,
+		"Returns the CTickListListenerManager instance",
+		reference_existing_object_policy()
+	);
 }

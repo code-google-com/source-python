@@ -29,53 +29,36 @@
 //-----------------------------------------------------------------------------
 #include "ticklisteners_wrap.h"
 
-CUtlVector<PyObject*> vecCallables;
+//-----------------------------------------------------------------------------
+// Static singletons.
+//-----------------------------------------------------------------------------
+static CTickListenerManager s_TickListenerManager;
+
+//-----------------------------------------------------------------------------
+// TickListenerManager accessor.
+//-----------------------------------------------------------------------------
+CTickListenerManager* get_tick_listener_manager()
+{
+	return &s_TickListenerManager;
+}
 
 //-----------------------------------------------------------------------------
 // Adds a callable to the end of the CTickListenerManager vector.
 //-----------------------------------------------------------------------------
-void CTickListenerManager::add_listener(PyObject* pCallable)
+void CTickListenerManager::register_listener(PyObject* pCallable)
 {
-	if( !vecCallables.HasElement(pCallable))
+	if( !m_vecCallables.HasElement(pCallable))
 	{
-		vecCallables.AddToTail(pCallable);
+		m_vecCallables.AddToTail(pCallable);
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Removes all instances of a callable from the CTickListenerManager vector.
 //-----------------------------------------------------------------------------
-void CTickListenerManager::remove_listener(PyObject* pCallable)
+void CTickListenerManager::unregister_listener(PyObject* pCallable)
 {
-	vecCallables.FindAndRemove(pCallable);
-}
-
-//-----------------------------------------------------------------------------
-// Returns whether or not the given callable is registered.
-//-----------------------------------------------------------------------------
-bool CTickListenerManager::is_registered(PyObject* pCallable)
-{
-	return vecCallables.HasElement(pCallable);
-}
-
-//-----------------------------------------------------------------------------
-// Returns the number of registered callbacks.
-//-----------------------------------------------------------------------------
-int CTickListenerManager::count()
-{
-	return vecCallables.Count();
-}
-
-//-----------------------------------------------------------------------------
-// Returns the callback from the given index.
-//-----------------------------------------------------------------------------
-PyObject* CTickListenerManager::get_value_from_index(int iIndex)
-{
-	if(iIndex > vecCallables.Count() - 1)
-	{
-		return NULL;
-	}
-	return vecCallables[iIndex];
+	m_vecCallables.FindAndRemove(pCallable);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,10 +66,10 @@ PyObject* CTickListenerManager::get_value_from_index(int iIndex)
 //-----------------------------------------------------------------------------
 void CTickListenerManager::call_tick_listeners()
 {
-	for(int i = 0; i < vecCallables.Count(); i++)
+	for(int i = 0; i < m_vecCallables.Count(); i++)
 	{
 		BEGIN_BOOST_PY()
-			call<void>(vecCallables[i]);
+			call<void>(m_vecCallables[i]);
 		END_BOOST_PY_NORET()
 	}
 }

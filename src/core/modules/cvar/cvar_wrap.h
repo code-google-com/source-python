@@ -35,7 +35,7 @@
 //-----------------------------------------------------------------------------
 // Externs
 //-----------------------------------------------------------------------------
-extern ICvar* cvar;
+extern ICvar* g_pCVar;
 
 //-----------------------------------------------------------------------------
 // CConVar class.
@@ -115,24 +115,6 @@ public:
 
 private:
 	const char *m_Name;
-};
-
-//-----------------------------------------------------------------------------
-// CServerCommand class.
-//-----------------------------------------------------------------------------
-class CServerCommand
-{
-public:
-	CServerCommand();
-	CServerCommand( CCommand* command );
-
-	int get_arg_count();
-	const char *get_arg_string();
-	const char *get_command_string();
-	const char *get_arg( int iIndex );
-
-private:
-	CCommand* m_CCommand_ptr;
 };
 
 //-----------------------------------------------------------------------------
