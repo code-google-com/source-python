@@ -108,7 +108,7 @@ void export_command()
 		.value("BLOCK", BLOCK)
 		;
 
-	BOOST_ABSTRACT_CLASS(CICommand)
+	BOOST_CLASS(CICommand)
 
 		CLASS_METHOD(CICommand,
 			get_arg_count,

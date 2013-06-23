@@ -27,6 +27,8 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include <iostream>
+#include <string>
 #include "convar.h"
 #include "say_command_wrap.h"
 #include "server_command_wrap.h"
@@ -238,7 +240,15 @@ void SayConCommand::Dispatch( const CCommand &command )
 	}
 
 	// Get the name of the command used
-	const char* szCommand = command.Arg(1);
+	std::string szCommandString (command.Arg(1));
+
+	// Copy the string to get a char instance
+	char * szCopyCommandString = new char [szCommandString.length() + 1];
+	std::strcpy(szCopyCommandString, szCommandString.c_str());
+
+	// Split the command using <space> as the delimiter
+	// This should be the actual Say Command
+	char * szCommand = std::strtok(szCopyCommandString, " ");
 
 	// Find if the command is registered
 	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
