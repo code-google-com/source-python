@@ -23,32 +23,54 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _TICKLISTENER_MANAGER_H
-#define _TICKLISTENER_MANAGER_H
+#ifndef _COMMAND_WRAP_H
+#define _COMMAND_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
+#include "convar.h"
 #include "utlvector.h"
 #include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
 
 //-----------------------------------------------------------------------------
-// CTickListenerManager class
+// Return values.
 //-----------------------------------------------------------------------------
-class CTickListenerManager
+enum CommandReturn
+{
+	CONTINUE = 0,
+	BLOCK
+};
+
+//-----------------------------------------------------------------------------
+// CICommand class.
+//-----------------------------------------------------------------------------
+class CICommand
 {
 public:
+	CICommand();
+	CICommand( const CCommand* command );
 
-	void register_listener(PyObject* pCallable);
-	void unregister_listener(PyObject* pCallable);
-
-	void call_tick_listeners();
+	int get_arg_count();
+	const char *get_arg_string();
+	const char *get_command_string();
+	const char *get_arg( int iIndex );
 
 private:
+	const CCommand* m_CCommand_ptr;
+};
+
+//-----------------------------------------------------------------------------
+// Base Filter class.
+//-----------------------------------------------------------------------------
+class BaseFilters
+{
+public:
+	void register_filter(PyObject* pCallable);
+	void unregister_filter(PyObject* pCallable);
+
 	CUtlVector<PyObject*> m_vecCallables;
 };
 
-CTickListenerManager* get_tick_listener_manager();
-
-#endif // _TICKLISTENER_MANAGER_H
+#endif // _COMMAND_WRAP_H

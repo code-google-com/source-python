@@ -48,7 +48,6 @@ CCvar* get_cvar_interface()
 //-----------------------------------------------------------------------------
 void export_cvar_interface();
 void export_convar();
-void export_command();
 void export_concommandbase();
 void export_flags();
 
@@ -59,7 +58,6 @@ DECLARE_SP_MODULE(cvar_c)
 {
 	export_cvar_interface();
 	export_convar();
-	export_command();
 	export_concommandbase();
 	export_flags();
 }
@@ -227,37 +225,6 @@ void export_convar()
 			"Returns the maximum float value for the ConVar"
 		)
 */
-
-	BOOST_END_CLASS()
-}
-
-//-----------------------------------------------------------------------------
-// Exposes the CConCommand interface.
-//-----------------------------------------------------------------------------
-void export_command()
-{
-	BOOST_CLASS(CServerCommand)
-
-		CLASS_METHOD(CServerCommand,
-			get_arg_count,
-			"Returns the number of arguments in the command"
-		)
-
-		CLASS_METHOD(CServerCommand,
-			get_arg_string,
-			"Returns the argument string for the command (does not include the command itself)"
-		)
-
-		CLASS_METHOD(CServerCommand,
-			get_command_string,
-			"Returns the entire command string"
-		)
-
-		CLASS_METHOD(CServerCommand,
-			get_arg,
-			"Gets the value of the argument at the given index",
-			args("iIndex")
-		)
 
 	BOOST_END_CLASS()
 }

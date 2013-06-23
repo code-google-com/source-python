@@ -87,17 +87,33 @@ Set(SOURCEPYTHON_ADDON_FILES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_GENERIC_HEADERS
 	core/modules/export_main.h
-	core/modules/cvar/cvar_concommand.h
 )
 
 Set(SOURCEPYTHON_GENERIC_SOURCES
 	core/modules/export_main.cpp
-	core/modules/cvar/cvar_concommand.cpp
 )
 
 Set(SOURCEPYTHON_GENERIC_FILES
 	${SOURCEPYTHON_GENERIC_HEADERS}
 	${SOURCEPYTHON_GENERIC_SOURCES}
+)
+
+# ------------------------------------------------------------------
+# Command module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_COMMAND_MODULE_HEADERS
+    core/modules/commands/client_command_wrap.h
+    core/modules/commands/command_wrap.h
+    core/modules/commands/say_command_wrap.h
+    core/modules/commands/server_command_wrap.h
+)
+
+Set(SOURCEPYTHON_COMMAND_MODULE_SOURCES
+    core/modules/commands/client_command_wrap.cpp
+    core/modules/commands/command_wrap.cpp
+    core/modules/commands/command_wrap_python.cpp
+    core/modules/commands/say_command_wrap.cpp
+    core/modules/commands/server_command_wrap.cpp
 )
 
 # ------------------------------------------------------------------
@@ -226,6 +242,9 @@ Set(SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
+    ${SOURCEPYTHON_COMMAND_MODULE_HEADERS}
+    ${SOURCEPYTHON_COMMAND_MODULE_SOURCES}
+
     ${SOURCEPYTHON_CVAR_MODULE_HEADERS}
     ${SOURCEPYTHON_CVAR_MODULE_SOURCES}
 
@@ -256,6 +275,7 @@ Source_Group("Header Files\\Addons"			                FILES ${SOURCEPYTHON_ADDON
 Source_Group("Header Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_HEADERS})
 Source_Group("Header Files\\Util"   		                FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"		                FILES ${SOURCEPYTHON_GENERIC_HEADERS})
+Source_Group("Header Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Cvar"	                FILES ${SOURCEPYTHON_CVAR_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS})
@@ -269,6 +289,7 @@ Source_Group("Source Files\\Addons" 		                FILES ${SOURCEPYTHON_ADDON
 Source_Group("Source Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_SOURCES})
 Source_Group("Source Files\\Util"   		                FILES ${SOURCEPYTHON_UTIL_SOURCES})
 Source_Group("Source Files\\Generic"		                FILES ${SOURCEPYTHON_GENERIC_SOURCES})
+Source_Group("Source Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Cvar"	                FILES ${SOURCEPYTHON_CVAR_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES})

@@ -23,32 +23,64 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _TICKLISTENER_MANAGER_H
-#define _TICKLISTENER_MANAGER_H
 
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "utlvector.h"
-#include "utility/sp_util.h"
-#include "utility/wrap_macros.h"
+#include "command_wrap.h"
+#include "core/sp_main.h"
 
 //-----------------------------------------------------------------------------
-// CTickListenerManager class
+// CICommand constructors.
 //-----------------------------------------------------------------------------
-class CTickListenerManager
+CICommand::CICommand()
 {
-public:
+	m_CCommand_ptr = NULL;
+}
 
-	void register_listener(PyObject* pCallable);
-	void unregister_listener(PyObject* pCallable);
+CICommand::CICommand( const CCommand* command )
+{
+	m_CCommand_ptr = command;
+}
 
-	void call_tick_listeners();
+//-----------------------------------------------------------------------------
+// CICommand methods.
+//-----------------------------------------------------------------------------
+int CICommand::get_arg_count()
+{
+	return m_CCommand_ptr->ArgC();
+}
 
-private:
-	CUtlVector<PyObject*> m_vecCallables;
-};
+const char *CICommand::get_arg_string()
+{
+	return m_CCommand_ptr->ArgS();
+}
 
-CTickListenerManager* get_tick_listener_manager();
+const char *CICommand::get_command_string()
+{
+	return m_CCommand_ptr->GetCommandString();
+}
 
-#endif // _TICKLISTENER_MANAGER_H
+const char *CICommand::get_arg( int iIndex )
+{
+	return m_CCommand_ptr->Arg(iIndex);
+}
+
+//-----------------------------------------------------------------------------
+// Registers a Filter.
+//-----------------------------------------------------------------------------
+void BaseFilters::register_filter(PyObject* pCallable)
+{
+	if( !m_vecCallables.HasElement(pCallable) )
+	{
+		m_vecCallables.AddToTail(pCallable);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Unregisters a Filter.
+//-----------------------------------------------------------------------------
+void BaseFilters::unregister_filter(PyObject* pCallable)
+{
+	m_vecCallables.FindAndRemove(pCallable);
+}

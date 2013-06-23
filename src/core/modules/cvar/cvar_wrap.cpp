@@ -39,7 +39,7 @@ CConVar::CConVar( ConVar* pConVar )
 
 CConVar::CConVar( const char *pName )
 {
-	ConVar *convar = cvar->FindVar(pName);
+	ConVar *convar = g_pCVar->FindVar(pName);
 	if( !convar )
 	{
 		ConVar *convar = new ConVar(pName, "0", 0);
@@ -50,7 +50,7 @@ CConVar::CConVar( const char *pName )
 
 CConVar::CConVar( const char *pName, const char *pDefaultValue, int flags )
 {
-	ConVar *convar = cvar->FindVar(pName);
+	ConVar *convar = g_pCVar->FindVar(pName);
 	if( !convar )
 	{
 		ConVar *convar = new ConVar(pName, pDefaultValue, flags);
@@ -62,7 +62,7 @@ CConVar::CConVar( const char *pName, const char *pDefaultValue, int flags )
 CConVar::CConVar( const char *pName, const char *pDefaultValue,
 		int flags, const char *pHelpString )
 {
-	ConVar *convar = cvar->FindVar(pName);
+	ConVar *convar = g_pCVar->FindVar(pName);
 	if( !convar )
 	{
 		ConVar *convar = new ConVar(pName, pDefaultValue, flags, strdup(pHelpString));
@@ -74,7 +74,7 @@ CConVar::CConVar( const char *pName, const char *pDefaultValue,
 CConVar::CConVar( const char *pName, const char *pDefaultValue, int flags,
 		const char *pHelpString, bool bMin, float fMin, bool bMax, float fMax )
 {
-	ConVar *convar = cvar->FindVar(pName);
+	ConVar *convar = g_pCVar->FindVar(pName);
 	if( !convar )
 	{
 		ConVar *convar = new ConVar(pName, pDefaultValue, flags,
@@ -89,7 +89,7 @@ CConVar::CConVar( const char *pName, const char *pDefaultValue, int flags,
 //-----------------------------------------------------------------------------
 const char* CConVar::get_help_text()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->GetHelpText();
 }
 
@@ -100,116 +100,116 @@ const char *CConVar::get_name()
 
 bool CConVar::is_flag_set( int iFlag )
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->IsFlagSet(iFlag);
 }
 
 void CConVar::add_flags( int iFlags )
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	convar->AddFlags(iFlags);
 }
 
 void CConVar::remove_flags( int iFlags )
 {
-	ConCommandBase *convar = cvar->FindCommandBase(m_Name);
+	ConCommandBase *convar = g_pCVar->FindCommandBase(m_Name);
 	convar->RemoveFlags(iFlags);
 }
 
 int CConVar::get_flags()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->GetFlags();
 }
 
 bool CConVar::is_command()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->IsCommand();
 }
 
 float CConVar::get_float()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->GetFloat();
 }
 
 int CConVar::get_int()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->GetInt();
 }
 
 bool CConVar::get_bool()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->GetBool();
 }
 
 char const *CConVar::get_string()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->GetString();
 }
 
 void CConVar::set_float( float flValue )
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	convar->SetValue(flValue);
 }
 
 void CConVar::set_int( int iValue )
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	convar->SetValue(iValue);
 }
 
 void CConVar::set_bool( bool bValue )
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	convar->SetValue(bValue);
 }
 
 void CConVar::set_string( const char *szValue )
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	convar->SetValue(szValue);
 }
 
 void CConVar::revert()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	convar->Revert();
 }
 
 const char *CConVar::get_default()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->GetDefault();
 }
 
 /*
 bool CConVar::has_min()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->HasMin();
 }
 
 bool CConVar::has_max()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->HasMax();
 }
 
 float CConVar::get_min_value()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->GetMinValue();
 }
 
 float CConVar::get_max_value()
 {
-	ConVar *convar = cvar->FindVar(m_Name);
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	return convar->GetMaxValue();
 }
 */
@@ -220,7 +220,7 @@ float CConVar::get_max_value()
 CConCommandBase::CConCommandBase( const char *pName,
 	const char *pHelpString, int flags )
 {
-	ConCommandBase *command = cvar->FindCommandBase(pName);
+	ConCommandBase *command = g_pCVar->FindCommandBase(pName);
 	if( !command )
 	{
 		ConCommandBase *command = new ConCommandBase(pName, strdup(pHelpString), flags);
@@ -239,37 +239,37 @@ CConCommandBase::CConCommandBase( ConCommandBase* pConCommandBase )
 //-----------------------------------------------------------------------------
 bool CConCommandBase::is_command()
 {
-	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
 	return command->IsCommand();
 }
 
 bool CConCommandBase::is_registered()
 {
-	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
 	return command->IsRegistered();
 }
 
 bool CConCommandBase::is_flag_set( int iFlag )
 {
-	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
 	return command->IsFlagSet(iFlag);
 }
 
 void CConCommandBase::add_flags( int iFlags )
 {
-	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
 	command->AddFlags(iFlags);
 }
 
 void CConCommandBase::remove_flags( int iFlags )
 {
-	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
 	command->RemoveFlags(iFlags);
 }
 
 int CConCommandBase::get_flags()
 {
-	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
 	return command->GetFlags();
 }
 
@@ -280,44 +280,8 @@ const char *CConCommandBase::get_name()
 
 const char *CConCommandBase::get_help_text()
 {
-	ConCommandBase* command = cvar->FindCommandBase(m_Name);
+	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
 	return command->GetHelpText();
-}
-
-//-----------------------------------------------------------------------------
-// CServerCommand constructors.
-//-----------------------------------------------------------------------------
-CServerCommand::CServerCommand()
-{
-	m_CCommand_ptr = NULL;
-}
-
-CServerCommand::CServerCommand( CCommand* command )
-{
-	m_CCommand_ptr = command;
-}
-
-//-----------------------------------------------------------------------------
-// CServerCommand methods.
-//-----------------------------------------------------------------------------
-int CServerCommand::get_arg_count()
-{
-	return m_CCommand_ptr->ArgC();
-}
-
-const char *CServerCommand::get_arg_string()
-{
-	return m_CCommand_ptr->ArgS();
-}
-
-const char *CServerCommand::get_command_string()
-{
-	return m_CCommand_ptr->GetCommandString();
-}
-
-const char *CServerCommand::get_arg( int iIndex )
-{
-	return m_CCommand_ptr->Arg(iIndex);
 }
 
 //-----------------------------------------------------------------------------
@@ -325,19 +289,19 @@ const char *CServerCommand::get_arg( int iIndex )
 //-----------------------------------------------------------------------------
 void CCvar::register_con_command( CConCommandBase *pCommandBase )
 {
-	ConCommandBase* command = cvar->FindCommandBase(pCommandBase->get_name());
-	cvar->RegisterConCommand(command);
+	ConCommandBase* command = g_pCVar->FindCommandBase(pCommandBase->get_name());
+	g_pCVar->RegisterConCommand(command);
 }
 
 void CCvar::unregister_con_command( CConCommandBase *pCommandBase )
 {
-	ConCommandBase* command = cvar->FindCommandBase(pCommandBase->get_name());
-	cvar->UnregisterConCommand(command);
+	ConCommandBase* command = g_pCVar->FindCommandBase(pCommandBase->get_name());
+	g_pCVar->UnregisterConCommand(command);
 }
 
 CConCommandBase *CCvar::find_command_base( const char *szName )
 {
-	ConCommandBase *pCommandBase = cvar->FindCommandBase(szName);
+	ConCommandBase *pCommandBase = g_pCVar->FindCommandBase(szName);
 	if( !pCommandBase )
 	{
 		return NULL;
@@ -349,7 +313,7 @@ CConCommandBase *CCvar::find_command_base( const char *szName )
 
 CConVar *CCvar::find_var( const char *szName )
 {
-	ConVar *pConVar = cvar->FindVar(szName);
+	ConVar *pConVar = g_pCVar->FindVar(szName);
 	if( !pConVar )
 	{
 		return NULL;

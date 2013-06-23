@@ -23,32 +23,39 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _TICKLISTENER_MANAGER_H
-#define _TICKLISTENER_MANAGER_H
+#ifndef _CLIENT_COMMAND_H
+#define _CLIENT_COMMAND_H
 
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "utlvector.h"
+#include "boost/unordered_map.hpp"
+#include "core/sp_python.h"
 #include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
+#include "utlvector.h"
+#include "edict.h"
+#include "convar.h"
+#include "command_wrap.h"
+#include "modules/entities/entities_wrap.h"
 
 //-----------------------------------------------------------------------------
-// CTickListenerManager class
+// Client Command Manager class.
 //-----------------------------------------------------------------------------
-class CTickListenerManager
+class ClientCommandManager
 {
 public:
+	ClientCommandManager(const char* szName);
+	~ClientCommandManager();
 
-	void register_listener(PyObject* pCallable);
-	void unregister_listener(PyObject* pCallable);
+	void add_callback(PyObject* pCallable);
+	void remove_callback(PyObject* pCallable);
 
-	void call_tick_listeners();
+	CommandReturn Dispatch(CEdict* entity, CICommand* ccommand);
 
 private:
 	CUtlVector<PyObject*> m_vecCallables;
+	const char* m_Name;
 };
 
-CTickListenerManager* get_tick_listener_manager();
-
-#endif // _TICKLISTENER_MANAGER_H
+#endif // _CLIENT_COMMAND_H

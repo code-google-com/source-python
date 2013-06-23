@@ -23,32 +23,68 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _TICKLISTENER_MANAGER_H
-#define _TICKLISTENER_MANAGER_H
+#ifndef _SAY_COMMAND_H
+#define _SAY_COMMAND_H
 
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
+#include "boost/unordered_map.hpp"
 #include "utlvector.h"
+#include "command_wrap.h"
 #include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
 
 //-----------------------------------------------------------------------------
-// CTickListenerManager class
+// Say ConCommand instance class.
 //-----------------------------------------------------------------------------
-class CTickListenerManager
+class SayConCommand: public ConCommand
 {
 public:
+	static SayConCommand* CreateCommand(const char* szName, const char* szHelpText, int iFlags);
+	~SayConCommand();
+	virtual void Init();
 
-	void register_listener(PyObject* pCallable);
-	void unregister_listener(PyObject* pCallable);
-
-	void call_tick_listeners();
+protected:
+	void Dispatch( const CCommand &command );
 
 private:
+	SayConCommand(ConCommand* pConCommand, const char* szName, const char* szHelpText, int iFlags);
+	const char* m_Name;
+	ConCommand* m_pOldCommand;
+};
+
+//-----------------------------------------------------------------------------
+// Base Say Command Manager class.
+//-----------------------------------------------------------------------------
+class BaseSayCommand
+{
+public:
+	void RegisterCommands();
+	void UnregisterCommands();
+
+private:
+	SayConCommand* m_pSayCommand;
+	SayConCommand* m_pTeamSayCommand;
+};
+
+//-----------------------------------------------------------------------------
+// Say Command Manager class.
+//-----------------------------------------------------------------------------
+class SayCommandManager
+{
+public:
+	SayCommandManager(const char* szName);
+	~SayCommandManager();
+
+	void add_callback(PyObject* pCallable);
+	void remove_callback(PyObject* pCallable);
+
+	CommandReturn Dispatch(int iIndex, bool bTeamOnly, CICommand* ccommand);
+
+private:
+	const char* m_Name;
 	CUtlVector<PyObject*> m_vecCallables;
 };
 
-CTickListenerManager* get_tick_listener_manager();
-
-#endif // _TICKLISTENER_MANAGER_H
+#endif // _SAY_COMMAND_H
