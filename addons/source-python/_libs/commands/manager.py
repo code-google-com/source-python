@@ -141,14 +141,26 @@ class _CallbackList(list):
         # Loop through each callback in the list
         for callback in self:
 
-            # Call the callback and get its return value
-            return_value = callback(*args)
+            # Use try/except to continue the loop in case of an error
+            try:
 
-            # Is the command supposed to be blocked?
-            if not return_value:
+                # Call the callback and get its return value
+                return_value = callback(*args)
 
-                # Block the command
-                return CommandReturn.BLOCK
+            # Was an error encountered?
+            except:
+
+                # Print the exception to the console
+                ExceptHooks.print_exception()
+
+            # Was no error encountered?
+            else:
+
+                # Does the command need blocked?
+                if not return_value:
+
+                    # Block the command
+                    return CommandReturn.BLOCK
 
         # Allow the command to continue
         return CommandReturn.CONTINUE
