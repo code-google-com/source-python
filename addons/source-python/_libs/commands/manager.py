@@ -96,14 +96,14 @@ class _BaseCommandManager(dict):
             if not self._CallbackManager is None:
 
                 # Loop through each callback in the command's list
-                for callable in self[name]:
+                for registered_callback in self[name]:
 
                     # Is the current callback an
                     # instance for the given callback?
-                    if callable.callback == callback:
+                    if registered_callback.callback == callback:
 
                         # Set the callback's instance to the current callback
-                        callback = callable
+                        callback = registered_callback
 
                         # Break the loop
                         break
