@@ -4,8 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from tick_c import CTickListenerManager
 from core import AutoUnload
+#   Tick
+from tick.delays import TickListenerManager
 
 
 # =============================================================================
@@ -28,7 +29,7 @@ class Tick(AutoUnload):
         self.callback = callback
 
         # Register the tick listener
-        CTickListenerManager.register_listener(self.callback)
+        TickListenerManager.register_listener(self.callback)
 
     def __call__(self):
         '''Calls the tick listener'''
@@ -40,4 +41,4 @@ class Tick(AutoUnload):
         '''Unregisters the tick listener'''
 
         # Unregister the tick listener
-        CTickListenerManager.unregister_listener(self.callback)
+        TickListenerManager.unregister_listener(self.callback)
