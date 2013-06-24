@@ -34,10 +34,19 @@ class _ExceptHooks(list):
         '''Hook the append method to verify the given callback is callable'''
 
         # Is the given callback callable?
-        if callable(callback):
+        if not callable(callback):
 
-            # Add the callback to the list
-            super(_ExceptHooks, self).append(callback)
+            # Raise an exception
+            raise ValueError('ExceptHook callbacks must be callable')
+
+        # Is the given callback already registered?
+        if callback in self:
+
+            # Raise an exception
+            raise ValueError('ExceptHook callback already registered')
+
+        # Add the callback to the list
+        super(_ExceptHooks, self).append(callback)
 
     def print_exception(
             self, exctype=None, value=None,

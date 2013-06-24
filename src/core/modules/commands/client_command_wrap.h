@@ -54,7 +54,7 @@ public:
 	CommandReturn Dispatch(CEdict* entity, CICommand* ccommand);
 
 private:
-	CUtlVector<PyObject*> m_vecCallables;
+	CUtlVector<object> m_vecCallables;
 	const char* m_Name;
 };
 

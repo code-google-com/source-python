@@ -226,8 +226,31 @@ void SayConCommand::Dispatch( const CCommand &command )
 	{
 		BEGIN_BOOST_PY()
 
-			// Call the current Say Filter
-			object returnValue = call<object>(s_SayFilters.m_vecCallables[i], iIndex, bTeamOnly, ccommand);
+			// Get the PyObject instance of the callable
+			PyObject* pCallable = s_SayFilters.m_vecCallables[i].ptr();
+
+			// Store a return value
+			object returnValue;
+
+			// Is the object an instance or class method?
+			if(PyObject_HasAttrString(pCallable, "__self__"))
+			{
+				// Get the class' instance
+				PyObject *oClassInstance = PyObject_GetAttrString(pCallable, "__self__");
+
+				// Get the name of the method needed to be called
+				PyObject *oMethodName = PyObject_GetAttrString(pCallable, "__name__");
+				const char* szMethodName = extract<const char*>(oMethodName);
+
+				// Call the callable
+				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, iIndex, bTeamOnly, ccommand);
+			}
+
+			else
+			{
+				// Call the callable
+				returnValue = call<object>(pCallable, iIndex, bTeamOnly, ccommand);
+			}
 
 			// Does the current Say Filter wish to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
@@ -293,9 +316,14 @@ SayCommandManager::~SayCommandManager()
 //-----------------------------------------------------------------------------
 void SayCommandManager::add_callback( PyObject* pCallable )
 {
-	if( !m_vecCallables.HasElement(pCallable) )
+	// Get the object instance of the callable
+	object oCallable = object(handle<>(borrowed(pCallable)));
+
+	// Is the callable already in the vector?
+	if( !m_vecCallables.HasElement(oCallable) )
 	{
-		m_vecCallables.AddToTail(pCallable);
+		// Add the callable to the vector
+		m_vecCallables.AddToTail(oCallable);
 	}
 }
 
@@ -304,8 +332,11 @@ void SayCommandManager::add_callback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 void SayCommandManager::remove_callback( PyObject* pCallable )
 {
-	// Remove the callback from the SayCommandManager instance
-	m_vecCallables.FindAndRemove(pCallable);
+	// Get the object instance of the callable
+	object oCallable = object(handle<>(borrowed(pCallable)));
+
+	// Remove the callback from the ServerCommandManager instance
+	m_vecCallables.FindAndRemove(oCallable);
 
 	// Are there any more callbacks registered for this command?
 	if( !m_vecCallables.Count() )
@@ -325,8 +356,31 @@ CommandReturn SayCommandManager::Dispatch( int iIndex, bool bTeamOnly, CICommand
 	{
 		BEGIN_BOOST_PY()
 
-			// Call the callable
-			object returnValue = call<object>(m_vecCallables[i], iIndex, bTeamOnly, ccommand);
+			// Get the PyObject instance of the callable
+			PyObject* pCallable = m_vecCallables[i].ptr();
+
+			// Store a return value
+			object returnValue;
+
+			// Is the object an instance or class method?
+			if(PyObject_HasAttrString(pCallable, "__self__"))
+			{
+				// Get the class' instance
+				PyObject *oClassInstance = PyObject_GetAttrString(pCallable, "__self__");
+
+				// Get the name of the method needed to be called
+				PyObject *oMethodName = PyObject_GetAttrString(pCallable, "__name__");
+				const char* szMethodName = extract<const char*>(oMethodName);
+
+				// Call the callable
+				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, iIndex, bTeamOnly, ccommand);
+			}
+
+			else
+			{
+				// Call the callable
+				returnValue = call<object>(pCallable, iIndex, bTeamOnly, ccommand);
+			}
 
 			// Does the callable wish to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
