@@ -46,7 +46,7 @@ public:
 	void call_tick_listeners();
 
 private:
-	CUtlVector<PyObject*> m_vecCallables;
+	CUtlVector<object> m_vecCallables;
 };
 
 CTickListenerManager* get_tick_listener_manager();
