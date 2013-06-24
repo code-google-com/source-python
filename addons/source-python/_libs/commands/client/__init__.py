@@ -6,5 +6,5 @@
 # Source.Python Imports
 #   Commands
 from commands.client.command import ClientCommand
-from commands.client.filters import ClientCommandFilter
+from commands.client.filter import ClientCommandFilter
 from commands.client.manager import ClientCommandManager

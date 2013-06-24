@@ -7,7 +7,7 @@
 from command_c import get_say_command
 from command_c import register_say_filter
 from command_c import unregister_say_filter
-# Commands
+#   Commands
 from commands.player import _PlayerCommandManager
 
 

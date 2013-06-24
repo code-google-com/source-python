@@ -7,7 +7,7 @@
 from command_c import get_client_command
 from command_c import register_client_command_filter
 from command_c import unregister_client_command_filter
-# Commands
+#   Commands
 from commands.player import _PlayerCommandManager
 
 

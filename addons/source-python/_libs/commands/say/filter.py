@@ -1,19 +1,19 @@
-# ../_libs/commands/client/filters.py
+# ../_libs/commands/say/filter.py
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-# Commands
-from commands.filters import _BaseFilter
-from commands.client.manager import ClientCommandManager
+#   Commands
+from commands.filter import _BaseFilter
+from commands.say.manager import SayCommandManager
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class ClientCommandFilter(_BaseFilter):
-    '''Class used to register a client command filter'''
+class SayFilter(_BaseFilter):
+    '''Class used to register a say filter'''
 
-    # Store the class used to (un)register client command filters
-    _ManagerClass = ClientCommandManager
+    # Store the class used to (un)register say filters
+    _ManagerClass = SayCommandManager
