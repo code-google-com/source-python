@@ -37,53 +37,15 @@ from _core.settings import CoreSettings
 from translations.manager import LanguageManager
 
 
-# =============================================================================
-# >> CORE FUNCTIONS
-# =============================================================================
-def plugin_load():
-    '''Called when the plugin is finished loading'''
+# Get the auth providers that should be loaded
+auth_providers = CoreSettings['AUTH_SETTINGS']['providers'].split()
 
-    # Get the auth providers that should be loaded
-    auth_providers = CoreSettings['AUTH_SETTINGS']['providers'].split()
+# Should any providers be loaded?
+if auth_providers:
 
-    # Should any providers be loaded?
-    if auth_providers:
+    # Load the auth providers
+    SPCommands.call_command('auth', ['load'] + auth_providers)
 
-        # Load the auth providers
-        SPCommands.call_command('auth', ['load'] + auth_providers)
-
-    # Set the default language
-    LanguageManager._register_default_language(
-        CoreSettings['BASE_SETTINGS']['language'])
-
-
-# =============================================================================
-# >> SP CONSOLE COMMAND FUNCTIONS
-# =============================================================================
-def sp_command(arg_string):
-    '''Called when a user executes sp'''
-
-    # Use try to split, in case there is nothing to split
-    try:
-
-        # Get the arguments and the command
-        command, args = arg_string.split(maxsplit=1)
-
-    # Was an exception raised?
-    except:
-
-        # Set the command as the text, since there
-        # are either 1 or 0 arguments in the string
-        command = arg_string.strip()
-
-        # Set the arguments to an empty string
-        args = ''
-
-    # Get the arguments as a list
-    args = args.split()
-
-    # Make the command lower-case for comparison
-    command = command.lower()
-
-    # execute the called command
-    SPCommands.call_command(command, args)
+# Set the default language
+LanguageManager._register_default_language(
+    CoreSettings['BASE_SETTINGS']['language'])

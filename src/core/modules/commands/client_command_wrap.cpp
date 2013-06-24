@@ -119,7 +119,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 			object returnValue = call<object>(s_ClientCommandFilters.m_vecCallables[i], entity, ccommand);
 
 			// Does the Client Command Filter want to block the command?
-			if( extract<int>(returnValue) == (int)BLOCK)
+			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
 			{
 				// Block the command
 				return PLUGIN_STOP;
@@ -205,7 +205,7 @@ CommandReturn ClientCommandManager::Dispatch( CEdict* entity, CICommand* ccomman
 			object returnValue = call<object>(m_vecCallables[i], entity, ccommand);
 
 			// Does the callable wish to block the command?
-			if( extract<int>(returnValue) == (int)BLOCK)
+			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
 			{
 				// Block the command
 				return BLOCK;

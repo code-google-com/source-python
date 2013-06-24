@@ -225,7 +225,7 @@ void ServerCommandManager::Dispatch( const CCommand &command )
 				object returnValue = call<object>(m_vecCallables[i], ccommand);
 
 				// Does the callable wish to block the command?
-				if( extract<int>(returnValue) == (int)BLOCK)
+				if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
 				{
 					// Block the command
 					break;

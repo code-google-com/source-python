@@ -12,6 +12,7 @@ from collections import OrderedDict
 from configobj import ConfigObj
 
 # Source.Python Imports
+from command_c import get_server_command
 from core import echo_console
 from paths import DATA_PATH
 #   Addons
@@ -129,6 +130,48 @@ class _SPCommands(OrderedDict):
 
         # Send ending message
         echo_console('=' * 76)
+
+# Get the _SPCommands instance
+SPCommands = _SPCommands()
+
+
+# =============================================================================
+# >> MAIN FUNCTION
+# =============================================================================
+def _sp_command_callback(CICommand):
+    '''Called when the sp command is executed on the server'''
+
+    # Get the argument string
+    arg_string = CICommand.get_arg_string()
+
+    # Use try to split, in case there is nothing to split
+    try:
+
+        # Get the arguments and the command
+        command, args = arg_string.split(maxsplit=1)
+
+    # Was an exception raised?
+    except:
+
+        # Set the command as the text, since there
+        # are either 1 or 0 arguments in the string
+        command = arg_string.strip()
+
+        # Set the arguments to an empty string
+        args = ''
+
+    # Get the arguments as a list
+    args = args.split()
+
+    # Make the command lower-case for comparison
+    command = command.lower()
+
+    # execute the called command
+    SPCommands.call_command(command, args)
+
+# Register the "sp" command
+_sp_command = get_server_command('sp', 'Source.Python base command.', 0)
+_sp_command.add_callback(_sp_command_callback)
 
 
 # =============================================================================
@@ -283,9 +326,6 @@ def _print_credits():
 
     # Print the ending message
     echo_console('=' * 61 + '\n')
-
-# Get the _SPCommands instance
-SPCommands = _SPCommands()
 
 # Add addon loading/unloading commands to the dictionary
 SPCommands['load'] = _load_addon

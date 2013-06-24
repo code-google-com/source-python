@@ -210,13 +210,13 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	// Initialize game paths.
 	if( !g_GamePaths.Initialize() ) {
-		Msg("Could not initialize game paths.");
+		DevMsg(0, "Could not initialize game paths.");
 		return false;
 	}
 
 	// Initialize python
 	if( !g_PythonManager.Initialize() ) {
-		Msg("Could not initialize python.");
+		DevMsg(0, "Could not initialize python.");
 		return false;
 	}
 
@@ -367,7 +367,7 @@ PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const 
 void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
-	Msg( "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
+	DevMsg(0, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
 }
 
 //---------------------------------------------------------------------------------
