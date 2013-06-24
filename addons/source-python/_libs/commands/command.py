@@ -10,43 +10,28 @@ from core import AutoUnload
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _CommandAutoUnload(AutoUnload):
-    '''Class used to auto-unregister commands on script unload'''
+class _BaseCommand(AutoUnload):
+    '''Base decorator class used to register commands'''
 
-    def __init__(self, class_instance):
-        '''Stores the instantiating class' unregister method'''
-        self._unload_instance = class_instance._unregister_command
+    def __init__(self, names, *args):
+        '''Stores the base values for the decorator'''
 
+        # Store the names
+        self.names = names
 
-class _CommandRegistration(object):
-    '''Base command registration class'''
+        # Store the arguments
+        self.args = args
 
     def __call__(self, callback):
-        '''Registers the command to the given callback'''
+        '''Registers the commands to the given callback'''
 
         # Store the callback
         self.callback = callback
 
-        # Get the auto unload instance
-        self._autounload_instance = _CommandAutoUnload(self)
-
-        self._RegistrationClass.register_command(
+        # Register the commands
+        self._ManagerClass.register_commands(
             self.names, self.callback, *self.args)
 
-        # Return the decorator instance of this class
-        return self._autounload_instance
-
-    def _unregister_command(self):
-        '''Unregisters the instance from the commands'''
-        self._RegistrationClass.unregister_command(self.names, self.callback)
-
-
-class _PlayerCommandRegistration(_CommandRegistration):
-    '''Base Player command registration class'''
-
-    def __init__(
-        self, names, level=None, permission=None,
-            flag=None, fail_callback=None):
-        '''Stores the given arguments'''
-        self.names = names
-        self.args = (level, permission, flag, fail_callback)
+    def _unload_instance(self):
+        '''Unregisters the commands'''
+        self._ManagerClass.unregister_commands(self.names, self.callback)

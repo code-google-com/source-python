@@ -5,14 +5,15 @@
 # =============================================================================
 # Source.Python Imports
 #   Commands
-from commands.command import _PlayerCommandRegistration
-from commands.say.manager import SayCommandRegistry
+from commands.command import _BaseCommand
+from commands.say.manager import SayCommandManager
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class SayCommand(_PlayerCommandRegistration):
-    '''Class used to register say commands using a decorator'''
+class SayCommand(_BaseCommand):
+    '''Decorator class used to register a say command'''
 
-    _RegistrationClass = SayCommandRegistry
+    # Store the class used to (un)register say commands
+    _ManagerClass = SayCommandManager

@@ -4,97 +4,175 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from excepthooks import ExceptHooks
+from command_c import CommandReturn
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _CommandRegistry(object):
-    '''Base registry class used to store commands in a dictionary'''
+class _BaseCommandManager(dict):
+    '''Class used to (un)register commands'''
 
-    def __init__(self):
-        '''Create the commands dictionary for this instance'''
-        self._commands = dict()
+    # Store the base attributes
+    _use_args = True
+    _CallbackManager = None
 
-    def is_registered(self, command):
-        '''Returns whether a command is registered'''
-        return command in self._commands
+    def register_commands(self, names, callback, *args):
+        '''Registers the given commands to the given callback'''
+
+        # Was a single command name given?
+        if isinstance(names, str):
+
+            # Store the command as a list
+            names = [names]
+
+        # Are the names of a proper iterable type?
+        if not type(names) in (list, tuple):
+
+            # Raise an error
+            raise TypeError(
+                '%s commands must be passed as a ' % type(self).__name__ +
+                'list, tuple, or string, not "%s"' % type(names).__name__)
+
+        # Is there a specified callback manager for this class?
+        if not self._CallbackManager is None:
+
+            # Get the callback manager's instance for the given callback
+            callback = self._CallbackManager(callback, *args)
+
+        # Loop through the given names
+        for name in names:
+
+            # Is the command already registered?
+            if not name in self:
+
+                # Are the arguments supposed to be used
+                # when getting the command instance?
+                if self._use_args:
+
+                    # Get the command using the arguments
+                    command = self._get_command(name, *args)
+
+                # Are the arguments not supposed to be used?
+                else:
+
+                    # Get the command without the arguments
+                    command = self._get_command(name)
+
+                # Add the command to the dictionary
+                self[name] = _CallbackList(command)
+
+            # Add the callback to the command's list of callbacks
+            self[name].append(callback)
 
 
-class _CommandList(list):
-    '''Base list class used to store a list of callbacks for a command'''
+    def unregister_commands(self, names, callback):
+        '''Unregisters the given commands from the given callback'''
 
-    def __init__(self, name):
-        '''Get the instance of the command'''
-        self._command = self._get_command_instance(name)
+        # Was a single command name given?
+        if isinstance(names, str):
 
-    def append(self, item):
-        '''Override append to add the instance's callback to
-            the command if it is not currently registered'''
+            # Store the command as a list
+            names = [names]
 
-        # Is the list empty?
-        if not self:
+        # Are the names of a proper iterable type?
+        if not type(names) in (list, tuple):
 
-            # Add the list's callback to the command's callback list
-            self._command.AddToEnd(self._command_called)
+            # Raise an error
+            raise TypeError(
+                '%s commands must be passed as a ' % type(self).__name__ +
+                'list, tuple, or string, not "%s"' % type(names).__name__)
 
-        # Is the item already in the list?
-        if not item in self:
+        # Loop through all given names
+        for name in names:
 
-            # Add the item to the list
-            super(_CommandList, self).append(item)
+            # Is the command registered?
+            if not name in self:
 
-    def remove(self, item):
-        '''Override remove to remove the instance's callback from
-            the command if there are no longer any items in the list'''
+                # Raise an error
+                raise KeyError('Command "%s" not registered' % name)
 
-        # Is the item in the list?
-        if not item in self:
+            # Is there a specified callback manager for this class?
+            if not self._CallbackManager is None:
 
-            # If not, no need to remove it
-            return
+                # Loop through each callback in the command's list
+                for callable in self[name]:
 
-        # Remove the item from the list
-        super(_CommandList, self).remove(item)
+                    # Is the current callback an
+                    # instance for the given callback?
+                    if callable.callback == callback:
 
-        # Are there any callbacks in the list?
-        if not self:
+                        # Set the callback's instance to the current callback
+                        callback = callable
 
-            # If not, remove the list's callback
-            # from the command's callback list
-            self._command.Remove(self._command_called)
+                        # Break the loop
+                        break
 
-    def _command_called(self, *args):
-        '''Method used to call all callbacks in the list'''
+            # Remove the callback from the command's list
+            self[name].remove(callback)
 
-        # Set the starting return value
-        return_val = True
+            # Are there any more callbacks registered to the command?
+            if not self[name]:
 
-        # Loop through the callbacks in the list
+                # Remove the callback from the command's callback
+                self[name].command.remove_callback(self[name])
+
+                # Remove the command from the dictionary
+                del self[name]
+
+
+class _CallbackList(list):
+    '''List class used to store'''
+
+    def __init__(self, command):
+        '''
+            Stores the given command and registers the instance to the command
+        '''
+
+        # Store the command
+        self.command = command
+
+        # Add the instance to the command's callback list
+        self.command.add_callback(self)
+
+    def __call__(self, *args):
+        '''Calls all callbacks for the command'''
+
+        # Loop through each callback in the list
         for callback in self:
 
-            # Use try/except in case an error is encountered during a callback
-            try:
+            # Call the callback and get its return value
+            return_value = callback(*args)
 
-                # Call the callback
-                return_type = callback(*args)
+            # Is the command supposed to be blocked?
+            if not return_value:
 
-                # Get the updated return value
-                return_val = return_val and (
-                    return_type is None or bool(return_type))
+                # Block the command
+                return CommandReturn.BLOCK
 
-            # Was an error encountered?
-            except:
+        # Allow the command to continue
+        return CommandReturn.CONTINUE
 
-                # Print the exception to the console
-                ExceptHooks.print_exception()
+    def append(self, callback):
+        '''Adds a callback to the list'''
 
-        # Should the "CONTINUE" value be returned?
-        if return_val:
+        # Is the callback already in the list?
+        if callback in self:
 
-            # Return the "CONTINUE" value
-            return self._ContinueValue
+            # Raise an error
+            raise ValueError('Callback already registered to command')
 
-        # Return the "BLOCK" value
-        return self._BlockValue
+        # Add the callback to the list
+        super(_CallbackList, self).append(callback)
+
+    def remove(self, callback):
+        '''Removes a callback from the list'''
+
+        # Is the callback in the list?
+        if not callback in self:
+
+            # Raise an error
+            raise ValueError('Callback not registered to command')
+
+        # Remove the callback from the list
+        super(_CallbackList, self).remove(callback)

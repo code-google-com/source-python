@@ -187,7 +187,8 @@ void export_client_command()
 	BOOST_FUNCTION(get_client_command,
 		"Returns the ClientCommandManager instance for the given command",
 		args("szName"),
-		reference_existing_object_policy());
+		reference_existing_object_policy()
+	);
 
 	BOOST_FUNCTION(register_client_command_filter,
 		"Registers a callable to be called when clients use commands.",
@@ -224,7 +225,8 @@ void export_say_command()
 	BOOST_FUNCTION(get_say_command,
 		"Returns the SayCommandManager instance for the given command",
 		args("szName"),
-		reference_existing_object_policy());
+		reference_existing_object_policy()
+	);
 
 	BOOST_FUNCTION(register_say_filter,
 		"Registers a callable to be called when clients use the say commands (say, say_team).",
