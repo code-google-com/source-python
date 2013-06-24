@@ -1,19 +1,19 @@
-# ../_libs/commands/player.py
+# ../_libs/commands/say/filters.py
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
 # Commands
-from commands.manager import _BaseCommandManager
-from commands.auth import _AuthCallback
+from commands.filters import _BaseFilter
+from commands.say.manager import SayCommandManager
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _PlayerCommandManager(_BaseCommandManager):
-    ''''''
+class SayFilter(_BaseFilter):
+    '''Class used to register a say filter'''
 
-    _CallbackManager = _AuthCallback
-    _use_args = False
+    # Store the class used to (un)register say filters
+    _ManagerClass = SayCommandManager

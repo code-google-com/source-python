@@ -6,4 +6,4 @@
 # Source.Python Imports
 #   Commands
 from commands.server.command import ServerCommand
-from commands.server.manager import ServerCommandRegistry
+from commands.server.manager import ServerCommandManager

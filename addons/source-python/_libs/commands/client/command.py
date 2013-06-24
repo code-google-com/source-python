@@ -5,14 +5,15 @@
 # =============================================================================
 # Source.Python Imports
 #   Commands
-from commands.command import _PlayerCommandRegistration
-from commands.client.manager import ClientCommandRegistry
+from commands.command import _BaseCommand
+from commands.client.manager import ClientCommandManager
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class ClientCommand(_PlayerCommandRegistration):
-    '''Class used to register server commands using a decorator'''
+class ClientCommand(_BaseCommand):
+    '''Decorator class used to register a client command'''
 
-    _RegistrationClass = ClientCommandRegistry
+    # Store the class used to (un)register client commands
+    _ManagerClass = ClientCommandManager

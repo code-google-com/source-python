@@ -1,22 +1,20 @@
-# ../_libs/commands/client/filter.py
+# ../_libs/commands/filters.py
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
 from core import AutoUnload
-#   Commands
-from commands.client.manager import ClientCommandRegistry
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class ClientCommandFilter(AutoUnload):
-    '''Class used to register a client command filter'''
+class _BaseFilter(AutoUnload):
+    '''Class used to register a filter'''
 
     def __init__(self, callback):
-        '''Store the callback and registers the client command filter'''
+        '''Stores the callback and registers the filter'''
 
         # Is the callback callable?
         if not callable(callback):
@@ -28,9 +26,9 @@ class ClientCommandFilter(AutoUnload):
         # Store the callback
         self.callback = callback
 
-        # Register the client command filter
-        ClientCommandRegistry.register_filter(self.callback)
+        # Register the filter
+        self._ManagerClass.register_filter(self.callback)
 
     def _unload_instance(self):
-        '''Unregisters the client command filter'''
-        ClientCommandRegistry.unregister_filter(self.callback)
+        '''Unregisters the filter'''
+        self._ManagerClass.unregister_filter(self.callback)

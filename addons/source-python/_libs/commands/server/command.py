@@ -5,19 +5,15 @@
 # =============================================================================
 # Source.Python Imports
 #   Commands
-from commands.command import _CommandRegistration
-from commands.server.manager import ServerCommandRegistry
+from commands.command import _BaseCommand
+from commands.server.manager import ServerCommandManager
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class ServerCommand(_CommandRegistration):
-    '''Class used to register server commands using a decorator'''
+class ServerCommand(_BaseCommand):
+    '''Decorator class used to register a server command'''
 
-    _RegistrationClass = ServerCommandRegistry
-
-    def __init__(self, names, description='', flags=0):
-        '''Stores the given arguments'''
-        self.names = names
-        self.args = (description, flags)
+    # Store the class used to (un)register server commands
+    _ManagerClass = ServerCommandManager
