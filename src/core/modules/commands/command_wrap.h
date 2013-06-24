@@ -70,7 +70,7 @@ public:
 	void register_filter(PyObject* pCallable);
 	void unregister_filter(PyObject* pCallable);
 
-	CUtlVector<PyObject*> m_vecCallables;
+	CUtlVector<object> m_vecCallables;
 };
 
 #endif // _COMMAND_WRAP_H

@@ -71,9 +71,14 @@ const char *CICommand::get_arg( int iIndex )
 //-----------------------------------------------------------------------------
 void BaseFilters::register_filter(PyObject* pCallable)
 {
-	if( !m_vecCallables.HasElement(pCallable) )
+	// Get the object instance of the callable
+	object oCallable = object(handle<>(borrowed(pCallable)));
+
+	// Is the callable already in the vector?
+	if( !m_vecCallables.HasElement(oCallable) )
 	{
-		m_vecCallables.AddToTail(pCallable);
+		// Add the callable to the vector
+		m_vecCallables.AddToTail(oCallable);
 	}
 }
 
@@ -82,5 +87,9 @@ void BaseFilters::register_filter(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 void BaseFilters::unregister_filter(PyObject* pCallable)
 {
-	m_vecCallables.FindAndRemove(pCallable);
+	// Get the object instance of the callable
+	object oCallable = object(handle<>(borrowed(pCallable)));
+
+	// Remove the callback from the ServerCommandManager instance
+	m_vecCallables.FindAndRemove(oCallable);
 }

@@ -84,7 +84,7 @@ public:
 
 private:
 	const char* m_Name;
-	CUtlVector<PyObject*> m_vecCallables;
+	CUtlVector<object> m_vecCallables;
 };
 
 #endif // _SAY_COMMAND_H

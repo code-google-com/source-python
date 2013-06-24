@@ -53,7 +53,7 @@ protected:
 
 private:
 	ServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	CUtlVector<PyObject*> m_vecCallables;
+	CUtlVector<object> m_vecCallables;
 	const char* m_Name;
 	ConCommand* m_pOldCommand;
 };
