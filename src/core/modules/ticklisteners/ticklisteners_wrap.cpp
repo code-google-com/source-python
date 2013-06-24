@@ -47,9 +47,14 @@ CTickListenerManager* get_tick_listener_manager()
 //-----------------------------------------------------------------------------
 void CTickListenerManager::register_listener(PyObject* pCallable)
 {
-	if( !m_vecCallables.HasElement(pCallable))
+	// Get the object instance of the callable
+	object oCallable = object(handle<>(borrowed(pCallable)));
+
+	// Is the callable already in the vector?
+	if( !m_vecCallables.HasElement(oCallable) )
 	{
-		m_vecCallables.AddToTail(pCallable);
+		// Add the callable to the vector
+		m_vecCallables.AddToTail(oCallable);
 	}
 }
 
@@ -58,7 +63,11 @@ void CTickListenerManager::register_listener(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 void CTickListenerManager::unregister_listener(PyObject* pCallable)
 {
-	m_vecCallables.FindAndRemove(pCallable);
+	// Get the object instance of the callable
+	object oCallable = object(handle<>(borrowed(pCallable)));
+
+	// Remove the callback from the ServerCommandManager instance
+	m_vecCallables.FindAndRemove(oCallable);
 }
 
 //-----------------------------------------------------------------------------
@@ -69,7 +78,30 @@ void CTickListenerManager::call_tick_listeners()
 	for(int i = 0; i < m_vecCallables.Count(); i++)
 	{
 		BEGIN_BOOST_PY()
-			call<void>(m_vecCallables[i]);
+
+			// Get the PyObject instance of the callable
+			PyObject* pCallable = m_vecCallables[i].ptr();
+
+			// Is the object an instance or class method?
+			if(PyObject_HasAttrString(pCallable, "__self__"))
+			{
+				// Get the class' instance
+				PyObject *oClassInstance = PyObject_GetAttrString(pCallable, "__self__");
+
+				// Get the name of the method needed to be called
+				PyObject *oMethodName = PyObject_GetAttrString(pCallable, "__name__");
+				const char* szMethodName = extract<const char*>(oMethodName);
+
+				// Call the callable
+				boost::python::call_method<void>(oClassInstance, szMethodName);
+			}
+
+			else
+			{
+				// Call the callable
+				call<void>(pCallable);
+			}
+
 		END_BOOST_PY_NORET()
 	}
 }
