@@ -230,7 +230,7 @@ void SayConCommand::Dispatch( const CCommand &command )
 			object returnValue = call<object>(s_SayFilters.m_vecCallables[i], iIndex, bTeamOnly, ccommand);
 
 			// Does the current Say Filter wish to block the command?
-			if( extract<int>(returnValue) == (int)BLOCK)
+			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
 			{
 				// Block the command
 				return;
@@ -329,7 +329,7 @@ CommandReturn SayCommandManager::Dispatch( int iIndex, bool bTeamOnly, CICommand
 			object returnValue = call<object>(m_vecCallables[i], iIndex, bTeamOnly, ccommand);
 
 			// Does the callable wish to block the command?
-			if( extract<int>(returnValue) == (int)BLOCK)
+			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
 			{
 				// Block the command
 				return BLOCK;

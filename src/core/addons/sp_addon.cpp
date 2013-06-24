@@ -69,27 +69,3 @@ void CAddonManager::GameFrame()
 	// Dispatch all tick listeners
 	get_tick_listener_manager()->call_tick_listeners();
 }
-
-//---------------------------------------------------------------------------------
-// Runs a sp console command.
-//---------------------------------------------------------------------------------
-bool CAddonManager::SpCommand( const char* szArgs )
-{
-	// Pass that on to python.
-	python::object mainFile = g_PythonManager.GetSP();
-
-	// Execute command
-	BEGIN_BOOST_PY()
-		mainFile.attr("sp_command")(szArgs);
-	END_BOOST_PY(true);
-
-	return true;
-}
-
-//---------------------------------------------------------------------------------
-// Main console command
-//---------------------------------------------------------------------------------
-CON_COMMAND(sp, "Main source python command.")
-{
-	g_AddonManager.SpCommand(args.ArgS());
-}

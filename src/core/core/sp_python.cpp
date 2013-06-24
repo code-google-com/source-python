@@ -80,9 +80,6 @@ bool CPythonManager::Initialize( void )
 	wchar_t wszPythonHome[1024];
 	V_strtowcs(szPythonHome, -1, wszPythonHome, 1024);
 
-	// Always add es as a module.
-	// PyImport_AppendInittab("sp", &PyInit_sp);
-
 	// Set that as the python home directory.
  	Py_SetPythonHome(wszPythonHome);
  	Py_SetProgramName(wszPythonHome);
@@ -124,11 +121,9 @@ bool CPythonManager::Initialize( void )
  	BEGIN_BOOST_PY()
  		m_SpPy = python::import("sp");
 
-		// Call the plugin_load function to initialize the Python side
- 		m_SpPy.attr("plugin_load")();
  	END_BOOST_PY_NORET(); // Noret because we have more stuff to do after this import.
 
-	Msg("[Source.Python] Loaded successfully.\n");
+	DevMsg(0, "[Source.Python] Loaded successfully.\n");
 
 	return true;
 }
