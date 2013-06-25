@@ -239,6 +239,18 @@ Set(SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Globals module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_GLOBALS_MODULE_HEADERS
+    core/modules/globals/globals_wrap.h
+)
+
+Set(SOURCEPYTHON_GLOBALS_MODULE_SOURCES
+    core/modules/globals/globals_wrap.cpp
+    core/modules/globals/globals_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -265,6 +277,9 @@ Set(SOURCEPYTHON_MODULE_FILES
 
     ${SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS}
     ${SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES}
+
+    ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS}
+    ${SOURCEPYTHON_GLOBALS_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -284,6 +299,7 @@ Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\TickListeners"          FILES ${SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Globals"          FILES ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons" 		                FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -299,6 +315,7 @@ Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\TickListeners"          FILES ${SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Globals"          FILES ${SOURCEPYTHON_GLOBALS_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
