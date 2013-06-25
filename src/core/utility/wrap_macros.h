@@ -202,6 +202,18 @@ using namespace boost::python;
 		 classname##_##methodname( args, docstring )[retpol])
 
 //---------------------------------------------------------------------------------
+// Use this macro for read only properties
+//---------------------------------------------------------------------------------
+#define CLASS_PROPERTY_READ_ONLY( classname, propertyname, fget, docstring) \
+    .add_property(propertyname, &classname::fget, docstring)
+
+//---------------------------------------------------------------------------------
+// Use this macro for read- and writeable properties
+//---------------------------------------------------------------------------------
+#define CLASS_PROPERTY_READWRITE( classname, propertyname, fget, fset, docstring) \
+    .add_property(propertyname, &classname::fget, &classname::fset, docstring)
+
+//---------------------------------------------------------------------------------
 // Use this macro to define a global attribute
 //---------------------------------------------------------------------------------
 #define BOOST_GLOBAL_ATTRIBUTE( attrName, attrValue ) \
