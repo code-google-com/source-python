@@ -30,12 +30,26 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Core
-from _core.commands import SPCommands
+from cvar_c import CConVar
 from _core.settings import CoreSettings
+from _core.commands import SPCommands
+from loggers import SPLogger
 #   Translations
 from translations.manager import LanguageManager
 
+
+# Set the default language
+LanguageManager._register_default_language(
+    CoreSettings['BASE_SETTINGS']['language'])
+
+# Loop through the log settings
+for variable in CoreSettings['LOG_SETTINGS']:
+
+    # Create a variable for the current log setting
+    # and store the value to SPLogger's attributes
+    setattr(SPLogger, '_' + variable, CConVar(
+        'sp_logging_' + variable, CoreSettings['LOG_SETTINGS'][variable],
+        0, CoreSettings['LOG_SETTINGS'].comments[variable][0]))
 
 # Get the auth providers that should be loaded
 auth_providers = CoreSettings['AUTH_SETTINGS']['providers'].split()
@@ -45,7 +59,3 @@ if auth_providers:
 
     # Load the auth providers
     SPCommands.call_command('auth', ['load'] + auth_providers)
-
-# Set the default language
-LanguageManager._register_default_language(
-    CoreSettings['BASE_SETTINGS']['language'])

@@ -4,6 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Site Package Imports
+#   Collections
+from collections import OrderedDict
 #   Configobj
 from configobj import ConfigObj
 
@@ -31,7 +33,39 @@ _auth_providers = [
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _CoreSettings(ConfigObj):
+class _SettingsMeta(type):
+    '''Metaclass used to store methods in order of creation'''
+
+    @classmethod
+    def __prepare__(mcl, name, bases):
+        '''Returns an ordered dictionary'''
+        return OrderedDict()
+
+    def __new__(mcl, name, bases, odict):
+        '''
+            Stores methods by name and instance in the order they were created
+        '''
+
+        # Get the class object
+        cls = super().__new__(mcl, name, bases, dict(odict))
+
+        # Create an ordered dictionary to store methods in
+        cls._odict = OrderedDict()
+
+        # Loop through the methods
+        for item in odict:
+
+            # Is the current method one that needs stored?
+            if item.startswith('_check_'):
+
+                # Store the method by its name
+                cls._odict[item] = odict[item]
+
+        # Return the class
+        return cls
+
+
+class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
     '''Class used to store core settings'''
 
     def __init__(self, infile):
@@ -42,11 +76,11 @@ class _CoreSettings(ConfigObj):
         # Import the file
         super(_CoreSettings, self).__init__(infile)
 
-        # Check the base settings
-        self._check_base_settings()
+        # Loop through the registered methods
+        for item in self._odict:
 
-        # Check the auth settings
-        self._check_auth_settings()
+            # Call the method
+            self._odict[item](self)
 
         # Add the initial comment
         self.initial_comment = ['../' + self.filename.replace(GAME_PATH, '')]
@@ -103,6 +137,35 @@ class _CoreSettings(ConfigObj):
                 self._language, providers='\n'.join(_auth_providers),
                 single=_auth_providers[0],
                 multiple=' '.join(_auth_providers[:3])).splitlines()
+
+    def _check_logging_settings(self):
+        '''Adds logging settings if they are missing'''
+
+        # Are there any logging settings in the file?
+        if not 'LOG_SETTINGS' in self:
+
+            # Add the logging settings
+            self['LOG_SETTINGS'] = {}
+
+        # Is there a logging level setting?
+        if not 'level' in self['LOG_SETTINGS']:
+
+            # Add the logging level setting
+            self['LOG_SETTINGS']['level'] = '0'
+
+        # Set the logging level comments
+        self['LOG_SETTINGS'].comments['level'] = _core_strings[
+            'log_level'].get_string(self._language).splitlines()
+
+        # Is there a logging areas setting?
+        if not 'areas' in self['LOG_SETTINGS']:
+
+            # Add the logging areas setting
+            self['LOG_SETTINGS']['areas'] = '1'
+
+        # Set the logging areas comments
+        self['LOG_SETTINGS'].comments['areas'] = _core_strings[
+            'log_areas'].get_string(self._language).splitlines()
 
 # Get the _CoreSettings instance
 CoreSettings = _CoreSettings(CFG_PATH.joinpath('core_settings.ini'))
