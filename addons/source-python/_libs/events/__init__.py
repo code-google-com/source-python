@@ -5,8 +5,15 @@
 # =============================================================================
 # Source.Python Imports
 from core import AutoUnload
+from loggers import SPLogger
 #   Events
 from events.manager import EventRegistry
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+EventsLogger = SPLogger.events
 
 
 # =============================================================================

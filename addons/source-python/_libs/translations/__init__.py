@@ -1,4 +1,4 @@
-# ../_libs/_core/__init__.py
+# ../_libs/translations/__init__.py
 
 # =============================================================================
 # >> IMPORTS
@@ -10,4 +10,4 @@ from loggers import SPLogger
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-_CoreLogger = SPLogger._core
+TranslationsLogger = SPLogger.translations

@@ -5,8 +5,15 @@
 # =============================================================================
 # Source.Python Imports
 from core import AutoUnload
+from loggers import SPLogger
 #   Tick
 from tick.delays import TickListenerManager
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+TickLogger = SPLogger.tick
 
 
 # =============================================================================
