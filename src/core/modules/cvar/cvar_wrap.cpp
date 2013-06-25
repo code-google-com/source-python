@@ -39,49 +39,49 @@ CConVar::CConVar( ConVar* pConVar )
 
 CConVar::CConVar( const char *pName )
 {
-	ConVar *convar = g_pCVar->FindVar(pName);
+	m_Name = strdup(pName);
+
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	if( !convar )
 	{
-		ConVar *convar = new ConVar(pName, "0", 0);
+		ConVar *convar = new ConVar(m_Name, "0", 0);
 	}
-
-	m_Name = pName;
 }
 
 CConVar::CConVar( const char *pName, const char *pDefaultValue, int flags )
 {
-	ConVar *convar = g_pCVar->FindVar(pName);
+	m_Name = strdup(pName);
+
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	if( !convar )
 	{
-		ConVar *convar = new ConVar(pName, pDefaultValue, flags);
+		ConVar *convar = new ConVar(m_Name, pDefaultValue, flags);
 	}
-
-	m_Name = pName;
 }
 
 CConVar::CConVar( const char *pName, const char *pDefaultValue,
 		int flags, const char *pHelpString )
 {
-	ConVar *convar = g_pCVar->FindVar(pName);
+	m_Name = strdup(pName);
+
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	if( !convar )
 	{
-		ConVar *convar = new ConVar(pName, pDefaultValue, flags, strdup(pHelpString));
+		ConVar *convar = new ConVar(m_Name, pDefaultValue, flags, strdup(pHelpString));
 	}
-
-	m_Name = pName;
 }
 
 CConVar::CConVar( const char *pName, const char *pDefaultValue, int flags,
 		const char *pHelpString, bool bMin, float fMin, bool bMax, float fMax )
 {
-	ConVar *convar = g_pCVar->FindVar(pName);
+	m_Name = strdup(pName);
+
+	ConVar *convar = g_pCVar->FindVar(m_Name);
 	if( !convar )
 	{
-		ConVar *convar = new ConVar(pName, pDefaultValue, flags,
+		ConVar *convar = new ConVar(m_Name, pDefaultValue, flags,
 			strdup(pHelpString), bMin, fMin, bMax, fMax);
 	}
-
-	m_Name = pName;
 }
 
 //-----------------------------------------------------------------------------

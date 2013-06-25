@@ -12,7 +12,7 @@ import sys
 from traceback import format_exception
 
 # Source.Python Imports
-from core import echo_console
+from loggers import SPLogger
 from paths import GAME_PATH
 #   Translations
 from translations.strings import LangStrings
@@ -22,6 +22,8 @@ from translations.strings import LangStrings
 # >> GLOBAL VARIABLES
 # =============================================================================
 _excepthook_strings = LangStrings('_core/excepthooks_strings')
+
+ExceptHooksLogger = SPLogger.excepthooks
 
 
 # =============================================================================
@@ -87,8 +89,8 @@ class _ExceptHooks(list):
         # Add a blank line before the actual exception
         format_error.insert(-1, '')
 
-        # Print the leading line of the exception
-        echo_console('\n[SP] ' + _excepthook_strings['Exception'].get_string())
+        # Get the header
+        message = '\n[SP] ' + _excepthook_strings['Exception'].get_string()
 
         # Loop through each line in the exception
         for line in format_error:
@@ -104,11 +106,11 @@ class _ExceptHooks(list):
             line = line.replace(
                 GAME_PATH, '..%s' % sep).replace(sep + '.' + sep, sep)
 
-            # Print the current line
-            echo_console(line)
+            # Add the current line to the message
+            message += '\n' + line
 
         # Print a blank line to separate the console
-        echo_console('')
+        ExceptHooksLogger.exception(message + '\n\n')
 
 # Get the _ExceptHooks instance
 ExceptHooks = _ExceptHooks()

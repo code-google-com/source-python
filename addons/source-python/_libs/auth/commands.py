@@ -8,10 +8,16 @@
 from collections import OrderedDict
 
 # Source.Python imports
-from core import echo_console
 #   Auth
+from auth import AuthLogger
 from auth.manager import AuthManager
 from auth.manager import _auth_strings
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+AuthCommandsLogger = AuthLogger.commands
 
 
 # =============================================================================
@@ -26,12 +32,12 @@ class _AuthCommands(OrderedDict):
         # Was a command given?
         if not args:
 
-            # Send a message that a sub-command is needed
-            echo_console('[SP Auth] ' + _auth_strings[
-                'Missing Command'].get_string())
+            # Get a message that a sub-command is needed
+            message = '[SP Auth] ' + _auth_strings[
+                'Missing Command'].get_string() + '\n'
 
             # Print the auth help text
-            self._print_auth_help()
+            self._print_auth_help(message)
 
             # No need to go further
             return
@@ -42,12 +48,12 @@ class _AuthCommands(OrderedDict):
         # Is the command registered?
         if not command in self:
 
-            # Send a message about the invalid command
-            echo_console('[SP Auth] ' + _auth_strings[
-                'Invalid Sub-Command'].get_string(command=command))
+            # Get a message about the invalid command
+            message = '[SP Auth] ' + _auth_strings[
+                'Invalid Sub-Command'].get_string(command=command) + '\n'
 
             # Print the auth help text
-            self._print_auth_help()
+            self._print_auth_help(message)
 
             # No need to go further
             return
@@ -64,28 +70,31 @@ class _AuthCommands(OrderedDict):
         # Execute the command
         self[command]()
 
-    def _print_auth_help(self):
+    def _print_auth_help(self, message=''):
         '''Prints all "sp auth" sub-commands.'''
 
-        # Send header messages
-        echo_console(
-            '[SP Auth] ' + _auth_strings[
-                'Help'].get_string() + 'sp auth <command> [arguments]')
-        echo_console('=' * 76)
+        # Get header messages
+        header = message + '[SP Auth] ' + _auth_strings[
+            'Help'].get_string() + 'sp auth <command> [arguments]\n' + '=' * 76
 
         # Print all "sp auth" sub-commands
-        self._print_help()
+        self._print_help(header, '=' * 76)
 
-        # Send ending message
-        echo_console('=' * 76)
-
-    def _print_help(self):
+    def _print_help(self, pretext='', posttext=''):
         '''Prints all "sp auth" sub-commands'''
+        AuthCommandsLogger.message(
+            pretext + '\n' + self._get_help_text() + '\n' + posttext)
+
+    def _get_help_text(self):
+        '''Returns the help text for auth commands'''
+
+        # Store the base message
+        message = ''
 
         # Loop through all registered sub-commands
         for item in self:
 
-            # Set the text
+            # Add the base text
             text = 'auth %s' % item
 
             # Does the current item use arguments?
@@ -94,9 +103,11 @@ class _AuthCommands(OrderedDict):
                 # Add the arguments to the text
                 text += ' ' + ' '.join(self[item].args)
 
-            # Send a message for the current command
-            echo_console(
-                '%s %s' % (text, self[item].__doc__.rjust(75 - len(text))))
+            # Add the doc strings
+            message += text + self[item].__doc__.rjust(76 - len(text)) + '\n'
+
+        # Return the message
+        return message.rstrip('\n')
 
 
 # =============================================================================
@@ -109,7 +120,8 @@ def _load_auth_providers(providers):
     if not providers:
 
         # Send a message about the required argument
-        echo_console('[SP Auth] ' + _auth_strings['Missing Load'].get_string())
+        AuthCommandsLogger.message(
+            '[SP Auth] ' + _auth_strings['Missing Load'].get_string())
 
         # No need to go further
         return
@@ -128,7 +140,7 @@ def _unload_auth_providers(providers):
     if not providers:
 
         # Send a message about the required argument
-        echo_console(
+        AuthCommandsLogger.message(
             '[SP Auth] ' + _auth_strings['Missing Unload'].get_string())
 
         # No need to go further
@@ -160,18 +172,18 @@ def _reload_auth_providers(providers=None):
 def _print_auth_providers():
     '''Lists all currently loaded auth providers.'''
 
-    # Send header messages
-    echo_console('[SP Auth] ' + _auth_strings['Providers'].get_string())
-    echo_console('=' * 61)
+    # Get header messages
+    message = '[SP Auth] ' + _auth_strings[
+        'Providers'].get_string() + '\n' + '=' * 61 + '\n'
 
     # Loop through all loaded auth providers
     for provider in AuthManager:
 
-        # Print message for the current provider
-        echo_console(provider)
+        # Add the current provider to the message
+        message += provider + '\n'
 
     # Print ending messages
-    echo_console('=' * 61 + '\n')
+    AuthCommandsLogger.message(message + '=' * 61)
 
 # Get the _AuthCommands instance
 AuthCommands = _AuthCommands()
