@@ -165,7 +165,7 @@ class _AddonManagementDictionary(OrderedDict):
         for module in list(sys.modules):
 
             # Is the current module part of the given addon?
-            if module.startswith(addon_name):
+            if module.split('.')[0] == addon_name:
 
                 # Remove the module from memory
                 del sys.modules[module]
