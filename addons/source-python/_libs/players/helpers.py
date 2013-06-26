@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+from player_c import CPlayerGenerator
 from player_c import CPlayerInfo
 from core import GameEngine
 #   Entities
@@ -15,7 +16,7 @@ from entities.helpers import *
 # =============================================================================
 def index_from_userid(userid):
     '''Returns an index from the given userid'''
-    return Player.IndexOfUserid(userid)
+    return index_from_playerinfo(playerinfo_from_userid(userid))
 
 
 def index_from_playerinfo(playerinfo):
@@ -25,7 +26,7 @@ def index_from_playerinfo(playerinfo):
 
 def edict_from_userid(userid):
     '''Returns an edict from the given userid'''
-    return Player.EdictOfUserid(userid)
+    return edict_from_playerinfo(playerinfo_from_userid(userid))
 
 
 def edict_from_playerinfo(playerinfo):
@@ -130,10 +131,10 @@ def index_from_steamid(steamid):
     '''Returns an index from the given SteamID'''
 
     # Loop through all players on the server
-    for player in Player.Players():
+    for player in CPlayerGenerator():
 
         # Is the current player's SteamID the same as the one given?
-        if player.GetNetworkIDString() == steamid:
+        if player.get_networkid_string() == steamid:
 
             # Return the index of the current player
             return index_from_playerinfo(player)
@@ -146,7 +147,7 @@ def index_from_uniqueid(uniqueid):
     '''Returns an index from the given UniqueID'''
 
     # Loop through all players on the server
-    for player in Player.Players():
+    for player in CPlayerGenerator():
 
         # Is the current player's UniqueID the same as the one given?
         if uniqueid_from_playerinfo(player) == uniqueid:
@@ -162,10 +163,10 @@ def index_from_name(name):
     '''Returns an index from the given player name'''
 
     # Loop through all players on the server
-    for player in Player.Players():
+    for player in CPlayerGenerator():
 
         # Is the current player's name the same as the one given?
-        if player.GetName() == name:
+        if player.get_name() == name:
 
             # Return the index of the current player
             return index_from_playerinfo(player)
@@ -178,13 +179,13 @@ def uniqueid_from_playerinfo(player):
     '''Returns the UniqueID for the given player'''
 
     # Is the player a Bot?
-    if player.IsFakeClient():
+    if player.is_fake_client():
 
         # Return the bot's UniqueID
-        return 'BOT_%s' % player.GetName()
+        return 'BOT_%s' % player.get_name()
 
     # Get the player's SteamID
-    steamid = player.GetNetworkIDString()
+    steamid = player.get_networkid_string()
 
     # Is this a Lan SteamID?
     if 'LAN' in steamid:
@@ -206,7 +207,7 @@ def address_from_playerinfo(player):
     index = index_from_playerinfo(player)
 
     # Get the player's NetInfo instance
-    netinfo = GameEngine.GetPlayerNetInfo(index)
+    netinfo = GameEngine.get_player_net_info(index)
 
     # Return the player's IP Address
-    return netinfo.GetAddress()
+    return netinfo.get_address()

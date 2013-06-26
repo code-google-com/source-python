@@ -58,7 +58,7 @@ CPythonManager g_PythonManager;
 void AddToSysPath( const char* path )
 {
 	char szFolderPath[MAX_GAME_PATH];
-	V_snprintf(szFolderPath, MAX_GAME_PATH, "sys.path.insert(1, r\"%s/%s\")", g_GamePaths.GetSPDir(), path);
+	V_snprintf(szFolderPath, MAX_GAME_PATH, "sys.path.insert(1, r\"%s%s\")", g_GamePaths.GetSPDir(), path);
 	V_FixSlashes(szFolderPath);
 
 	DevMsg(1, "[SP] Adding %s to path\n", szFolderPath);
@@ -95,7 +95,7 @@ bool CPythonManager::Initialize( void )
 	PyRun_SimpleString("import sys");
 
 	// Add the library path.
-	AddToSysPath("_libs");
+	AddToSysPath("/_libs");
 
 	// Add operating system specific paths.
 #if defined(WIN32)
@@ -111,17 +111,18 @@ bool CPythonManager::Initialize( void )
 	AddToSysPath("/_engines/site-packages");
 
 	// And of course, the addons directory for script imports.
-	AddToSysPath(".");
+	AddToSysPath("");
 
 	// Initialize all submodules
 	modulsp_init();
 
 	// Import the main module file.
 	DevMsg(1, "[SP] Importing main module..\n");
- 	BEGIN_BOOST_PY()
- 		m_SpPy = python::import("sp");
+	BEGIN_BOOST_PY()
 
- 	END_BOOST_PY_NORET(); // Noret because we have more stuff to do after this import.
+		m_SpPy = python::import("sp");
+
+	END_BOOST_PY_NORET(); // Noret because we have more stuff to do after this import.
 
 	DevMsg(0, "[Source.Python] Loaded successfully.\n");
 

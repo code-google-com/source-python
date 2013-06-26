@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Player
+from player_c import CPlayerInfo
 from core import GameEngine
 #   Entities
 from entities.entity import BaseEntity
@@ -27,7 +27,7 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
             "entities" attribute and set the PlayerInfo'''
 
         # Set the player's info attribute
-        self.info = Player.PlayerOfIndex(index)
+        self.info = CPlayerInfo(self.edict)
 
         # Is the IPlayerInfo instance valid?
         if self.info is None:
@@ -41,8 +41,6 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
     @property
     def instances(self):
         '''Yields the player's IPlayerInfo and Edict instances'''
-
-        # Yield the instances
         yield self.info
         yield self.edict
 
