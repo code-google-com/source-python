@@ -31,6 +31,7 @@ from translations.strings import LangStrings
 # Get the core commands language strings
 _command_strings = LangStrings('_core/core_commands_strings')
 
+# Get the sp._core.commands logger
 SPCommandsLogger = _CoreLogger.commands
 
 

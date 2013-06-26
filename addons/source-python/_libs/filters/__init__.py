@@ -10,4 +10,5 @@ from loggers import SPLogger
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the sp.filters logger
 FiltersLogger = SPLogger.filters

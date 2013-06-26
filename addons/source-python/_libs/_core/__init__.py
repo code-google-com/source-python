@@ -10,4 +10,5 @@ from loggers import SPLogger
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the sp._core logger
 _CoreLogger = SPLogger._core

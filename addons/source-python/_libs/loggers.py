@@ -18,7 +18,6 @@ from logging import getLogger
 # Source.Python Imports
 from core import GameEngine
 from core import echo_console
-from cvars import ServerVar
 from paths import LOG_PATH
 
 
@@ -44,6 +43,8 @@ addLevelName(ALWAYS, 'MESSAGE')
 class _LogInstance(dict):
     '''Base logging class used to create child logging instances'''
 
+    parent = None
+
     def __init__(self, name, parent):
         '''Stores the parent and gets a child of the parent'''
 
@@ -51,7 +52,7 @@ class _LogInstance(dict):
         self.parent = parent
 
         # Store a child logging instance
-        self.logger = parent.logger.getChild(name)
+        self._logger = self.parent.logger.getChild(name)
 
     def __missing__(self, item):
         '''Adds new items as logging instances'''
@@ -132,10 +133,12 @@ class _LogInstance(dict):
         # Print to main log file?
         if MAIN_LOG & areas:
 
-            # Get the message to send
+            # Get the record
             record = self.logger.makeRecord(
                 self.logger.name, level, '(unknown file)', 0, msg, args, None)
-            message = self.root.formatter.format(record)
+
+            # Get the message to send
+            message = self.formatter.format(record)
 
             # Print to the main log
             GameEngine.log_print(message + '\n')
@@ -189,26 +192,42 @@ class _LogInstance(dict):
         '''Returns the root's disable value'''
         return self.root.disable
 
+    @property
+    def formatter(self):
+        '''Return's the root's formatter'''
+        return self.root._formatter
+
+    @property
+    def logger(self):
+        '''Returns the instance's logger'''
+        return self._logger
+
 
 class LogManager(_LogInstance):
     '''Main log class used as a root to create children instances'''
 
     def __init__(
-            self, name, filepath, level, areas,
+            self, name, level, areas, filepath=None,
             format=None, date_format=None):
         '''Stores the base values and creates the logger'''
 
-        # Create the root logger
-        self.logger = getLogger(name)
-        self.handler = FileHandler(LOG_PATH.joinpath(filepath + '.log'))
-        self.formatter = Formatter(format, date_format)
-        self.handler.setFormatter(self.formatter)
-        self.logger.addHandler(self.handler)
+        # Store the base formatter
+        self._formatter = Formatter(format, date_format)
 
         # Store the base attributes
         self._level = level
         self._areas = areas
-        self.parent = None
+
+        # Create the logger
+        self._logger = getLogger(name)
+
+        # Was a filepath given?
+        if not filepath is None:
+
+            # Create the handler an add it to the logger
+            handler = FileHandler(LOG_PATH.joinpath(filepath + '.log'))
+            handler.setFormatter(self.formatter)
+            self.logger.addHandler(handler)
 
     @property
     def disable(self):
@@ -222,6 +241,6 @@ class LogManager(_LogInstance):
 
 # Get the Source.Python main LogManager instance
 SPLogger = LogManager(
-    'sp', 'source-python', None, None,
+    'sp', None, None, 'source-python',
     '%(asctime)s - %(name)s\t-\t%(levelname)s\n%(message)s',
     '%m-%d-%Y %H:%M:%S')

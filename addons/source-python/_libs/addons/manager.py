@@ -26,6 +26,7 @@ from translations.strings import LangStrings
 # Get the addons language strings
 _addon_strings = LangStrings('_core/addons_strings')
 
+# Get the sp.addons.manager logger
 AddonManagerLogger = AddonLogger.manager
 
 

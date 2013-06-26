@@ -38,10 +38,17 @@ from loggers import SPLogger
 from translations.manager import LanguageManager
 
 
+# =============================================================================
+# >> TRANSLATIONS SETUP
+# =============================================================================
 # Set the default language
 LanguageManager._register_default_language(
     CoreSettings['BASE_SETTINGS']['language'])
 
+
+# =============================================================================
+# >> LOGGING SETUP
+# =============================================================================
 # Loop through the log settings
 for variable in CoreSettings['LOG_SETTINGS']:
 
@@ -51,6 +58,10 @@ for variable in CoreSettings['LOG_SETTINGS']:
         'sp_logging_' + variable, CoreSettings['LOG_SETTINGS'][variable],
         0, CoreSettings['LOG_SETTINGS'].comments[variable][0]))
 
+
+# =============================================================================
+# >> AUTH SETUP
+# =============================================================================
 # Get the auth providers that should be loaded
 auth_providers = CoreSettings['AUTH_SETTINGS']['providers'].split()
 

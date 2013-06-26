@@ -19,6 +19,7 @@ from translations.strings import LangStrings
 # Get the auth language strings
 _auth_strings = LangStrings('_core/auth_strings')
 
+# Get the sp.auth.manager logger
 AuthManagerLogger = AuthLogger.manager
 
 

@@ -13,6 +13,7 @@ from tick.delays import TickListenerManager
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the sp.tick logger
 TickLogger = SPLogger.tick
 
 
