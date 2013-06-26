@@ -53,7 +53,7 @@ for variable in CoreSettings['LOG_SETTINGS']:
 
     # Set the variable to the value given in the settings file
     CConVar('sp_logging_' + variable).set_int(
-        int(CoreSettings['LOG_SETTINGS'].comments[variable][0]))
+        int(CoreSettings['LOG_SETTINGS'][variable]))
 
 
 # =============================================================================
