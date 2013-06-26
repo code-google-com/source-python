@@ -164,7 +164,7 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
             self['LOG_SETTINGS']['areas'] = '1'
 
         # Set the logging areas comments
-        self['LOG_SETTINGS'].comments['areas'] = _core_strings[
+        self['LOG_SETTINGS'].comments['areas'] = ['\n\n'] + _core_strings[
             'log_areas'].get_string(self._language).splitlines()
 
 # Get the _CoreSettings instance
