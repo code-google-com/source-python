@@ -135,10 +135,10 @@ class _LogInstance(dict):
             # Get the message to send
             record = self.logger.makeRecord(
                 self.logger.name, level, '(unknown file)', 0, msg, args, None)
-            message = self.root.format(record)
+            message = self.root.formatter.format(record)
 
             # Print to the main log
-            GameEngine.log_print(message)
+            GameEngine.log_print(message + '\n')
 
         # Print to the console?
         if CONSOLE & areas:
@@ -201,8 +201,8 @@ class LogManager(_LogInstance):
         # Create the root logger
         self.logger = getLogger(name)
         self.handler = FileHandler(LOG_PATH.joinpath(filepath + '.log'))
-        self.format = Formatter(format, date_format)
-        self.handler.setFormatter(self.format)
+        self.formatter = Formatter(format, date_format)
+        self.handler.setFormatter(self.formatter)
         self.logger.addHandler(self.handler)
 
         # Store the base attributes
