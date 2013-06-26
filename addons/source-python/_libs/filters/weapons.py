@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Entity
+from entity_c import CEntityGenerator
 #   Entities
 from entities.entity import BaseEntity
 from entities.helpers import basehandle_from_edict
@@ -39,10 +39,10 @@ class WeaponEdictIter(_IterObject):
         '''Iterates over only weapon entities'''
 
         # Loop through all entities on the server
-        for edict in Entity.Entities():
+        for edict in CEntityGenerator():
 
             # Is the entity a weapon?
-            if edict.GetClassName() in WeaponManager:
+            if edict.get_class_name() in WeaponManager:
 
                 # Yield the entity
                 yield edict
@@ -112,7 +112,7 @@ class _Tag(object):
 
     def _edict_weapon_contains_tag(self, edict):
         '''Returns whether the weapon contains the tag'''
-        return self.tag in WeaponManager[edict.GetClassName()].tags
+        return self.tag in WeaponManager[edict.get_class_name()].tags
 
     def _class_weapon_contains_tag(self, weapon):
         '''Returns whether the given weapon contains the tag'''

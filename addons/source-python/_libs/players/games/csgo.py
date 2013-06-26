@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Entity
+from entity_c import CEntityGenerator
 #   Entities
 from entities.entity import BaseEntity
 from entities.helpers import index_from_edict
@@ -93,7 +93,7 @@ class _GameWeapons(object):
         '''Returns whether or not the player is carrying C4'''
 
         # Loop through all c4 entities on the server
-        for edict in Entity.Entities('weapon_c4'):
+        for edict in CEntityGenerator('weapon_c4'):
 
             # Get the entity's index
             index = index_from_edict(edict)

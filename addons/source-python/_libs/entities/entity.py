@@ -7,22 +7,23 @@
 #from Source import Binutils
 from entity_c import CEdict
 #   Entities
-from entities.functions import Functions
+#from entities.functions import Functions
 from entities.keyvalues import KeyValues
 from entities.offsets import Offsets
 from entities.properties import Properties
-from entities.specials import _EntitySpecials
+#from entities.specials import _EntitySpecials
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class BaseEntity(_EntitySpecials):
+#class BaseEntity(_EntitySpecials):
+class BaseEntity(object):
     '''Class used to interact directly with entities'''
 
     index = 0
     edict = 0
-    entities = None
+    _entities = None
 
     def __new__(cls, index, *entities):
         '''Override the __new__ class method to verify the given index
@@ -326,8 +327,6 @@ class BaseEntity(_EntitySpecials):
     @property
     def instances(self):
         '''Yields the entity's edict instance'''
-
-        # Yield the edict instance
         yield self.edict
 
     @property

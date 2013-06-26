@@ -162,7 +162,7 @@ class _Weapon(object):
         self._maxammo = properties.get('maxammo', None)
 
         # Store the weapon's ammo property
-        self.ammoprop = properties.get('ammoprop', None)
+        self._ammoprop = properties.get('ammoprop', None)
 
         # Store the weapon's clip amount
         self._clip = properties.get('clip', 0)

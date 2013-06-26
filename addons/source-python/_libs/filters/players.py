@@ -8,7 +8,7 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-from Source import Player
+from player_c import CPlayerGenerator
 from core import GameEngine
 from core import GAME_NAME
 from paths import DATA_PATH
@@ -52,7 +52,7 @@ class PlayerIter(_IterObject):
     manager = PlayerIterManager
 
     # Store the base iterator
-    iterator = staticmethod(Player.Players)
+    iterator = staticmethod(CPlayerGenerator)
 
 
 # =============================================================================
@@ -83,39 +83,39 @@ class _Team(object):
         # Store the team number
         self.team = team
 
-    def _player_is_on_team(self, IPlayerInfo):
+    def _player_is_on_team(self, CPlayerInfo):
         '''Returns whether the player is on the team'''
 
         # Return whether the player is on the team
-        return IPlayerInfo.GetTeamIndex() == self.team
+        return CPlayerInfo.get_team_index() == self.team
 
 
 # =============================================================================
 # >> FILTER FUNCTIONS
 # =============================================================================
-def _is_player(IPlayerInfo):
+def _is_player(CPlayerInfo):
     '''Always returns True, since this is a player'''
     return True
 
 
-def _player_is_bot(IPlayerInfo):
+def _player_is_bot(CPlayerInfo):
     '''Returns whether a player is a bot'''
-    return IPlayerInfo.IsFakeClient()
+    return CPlayerInfo.is_fake_client()
 
 
-def _player_is_human(IPlayerInfo):
+def _player_is_human(CPlayerInfo):
     '''Returns whether the player is a human'''
-    return IPlayerInfo.IsPlayer()
+    return CPlayerInfo.is_player()
 
 
-def _player_is_alive(IPlayerInfo):
+def _player_is_alive(CPlayerInfo):
     '''Returns whether the player is alive'''
-    return not IPlayerInfo.IsDead()
+    return not CPlayerInfo.is_dead()
 
 
-def _player_is_dead(IPlayerInfo):
+def _player_is_dead(CPlayerInfo):
     '''Returns whether the player is dead'''
-    return IPlayerInfo.IsDead()
+    return CPlayerInfo.is_dead()
 
 # Register the filter functions
 PlayerIterManager.register_filter('all', _is_player)
@@ -154,70 +154,70 @@ for number, team in enumerate(('un', 'spec', 't', 'ct')):
 # =============================================================================
 # >> RETURN TYPE FUNCTIONS
 # =============================================================================
-def _return_playerinfo(IPlayerInfo):
-    '''Returns the player's IPlayerInfo instance'''
-    return IPlayerInfo
+def _return_playerinfo(CPlayerInfo):
+    '''Returns the player's CPlayerInfo instance'''
+    return CPlayerInfo
 
 
-def _return_player(IPlayerInfo):
+def _return_player(CPlayerInfo):
     '''Returns the player's PlayerEntity instance'''
-    return PlayerEntity(index_from_playerinfo(IPlayerInfo))
+    return PlayerEntity(index_from_playerinfo(CPlayerInfo))
 
 
-def _return_name(IPlayerInfo):
+def _return_name(CPlayerInfo):
     '''Returns the player's name'''
-    return IPlayerInfo.GetName()
+    return CPlayerInfo.get_name()
 
 
-def _return_steamid(IPlayerInfo):
+def _return_steamid(CPlayerInfo):
     '''Returns the player's SteamID'''
-    return IPlayerInfo.GetNetworkIDString()
+    return CPlayerInfo.get_networkid_string()
 
 
-def _return_location(IPlayerInfo):
+def _return_location(CPlayerInfo):
     '''Returns the player's location Vector'''
-    return IPlayerInfo.GetAbsOrigin()
+    return CPlayerInfo.get_abs_origin()
 
 
-def _return_kills(IPlayerInfo):
+def _return_kills(CPlayerInfo):
     '''Returns the player's kill count'''
-    return IPlayerInfo.GetFragCount()
+    return CPlayerInfo.get_frag_count()
 
 
-def _return_deaths(IPlayerInfo):
+def _return_deaths(CPlayerInfo):
     '''Returns the player's death count'''
-    return IPlayerInfo.GetDeathCount()
+    return CPlayerInfo.get_death_count()
 
 
-def _return_model(IPlayerInfo):
+def _return_model(CPlayerInfo):
     '''Returns the player's model'''
-    return IPlayerInfo.GetModelName()
+    return CPlayerInfo.get_model_name()
 
 
-def _return_health(IPlayerInfo):
+def _return_health(CPlayerInfo):
     '''Returns the player's health value'''
-    return IPlayerInfo.GetHealth()
+    return CPlayerInfo.get_health()
 
 
-def _return_armor(IPlayerInfo):
+def _return_armor(CPlayerInfo):
     '''Returns the player's armov value'''
-    return IPlayerInfo.GetArmorValue()
+    return CPlayerInfo.get_armor_value()
 
 
-def _return_weapon(IPlayerInfo):
+def _return_weapon(CPlayerInfo):
     '''Returns the player's currently held weapon'''
-    return IPlayerInfo.GetWeaponName()
+    return CPlayerInfo.get_weapon_name()
 
 
-def _return_language(IPlayerInfo):
+def _return_language(CPlayerInfo):
     '''Returns the player's language'''
-    return GameEngine.GetClientConVarValue(
-        index_from_playerinfo(IPlayerInfo), 'cl_language')
+    return GameEngine.get_client_convar_value(
+        index_from_playerinfo(CPlayerInfo), 'cl_language')
 
 
-def _return_team(IPlayerInfo):
+def _return_team(CPlayerInfo):
     '''Returns the player's team'''
-    return IPlayerInfo.GetTeamIndex()
+    return CPlayerInfo.get_team_index()
 
 # Register the return type functions
 PlayerIterManager.register_return_type('index', index_from_playerinfo)

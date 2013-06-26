@@ -4,10 +4,11 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import engine_c
+from entity_c import CEdict
 from core import GAME_NAME
 #   Entities
 from entities.entity import BaseEntity
+from entities.helpers import index_from_inthandle
 #   Weapons
 from weapons.manager import WeaponManager
 
@@ -354,7 +355,7 @@ class _PlayerWeapons(_GameWeapons):
                 continue
 
             # Get the weapon's index
-            index = Engine.IndexOfIntHandle(handle)
+            index = index_from_inthandle(handle)
 
             # Is this a valid index?
             if index is None:
@@ -363,10 +364,10 @@ class _PlayerWeapons(_GameWeapons):
                 continue
 
             # Get the weapon's edict
-            edict = Engine.PEntityOfEntIndex(index)
+            edict = CEdict(index)
 
             # Get the weapon's classname
-            weapon_class = edict.GetClassName()
+            weapon_class = edict.get_class_name()
 
             # Was a classname given and the current
             # weapon is not of that classname?
@@ -396,7 +397,7 @@ class _PlayerWeapons(_GameWeapons):
         handle = self.active_weapon
 
         # Get the weapon's CBaseHandle instance
-        index = Engine.IndexOfIntHandle(handle)
+        index = index_from_inthandle(handle)
 
         # Was no index found?
         if index is None:
@@ -415,7 +416,7 @@ class _PlayerWeapons(_GameWeapons):
         handle = self.active_weapon
 
         # Get the weapon's CBaseHandle instance
-        index = Engine.IndexOfIntHandle(handle)
+        index = index_from_inthandle(handle)
 
         # Was no index found?
         if index is None:
