@@ -33,7 +33,6 @@
 from cvar_c import CConVar
 from _core.settings import CoreSettings
 from _core.commands import SPCommands
-from loggers import SPLogger
 #   Translations
 from translations.manager import LanguageManager
 
@@ -52,11 +51,9 @@ LanguageManager._register_default_language(
 # Loop through the log settings
 for variable in CoreSettings['LOG_SETTINGS']:
 
-    # Create a variable for the current log setting
-    # and store the value to SPLogger's attributes
-    setattr(SPLogger, '_' + variable, CConVar(
-        'sp_logging_' + variable, CoreSettings['LOG_SETTINGS'][variable],
-        0, CoreSettings['LOG_SETTINGS'].comments[variable][0]))
+    # Set the variable to the value given in the settings file
+    CConVar('sp_logging_' + variable).set_int(
+        int(CoreSettings['LOG_SETTINGS'].comments[variable][0]))
 
 
 # =============================================================================
