@@ -122,7 +122,7 @@ class _LogInstance(dict):
         '''Main logging method'''
 
         # Does the message need logged?
-        if self.disable >= level:
+        if self.level > level:
 
             # If not, simply return
             return
@@ -188,9 +188,9 @@ class _LogInstance(dict):
         return self.root.areas
 
     @property
-    def disable(self):
-        '''Returns the root's disable value'''
-        return self.root.disable
+    def level(self):
+        '''Returns the root's level value'''
+        return self.root.level
 
     @property
     def formatter(self):
@@ -230,9 +230,9 @@ class LogManager(_LogInstance):
             self.logger.addHandler(handler)
 
     @property
-    def disable(self):
-        '''Returns the disable value'''
-        return 50 - (self._level.get_int() * 10 + 1)
+    def level(self):
+        '''Returns the needed level value'''
+        return 50 - (self._level.get_int() * 10)
 
     @property
     def areas(self):
