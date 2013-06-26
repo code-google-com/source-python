@@ -14,6 +14,7 @@ from messages.base import _UserMessages
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the sp.messages logger
 MessagesLogger = SPLogger.messages
 
 

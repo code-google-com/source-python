@@ -13,6 +13,7 @@ from events.manager import EventRegistry
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the sp.events logger
 EventsLogger = SPLogger.events
 
 

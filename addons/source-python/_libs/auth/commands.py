@@ -17,6 +17,7 @@ from auth.manager import _auth_strings
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the sp.auth.commands logger
 AuthCommandsLogger = AuthLogger.commands
 
 

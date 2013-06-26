@@ -23,6 +23,7 @@ from translations.strings import LangStrings
 # =============================================================================
 _excepthook_strings = LangStrings('_core/excepthooks_strings')
 
+# Get the sp.excepthooks logger
 ExceptHooksLogger = SPLogger.excepthooks
 
 
