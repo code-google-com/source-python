@@ -215,6 +215,12 @@ void SayConCommand::Dispatch( const CCommand &command )
 	// Get the index of the player that used the command
 	int iIndex = GetCommandIndex();
 
+	// Get the CEdict instance of the player
+	CEdict* pEdict = new CEdict(iIndex);
+
+	// Get the CPlayerInfo instance of the player
+	CPlayerInfo* pPlayerInfo = new CPlayerInfo(pEdict);
+
 	// Get whether the command was say or say_team
 	bool bTeamOnly = command.Arg(0) == "say_team";
 
@@ -243,13 +249,13 @@ void SayConCommand::Dispatch( const CCommand &command )
 				const char* szMethodName = extract<const char*>(oMethodName);
 
 				// Call the callable
-				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, iIndex, bTeamOnly, ccommand);
+				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, pPlayerInfo, bTeamOnly, ccommand);
 			}
 
 			else
 			{
 				// Call the callable
-				returnValue = call<object>(pCallable, iIndex, bTeamOnly, ccommand);
+				returnValue = call<object>(pCallable, pPlayerInfo, bTeamOnly, ccommand);
 			}
 
 			// Does the current Say Filter wish to block the command?
@@ -281,7 +287,7 @@ void SayConCommand::Dispatch( const CCommand &command )
 		SayCommandManager* pSayCommandManager = commandMapIter->second;
 
 		// Call the command and see it wants to block the command
-		if( pSayCommandManager->Dispatch(iIndex, bTeamOnly, ccommand)  == BLOCK)
+		if( pSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, ccommand)  == BLOCK)
 		{
 			// Block the command
 			return;
@@ -349,7 +355,7 @@ void SayCommandManager::remove_callback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Dispatches the say command.
 //-----------------------------------------------------------------------------
-CommandReturn SayCommandManager::Dispatch( int iIndex, bool bTeamOnly, CICommand* ccommand )
+CommandReturn SayCommandManager::Dispatch( CPlayerInfo* pPlayerInfo, bool bTeamOnly, CICommand* ccommand )
 {
 	// Loop through all callables registered for the SayCommandManager instance
 	for(int i = 0; i < m_vecCallables.Count(); i++)
@@ -373,13 +379,13 @@ CommandReturn SayCommandManager::Dispatch( int iIndex, bool bTeamOnly, CICommand
 				const char* szMethodName = extract<const char*>(oMethodName);
 
 				// Call the callable
-				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, iIndex, bTeamOnly, ccommand);
+				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, pPlayerInfo, bTeamOnly, ccommand);
 			}
 
 			else
 			{
 				// Call the callable
-				returnValue = call<object>(pCallable, iIndex, bTeamOnly, ccommand);
+				returnValue = call<object>(pCallable, pPlayerInfo, bTeamOnly, ccommand);
 			}
 
 			// Does the callable wish to block the command?
