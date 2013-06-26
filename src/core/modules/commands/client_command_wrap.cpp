@@ -104,8 +104,11 @@ void unregister_client_command_filter(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 {
-	// Get the CEdict instance of the entity
-	CEdict* entity = new CEdict(pEntity);
+	// Get the CEdict instance of the player
+	CEdict* pEdict = new CEdict(pEntity);
+
+	// Get the CPlayerInfo instance of the player
+	CPlayerInfo* pPlayerInfo = new CPlayerInfo(pEdict);
 
 	// Get the CICommand instance of the CCommand
 	CICommand* ccommand = new CICommand(&command);
@@ -132,13 +135,13 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 				const char* szMethodName = extract<const char*>(oMethodName);
 
 				// Call the callable
-				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, entity, ccommand);
+				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, pPlayerInfo, ccommand);
 			}
 
 			else
 			{
 				// Call the callable
-				returnValue = call<object>(pCallable, entity, ccommand);
+				returnValue = call<object>(pCallable, pPlayerInfo, ccommand);
 			}
 
 			// Does the Client Command Filter want to block the command?
@@ -162,7 +165,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 		ClientCommandManager* pClientCommandManager = commandMapIter->second;
 
 		// Does the command need to be blocked?
-		if( !pClientCommandManager->Dispatch(entity, ccommand))
+		if( !pClientCommandManager->Dispatch(pPlayerInfo, ccommand))
 		{
 			// Block the command
 			return PLUGIN_STOP;
@@ -225,7 +228,7 @@ void ClientCommandManager::remove_callback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Calls all callables for the command when it is called on the client.
 //-----------------------------------------------------------------------------
-CommandReturn ClientCommandManager::Dispatch( CEdict* entity, CICommand* ccommand )
+CommandReturn ClientCommandManager::Dispatch( CPlayerInfo* pPlayerInfo, CICommand* ccommand )
 {
 	// Loop through all callables registered for the ClientCommandManager instance
 	for(int i = 0; i < m_vecCallables.Count(); i++)
@@ -249,13 +252,13 @@ CommandReturn ClientCommandManager::Dispatch( CEdict* entity, CICommand* ccomman
 				const char* szMethodName = extract<const char*>(oMethodName);
 
 				// Call the callable
-				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, entity, ccommand);
+				returnValue = boost::python::call_method<object>(oClassInstance, szMethodName, pPlayerInfo, ccommand);
 			}
 
 			else
 			{
 				// Call the callable
-				returnValue = call<object>(pCallable, entity, ccommand);
+				returnValue = call<object>(pCallable, pPlayerInfo, ccommand);
 			}
 
 			// Does the callable wish to block the command?

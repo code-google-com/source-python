@@ -35,12 +35,9 @@ class _AuthCallback(object):
         # Does the player's authorization need to be checked?
         if self.check_auth:
 
-            # Get the player's IPlayerInfo instance
-            playerinfo = CPlayerInfo(args[0])
-
             # Is the player authorized?
             if not AuthManager.is_player_authorized(
-                    playerinfo, self.level, self.permission, self.flag):
+                    args[0], self.level, self.permission, self.flag):
 
                 # Is there fail callback?
                 if not self.fail_callback is None:

@@ -38,6 +38,7 @@
 #include "convar.h"
 #include "command_wrap.h"
 #include "modules/entities/entities_wrap.h"
+#include "modules/players/players_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Client Command Manager class.
@@ -51,7 +52,7 @@ public:
 	void add_callback(PyObject* pCallable);
 	void remove_callback(PyObject* pCallable);
 
-	CommandReturn Dispatch(CEdict* entity, CICommand* ccommand);
+	CommandReturn Dispatch(CPlayerInfo* pPlayerInfo, CICommand* ccommand);
 
 private:
 	CUtlVector<object> m_vecCallables;
