@@ -32,18 +32,18 @@ class Status(object):
 class Repeat(AutoUnload):
     '''Class used to create and call repeats'''
 
-    def __init__(self, callback, *args, **kw):
+    def __init__(self, callback, *args, **kwargs):
         '''Stores all attributes'''
 
         # Store the base attributes
         self.callback = callback
         self.args = args
-        self.kw = kw
+        self.kwargs = kwargs
 
         # Log the __init__ message
         TickRepeatLogger.log_info(
             'Repeat.__init__: <%s> <%s> <%s>' % (
-            self.callback, self.args, self.kw))
+            self.callback, self.args, self.kwargs))
 
         # Set up private attributes
         self._interval = 0
@@ -251,7 +251,7 @@ class Repeat(AutoUnload):
             self._status = Status.STOPPED
 
         # Call the repeat's callback
-        self.callback(*self.args, **self.kw)
+        self.callback(*self.args, **self.kwargs)
 
     @property
     def remaining(self):

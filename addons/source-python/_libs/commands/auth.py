@@ -17,7 +17,8 @@ class _AuthCallback(object):
     '''Authorization class used to check if a player is
         authorized to use a command before calling the callback'''
 
-    def __init__(self, callback, level=None,
+    def __init__(
+            self, callback, level=None,
             permission=None, flag=None, fail_callback=None):
         '''Stores all the given arguments'''
         self.callback = callback

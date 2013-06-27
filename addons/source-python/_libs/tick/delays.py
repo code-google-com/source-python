@@ -31,7 +31,7 @@ class _Delay(object):
     '''Stores a delay object that scripters can use to
         change arguments, cancel the delay, etc...'''
 
-    def __init__(self, seconds, callback, *args, **kw):
+    def __init__(self, seconds, callback, *args, **kwargs):
         '''Called when an instance is instantiated'''
 
         # Store the time to execute the callback
@@ -40,7 +40,7 @@ class _Delay(object):
         # Store the callback, arguments, and keywords
         self.callback = callback
         self.args = args
-        self.kw = kw
+        self.kwargs = kwargs
 
     def __call__(self):
         '''Calls the delay with the proper arguments and keywords'''
@@ -49,7 +49,7 @@ class _Delay(object):
         try:
 
             # Execute the callback with the arguments and keywords
-            self.callback(*self.args, **self.kw)
+            self.callback(*self.args, **self.kwargs)
 
         # Was an error encountered?
         except:
@@ -129,11 +129,11 @@ class _TickDelays(dict):
         # Remove the item from the dictionary
         super(_TickDelays, self).__delitem__(item)
 
-    def delay(self, seconds, callback, *args, **kw):
+    def delay(self, seconds, callback, *args, **kwargs):
         '''Method used to create a delay'''
 
         # Get the _Delay instance for the given arguments
-        delay_object = _Delay(seconds, callback, *args, **kw)
+        delay_object = _Delay(seconds, callback, *args, **kwargs)
 
         # Add the _Delay instance to the dictionary using its execution time
         self[delay_object.exec_time].append(delay_object)

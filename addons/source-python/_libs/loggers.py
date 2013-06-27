@@ -160,7 +160,7 @@ class _LogInstance(dict):
         if SP_LOG & areas:
 
             # Print to the SP log file
-            SPLogger.logger.log(level , msg, *args, **kwargs)
+            SPLogger.logger.log(level, msg, *args, **kwargs)
 
     @staticmethod
     def _get_level_value(level):
