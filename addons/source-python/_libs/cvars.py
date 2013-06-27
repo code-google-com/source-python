@@ -21,7 +21,7 @@ class ServerVar(cvar_c.CConVar):
         super(ServerVar, self).__init__(
             name, value, flags, description,
             not min_value is None, min_value or 0.0,
-            not max_value is None, min_value or 0.0)
+            not max_value is None, max_value or 0.0)
 
     def __getattr__(self, attr):
         '''Gets the value of the given attribute'''

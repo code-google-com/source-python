@@ -17,7 +17,7 @@ class _BaseCommandManager(dict):
     _use_args = True
     _CallbackManager = None
 
-    def register_commands(self, names, callback, *args):
+    def register_commands(self, names, callback, *args, **kwargs):
         '''Registers the given commands to the given callback'''
 
         # Was a single command name given?
@@ -38,7 +38,7 @@ class _BaseCommandManager(dict):
         if not self._CallbackManager is None:
 
             # Get the callback manager's instance for the given callback
-            callback = self._CallbackManager(callback, *args)
+            callback = self._CallbackManager(callback, *args, **kwargs)
 
         # Loop through the given names
         for name in names:
