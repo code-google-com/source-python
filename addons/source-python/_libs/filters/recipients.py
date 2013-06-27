@@ -27,13 +27,11 @@ class RecipientFilter(CMRecipientFilter):
         # Update the recipient matching the given filters
         self.update(*self.filters)
 
-
     def __contains__(self, index):
         '''
             Return True if the given index is in the recipient, False otherwise
         '''
         return self.has_recipient(index)
-
 
     def __getitem__(self, item):
         '''Return the index at the given recipient slot'''
@@ -48,11 +46,9 @@ class RecipientFilter(CMRecipientFilter):
         # Return the index at the given recipient slot
         return self.get_recipient_index[item]
 
-
     def __len__(self):
         '''Return the length of the recipient filter'''
         return self.get_recipient_count()
-
 
     def __iter__(self):
         '''Iterate over the recipient filter'''
@@ -63,11 +59,9 @@ class RecipientFilter(CMRecipientFilter):
             # Yield the recipient
             yield self.get_recipient_index(index)
 
-
     def __repr__(self):
         '''Return a readable representation of the recipient filter'''
         return '(%s)' % ' ,'.join(map(str, self))
-
 
     def merge(self, iterable):
         '''Merge the given recipient'''
@@ -77,7 +71,6 @@ class RecipientFilter(CMRecipientFilter):
 
             # Add the current index to the recipient filter
             self.add_recipient(index)
-
 
     def update(self, *args, clear=True):
         '''Update the recipient filter matching the given filters'''

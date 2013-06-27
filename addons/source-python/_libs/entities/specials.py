@@ -33,7 +33,7 @@ class _EntitySpecials(object):
 
     def damage(
             self, victim_index, damage=0, damage_type=0,
-            weapon_index=None, hitgroup=0, **keywords):
+            weapon_index=None, hitgroup=0, **kwargs):
         '''Method used to hurt another entity with the given arguments'''
 
         # Import BaseEntity classes
@@ -108,7 +108,7 @@ class _EntitySpecials(object):
             take_damage_info + DamageOffsets.bitsDamageType, damage_type)
 
         # Loop through the given keywords
-        for item in keywords:
+        for item in kwargs:
 
             # Is the keyword supported?
             if item in DamageOffsets:
@@ -116,7 +116,7 @@ class _EntitySpecials(object):
                 # Set the offset's value
                 getattr(Binutils, 'SetLoc%s' % DamageOffsets[item]['type'])(
                     take_damage_info + DamageOffsets[item]['offset'],
-                    keywords[item])
+                    kwargs[item])
 
         # Call the function with the victim's pointer and the CTakeDamageInfo
         SignatureDictionary['TakeDamage'].call_function(

@@ -435,5 +435,6 @@ class ConfigManager(object):
             less than the file's max line length'''
         return textwrap.TextWrapper(
             self.max_line_length, '//' + ' ' * (self.indention - 2),
-            '//' + ' ' * (self.indention if indention is None
+            '//' + ' ' * (
+                self.indention if indention is None
                 else indention - 2)).wrap(lines)
