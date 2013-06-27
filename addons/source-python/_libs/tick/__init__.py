@@ -4,15 +4,17 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+from tick_c import get_tick_listener_manager
 from core import AutoUnload
 from loggers import SPLogger
-#   Tick
-from tick.delays import TickListenerManager
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the CTickListenerManager instance
+TickListenerManager = get_tick_listener_manager()
+
 # Get the sp.tick logger
 TickLogger = SPLogger.tick
 

@@ -34,7 +34,7 @@ class _AuthManager(dict):
         '''Loads the given provider'''
 
         # Send a message that the auth provider is being loaded
-        AuthManagerLogger.message(
+        AuthManagerLogger.log_message(
             '[SP Auth] ' + _auth_strings[
             'Loading'].get_string(provider=provider))
 
@@ -42,7 +42,7 @@ class _AuthManager(dict):
         if provider in self:
 
             # If so, send a message that the provider is already loaded
-            AuthManagerLogger.message(
+            AuthManagerLogger.log_message(
                 '[SP Auth] ' + _auth_strings[
                 'Already Loaded'].get_string(provider=provider))
 
@@ -53,7 +53,7 @@ class _AuthManager(dict):
         if not AUTH_PROVIDER_PATH.joinpath(provider + '.py').isfile():
 
             # Send a message that the file does not exist
-            AuthManagerLogger.message(
+            AuthManagerLogger.log_message(
                 '[SP Auth] ' + _auth_strings[
                 'No Module'].get_string(provider=provider))
 
@@ -68,7 +68,7 @@ class _AuthManager(dict):
         self[provider].load()
 
         # Send a message that the provider was loaded
-        AuthManagerLogger.message(
+        AuthManagerLogger.log_message(
             '[SP Auth] ' + _auth_strings[
             'Load Successful'].get_string(provider=provider))
 
@@ -76,7 +76,7 @@ class _AuthManager(dict):
         '''Unloads the given provider'''
 
         # Send a message that the auth provider is being unloaded
-        AuthManagerLogger.message(
+        AuthManagerLogger.log_message(
             '[SP Auth] ' + _auth_strings[
             'Unloading'].get_string(provider=provider))
 
@@ -84,7 +84,7 @@ class _AuthManager(dict):
         if not provider in self:
 
             # If not, send a message that the provider is not loaded
-            AuthManagerLogger.message(
+            AuthManagerLogger.log_message(
                 '[SP Auth] ' + _auth_strings[
                 'Not Loaded'].get_string(provider=provider))
 
@@ -98,7 +98,7 @@ class _AuthManager(dict):
         del self[provider]
 
         # Send a message that the provider was unloaded
-        AuthManagerLogger.message(
+        AuthManagerLogger.log_message(
             '[SP Auth] ' + _auth_strings[
             'Unload Successful'].get_string(provider=provider))
 

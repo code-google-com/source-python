@@ -83,7 +83,7 @@ class _AuthCommands(OrderedDict):
 
     def _print_help(self, pretext='', posttext=''):
         '''Prints all "sp auth" sub-commands'''
-        AuthCommandsLogger.message(
+        AuthCommandsLogger.log_message(
             pretext + '\n' + self._get_help_text() + '\n' + posttext)
 
     def _get_help_text(self):
@@ -121,7 +121,7 @@ def _load_auth_providers(providers):
     if not providers:
 
         # Send a message about the required argument
-        AuthCommandsLogger.message(
+        AuthCommandsLogger.log_message(
             '[SP Auth] ' + _auth_strings['Missing Load'].get_string())
 
         # No need to go further
@@ -141,7 +141,7 @@ def _unload_auth_providers(providers):
     if not providers:
 
         # Send a message about the required argument
-        AuthCommandsLogger.message(
+        AuthCommandsLogger.log_message(
             '[SP Auth] ' + _auth_strings['Missing Unload'].get_string())
 
         # No need to go further
@@ -184,7 +184,7 @@ def _print_auth_providers():
         message += provider + '\n'
 
     # Print ending messages
-    AuthCommandsLogger.message(message + '=' * 61)
+    AuthCommandsLogger.log_message(message + '=' * 61)
 
 # Get the _AuthCommands instance
 AuthCommands = _AuthCommands()

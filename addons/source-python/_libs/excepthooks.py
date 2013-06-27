@@ -111,7 +111,7 @@ class _ExceptHooks(list):
             message += '\n' + line
 
         # Print a blank line to separate the console
-        ExceptHooksLogger.exception(message + '\n\n')
+        ExceptHooksLogger.log_exception(message + '\n\n')
 
 # Get the _ExceptHooks instance
 ExceptHooks = _ExceptHooks()

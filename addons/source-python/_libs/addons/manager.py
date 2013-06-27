@@ -65,7 +65,7 @@ class _AddonManagementDictionary(OrderedDict):
                 # Print a message about not using built-in module names
                 # We already know the path exists, so the only way this error
                 # could occur is if it shares its name with a built-in module
-                AddonManagerLogger.message('[SP] ' + _addon_strings[
+                AddonManagerLogger.log_message('[SP] ' + _addon_strings[
                     'Built-in'].get_string(addon=addon_name))
 
             # Otherwise
@@ -96,7 +96,7 @@ class _AddonManagementDictionary(OrderedDict):
             return
 
         # Print message about unloading the addon
-        AddonManagerLogger.message('[SP] ' + _addon_strings[
+        AddonManagerLogger.log_message('[SP] ' + _addon_strings[
             'Unloading'].get_string(addon=addon_name))
 
         # Does the addon have an unload function?
@@ -214,7 +214,7 @@ class _LoadedAddon(object):
         '''Called when an addon's instance is initialized'''
 
         # Print message that the addon is going to be loaded
-        AddonManagerLogger.message('[SP] ' + _addon_strings[
+        AddonManagerLogger.log_message('[SP] ' + _addon_strings[
             'Loading'].get_string(addon=addon_name))
 
         # Get the addon's main file
@@ -224,7 +224,7 @@ class _LoadedAddon(object):
         if not file_path.isfile():
 
             # Print a message that the addon's main file was not found
-            AddonManagerLogger.message('[SP] ' + _addon_strings[
+            AddonManagerLogger.log_message('[SP] ' + _addon_strings[
                 'No Module'].get_string(addon=addon_name))
 
             # Raise an error, so that the addon
