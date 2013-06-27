@@ -74,7 +74,7 @@ class _SPCommands(OrderedDict):
             if len(args) != len(self[command].args):
 
                 # Send a message about the sub-command's valid arguments
-                SPCommandsLogger.message(
+                SPCommandsLogger.log_message(
                     '[SP] ' + _command_strings['Invalid Arguments'].get_string(
                         command=command) + ' '.join(self[command].args))
 
@@ -132,7 +132,7 @@ class _SPCommands(OrderedDict):
                 item].__doc__.rjust(76 - len(text))
 
         # Send ending message
-        SPCommandsLogger.message(message + '\n' + '=' * 76)
+        SPCommandsLogger.log_message(message + '\n' + '=' * 76)
 
 # Get the _SPCommands instance
 SPCommands = _SPCommands()
@@ -187,7 +187,7 @@ def _load_addon(addon_name):
     if addon_name in AddonManager:
 
         # Send message that the addon is loaded
-        AddonManagerLogger.message('[SP] ' + _command_strings[
+        AddonManagerLogger.log_message('[SP] ' + _command_strings[
             'Already Loaded'].get_string(addon=addon_name))
 
         # No need to go further
@@ -200,14 +200,14 @@ def _load_addon(addon_name):
     if addon is None:
 
         # Send message that the addon was not loaded
-        AddonManagerLogger.message('[SP] ' + _command_strings[
+        AddonManagerLogger.log_message('[SP] ' + _command_strings[
             'Unable to Load'].get_string(addon=addon_name))
 
         # No need to go further
         return
 
     # Send message that the addon was loaded
-    AddonManagerLogger.message('[SP] ' + _command_strings[
+    AddonManagerLogger.log_message('[SP] ' + _command_strings[
         'Successful Load'].get_string(addon=addon_name))
 
 
@@ -218,7 +218,7 @@ def _unload_addon(addon_name):
     if not addon_name in AddonManager:
 
         # If not, send a message that the addon is not loaded
-        AddonManagerLogger.message('[SP] ' + _command_strings[
+        AddonManagerLogger.log_message('[SP] ' + _command_strings[
             'Not Loaded'].get_string(addon=addon_name))
 
         # No need to go further
@@ -228,7 +228,7 @@ def _unload_addon(addon_name):
     del AddonManager[addon_name]
 
     # Send message that the addon was unloaded
-    AddonManagerLogger.message('[SP] ' + _command_strings[
+    AddonManagerLogger.log_message('[SP] ' + _command_strings[
         'Successful Unload'].get_string(addon=addon_name))
 
 
@@ -292,7 +292,7 @@ def _print_addons():
         message += '\n'
 
     # Print the message
-    SPCommandsLogger.message(message + '=' * 61)
+    SPCommandsLogger.log_message(message + '=' * 61)
 
 
 def _print_version():
@@ -327,7 +327,7 @@ def _print_credits():
         message += '\n'
 
     # Print the ending message
-    SPCommandsLogger.message(message + '=' * 61 + '\n\n')
+    SPCommandsLogger.log_message(message + '=' * 61 + '\n\n')
 
 # Add addon loading/unloading commands to the dictionary
 SPCommands['load'] = _load_addon

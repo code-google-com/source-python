@@ -86,27 +86,27 @@ class _LogInstance(dict):
             # Remove the child
             del self[item]
 
-    def critical(self, msg, *args, **kwargs):
+    def log_critical(self, msg, *args, **kwargs):
         '''Use to call a critical message'''
         self._log(CRITICAL, msg, *args, **kwargs)
 
-    def debug(self, msg, *args, **kwargs):
+    def log_debug(self, msg, *args, **kwargs):
         '''Use to call a debug message'''
         self._log(DEBUG, msg, *args, **kwargs)
 
-    def exception(self, msg, *args, **kwargs):
+    def log_exception(self, msg, *args, **kwargs):
         '''Use to call an exception message'''
         self._log(ERROR, msg, *args, **kwargs)
 
-    def info(self, msg, *args, **kwargs):
+    def log_info(self, msg, *args, **kwargs):
         '''Use to call a basic info message'''
         self._log(INFO, msg, *args, **kwargs)
 
-    def warning(self, msg, *args, **kwargs):
+    def log_warning(self, msg, *args, **kwargs):
         '''Use to call a warning message'''
         self._log(WARNING, msg, *args, **kwargs)
 
-    def message(self, msg, *args, **kwargs):
+    def log_message(self, msg, *args, **kwargs):
         '''Use to call a message that should always print'''
         self._log(ALWAYS, msg, *args, **kwargs)
 

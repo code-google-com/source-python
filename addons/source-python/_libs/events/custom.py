@@ -9,6 +9,15 @@ from collections import OrderedDict
 
 # Source.Python Imports
 from event_c import CGameEvent
+#   Events
+from events import EventsLogger
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the sp.events.custom logger
+EventsCustomLogger = EventsLogger.custom
 
 
 # =============================================================================

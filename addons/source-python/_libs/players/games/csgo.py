@@ -34,7 +34,7 @@ class _GameWeapons(object):
 
     def get_incendiary_grenade_indexes(self):
         '''Returns a list of incendiary/molotov indexes for the player'''
-        return self.get_weapon_index_list(is_type='incendiary')
+        return self.get_weapon_index_list(is_filters='incendiary')
 
     def get_decoy_grenade_indexes(self):
         '''Returns a list of decoy grenade indexes for the player'''
@@ -57,7 +57,7 @@ class _GameWeapons(object):
 
     def get_incendiary_grenade_count(self):
         '''Returns the player's incendiary/molotov ammo value'''
-        return self._get_weapon_ammo(is_type='incendiary')
+        return self._get_weapon_ammo(is_filters='incendiary')
 
     def get_decoy_grenade_count(self):
         '''Returns the player's decoy grenade ammo value'''
@@ -68,23 +68,23 @@ class _GameWeapons(object):
     # =========================================================================
     def set_hegrenade_count(self, value):
         '''Sets the player's hegrenade amount'''
-        self._set_weapon_ammo('weapon_hegrenade')
+        self._set_weapon_ammo(value, 'weapon_hegrenade')
 
     def set_flashbang_count(self, value):
         '''Sets the player's flashbang amount'''
-        self._set_weapon_ammo('weapon_flashbang')
+        self._set_weapon_ammo(value, 'weapon_flashbang')
 
     def set_smoke_grenade_count(self, value):
         '''Sets the player's smoke grenade amount'''
-        self._set_weapon_ammo('weapon_smokegrenade')
+        self._set_weapon_ammo(value, 'weapon_smokegrenade')
 
     def set_incendiary_grenade_count(self, value):
         '''Sets the player's incendiary/molotov grenade amount'''
-        self._set_weapon_ammo(is_type='incendiary')
+        self._set_weapon_ammo(value, is_filters='incendiary')
 
     def set_decoy_grenade_count(self, value):
         '''Sets the player's decoy grenade amount'''
-        self._set_weapon_ammo('weapon_decoy')
+        self._set_weapon_ammo(value, 'weapon_decoy')
 
     # =========================================================================
     # >> OTHER METHODS
@@ -102,7 +102,7 @@ class _GameWeapons(object):
             entity = BaseEntity(index)
 
             # Is the entity's "owner" the player?
-            if entity.owner == self.handle.ToInt():
+            if entity.owner == self.handle.to_int():
 
                 # Return True
                 return True

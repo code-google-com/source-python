@@ -6,6 +6,7 @@
 # Source.Python Imports
 from event_c import get_game_event_manager
 #   Events
+from loggers import SPLogger
 from events.listener import _EventListener
 
 
@@ -14,6 +15,9 @@ from events.listener import _EventListener
 # =============================================================================
 # Get the CGameEventManager instance
 GameEventManager = get_game_event_manager()
+
+# Get the sp.events.manager logger
+EventsManagerLogger = SPLogger.events.manager
 
 
 # =============================================================================

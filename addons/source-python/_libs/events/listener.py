@@ -6,6 +6,14 @@
 # Source.Python Imports
 from event_c import CGameEventListener
 from excepthooks import ExceptHooks
+from loggers import SPLogger
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the sp.events.listener logger
+EventsListenerLogger = SPLogger.events.listener
 
 
 # =============================================================================

@@ -10,12 +10,18 @@ import time
 # Source.Python Imports
 from tick_c import get_tick_listener_manager
 from excepthooks import ExceptHooks
+#   Tick
+from tick import TickLogger
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the CTickListenerManager instance
 TickListenerManager = get_tick_listener_manager()
+
+# Get the sp.tick.delays logger
+TickDelaysLogger = TickLogger.delays
 
 
 # =============================================================================
