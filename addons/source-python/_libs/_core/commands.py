@@ -13,7 +13,6 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 from _core import _CoreLogger
-from command_c import get_server_command
 from paths import DATA_PATH
 #   Addons
 from addons.info import AddonInfo
@@ -21,6 +20,8 @@ from addons.manager import AddonManager
 from addons.manager import AddonManagerLogger
 #   Auth
 from auth.commands import AuthCommands
+#   Commands
+from commands.server import ServerCommand
 #   Translations
 from translations.strings import LangStrings
 
@@ -141,6 +142,7 @@ SPCommands = _SPCommands()
 # =============================================================================
 # >> MAIN FUNCTION
 # =============================================================================
+@ServerCommand('sp', 'Source.Python base command.', 0)
 def _sp_command_callback(CICommand):
     '''Called when the sp command is executed on the server'''
 
@@ -171,10 +173,6 @@ def _sp_command_callback(CICommand):
 
     # execute the called command
     SPCommands.call_command(command, args)
-
-# Register the "sp" command
-_sp_command = get_server_command('sp', 'Source.Python base command.', 0)
-_sp_command.add_callback(_sp_command_callback)
 
 
 # =============================================================================
