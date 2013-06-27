@@ -13,7 +13,7 @@ from core import AutoUnload
 class _BaseCommand(AutoUnload):
     '''Base decorator class used to register commands'''
 
-    def __init__(self, names, *args):
+    def __init__(self, names, *args, **kwargs):
         '''Stores the base values for the decorator'''
 
         # Store the names
@@ -21,6 +21,9 @@ class _BaseCommand(AutoUnload):
 
         # Store the arguments
         self.args = args
+
+        # Store the keyword arguments
+        self.kwargs = kwargs
 
     def __call__(self, callback):
         '''Registers the commands to the given callback'''
@@ -30,7 +33,7 @@ class _BaseCommand(AutoUnload):
 
         # Register the commands
         self._ManagerClass.register_commands(
-            self.names, self.callback, *self.args)
+            self.names, self.callback, *self.args, **self.kwargs)
 
     def _unload_instance(self):
         '''Unregisters the commands'''
