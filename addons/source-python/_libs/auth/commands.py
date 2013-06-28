@@ -76,10 +76,10 @@ class _AuthCommands(OrderedDict):
 
         # Get header messages
         header = message + '[SP Auth] ' + _auth_strings[
-            'Help'].get_string() + 'sp auth <command> [arguments]\n' + '=' * 76
+            'Help'].get_string() + 'sp auth <command> [arguments]\n' + '=' * 78
 
         # Print all "sp auth" sub-commands
-        self._print_help(header, '=' * 76)
+        self._print_help(header, '=' * 78)
 
     def _print_help(self, pretext='', posttext=''):
         '''Prints all "sp auth" sub-commands'''
@@ -105,7 +105,7 @@ class _AuthCommands(OrderedDict):
                 text += ' ' + ' '.join(self[item].args)
 
             # Add the doc strings
-            message += text + self[item].__doc__.rjust(76 - len(text)) + '\n'
+            message += text + self[item].__doc__.rjust(78 - len(text)) + '\n'
 
         # Return the message
         return message.rstrip('\n')
