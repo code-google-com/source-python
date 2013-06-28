@@ -28,12 +28,18 @@ class Tick(AutoUnload):
     def __init__(self, callback):
         '''Store the callback and register the tick listener'''
 
+        # Log the Tick.__init__ message
+        TickLogger.log_info('Tick.__init__ <%s>' % callback)
+
         # Is the callback callable?
         if not callable(callback):
 
             # Raise an error
             raise TypeError(
                 "'" + type(callback).__name__ + "' object is not callable")
+
+        # Log the registering message
+        TickLogger.log_info('Tick.__init__ - Registering')
 
         # Store the callback
         self.callback = callback
@@ -49,6 +55,10 @@ class Tick(AutoUnload):
 
     def _unload_instance(self):
         '''Unregisters the tick listener'''
+
+        # Log the unregistering
+        TickLogger.log_info(
+            'Tick._unload_instance - Unregistering <%s>' % self.callback)
 
         # Unregister the tick listener
         TickListenerManager.unregister_listener(self.callback)

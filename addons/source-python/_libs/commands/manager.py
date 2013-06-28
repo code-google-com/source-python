@@ -5,6 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from command_c import CommandReturn
+from excepthooks import ExceptHooks
 
 
 # =============================================================================
@@ -64,6 +65,7 @@ class _BaseCommandManager(dict):
 
             # Add the callback to the command's list of callbacks
             self[name].append(callback)
+
 
     def unregister_commands(self, names, callback):
         '''Unregisters the given commands from the given callback'''

@@ -25,7 +25,7 @@ class AddonInfo(OrderedDict):
             raise AttributeError('Private attributes not allowed')
 
         # Redirect to __getitem__
-        return self.__getitem__(attribute)
+        return self[attribute]
 
     def __setattr__(self, attribute, value):
         '''Redirects to __setitem__'''
@@ -41,4 +41,4 @@ class AddonInfo(OrderedDict):
             return
 
         # Redirect to __setitem__
-        self.__setitem__(attribute, value)
+        self[attribute] = value

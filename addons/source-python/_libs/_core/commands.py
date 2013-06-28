@@ -13,6 +13,7 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 from _core import _CoreLogger
+from core import GameEngine
 from paths import DATA_PATH
 #   Addons
 from addons.info import AddonInfo
@@ -22,6 +23,8 @@ from addons.manager import AddonManagerLogger
 from auth.commands import AuthCommands
 #   Commands
 from commands.server import ServerCommand
+#   Tick
+from tick.delays import TickDelays
 #   Translations
 from translations.strings import LangStrings
 
@@ -71,8 +74,11 @@ class _SPCommands(OrderedDict):
         # Does the given command have required arguments?
         if hasattr(self[command], 'args'):
 
-            # Were the correct number of arguments given?
-            if len(args) != len(self[command].args):
+            # Get the number of required arguments
+            required = [x for x in self[command].args if x.startswith('<')]
+
+            # Were enough arguments provided?
+            if len(args) < len(required):
 
                 # Send a message about the sub-command's valid arguments
                 SPCommandsLogger.log_message(
@@ -81,6 +87,20 @@ class _SPCommands(OrderedDict):
 
                 # Go no further
                 return
+
+            # Are all arguments required?
+            if len(required) == len(self[command].args):
+
+                # Were the correct number of arguments given?
+                if len(args) != len(required):
+
+                    # Send a message about the sub-command's valid arguments
+                    SPCommandsLogger.log_message(
+                        '[SP] ' + _command_strings['Invalid Arguments'].get_string(
+                            command=command) + ' '.join(self[command].args))
+
+                    # Go no further
+                    return
 
             # Execute the command with the given arguments
             self[command](*args)
@@ -105,7 +125,7 @@ class _SPCommands(OrderedDict):
 
         # Add header messages
         message += '\n[SP] ' + _command_strings[
-            'Help'].get_string() + 'sp <command> [arguments]\n' + '=' * 76
+            'Help'].get_string() + 'sp <command> [arguments]\n' + '=' * 78
 
         # Loop through all registered sub-commands
         for item in self:
@@ -130,10 +150,10 @@ class _SPCommands(OrderedDict):
 
             # Add a message for the current command
             message += '\n' + text + self[
-                item].__doc__.rjust(76 - len(text))
+                item].__doc__.rjust(78 - len(text))
 
         # Send ending message
-        SPCommandsLogger.log_message(message + '\n' + '=' * 76)
+        SPCommandsLogger.log_message(message + '\n' + '=' * 78)
 
 # Get the _SPCommands instance
 SPCommands = _SPCommands()
@@ -240,12 +260,20 @@ def _reload_addon(addon_name):
     _load_addon(addon_name)
 
 
+def _delay_execution(*args):
+    '''Executes a command after the given delay.'''
+
+    # Add the delay
+    TickDelays.delay(
+        float(args[0]), GameEngine.server_command, ' '.join(args[1:]) + '\n')
+
+
 def _print_addons():
     '''Lists all currently loaded addons.'''
 
     # Get header messages
     message = '[SP] ' + _command_strings[
-        'Addons'].get_string() + '=' * 61 + '\n\n'
+        'Addons'].get_string() + '\n' + '=' * 61 + '\n\n'
 
     # Loop through all loaded addons
     for addon in AddonManager:
@@ -302,7 +330,7 @@ def _print_credits():
 
     # Get header messages
     message = '[SP] ' + _command_strings[
-        'Credits'].get_string() + '=' * 61 + '\n\n'
+        'Credits'].get_string() + '\n' + '=' * 61 + '\n\n'
 
     # Get the credits information
     groups = ConfigObj(
@@ -337,6 +365,10 @@ SPCommands['reload'].args = ['<addon>']
 
 # Add the auth command to the dictionary
 SPCommands['auth'] = AuthCommands
+
+# Add the delay command to the dictionary
+SPCommands['delay'] = _delay_execution
+SPCommands['delay'].args = ['<delay>', '<command>', '[arguments]']
 
 # Add all printing commands to the dictionary
 SPCommands['list'] = _print_addons
