@@ -6,6 +6,8 @@
 # Python Imports
 #   Collections
 from collections import defaultdict
+#   TextWrap
+from textwrap import TextWrapper
 
 # Source.Python Imports
 from core import GameEngine
@@ -245,7 +247,7 @@ class ConfigManager(object):
                         for line in self._get_lines(lines, indent):
 
                             # Write the current line
-                            open_file.write(line)
+                            open_file.write(line + '\n')
 
                     # Does the default value need written?
                     if section.show_default:
@@ -261,7 +263,7 @@ class ConfigManager(object):
                     for line in self._get_lines(section.description):
 
                         # Write the current line
-                        open_file.write(line)
+                        open_file.write(line + '\n')
 
                     # Does the cvar exist in the old config file?
                     if section.name in _old_config:
@@ -269,7 +271,7 @@ class ConfigManager(object):
                         # Write the old config file's value
                         open_file.write(
                             ' ' * self.indention +
-                            _old_config[section.name][0] + '\n')
+                            _old_config[section.name][0] + '\n\n\n')
 
                         # Remove the cvar from the old config file dictionary
                         del _old_config[section.name]
@@ -280,7 +282,7 @@ class ConfigManager(object):
                         # Write the cvar line using the default value
                         open_file.write(
                             ' ' * self.indention +
-                            section.name + ' %s\n' % section.default)
+                            section.name + ' %s\n\n\n' % section.default)
 
                 # Is the current section a Section?
                 elif isinstance(section, SectionManager):
@@ -364,7 +366,7 @@ class ConfigManager(object):
                     for line in self._get_lines(section):
 
                         # Write the current line
-                        open_file.write(line)
+                        open_file.write(line + '\n')
 
             # Are there any more values not used from the old config file?
             if _old_config:
@@ -383,7 +385,7 @@ class ConfigManager(object):
 
     def execute(self):
         '''Executes the config file'''
-        GameEngine.ServerCommand('exec source-python/%s\n' % self.filepath)
+        GameEngine.server_command('exec source-python/%s\n' % self.filepath)
 
     def _parse_old_file(self):
         '''Parses the old config file to get any values already set'''
@@ -433,8 +435,8 @@ class ConfigManager(object):
     def _get_lines(self, lines, indention=0):
         '''Yields a list of lines that are
             less than the file's max line length'''
-        return textwrap.TextWrapper(
+        return TextWrapper(
             self.max_line_length, '//' + ' ' * (self.indention - 2),
             '//' + ' ' * (
-                self.indention if indention is None
+                self.indention if indention < 3
                 else indention - 2)).wrap(lines)

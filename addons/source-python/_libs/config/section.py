@@ -35,4 +35,4 @@ class SectionManager(object):
     @property
     def separator(self):
         '''Returns the separator to use for the section'''
-        return separator
+        return self._separator
