@@ -131,7 +131,7 @@ def _load_auth_providers(providers):
     for provider in providers:
 
         # Load the current provider
-        AuthManager.load_auth(provider)
+        AuthManager._load_auth(provider)
 
 
 def _unload_auth_providers(providers):
@@ -151,7 +151,7 @@ def _unload_auth_providers(providers):
     for provider in providers:
 
         # Unload the current provider
-        AuthManager.unload_auth(provider)
+        AuthManager._unload_auth(provider)
 
 
 def _reload_auth_providers(providers=None):
@@ -167,7 +167,7 @@ def _reload_auth_providers(providers=None):
     for provider in providers:
 
         # Reload the given provider
-        AuthManager.reload_auth(provider)
+        AuthManager._reload_auth(provider)
 
 
 def _print_auth_providers():
