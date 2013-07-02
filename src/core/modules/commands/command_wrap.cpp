@@ -90,6 +90,6 @@ void BaseFilters::unregister_filter(PyObject* pCallable)
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
 
-	// Remove the callback from the ServerCommandManager instance
+	// Remove the callback from the vector
 	m_vecCallables.FindAndRemove(oCallable);
 }

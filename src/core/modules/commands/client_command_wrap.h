@@ -43,11 +43,11 @@
 //-----------------------------------------------------------------------------
 // Client Command Manager class.
 //-----------------------------------------------------------------------------
-class ClientCommandManager
+class CClientCommandManager
 {
 public:
-	ClientCommandManager(const char* szName);
-	~ClientCommandManager();
+	CClientCommandManager(const char* szName);
+	~CClientCommandManager();
 
 	void add_callback(PyObject* pCallable);
 	void remove_callback(PyObject* pCallable);

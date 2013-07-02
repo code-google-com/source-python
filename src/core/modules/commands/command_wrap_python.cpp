@@ -37,10 +37,10 @@
 //-----------------------------------------------------------------------------
 // Externs.
 //-----------------------------------------------------------------------------
-extern ClientCommandManager* get_client_command(const char* szName);
-extern ServerCommandManager* get_server_command(const char* szName,
+extern CClientCommandManager* get_client_command(const char* szName);
+extern CServerCommandManager* get_server_command(const char* szName,
 	const char* szHelpText = 0, int iFlags = 0);
-extern SayCommandManager* get_say_command(const char* szName);
+extern CSayCommandManager* get_say_command(const char* szName);
 extern void register_client_command_filter(PyObject* pCallable);
 extern void unregister_client_command_filter(PyObject* pCallable);
 extern void register_say_filter(PyObject* pCallable);
@@ -139,15 +139,15 @@ void export_command()
 //-----------------------------------------------------------------------------
 void export_server_command()
 {
-	BOOST_ABSTRACT_CLASS(ServerCommandManager)
+	BOOST_ABSTRACT_CLASS(CServerCommandManager)
 
-		CLASS_METHOD(ServerCommandManager,
+		CLASS_METHOD(CServerCommandManager,
 			add_callback,
 			"Adds a callback to the server command's list.",
 			args("pCallable")
 		)
 
-		CLASS_METHOD(ServerCommandManager,
+		CLASS_METHOD(CServerCommandManager,
 			remove_callback,
 			"Removes a callback from the server command's list.",
 			args("pCallable")
@@ -157,7 +157,7 @@ void export_server_command()
 
 	def("get_server_command",
 		get_server_command,
-		get_server_command_overloads("Gets the ServerCommandManager instance using just the name or also the helptext and/or flags",
+		get_server_command_overloads("Gets the CServerCommandManager instance using just the name or also the helptext and/or flags",
 			args("szName", "szHelpText", "iFlags")
 		)[reference_existing_object_policy()]
 	);
@@ -168,15 +168,15 @@ void export_server_command()
 //-----------------------------------------------------------------------------
 void export_client_command()
 {
-	BOOST_ABSTRACT_CLASS(ClientCommandManager)
+	BOOST_ABSTRACT_CLASS(CClientCommandManager)
 
-		CLASS_METHOD(ClientCommandManager,
+		CLASS_METHOD(CClientCommandManager,
 			add_callback,
 			"Adds a callback to the client command's list.",
 			args("pCallable")
 		)
 
-		CLASS_METHOD(ClientCommandManager,
+		CLASS_METHOD(CClientCommandManager,
 			remove_callback,
 			"Removes a callback from the client command's list.",
 			args("pCallable")
@@ -185,7 +185,7 @@ void export_client_command()
 	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_client_command,
-		"Returns the ClientCommandManager instance for the given command",
+		"Returns the CClientCommandManager instance for the given command",
 		args("szName"),
 		reference_existing_object_policy()
 	);
@@ -206,15 +206,15 @@ void export_client_command()
 //-----------------------------------------------------------------------------
 void export_say_command()
 {
-	BOOST_ABSTRACT_CLASS(SayCommandManager)
+	BOOST_ABSTRACT_CLASS(CSayCommandManager)
 
-		CLASS_METHOD(SayCommandManager,
+		CLASS_METHOD(CSayCommandManager,
 			add_callback,
 			"Adds a callback to the say command's list.",
 			args("pCallable")
 		)
 
-		CLASS_METHOD(SayCommandManager,
+		CLASS_METHOD(CSayCommandManager,
 			remove_callback,
 			"Removes a callback from the say command's list.",
 			args("pCallable")
@@ -223,7 +223,7 @@ void export_say_command()
 	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_say_command,
-		"Returns the SayCommandManager instance for the given command",
+		"Returns the CSayCommandManager instance for the given command",
 		args("szName"),
 		reference_existing_object_policy()
 	);

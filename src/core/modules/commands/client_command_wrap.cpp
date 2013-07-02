@@ -39,7 +39,7 @@
 //-----------------------------------------------------------------------------
 // Global Client command mapping.
 //-----------------------------------------------------------------------------
-typedef boost::unordered_map<std::string, ClientCommandManager*> ClientCommandMap;
+typedef boost::unordered_map<std::string, CClientCommandManager*> ClientCommandMap;
 ClientCommandMap g_ClientCommandMap;
 
 //-----------------------------------------------------------------------------
@@ -48,35 +48,35 @@ ClientCommandMap g_ClientCommandMap;
 static BaseFilters s_ClientCommandFilters;
 
 //-----------------------------------------------------------------------------
-// Returns a ClientCommandManager for the given command name.
+// Returns a CClientCommandManager for the given command name.
 //-----------------------------------------------------------------------------
-ClientCommandManager* get_client_command(const char* szName)
+CClientCommandManager* get_client_command(const char* szName)
 {
 	// Find if the given name is a registered client command
 	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szName);
 	if( commandMapIter == g_ClientCommandMap.end())
 	{
-		// If the command is not already registered, add the name and the ClientCommandManager instance to the mapping
-		g_ClientCommandMap.insert(std::make_pair(szName, new ClientCommandManager(szName)));
+		// If the command is not already registered, add the name and the CClientCommandManager instance to the mapping
+		g_ClientCommandMap.insert(std::make_pair(szName, new CClientCommandManager(szName)));
 
 		// Get the client command in the mapping
 		commandMapIter = g_ClientCommandMap.find(szName);
 	}
 
-	// Return the ClientCommandManager instance for the command
+	// Return the CClientCommandManager instance for the command
 	return commandMapIter->second;
 }
 
 //-----------------------------------------------------------------------------
-// Removes a ClientCommandManager instance for the given name.
+// Removes a CClientCommandManager instance for the given name.
 //-----------------------------------------------------------------------------
-void RemoveClientCommandManager(const char* szName)
+void RemoveCClientCommandManager(const char* szName)
 {
 	// Find if the given name is a registered client command
 	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szName);
 	if( commandMapIter != g_ClientCommandMap.end())
 	{
-		// If the command is registered, delete the ClientCommandManager instance
+		// If the command is registered, delete the CClientCommandManager instance
 		//		and remove the command from the mapping
 		delete commandMapIter->second;
 		g_ClientCommandMap.erase(commandMapIter);
@@ -161,11 +161,11 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szCommand);
 	if( commandMapIter != g_ClientCommandMap.end() )
 	{
-		// If the command exists, get the ClientCommandManager instance and call its Dispatch method
-		ClientCommandManager* pClientCommandManager = commandMapIter->second;
+		// If the command exists, get the CClientCommandManager instance and call its Dispatch method
+		CClientCommandManager* pCClientCommandManager = commandMapIter->second;
 
 		// Does the command need to be blocked?
-		if( !pClientCommandManager->Dispatch(pPlayerInfo, ccommand))
+		if( !pCClientCommandManager->Dispatch(pPlayerInfo, ccommand))
 		{
 			// Block the command
 			return PLUGIN_STOP;
@@ -176,24 +176,24 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 }
 
 //-----------------------------------------------------------------------------
-// ClientCommandManager constructor.
+// CClientCommandManager constructor.
 //-----------------------------------------------------------------------------
-ClientCommandManager::ClientCommandManager(const char* szName)
+CClientCommandManager::CClientCommandManager(const char* szName)
 {
 	m_Name = szName;
 }
 
 //-----------------------------------------------------------------------------
-// ClientCommandManager destructor.
+// CClientCommandManager destructor.
 //-----------------------------------------------------------------------------
-ClientCommandManager::~ClientCommandManager()
+CClientCommandManager::~CClientCommandManager()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Adds a callable to a ClientCommandManager instance.
+// Adds a callable to a CClientCommandManager instance.
 //-----------------------------------------------------------------------------
-void ClientCommandManager::add_callback( PyObject* pCallable )
+void CClientCommandManager::add_callback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
@@ -207,30 +207,30 @@ void ClientCommandManager::add_callback( PyObject* pCallable )
 }
 
 //-----------------------------------------------------------------------------
-// Removes a callable from a ClientCommandManager instance.
+// Removes a callable from a CClientCommandManager instance.
 //-----------------------------------------------------------------------------
-void ClientCommandManager::remove_callback( PyObject* pCallable )
+void CClientCommandManager::remove_callback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
 
-	// Remove the callback from the ServerCommandManager instance
+	// Remove the callback from the CClientCommandManager instance
 	m_vecCallables.FindAndRemove(oCallable);
 
 	// Are there any more callbacks registered for this command?
 	if( !m_vecCallables.Count() )
 	{
-		// Remove the ClientCommandManager instance
-		RemoveClientCommandManager(m_Name);
+		// Remove the CClientCommandManager instance
+		RemoveCClientCommandManager(m_Name);
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Calls all callables for the command when it is called on the client.
 //-----------------------------------------------------------------------------
-CommandReturn ClientCommandManager::Dispatch( CPlayerInfo* pPlayerInfo, CICommand* ccommand )
+CommandReturn CClientCommandManager::Dispatch( CPlayerInfo* pPlayerInfo, CICommand* ccommand )
 {
-	// Loop through all callables registered for the ClientCommandManager instance
+	// Loop through all callables registered for the CClientCommandManager instance
 	for(int i = 0; i < m_vecCallables.Count(); i++)
 	{
 		BEGIN_BOOST_PY()
