@@ -30,7 +30,7 @@ class _AuthManager(dict):
     '''Class used to store loaded auth providers
         and check if a player is authorized'''
 
-    def load_auth(self, provider):
+    def _load_auth(self, provider):
         '''Loads the given provider'''
 
         # Send a message that the auth provider is being loaded
@@ -72,7 +72,7 @@ class _AuthManager(dict):
             '[SP Auth] ' + _auth_strings[
             'Load Successful'].get_string(provider=provider))
 
-    def unload_auth(self, provider):
+    def _unload_auth(self, provider):
         '''Unloads the given provider'''
 
         # Send a message that the auth provider is being unloaded
@@ -102,7 +102,7 @@ class _AuthManager(dict):
             '[SP Auth] ' + _auth_strings[
             'Unload Successful'].get_string(provider=provider))
 
-    def reload_auth(self, provider):
+    def _reload_auth(self, provider):
         '''Reloads the given provider'''
 
         # Unload the provider

@@ -48,12 +48,11 @@ LanguageManager._register_default_language(
 # =============================================================================
 # >> LOGGING SETUP
 # =============================================================================
-# Loop through the log settings
-for variable in CoreSettings['LOG_SETTINGS']:
+# Set the logging level
+CConVar('sp_logging_level').set_int(int(CoreSettings['LOG_SETTINGS']['level']))
 
-    # Set the variable to the value given in the settings file
-    CConVar('sp_logging_' + variable).set_int(
-        int(CoreSettings['LOG_SETTINGS'][variable]))
+# Set the logging areas
+CConVar('sp_logging_areas').set_int(int(CoreSettings['LOG_SETTINGS']['areas']))
 
 
 # =============================================================================
