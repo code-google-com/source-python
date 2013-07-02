@@ -73,11 +73,11 @@ private:
 //-----------------------------------------------------------------------------
 // Say Command Manager class.
 //-----------------------------------------------------------------------------
-class SayCommandManager
+class CSayCommandManager
 {
 public:
-	SayCommandManager(const char* szName);
-	~SayCommandManager();
+	CSayCommandManager(const char* szName);
+	~CSayCommandManager();
 
 	void add_callback(PyObject* pCallable);
 	void remove_callback(PyObject* pCallable);

@@ -38,11 +38,11 @@
 //-----------------------------------------------------------------------------
 // Server Command Manager class.
 //-----------------------------------------------------------------------------
-class ServerCommandManager : public ConCommand
+class CServerCommandManager : public ConCommand
 {
 public:
-	static ServerCommandManager* CreateCommand(const char* szName, const char* szHelpString, int iFlags);
-	~ServerCommandManager();
+	static CServerCommandManager* CreateCommand(const char* szName, const char* szHelpString, int iFlags);
+	~CServerCommandManager();
 	virtual void Init();
 
 	void add_callback(PyObject* pCallable);
@@ -52,7 +52,7 @@ protected:
 	void Dispatch(const CCommand &command);
 
 private:
-	ServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
+	CServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
 	CUtlVector<object> m_vecCallables;
 	const char* m_Name;
 	ConCommand* m_pOldCommand;

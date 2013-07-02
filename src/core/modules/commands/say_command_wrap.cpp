@@ -40,7 +40,7 @@
 //-----------------------------------------------------------------------------
 // Global say command mapping.
 //-----------------------------------------------------------------------------
-typedef boost::unordered_map<std::string, SayCommandManager*> SayCommandMap;
+typedef boost::unordered_map<std::string, CSayCommandManager*> SayCommandMap;
 SayCommandMap g_SayCommandMap;
 
 //-----------------------------------------------------------------------------
@@ -88,35 +88,35 @@ void BaseSayCommand::UnregisterCommands()
 }
 
 //-----------------------------------------------------------------------------
-// Returns a SayCommandManager for the given command name.
+// Returns a CSayCommandManager for the given command name.
 //-----------------------------------------------------------------------------
-SayCommandManager* get_say_command(const char* szName)
+CSayCommandManager* get_say_command(const char* szName)
 {
 	// Find if the given name is a registered say command
 	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szName);
 	if( commandMapIter == g_SayCommandMap.end())
 	{
-		// If the command is not already registered, add the name and the SayCommandManager instance to the mapping
-		g_SayCommandMap.insert(std::make_pair(szName, new SayCommandManager(szName)));
+		// If the command is not already registered, add the name and the CSayCommandManager instance to the mapping
+		g_SayCommandMap.insert(std::make_pair(szName, new CSayCommandManager(szName)));
 
 		// Get the say command in the mapping
 		commandMapIter = g_SayCommandMap.find(szName);
 	}
 
-	// Return the SayCommandManager instance for the command
+	// Return the CSayCommandManager instance for the command
 	return commandMapIter->second;
 }
 
 //-----------------------------------------------------------------------------
-// Removes a SayCommandManager instance for the given name.
+// Removes a CSayCommandManager instance for the given name.
 //-----------------------------------------------------------------------------
-void RemoveSayCommandManager(const char* szName)
+void RemoveCSayCommandManager(const char* szName)
 {
 	// Find if the given name is a registered say command
 	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szName);
 	if( commandMapIter != g_SayCommandMap.end() )
 	{
-		// If the command is registered, delete the SayCommandManager instance
+		// If the command is registered, delete the CSayCommandManager instance
 		//		and remove the command from the mapping
 		delete commandMapIter->second;
 		g_SayCommandMap.erase(commandMapIter);
@@ -283,11 +283,11 @@ void SayConCommand::Dispatch( const CCommand &command )
 	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
 	if( commandMapIter != g_SayCommandMap.end() )
 	{
-		// Get the SayCommandManager instance for the command
-		SayCommandManager* pSayCommandManager = commandMapIter->second;
+		// Get the CSayCommandManager instance for the command
+		CSayCommandManager* pCSayCommandManager = commandMapIter->second;
 
 		// Call the command and see it wants to block the command
-		if( pSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, ccommand)  == BLOCK)
+		if( pCSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, ccommand)  == BLOCK)
 		{
 			// Block the command
 			return;
@@ -303,24 +303,24 @@ void SayConCommand::Dispatch( const CCommand &command )
 }
 
 //-----------------------------------------------------------------------------
-// SayCommandManager constructor.
+// CSayCommandManager constructor.
 //-----------------------------------------------------------------------------
-SayCommandManager::SayCommandManager(const char* szName)
+CSayCommandManager::CSayCommandManager(const char* szName)
 {
 	m_Name = szName;
 }
 
 //-----------------------------------------------------------------------------
-// SayCommandManager destructor.
+// CSayCommandManager destructor.
 //-----------------------------------------------------------------------------
-SayCommandManager::~SayCommandManager()
+CSayCommandManager::~CSayCommandManager()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Adds a callable to a SayCommandManager instance.
+// Adds a callable to a CSayCommandManager instance.
 //-----------------------------------------------------------------------------
-void SayCommandManager::add_callback( PyObject* pCallable )
+void CSayCommandManager::add_callback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
@@ -334,30 +334,30 @@ void SayCommandManager::add_callback( PyObject* pCallable )
 }
 
 //-----------------------------------------------------------------------------
-// Removes a callable from a SayCommandManager instance.
+// Removes a callable from a CSayCommandManager instance.
 //-----------------------------------------------------------------------------
-void SayCommandManager::remove_callback( PyObject* pCallable )
+void CSayCommandManager::remove_callback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
 
-	// Remove the callback from the ServerCommandManager instance
+	// Remove the callback from the CSayCommandManager instance
 	m_vecCallables.FindAndRemove(oCallable);
 
 	// Are there any more callbacks registered for this command?
 	if( !m_vecCallables.Count() )
 	{
-		// Remove the SayCommandManager instance
-		RemoveSayCommandManager(m_Name);
+		// Remove the CSayCommandManager instance
+		RemoveCSayCommandManager(m_Name);
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Dispatches the say command.
 //-----------------------------------------------------------------------------
-CommandReturn SayCommandManager::Dispatch( CPlayerInfo* pPlayerInfo, bool bTeamOnly, CICommand* ccommand )
+CommandReturn CSayCommandManager::Dispatch( CPlayerInfo* pPlayerInfo, bool bTeamOnly, CICommand* ccommand )
 {
-	// Loop through all callables registered for the SayCommandManager instance
+	// Loop through all callables registered for the CSayCommandManager instance
 	for(int i = 0; i < m_vecCallables.Count(); i++)
 	{
 		BEGIN_BOOST_PY()

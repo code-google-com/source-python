@@ -66,40 +66,40 @@ void InitServerCommands()
 //-----------------------------------------------------------------------------
 // Global server command mapping.
 //-----------------------------------------------------------------------------
-typedef boost::unordered_map<std::string, ServerCommandManager*> ServerCommandMap;
+typedef boost::unordered_map<std::string, CServerCommandManager*> ServerCommandMap;
 ServerCommandMap g_ServerCommandMap;
 
 //-----------------------------------------------------------------------------
-// Returns a ServerCommandManager for the given command name.
+// Returns a CServerCommandManager for the given command name.
 //-----------------------------------------------------------------------------
-ServerCommandManager* get_server_command(const char* szName,
+CServerCommandManager* get_server_command(const char* szName,
 	const char* szHelpText = 0, int iFlags = 0)
 {
 	// Find if the given name is a registered server command
 	ServerCommandMap::iterator commandMapIter = g_ServerCommandMap.find(szName);
 	if( commandMapIter == g_ServerCommandMap.end())
 	{
-		// If the command is not already registered, add the name and the ServerCommandManager instance to the mapping
-		g_ServerCommandMap.insert(std::make_pair(szName, ServerCommandManager::CreateCommand(szName, szHelpText, iFlags)));
+		// If the command is not already registered, add the name and the CServerCommandManager instance to the mapping
+		g_ServerCommandMap.insert(std::make_pair(szName, CServerCommandManager::CreateCommand(szName, szHelpText, iFlags)));
 
 		// Get the server command in the mapping
 		commandMapIter = g_ServerCommandMap.find(szName);
 	}
 
-	// Return the ServerCommandManager instance for the command
+	// Return the CServerCommandManager instance for the command
 	return commandMapIter->second;
 }
 
 //-----------------------------------------------------------------------------
-// Removes a ServerCommandManager instance for the given name.
+// Removes a CServerCommandManager instance for the given name.
 //-----------------------------------------------------------------------------
-void RemoveServerCommandManager(const char* szName)
+void RemoveCServerCommandManager(const char* szName)
 {
 	// Find if the given name is a registered server command
 	ServerCommandMap::iterator commandMapIter = g_ServerCommandMap.find(szName);
 	if( commandMapIter != g_ServerCommandMap.end())
 	{
-		// If the command is registered, delete the ServerCommandManager instance
+		// If the command is registered, delete the CServerCommandManager instance
 		//		and remove the command from the mapping
 		delete commandMapIter->second;
 		g_ServerCommandMap.erase(commandMapIter);
@@ -107,9 +107,9 @@ void RemoveServerCommandManager(const char* szName)
 }
 
 //-----------------------------------------------------------------------------
-// Returns a ServerCommandManager instance.
+// Returns a CServerCommandManager instance.
 //-----------------------------------------------------------------------------
-ServerCommandManager* ServerCommandManager::CreateCommand(const char* szName,
+CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
 	const char* szHelpText, int iFlags)
 {
 	// Copy the name and store a help text copier value
@@ -134,13 +134,13 @@ ServerCommandManager* ServerCommandManager::CreateCommand(const char* szName,
 	}
 
 	// Return a new instance of ConCommand
-	return new ServerCommandManager(pConCommand, szNameCopy, szHelpTextCopy, iFlags);
+	return new CServerCommandManager(pConCommand, szNameCopy, szHelpTextCopy, iFlags);
 }
 
 //-----------------------------------------------------------------------------
-// ServerCommandManager constructor.
+// CServerCommandManager constructor.
 //-----------------------------------------------------------------------------
-ServerCommandManager::ServerCommandManager(ConCommand* pConCommand,
+CServerCommandManager::CServerCommandManager(ConCommand* pConCommand,
 		const char* szName, const char* szHelpText, int iFlags):
 	ConCommand(szName, (FnCommandCallback_t)NULL, szHelpText, iFlags),
 	m_pOldCommand(pConCommand)
@@ -149,9 +149,9 @@ ServerCommandManager::ServerCommandManager(ConCommand* pConCommand,
 }
 
 //-----------------------------------------------------------------------------
-// ServerCommandManager destructor.
+// CServerCommandManager destructor.
 //-----------------------------------------------------------------------------
-ServerCommandManager::~ServerCommandManager()
+CServerCommandManager::~CServerCommandManager()
 {
 	// Get the ConCommand instance
 	ConCommand* pConCommand = g_pCVar->FindCommand(m_Name);
@@ -168,17 +168,17 @@ ServerCommandManager::~ServerCommandManager()
 }
 
 //-----------------------------------------------------------------------------
-// ServerCommandManager Init override.
+// CServerCommandManager Init override.
 //-----------------------------------------------------------------------------
-void ServerCommandManager::Init()
+void CServerCommandManager::Init()
 {
 	ConCommand::Init();
 }
 
 //-----------------------------------------------------------------------------
-// Adds a callable to a ServerCommandManager instance.
+// Adds a callable to a CServerCommandManager instance.
 //-----------------------------------------------------------------------------
-void ServerCommandManager::add_callback( PyObject* pCallable )
+void CServerCommandManager::add_callback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
@@ -192,28 +192,28 @@ void ServerCommandManager::add_callback( PyObject* pCallable )
 }
 
 //-----------------------------------------------------------------------------
-// Removes a callable from a ServerCommandManager instance.
+// Removes a callable from a CServerCommandManager instance.
 //-----------------------------------------------------------------------------
-void ServerCommandManager::remove_callback( PyObject* pCallable )
+void CServerCommandManager::remove_callback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
 
-	// Remove the callback from the ServerCommandManager instance
+	// Remove the callback from the CServerCommandManager instance
 	m_vecCallables.FindAndRemove(oCallable);
 
 	// Are there any more callbacks registered for this command?
 	if( !m_vecCallables.Count() )
 	{
-		// Remove the ServerCommandManager instance
-		RemoveServerCommandManager(m_Name);
+		// Remove the CServerCommandManager instance
+		RemoveCServerCommandManager(m_Name);
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Calls all callables for the command when it is called on the server.
 //-----------------------------------------------------------------------------
-void ServerCommandManager::Dispatch( const CCommand &command )
+void CServerCommandManager::Dispatch( const CCommand &command )
 {
 	// Get the CICommand instance for the CCommand instance
 	CICommand* ccommand = new CICommand(&command);
@@ -274,14 +274,14 @@ void ServerCommandManager::Dispatch( const CCommand &command )
 }
 
 //-----------------------------------------------------------------------------
-// Removes all ServerCommandManager instances.
+// Removes all CServerCommandManager instances.
 //-----------------------------------------------------------------------------
 void ClearAllServerCommands()
 {
 	// Loop through all items in the mapping
 	for(ServerCommandMap::iterator commandMapIter = g_ServerCommandMap.begin(); commandMapIter != g_ServerCommandMap.end(); ++commandMapIter)
 	{
-		// Remove the ServerCommandManager instance
+		// Remove the CServerCommandManager instance
 		delete commandMapIter->second;
 	}
 	// Clear the mapping
