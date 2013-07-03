@@ -24,20 +24,22 @@
 * Development Team grants this exception to all derivative works.
 */
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Includes
-//---------------------------------------------------------------------------------
-#include "eiface.h"
+//-----------------------------------------------------------------------------
+#include <vector>
 #include "entities_props.h"
 #include "entities_wrap.h"
-#include "server_class.h"
 #include "dt_common.h"
 #include "utility/sp_util.h"
 #include "edict.h"
+#include "boost/unordered_map.hpp"
+#include "boost/algorithm/string.hpp"
+#include "boost/foreach.hpp"
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // If these aren't defined, we get linker errors about CBaseEdict.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 IChangeInfoAccessor *CBaseEdict::GetChangeAccessor()
 {
 	return engine->GetChangeAccessor( (const edict_t *)this );
@@ -48,14 +50,20 @@ const IChangeInfoAccessor *CBaseEdict::GetChangeAccessor() const
 	return engine->GetChangeAccessor( (const edict_t *)this );
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // External variables.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 extern CGlobalVars* gpGlobals;
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+// Global accessor.
+//-----------------------------------------------------------------------------
+typedef boost::unordered_map<std::string, CSendPropHashTable*> SendPropMap;
+SendPropMap g_SendPropMap;
+
+//-----------------------------------------------------------------------------
 // CEdict methods.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 CEdict::CEdict( edict_t* edict_ptr )
 {
 	m_edict_ptr = edict_ptr;
@@ -172,9 +180,9 @@ CSendProp* CEdict::get_prop( const char* prop_name ) const
 	return new CSendProp(m_edict_ptr, prop_name);
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // CBaseEntityHandle code.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 CBaseEntityHandle::CBaseEntityHandle( int handle ) : m_base_handle(handle)
 {
 }
@@ -204,9 +212,9 @@ int CBaseEntityHandle::to_int() const
 	return m_base_handle.ToInt();
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // CServerNetworkable code.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 CServerNetworkable::CServerNetworkable( IServerNetworkable* server_networkable )
 {
 	m_server_networkable = server_networkable;
@@ -231,9 +239,9 @@ const char* CServerNetworkable::get_class_name()
 	return m_server_networkable->GetClassName();
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // CHandleEntity code.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 CHandleEntity::CHandleEntity( IHandleEntity* handle_entity )
 {
 	m_handle_entity = handle_entity;
@@ -246,9 +254,9 @@ const CBaseEntityHandle* CHandleEntity::get_ref_ehandle() const
 	return new_entity_handle;
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // CServerUnknown code.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 CServerUnknown::CServerUnknown( IServerUnknown* server_unknown )
 {
 	m_server_unknown = server_unknown;
@@ -271,9 +279,9 @@ unsigned long CServerUnknown::get_base_entity()
 	return (unsigned long)(m_server_unknown->GetBaseEntity());
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // CServerEntity code.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 CServerEntity::CServerEntity( IServerEntity* server_entity )
 {
 	m_server_entity = server_entity;
@@ -294,55 +302,106 @@ const char* CServerEntity::get_model_name()
 	return m_server_entity->GetModelName().ToCStr();
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // CSendProp code.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
 CSendProp::CSendProp( edict_t* edict, const char* prop_name )
 {
-	// Set default values.
-	m_send_prop = NULL;
-	m_prop_offset = 0;
-	m_edict = edict;
-
-	if( !m_edict )
+	if( !edict )
 	{
-		DevMsg(1, "[SP]: m_edict was not valid!\n");
+		DevMsg(1, "[SP]: edict was not valid!\n");
 		return;
 	}
 
 	// Get the base entity. This saves us from having to call
 	// this code repeatedly.
-	IServerUnknown* entity_unknown = m_edict->GetUnknown();
+	IServerUnknown* entity_unknown = edict->GetUnknown();
 	m_base_entity = entity_unknown->GetBaseEntity();
 
-	// First search the hash table to see if we have a prop
-	// with the same name.
-	m_send_prop = PropHashTable()->get_prop(prop_name);
-	
-	// If we didn't find it, search the send table manually.
+	// Get the entity's classname
+	const char* szClassName = edict->GetClassName();
+
+	// Get the classname's prop table
+	SendPropMap::iterator sendPropIter = g_SendPropMap.find(szClassName);
+	if( sendPropIter == g_SendPropMap.end() )
+	{
+		// If the classname isn't mapped, map it
+		g_SendPropMap.insert(std::make_pair(szClassName, new CSendPropHashTable()));
+
+		// Get the classname's prop table
+		sendPropIter = g_SendPropMap.find(szClassName);
+	}
+
+	// Create an offset value to be set by the hash table
+	int iOffset = 0;
+
+	// Get the SendProp from the hash table
+	m_send_prop = sendPropIter->second->get_prop(prop_name, iOffset);
+
+	// Was the SendProp not found in the hash table?
 	if( !m_send_prop )
 	{
+
 		// Get the send table for this entity.
 		ServerClass* server_class = edict->GetNetworkable()->GetServerClass();
 		SendTable* send_table = server_class->m_pTable;
 
-		// Search for the prop in the send table.
-		m_send_prop = UTIL_FindSendProp(send_table, prop_name);
+		// Split the prop_name by "."
+		std::vector<std::string> tokens;
+		boost::algorithm::split(tokens, prop_name, boost::is_any_of("."));
 
-		if( m_send_prop )
+		// Create base variables to use in the foreach loop
+		unsigned int i = 0;
+		SendProp* send_prop;
+
+		// Create a loop to cycle through each token in the given prop_name
+		BOOST_FOREACH(std::string token, tokens)
 		{
-			// Cache off the prop offset so we don't have to keep
-			// calling GetOffset repeatedly.
-			m_prop_offset = m_send_prop->GetOffset();
+			// Find the SendProp instance for the current token
+			const char* str_token = token.c_str();
+			send_prop = UTIL_FindSendProp(send_table, str_token, iOffset);
 
-			// Store the value in the prop hash table.
-			PropHashTable()->insert_offset(prop_name, m_send_prop);
+			// Does the SendProp exist?
+			if( !send_prop )
+			{
+				// If not, exit
+				DevMsg(1, "[SP]: prop_name '%s' was not found!\n", prop_name);
+				return;
+			}
+			// Increment the counter
+			i ++;
+
+			// Is this the end of the loop?
+			if( i < tokens.size() )
+			{
+				// If not, is the current SendProp a datatable?
+				if( send_prop->GetType() != DPT_DataTable )
+				{
+					// If not, exit
+					DevMsg(1, "[SP]: prop_name '%s' was not found!\n", prop_name);
+					return;
+				}
+				// Set the current datatable
+				send_table = send_prop->GetDataTable();
+			}
+			else
+			{
+				// Store the SendProp
+				m_send_prop = send_prop;
+
+				// Store the offset
+				m_prop_offset = iOffset;
+
+				// Insert the prop into the hash table
+				sendPropIter->second->insert_offset(prop_name, m_send_prop, m_prop_offset);
+			}
 		}
 	}
 	else
 	{
 		// Prop was valid. Store off the offset.
-		m_prop_offset = m_send_prop->GetOffset();
+		m_prop_offset = iOffset;
 	}
 }
 
@@ -424,4 +483,3 @@ const char* CSendProp::get_string()
 
 	return "";
 }
-

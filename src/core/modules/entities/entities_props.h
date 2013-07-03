@@ -40,7 +40,8 @@ class CPropOffset
 {
 public:
 	const char*		prop_name;
-	SendProp*		prop;
+	SendProp*			prop;
+	int					prop_offset;
 };
 
 //---------------------------------------------------------------------------------
@@ -69,23 +70,18 @@ public:
 public:
 	// Returns a prop offset by name.
 	// unsigned int get_offset( const char* prop_name, bool& was_found );
-	SendProp* get_prop( const char* prop_name );
+	SendProp* get_prop( const char* prop_name, int &iOffset );
 
 	// Inserts a prop offset into the hash table.
-	void insert_offset( const char* name, SendProp* prop );
+	void insert_offset( const char* name, SendProp* prop, int iOffset );
 
 	// Removes a prop offset by name.
 	void remove_offset( const char* prop_name );
 };
 
 //---------------------------------------------------------------------------------
-// Globals
-//---------------------------------------------------------------------------------
-extern CSendPropHashTable* PropHashTable();
-
-//---------------------------------------------------------------------------------
 // Helper functions
 //---------------------------------------------------------------------------------
-SendProp* UTIL_FindSendProp( SendTable* send_table, const char* prop_name );
+SendProp* UTIL_FindSendProp( SendTable* send_table, const char* prop_name, int &iOffset );
 
 #endif // _ENTITIES_PROPS_H

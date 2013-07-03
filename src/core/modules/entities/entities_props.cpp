@@ -30,39 +30,40 @@
 #include "entities_props.h"
 
 //---------------------------------------------------------------------------------
-// Global accessor.
-//----------------------------------------------------------------------------------
-CSendPropHashTable s_PropHashTable;
-CSendPropHashTable* PropHashTable()
-{
-	return &s_PropHashTable;
-}
-
-//---------------------------------------------------------------------------------
 // Utility function to find send table props.
 //---------------------------------------------------------------------------------
-SendProp* UTIL_FindSendProp( SendTable* send_table, const char* prop_name )
+SendProp* UTIL_FindSendProp( SendTable* send_table, const char* prop_name, int &iOffset )
 {
 	int			prop_count = send_table->GetNumProps();
 	SendProp*	prop;
 
+	// Loop through each property in the datatable
 	for( int i = 0; i < prop_count; i++ )
 	{
+		// Get the current SendProp
 		prop = send_table->GetProp(i);
+
+		// Is this the SendProp that we are looking for?
 		if( V_strcmp(prop->GetName(), prop_name) == 0 )
 		{
+			// Increment the offset count
+			iOffset += prop->GetOffset();
+
+			// Return the SendProp
 			return prop;
 		}
 
+		// Is the current SendProp a datatable?
 		if( prop->GetDataTable() )
 		{
-			if((prop = UTIL_FindSendProp(prop->GetDataTable(), prop_name)) != NULL)
+			// Does the datatable contain the SendProp?
+			if((prop = UTIL_FindSendProp(prop->GetDataTable(), prop_name, iOffset)) != NULL)
 			{
+				// Return the SendProp
 				return prop;
 			}
 		}
 	}
-
 	return NULL;
 }
 
@@ -156,7 +157,7 @@ unsigned int CSendPropHashTable::hash_key( const CPropOffset& a )
 	return SuperFastHash(a.prop_name, V_strlen(a.prop_name));
 }
 
-SendProp* CSendPropHashTable::get_prop( const char* prop_name )
+SendProp* CSendPropHashTable::get_prop( const char* prop_name, int &iOffset )
 {
 	// Construct a temporary hash table element
 	// to search with.
@@ -172,6 +173,10 @@ SendProp* CSendPropHashTable::get_prop( const char* prop_name )
 	// Return the value if we found one.
 	if( prop_offset_handle != m_prop_table.InvalidHandle() )
 	{
+		// Set the offset value
+		iOffset = m_prop_table.Element(prop_offset_handle).prop_offset;
+
+		// Return the SendProp
 		return m_prop_table.Element(prop_offset_handle).prop;
 	}
 
@@ -179,7 +184,7 @@ SendProp* CSendPropHashTable::get_prop( const char* prop_name )
 	return NULL;
 }
 
-void CSendPropHashTable::insert_offset( const char* name, SendProp* prop )
+void CSendPropHashTable::insert_offset( const char* name, SendProp* prop, int iOffset )
 {
 	// Construct the prop structure. Since this is basically a
 	// struct, no need to deep copy.
@@ -191,6 +196,9 @@ void CSendPropHashTable::insert_offset( const char* name, SendProp* prop )
 
 	// Store off the offset.
 	prop_data.prop = prop;
+
+	// Store off the offset value.
+	prop_data.prop_offset = iOffset;
 
 	// Put this data in the table.
 	m_prop_table.Insert(prop_data);
