@@ -72,9 +72,9 @@ bool CEngineServerImplementation::is_split_screen_player(int ent_num)
 	return engine->IsSplitScreenPlayer(ent_num);
 }
 
-edict_t *CEngineServerImplementation::get_split_screen_player_attach_to_edict(int ent_num)
+CEdict* CEngineServerImplementation::get_split_screen_player_attach_to_edict(int ent_num)
 {
-	return engine->GetSplitScreenPlayerAttachToEdict(ent_num);
+	return new CEdict(engine->GetSplitScreenPlayerAttachToEdict(ent_num));
 }
 
 int CEngineServerImplementation::get_num_split_screen_users_attached_to_edict(int ent_num)
@@ -82,9 +82,9 @@ int CEngineServerImplementation::get_num_split_screen_users_attached_to_edict(in
 	return engine->GetNumSplitScreenUsersAttachedToEdict(ent_num);
 }
 
-edict_t *CEngineServerImplementation::get_split_screen_player_for_edict(int ent_num, int slot)
+CEdict* CEngineServerImplementation::get_split_screen_player_for_edict(int ent_num, int slot)
 {
-	return engine->GetSplitScreenPlayerForEdict(ent_num, slot);
+	return new CEdict(engine->GetSplitScreenPlayerForEdict(ent_num, slot));
 }
 
 bool CEngineServerImplementation::is_override_load_game_ents_on()
@@ -178,9 +178,9 @@ void CEngineServerImplementation::remove_paint( const model_t *pModel )
 	engine->RemovePaint(pModel);
 }
 
-uint64 CEngineServerImplementation::get_client_xuid( edict_t *pPlayerEdict )
+uint64 CEngineServerImplementation::get_client_xuid( CEdict* edict )
 {
-	return engine->GetClientXUID(pPlayerEdict);
+	return engine->GetClientXUID(edict->get_edict());
 }
 
 bool CEngineServerImplementation::is_active_app()
@@ -203,9 +203,9 @@ void CEngineServerImplementation::load_paint_map_data_rle( CUtlVector<unsigned i
 	engine->LoadPaintmapDataRLE(mapdata);
 }
 
-void CEngineServerImplementation::send_paint_map_data_to_client( edict_t *pEdict )
+void CEngineServerImplementation::send_paint_map_data_to_client( CEdict* edict )
 {
-	engine->SendPaintmapDataToClient(pEdict);
+	engine->SendPaintmapDataToClient(edict->get_edict());
 }
 
 float CEngineServerImplementation::get_latency_for_choreo_sounds()

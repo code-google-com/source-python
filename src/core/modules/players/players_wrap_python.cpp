@@ -41,6 +41,7 @@ using namespace boost::python;
 // Exposer functions.
 // ----------------------------------------------------------------------------
 void export_playerinfo();
+void export_netinfo();
 void export_player_generator();
 
 // ----------------------------------------------------------------------------
@@ -49,6 +50,7 @@ void export_player_generator();
 DECLARE_SP_MODULE(player_c)
 {
 	export_playerinfo();
+	export_netinfo();
 	export_player_generator();
 }
 
@@ -181,6 +183,23 @@ void export_playerinfo()
 			get_edict,
 			"Returns the player's CEdict instance.",
 			manage_new_object_policy()
+		)
+
+	BOOST_END_CLASS()
+}
+
+void export_netinfo()
+{
+	BOOST_ABSTRACT_CLASS(CNetChannelInfo)
+
+		CLASS_METHOD(CNetChannelInfo,
+			get_address,
+			"Returns the net address of the player."
+		)
+
+		CLASS_METHOD(CNetChannelInfo,
+			get_time_connected,
+			"Returns the amount of time the player has been connected."
 		)
 
 	BOOST_END_CLASS()

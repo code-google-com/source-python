@@ -96,7 +96,7 @@ bool CEngineServerImplementationBase::is_split_screen_player( int ent_index )
 	return false;
 }
 
-edict_t * CEngineServerImplementationBase::get_split_screen_player_attach_to_edict( int ent_num )
+CEdict* CEngineServerImplementationBase::get_split_screen_player_attach_to_edict( int ent_num )
 {
 	return NULL;
 }
@@ -106,7 +106,7 @@ int CEngineServerImplementationBase::get_num_split_screen_users_attached_to_edic
 	return 0;
 }
 
-edict_t *CEngineServerImplementationBase::get_split_screen_player_for_edict(int ent_num, int slot)
+CEdict* CEngineServerImplementationBase::get_split_screen_player_for_edict(int ent_num, int slot)
 {
 	return NULL;
 }
@@ -192,7 +192,7 @@ void CEngineServerImplementationBase::remove_paint( const model_t *pModel )
 {
 }
 
-uint64 CEngineServerImplementationBase::get_client_xuid( edict_t *pPlayerEdict )
+uint64 CEngineServerImplementationBase::get_client_xuid( CEdict* edict )
 {
 	return 0;
 }
@@ -214,7 +214,7 @@ void CEngineServerImplementationBase::load_paint_map_data_rle( CUtlVector<unsign
 {
 }
 
-void CEngineServerImplementationBase::send_paint_map_data_to_client( edict_t *pEdict )
+void CEngineServerImplementationBase::send_paint_map_data_to_client( CEdict* edict )
 {
 }
 

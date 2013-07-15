@@ -64,9 +64,9 @@ public:
 	virtual bool is_any_client_low_violence();
 
 	virtual bool is_split_screen_player(int ent_index);
-	virtual edict_t *get_split_screen_player_attach_to_edict(int ent_num);
+	virtual CEdict* get_split_screen_player_attach_to_edict(int ent_num);
 	virtual int get_num_split_screen_users_attached_to_edict(int ent_num);
-	virtual edict_t *get_split_screen_player_for_edict(int ent_num, int slot);
+	virtual CEdict* get_split_screen_player_for_edict(int ent_num, int slot);
 
 	virtual bool is_override_load_game_ents_on();
 	virtual void force_flush_entity(int ent_index);
@@ -92,12 +92,12 @@ public:
 	virtual void paint_all_surfaces( unsigned char color );
 	virtual void remove_paint( const model_t *pModel );
 	
-	virtual uint64 get_client_xuid( edict_t *pPlayerEdict );
+	virtual uint64 get_client_xuid( CEdict* edict );
 	virtual bool is_active_app();
 	virtual void set_no_clip_enabled( bool bEnabled );
 	virtual void get_paint_map_data_rle( CUtlVector<unsigned int> &mapdata );
 	virtual void load_paint_map_data_rle( CUtlVector<unsigned int> &mapdata );
-	virtual void send_paint_map_data_to_client( edict_t *pEdict );
+	virtual void send_paint_map_data_to_client( CEdict* edict );
 	virtual float get_latency_for_choreo_sounds();
 	virtual int get_client_cross_play_platform( int client_index );
 	virtual void ensure_instance_baseline( int ent_num );

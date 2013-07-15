@@ -180,6 +180,11 @@ CSendProp* CEdict::get_prop( const char* prop_name ) const
 	return new CSendProp(m_edict_ptr, prop_name);
 }
 
+edict_t* CEdict::get_edict()
+{
+	return m_edict_ptr;
+}
+
 //-----------------------------------------------------------------------------
 // CBaseEntityHandle code.
 //-----------------------------------------------------------------------------

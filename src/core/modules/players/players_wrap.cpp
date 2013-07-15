@@ -183,3 +183,21 @@ CEdict* CPlayerInfo::get_edict() const
 {
 	return m_edict_ptr;
 }
+
+//-----------------------------------------------------------------------------
+// CNetChannelInfo Methods
+//-----------------------------------------------------------------------------
+CNetChannelInfo::CNetChannelInfo( INetChannelInfo* netinfo )
+{
+	m_netinfo_ptr = netinfo;
+}
+
+const char* CNetChannelInfo::get_address()
+{
+	return m_netinfo_ptr->GetAddress();
+}
+
+float CNetChannelInfo::get_time_connected()
+{
+	return m_netinfo_ptr->GetTimeConnected();
+}
