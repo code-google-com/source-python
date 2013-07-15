@@ -24,8 +24,14 @@
 * Development Team grants this exception to all derivative works.
 */
 
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "eiface_wrap.h"
 
+//-----------------------------------------------------------------------------
+// CEngineServer Methods
+//-----------------------------------------------------------------------------
 const CEngineServerImplementation & CEngineServer::get_engine_implementation() const
 {
 	return m_engine_server_implementation;
@@ -111,14 +117,14 @@ bool CEngineServer::check_box_in_pvs( const Vector &mins, const Vector &maxs, co
 	return engine->CheckBoxInPVS(mins, maxs, checkpvs, checkpvssize);
 }
 
-int CEngineServer::get_player_userid( const edict_t *e )
+int CEngineServer::get_player_userid( CEdict* edict )
 {
-	return engine->GetPlayerUserId(e);
+	return engine->GetPlayerUserId(edict->get_edict());
 }
 
-const char* CEngineServer::get_player_network_id_string( const edict_t *e )
+const char* CEngineServer::get_player_network_id_string( CEdict* edict )
 {
-	return engine->GetPlayerNetworkIDString(e);
+	return engine->GetPlayerNetworkIDString(edict->get_edict());
 }
 
 bool CEngineServer::is_userid_in_use( int userID )
@@ -136,9 +142,9 @@ int CEngineServer::get_entity_count( void )
 	return engine->GetEntityCount();
 }
 
-INetChannelInfo* CEngineServer::get_player_net_info( int playerIndex )
+CNetChannelInfo* CEngineServer::get_player_net_info( int playerIndex )
 {
-	return engine->GetPlayerNetInfo(playerIndex);
+	return new CNetChannelInfo(engine->GetPlayerNetInfo(playerIndex));
 }
 
 bool CEngineServer::is_decal_precached( char const *s ) const
@@ -146,14 +152,14 @@ bool CEngineServer::is_decal_precached( char const *s ) const
 	return engine->IsDecalPrecached(s);
 }
 
-edict_t	* CEngineServer::create_edict( int iForceEdictIndex /*= -1 */ )
+CEdict* CEngineServer::create_edict( int iForceEdictIndex /*= -1 */ )
 {
-	return engine->CreateEdict(iForceEdictIndex);
+	return new CEdict(engine->CreateEdict(iForceEdictIndex));
 }
 
-void CEngineServer::remove_edict( edict_t *e )
+void CEngineServer::remove_edict( CEdict* edict )
 {
-	engine->RemoveEdict(e);
+	engine->RemoveEdict(edict->get_edict());
 }
 
 void* CEngineServer::pv_alloc_ent_private_data( long cb )
@@ -181,9 +187,9 @@ void CEngineServer::emit_ambient_sound( int entindex, const Vector &pos, const c
 	engine->EmitAmbientSound(entindex, pos, samp, vol, soundlevel, fFlags, pitch, delay);
 }
 
-void CEngineServer::fade_client_volume( const edict_t *pEdict, float fadePercent, float fadeOutSeconds, float holdTime, float fadeInSeconds )
+void CEngineServer::fade_client_volume( CEdict* edict, float fadePercent, float fadeOutSeconds, float holdTime, float fadeInSeconds )
 {
-	engine->FadeClientVolume(pEdict, fadePercent, fadeOutSeconds, holdTime, fadeInSeconds);
+	engine->FadeClientVolume(edict->get_edict(), fadePercent, fadeOutSeconds, holdTime, fadeInSeconds);
 }
 
 int CEngineServer::sentence_group_pick( int groupIndex, char *name, int nameBufLen )
@@ -231,9 +237,9 @@ void CEngineServer::server_execute( void )
 	engine->ServerExecute();
 }
 
-void CEngineServer::client_command( edict_t *pEdict, const char *szCommand )
+void CEngineServer::client_command( CEdict* edict, const char *szCommand )
 {
-	engine->ClientCommand(pEdict, szCommand);
+	engine->ClientCommand(edict->get_edict(), szCommand);
 }
 
 void CEngineServer::light_style( int style, const char *val )
@@ -261,9 +267,9 @@ void CEngineServer::send_user_message( CUserMessage &msg )
 	msg.send_message();
 }
 
-void CEngineServer::client_printf( edict_t *pEdict, const char *szMsg )
+void CEngineServer::client_printf( CEdict* edict, const char *szMsg )
 {
-	engine->ClientPrintf(pEdict, szMsg);
+	engine->ClientPrintf(edict->get_edict(), szMsg);
 }
 
 void CEngineServer::con_nprintf( int pos, const char* szString )
@@ -276,14 +282,14 @@ void CEngineServer::con_nxprintf( const struct con_nprint_s *info, const char* s
 	engine->Con_NXPrintf(info, szString);
 }
 
-void CEngineServer::set_view( const edict_t *pClient, const edict_t *pViewent )
+void CEngineServer::set_view( CEdict* pClient, CEdict* pViewent )
 {
-	engine->SetView(pClient, pViewent);
+	engine->SetView(pClient->get_edict(), pViewent->get_edict());
 }
 
-void CEngineServer::crosshair_angle( const edict_t *pClient, float pitch, float yaw )
+void CEngineServer::crosshair_angle( CEdict* edict, float pitch, float yaw )
 {
-	engine->CrosshairAngle(pClient, pitch, yaw);
+	engine->CrosshairAngle(edict->get_edict(), pitch, yaw);
 }
 
 const char* CEngineServer::get_game_dir( int maxlength )
@@ -303,9 +309,9 @@ bool CEngineServer::lock_network_string_tables( bool lock )
 	return engine->LockNetworkStringTables(lock);
 }
 
-edict_t* CEngineServer::create_fake_client( const char *netname )
+CEdict* CEngineServer::create_fake_client( const char *netname )
 {
-	return engine->CreateFakeClient(netname);
+	return new CEdict(engine->CreateFakeClient(netname));
 }
 
 const char* CEngineServer::get_client_convar_value( int clientIndex, const char *name )
@@ -403,19 +409,19 @@ bool CEngineServer::is_log_enabled()
 	return m_engine_server_implementation.is_log_enabled();
 }
 
-void CEngineServer::build_entity_cluster_list( edict_t *pEdict, PVSInfo_t *pPVSInfo )
+void CEngineServer::build_entity_cluster_list( CEdict* edict, PVSInfo_t *pPVSInfo )
 {
-	engine->BuildEntityClusterList(pEdict, pPVSInfo);
+	engine->BuildEntityClusterList(edict->get_edict(), pPVSInfo);
 }
 
-void CEngineServer::solid_moved( edict_t *pSolidEnt, ICollideable *pSolidCollide, const Vector* pPrevAbsOrigin, bool testSurroundingBoundsOnly )
+void CEngineServer::solid_moved( CEdict* edict, ICollideable *pSolidCollide, const Vector* pPrevAbsOrigin, bool testSurroundingBoundsOnly )
 {
-	engine->SolidMoved(pSolidEnt, pSolidCollide, pPrevAbsOrigin, testSurroundingBoundsOnly);
+	engine->SolidMoved(edict->get_edict(), pSolidCollide, pPrevAbsOrigin, testSurroundingBoundsOnly);
 }
 
-void CEngineServer::trigger_moved( edict_t *pTriggerEnt, bool testSurroundingBoundsOnly )
+void CEngineServer::trigger_moved( CEdict* edict, bool testSurroundingBoundsOnly )
 {
-	engine->TriggerMoved(pTriggerEnt, testSurroundingBoundsOnly);
+	engine->TriggerMoved(edict->get_edict(), testSurroundingBoundsOnly);
 }
 
 ISpatialPartition * CEngineServer::create_spatial_partition( const Vector& worldmin, const Vector& worldmax )
@@ -463,9 +469,9 @@ void CEngineServer::clear_save_dir_after_client_load()
 	engine->ClearSaveDirAfterClientLoad();
 }
 
-void CEngineServer::set_fake_client_convar_value( edict_t *pEntity, const char *cvar, const char *value )
+void CEngineServer::set_fake_client_convar_value( CEdict* edict, const char *cvar, const char *value )
 {
-	engine->SetFakeClientConVarValue(pEntity, cvar, value);
+	engine->SetFakeClientConVarValue(edict->get_edict(), cvar, value);
 }
 
 void CEngineServer::force_simple_material( const char *s )
@@ -493,9 +499,9 @@ void CEngineServer::notify_edict_flags_change( int iEdict )
 	engine->NotifyEdictFlagsChange(iEdict);
 }
 
-const CCheckTransmitInfo* CEngineServer::get_prev_check_transmit_info( edict_t *pPlayerEdict )
+const CCheckTransmitInfo* CEngineServer::get_prev_check_transmit_info( CEdict* edict )
 {
-	return engine->GetPrevCheckTransmitInfo(pPlayerEdict);
+	return engine->GetPrevCheckTransmitInfo(edict->get_edict());
 }
 
 CSharedEdictChangeInfo* CEngineServer::get_shared_edict_change_info()
@@ -513,9 +519,9 @@ bool CEngineServer::is_internal_build()
 	return engine->IsInternalBuild();
 }
 
-IChangeInfoAccessor * CEngineServer::get_change_accessor( const edict_t *pEdict )
+IChangeInfoAccessor * CEngineServer::get_change_accessor( CEdict* edict )
 {
-	return engine->GetChangeAccessor(pEdict);
+	return engine->GetChangeAccessor(edict->get_edict());
 }
 
 char const * CEngineServer::get_most_recently_loaded_file_name()
@@ -558,9 +564,9 @@ bool CEngineServer::is_any_client_low_violence()
 	return m_engine_server_implementation.is_any_client_low_violence();
 }
 
-QueryCvarCookie_t CEngineServer::start_query_cvar_value( edict_t *pPlayerEntity, const char *pName )
+QueryCvarCookie_t CEngineServer::start_query_cvar_value( CEdict* edict, const char *pName )
 {
-	return engine->StartQueryCvarValue(pPlayerEntity, pName);
+	return engine->StartQueryCvarValue(edict->get_edict(), pName);
 }
 
 void CEngineServer::insert_server_command( const char *str )
@@ -573,9 +579,9 @@ bool CEngineServer::get_player_info( int ent_num, player_info_t *pinfo )
 	return engine->GetPlayerInfo(ent_num, pinfo);
 }
 
-bool CEngineServer::is_client_fully_authenticated( edict_t *pEdict )
+bool CEngineServer::is_client_fully_authenticated( CEdict* edict )
 {
-	return engine->IsClientFullyAuthenticated(pEdict);
+	return engine->IsClientFullyAuthenticated(edict->get_edict());
 }
 
 void CEngineServer::set_dedicated_server_benchmark_mode( bool bBenchmarkMode )
@@ -588,7 +594,7 @@ bool CEngineServer::is_split_screen_player( int ent_num )
 	return m_engine_server_implementation.is_split_screen_player(ent_num);
 }
 
-edict_t * CEngineServer::get_split_screen_player_attach_to_edict( int ent_num )
+CEdict* CEngineServer::get_split_screen_player_attach_to_edict( int ent_num )
 {
 	return m_engine_server_implementation.get_split_screen_player_attach_to_edict(ent_num);
 }
@@ -598,7 +604,7 @@ int CEngineServer::get_num_split_screen_users_attached_to_edict( int ent_num )
 	return m_engine_server_implementation.get_num_split_screen_users_attached_to_edict(ent_num);
 }
 
-edict_t * CEngineServer::get_split_screen_player_for_edict( int ent_num, int nSlot )
+CEdict* CEngineServer::get_split_screen_player_for_edict( int ent_num, int nSlot )
 {
 	return m_engine_server_implementation.get_split_screen_player_for_edict(ent_num, nSlot);
 }
@@ -673,9 +679,9 @@ CGamestatsData * CEngineServer::get_gamestats_data()
 	return engine->GetGamestatsData();
 }
 
-const CSteamID  * CEngineServer::get_client_steamid( edict_t *pPlayerEdict )
+const CSteamID  * CEngineServer::get_client_steamid( CEdict* edict )
 {
-	return engine->GetClientSteamID(pPlayerEdict);
+	return engine->GetClientSteamID(edict->get_edict());
 }
 
 const CSteamID  * CEngineServer::get_game_server_steamid()
@@ -723,14 +729,14 @@ void CEngineServer::remove_paint( const model_t *pModel )
 	m_engine_server_implementation.remove_paint(pModel);
 }
 
-void CEngineServer::client_command_key_values( edict_t *pEdict, KeyValues *pCommand )
+void CEngineServer::client_command_key_values( CEdict* edict, KeyValues *pCommand )
 {
-	engine->ClientCommandKeyValues(pEdict, pCommand);
+	engine->ClientCommandKeyValues(edict->get_edict(), pCommand);
 }
 
-uint64 CEngineServer::get_client_xuid( edict_t *pPlayerEdict )
+uint64 CEngineServer::get_client_xuid( CEdict* edict )
 {
-	return m_engine_server_implementation.get_client_xuid(pPlayerEdict);
+	return m_engine_server_implementation.get_client_xuid(edict);
 }
 
 bool CEngineServer::is_active_app()
@@ -753,9 +759,9 @@ void CEngineServer::load_paint_map_data_rle( CUtlVector<unsigned int> &mapdata )
 	m_engine_server_implementation.load_paint_map_data_rle(mapdata);
 }
 
-void CEngineServer::send_paint_map_data_to_client( edict_t *pEdict )
+void CEngineServer::send_paint_map_data_to_client( CEdict* edict )
 {
-	m_engine_server_implementation.send_paint_map_data_to_client(pEdict);
+	m_engine_server_implementation.send_paint_map_data_to_client(edict);
 }
 
 float CEngineServer::get_latency_for_choreo_sounds()

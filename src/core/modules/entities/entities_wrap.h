@@ -79,6 +79,8 @@ public:
 	// Send property methods.
 	virtual CSendProp*					get_prop( const char* prop_name ) const;
 
+	virtual edict_t*					get_edict();
+
 private:
 	edict_t*	m_edict_ptr;
 	bool		m_is_valid;

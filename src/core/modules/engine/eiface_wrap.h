@@ -75,15 +75,15 @@ public:
 	virtual bool check_origin_in_pvs( const Vector &org, const unsigned char *checkpvs, int checkpvssize );
 	virtual bool check_box_in_pvs( const Vector &mins, const Vector &maxs, const unsigned char *checkpvs, int checkpvssize );
 
-	virtual int	get_player_userid( const edict_t *e );
-	virtual const char* get_player_network_id_string( const edict_t *e );
+	virtual int	get_player_userid( CEdict* edict );
+	virtual const char* get_player_network_id_string( CEdict* edict );
 	virtual bool is_userid_in_use( int userID );
 	virtual int get_loading_progress_for_userid( int userID );
-	virtual int get_entity_count( void );
-	virtual INetChannelInfo* get_player_net_info( int playerIndex );
+	virtual int get_entity_count();
+	virtual CNetChannelInfo* get_player_net_info( int playerIndex );
 
-	virtual edict_t	*create_edict( int iForceEdictIndex = -1 );
-	virtual void remove_edict( edict_t *e );
+	virtual CEdict* create_edict( int iForceEdictIndex = -1 );
+	virtual void remove_edict( CEdict* edict );
 
 	// Memory allocation for entity class data
 	virtual void* pv_alloc_ent_private_data( long cb );
@@ -92,7 +92,7 @@ public:
 	virtual void save_free_memory( void *pSaveMem );
 
 	virtual void emit_ambient_sound( int entindex, const Vector &pos, const char *samp, float vol, soundlevel_t soundlevel, int fFlags, int pitch, float delay = 0.0f );
-	virtual void fade_client_volume( const edict_t *pEdict, float fadePercent, float fadeOutSeconds, float holdTime, float fadeInSeconds );
+	virtual void fade_client_volume( CEdict* edict, float fadePercent, float fadeOutSeconds, float holdTime, float fadeInSeconds );
 
 	virtual int	sentence_group_pick( int groupIndex, char *name, int nameBufLen );
 	virtual int	sentence_group_pick_sequential( int groupIndex, char *name, int nameBufLen, int sentenceIndex, int reset );
@@ -108,7 +108,7 @@ public:
 	/**
 	 * TODO: Look into figuring out variadic passing?
 	 */
-	virtual void client_command( edict_t *pEdict, const char *szCommand );
+	virtual void client_command( CEdict* edict, const char *szCommand );
 
 	virtual void light_style( int style, const char *val );
 
@@ -121,12 +121,12 @@ public:
 	//virtual void message_end( void );
 	//virtual void send_user_message( IRecipientFilter &filter, int message, const google::protobuf::Message &msg );
 	
-	virtual void client_printf( edict_t *pEdict, const char *szMsg );
+	virtual void client_printf( CEdict* edict, const char *szMsg );
 	virtual void con_nprintf( int pos, const char* szString );
 	virtual void con_nxprintf( const struct con_nprint_s *info, const char* szString );
 
-	virtual void set_view( const edict_t *pClient, const edict_t *pViewent );
-	virtual void crosshair_angle( const edict_t *pClient, float pitch, float yaw );
+	virtual void set_view( CEdict* pClient, CEdict* pViewent );
+	virtual void crosshair_angle( CEdict* edict, float pitch, float yaw );
 
 	/**
 	 * Python managed return type!
@@ -136,7 +136,7 @@ public:
 
 	virtual bool lock_network_string_tables( bool lock );
 
-	virtual edict_t* create_fake_client( const char *netname );
+	virtual CEdict* create_fake_client( const char *netname );
 
 	virtual const char* get_client_convar_value( int clientIndex, const char *name );
 
@@ -167,10 +167,10 @@ public:
 	virtual void log_print( const char *msg );
 	virtual bool is_log_enabled();
 
-	virtual void build_entity_cluster_list( edict_t *pEdict, PVSInfo_t *pPVSInfo );
+	virtual void build_entity_cluster_list( CEdict* edict, PVSInfo_t *pPVSInfo );
 
-	virtual void solid_moved( edict_t *pSolidEnt, ICollideable *pSolidCollide, const Vector* pPrevAbsOrigin, bool testSurroundingBoundsOnly );
-	virtual void trigger_moved( edict_t *pTriggerEnt, bool testSurroundingBoundsOnly );
+	virtual void solid_moved( CEdict* edict, ICollideable *pSolidCollide, const Vector* pPrevAbsOrigin, bool testSurroundingBoundsOnly );
+	virtual void trigger_moved( CEdict* edict, bool testSurroundingBoundsOnly );
 
 	virtual ISpatialPartition *create_spatial_partition( const Vector& worldmin, const Vector& worldmax );
 	virtual void destroy_spatial_partition( ISpatialPartition *partition );
@@ -189,7 +189,7 @@ public:
 
 	virtual void  clear_save_dir_after_client_load();
 
-	virtual void  set_fake_client_convar_value( edict_t *pEntity, const char *cvar, const char *value );
+	virtual void  set_fake_client_convar_value( CEdict* edict, const char *cvar, const char *value );
 
 	virtual void  force_simple_material( const char *s );
 
@@ -200,14 +200,14 @@ public:
 
 	virtual void  notify_edict_flags_change( int iEdict );
 
-	virtual const CCheckTransmitInfo* get_prev_check_transmit_info( edict_t *pPlayerEdict );
+	virtual const CCheckTransmitInfo* get_prev_check_transmit_info( CEdict* edict );
 	virtual CSharedEdictChangeInfo* get_shared_edict_change_info();
 
 	virtual void   allow_immediate_edict_reuse();
 
 	virtual bool  is_internal_build();
 
-	virtual IChangeInfoAccessor *get_change_accessor( const edict_t *pEdict );
+	virtual IChangeInfoAccessor *get_change_accessor( CEdict* edict );
 	virtual char const *get_most_recently_loaded_file_name();
 	virtual char const *get_save_file_name();
 
@@ -221,20 +221,20 @@ public:
 	virtual bool is_low_violence();
 	virtual bool is_any_client_low_violence();
 
-	virtual QueryCvarCookie_t start_query_cvar_value( edict_t *pPlayerEntity, const char *pName );
+	virtual QueryCvarCookie_t start_query_cvar_value( CEdict* edict, const char *pName );
 
 	virtual void insert_server_command( const char *str );
 
 	virtual bool get_player_info( int ent_num, player_info_t *pinfo );
 
-	virtual bool is_client_fully_authenticated( edict_t *pEdict );
+	virtual bool is_client_fully_authenticated( CEdict* edict );
 
 	virtual void set_dedicated_server_benchmark_mode( bool bBenchmarkMode );
 
 	virtual bool is_split_screen_player( int ent_num );
-	virtual edict_t *get_split_screen_player_attach_to_edict( int ent_num );
+	virtual CEdict* get_split_screen_player_attach_to_edict( int ent_num );
 	virtual int     get_num_split_screen_users_attached_to_edict( int ent_num );
-	virtual edict_t *get_split_screen_player_for_edict( int ent_num, int nSlot );
+	virtual CEdict* get_split_screen_player_for_edict( int ent_num, int nSlot );
 
 	virtual bool is_override_load_game_ents_on();
 
@@ -259,7 +259,7 @@ public:
 	virtual void set_gamestats_data( CGamestatsData *pGamestatsData );
 	virtual CGamestatsData *get_gamestats_data();
 
-	virtual const CSteamID  *get_client_steamid( edict_t *pPlayerEdict );
+	virtual const CSteamID  *get_client_steamid( CEdict* edict );
 	virtual const CSteamID  *get_game_server_steamid();
 
 	virtual void host_validate_session();
@@ -273,9 +273,9 @@ public:
 	virtual void paint_all_surfaces( unsigned char color);
 	virtual void remove_paint( const model_t *pModel );
 
-	virtual void client_command_key_values( edict_t *pEdict, KeyValues *pCommand );
+	virtual void client_command_key_values( CEdict* edict, KeyValues *pCommand );
 
-	virtual uint64 get_client_xuid( edict_t *pPlayerEdict );
+	virtual uint64 get_client_xuid( CEdict* edict );
 
 	virtual bool is_active_app();
 
@@ -283,7 +283,7 @@ public:
 
 	virtual void get_paint_map_data_rle( CUtlVector<unsigned int> &mapdata );
 	virtual void load_paint_map_data_rle( CUtlVector<unsigned int> &mapdata );
-	virtual void send_paint_map_data_to_client( edict_t *pEdict );
+	virtual void send_paint_map_data_to_client( CEdict* edict );
 
 	virtual float get_latency_for_choreo_sounds();
 

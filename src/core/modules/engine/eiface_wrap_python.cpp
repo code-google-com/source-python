@@ -39,7 +39,6 @@
 #include "iscratchpad3d.h"
 #include "cdll_int.h"
 #include "con_nprint.h"
-#include "inetchannelinfo.h"
 #include "iachievementmgr.h"
 #include "client_textmessage.h"
 #include "steam/steamclientpublic.h"

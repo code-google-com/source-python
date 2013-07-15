@@ -24,20 +24,22 @@
 * Development Team grants this exception to all derivative works.
 */
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Includes we need
-//---------------------------------------------------------------------------------
-
+//-----------------------------------------------------------------------------
 #include "eiface.h"
+#include "modules/entities/entities_wrap.h"
+#include "modules/players/players_wrap.h"
+#include "inetchannelinfo.h"
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Forward declares
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 abstract_class ISPSharedMemory;
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: Abstract class for all the specific engine implementation calls
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 abstract_class CEngineServerImplementationBase
 {
@@ -73,13 +75,13 @@ public:
 	virtual bool is_split_screen_player(int ent_index);
 
 	// Default functionality - return NULL
-	virtual edict_t *get_split_screen_player_attach_to_edict(int ent_num);
+	virtual CEdict* get_split_screen_player_attach_to_edict(int ent_num);
 
 	// Default functionality - return 0
 	virtual int get_num_split_screen_users_attached_to_edict(int ent_num);
 
 	// Default functionality - return NULL
-	virtual edict_t *get_split_screen_player_for_edict(int ent_num, int slot);
+	virtual CEdict* get_split_screen_player_for_edict(int ent_num, int slot);
 
 	// Default functionality - return false
 	virtual bool is_override_load_game_ents_on();
@@ -137,7 +139,7 @@ public:
 	virtual void remove_paint( const model_t *pModel );
 
 	// Default functionality - return 0
-	virtual uint64 get_client_xuid( edict_t *pPlayerEdict );
+	virtual uint64 get_client_xuid( CEdict* edict );
 
 	// Default functionality - return true (assume app is always active)
 	virtual bool is_active_app();
@@ -152,7 +154,7 @@ public:
 	virtual void load_paint_map_data_rle( CUtlVector<unsigned int> &mapdata );
 
 	// Default functionality - do nothing
-	virtual void send_paint_map_data_to_client( edict_t *pEdict );
+	virtual void send_paint_map_data_to_client( CEdict* edict );
 
 	// Default functionality - return 0.0f
 	virtual float get_latency_for_choreo_sounds();

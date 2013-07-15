@@ -33,6 +33,7 @@
 #include "game/server/iplayerinfo.h"
 #include "mathlib/vector.h"
 #include "modules/entities/entities_wrap.h"
+#include "inetchannelinfo.h"
 
 // ----------------------------------------------------------------------------
 // CPlayerInfo class.
@@ -78,6 +79,20 @@ public:
 private:
 	CEdict*			m_edict_ptr;
 	IPlayerInfo*	m_iplayerinfo_ptr;
+};
+
+class CNetChannelInfo
+{
+public:
+	// Constructor
+	CNetChannelInfo( INetChannelInfo* netinfo );
+
+	// Methods
+	virtual const char*		get_address();
+	virtual float				get_time_connected();
+
+private:
+	INetChannelInfo* m_netinfo_ptr;
 };
 
 #endif
