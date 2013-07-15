@@ -29,6 +29,7 @@ Set(SOURCEPYTHON_LOADER_FILES
 # Utility
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_UTIL_HEADERS
+    core/utility/call_python.h
     core/utility/wrap_macros.h
 	core/utility/mrecipientfilter.h
     core/utility/mrecipientfilter_wrap.h
@@ -121,10 +122,14 @@ Set(SOURCEPYTHON_COMMAND_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CVAR_MODULE_HEADERS
     core/modules/cvar/cvar_wrap.h
+    core/modules/cvar/cvar_engine_base.h
+    core/modules/cvar/engine${SOURCE_ENGINE}/cvar_engine_implementation.h
 )
 
 Set(SOURCEPYTHON_CVAR_MODULE_SOURCES
     core/modules/cvar/cvar_wrap.cpp
+    core/modules/cvar/cvar_engine_base.cpp
+    core/modules/cvar/engine${SOURCE_ENGINE}/cvar_engine_implementation.cpp
     core/modules/cvar/cvar_wrap_python.cpp
 )
 
@@ -200,6 +205,22 @@ Set(SOURCEPYTHON_ENTITY_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Globals module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_GLOBALS_MODULE_HEADERS
+    core/modules/globals/globals_wrap.h
+    core/modules/globals/globals_engine_base.h
+    core/modules/globals/engine${SOURCE_ENGINE}/globals_engine_implementation.h
+)
+
+Set(SOURCEPYTHON_GLOBALS_MODULE_SOURCES
+    core/modules/globals/globals_wrap.cpp
+    core/modules/globals/globals_engine_base.cpp
+    core/modules/globals/engine${SOURCE_ENGINE}/globals_engine_implementation.cpp
+    core/modules/globals/globals_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # Keyvalues module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_KEYVALUES_MODULE_HEADERS
@@ -236,18 +257,6 @@ Set(SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS
 Set(SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES
     core/modules/ticklisteners/ticklisteners_wrap.cpp
     core/modules/ticklisteners/ticklisteners_wrap_python.cpp
-)
-
-# ------------------------------------------------------------------
-# Globals module
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_GLOBALS_MODULE_HEADERS
-    core/modules/globals/globals_wrap.h
-)
-
-Set(SOURCEPYTHON_GLOBALS_MODULE_SOURCES
-    core/modules/globals/globals_wrap.cpp
-    core/modules/globals/globals_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------

@@ -306,7 +306,7 @@ def _print_addons():
             for item in info:
 
                 # Add message for the current item and its value
-                message += '\t%s\n\t\t%s\n' % (item, info[item])
+                message += '\t%s:\n\t\t%s\n' % (item, info[item])
 
         # Was no AddonInfo instance found?
         else:

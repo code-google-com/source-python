@@ -30,155 +30,149 @@
 #include "edict.h"
 #include "globals_wrap.h"
 
-
-extern CGlobalVars* gpGlobals;
-
 //-----------------------------------------------------------------------------
 // Signleton accessor function
 //-----------------------------------------------------------------------------
 CGlobals* get_globals()
 {
-    static CGlobals* s_Globals = new CGlobals();
-    return s_Globals;
+	static CGlobals* s_Globals = new CGlobals();
+	return s_Globals;
 }
 
 bool CGlobals::is_client()
 {
-    return gpGlobals->IsClient();
+	return gpGlobals->IsClient();
 }
 
 bool CGlobals::is_remote_client()
 {
-    return gpGlobals->IsRemoteClient();
+	return s_GlobalServerImplementation.is_remote_client();
 }
 
 int CGlobals::get_network_base( int nTick, int nEntity )
 {
-    return gpGlobals->GetNetworkBase(nTick, nEntity);
+	return gpGlobals->GetNetworkBase(nTick, nEntity);
 }
 
 // Getter methods
 float CGlobals::get_real_time()
 {
-    return gpGlobals->realtime;
+	return gpGlobals->realtime;
 }
 
 int CGlobals::get_frame_count()
 {
-    return gpGlobals->framecount;
+	return gpGlobals->framecount;
 }
 
 int CGlobals::get_absolute_frame_time()
 {
-    return gpGlobals->absoluteframetime;
+	return gpGlobals->absoluteframetime;
 }
 
 float CGlobals::get_current_time()
 {
-    return gpGlobals->curtime;
+	return gpGlobals->curtime;
 }
 
 float CGlobals::get_frame_time()
 {
-    return gpGlobals->frametime;
+	return gpGlobals->frametime;
 }
 
 int CGlobals::get_max_clients()
 {
-    return gpGlobals->maxClients;
+	return gpGlobals->maxClients;
 }
 
 int CGlobals::get_tick_count()
 {
-    return gpGlobals->tickcount;
+	return gpGlobals->tickcount;
 }
 
 float CGlobals::get_interval_per_tick()
 {
-    return gpGlobals->interval_per_tick;
+	return gpGlobals->interval_per_tick;
 }
 
 float CGlobals::get_interpolation_amount()
 {
-    return gpGlobals->interpolation_amount;
+	return gpGlobals->interpolation_amount;
 }
 
 int CGlobals::get_simulation_ticks_this_frame()
 {
-    return gpGlobals->simTicksThisFrame;
+	return gpGlobals->simTicksThisFrame;
 }
 
 int CGlobals::get_network_protocol()
 {
-    return gpGlobals->network_protocol;
+	return gpGlobals->network_protocol;
 }
 
 /*
 CSaveRestoreData* CGlobals::get_saved_data()
 {
-    return NULL;
+	return NULL;
 }
 */
 
 const char* CGlobals::get_map_name()
 {
-    return gpGlobals->mapname.ToCStr();
+	return gpGlobals->mapname.ToCStr();
 }
 
 int CGlobals::get_map_version()
 {
-    return gpGlobals->mapversion;
+	return gpGlobals->mapversion;
 }
 
 const char* CGlobals::get_start_spot()
 {
-    return gpGlobals->startspot.ToCStr();
+	return gpGlobals->startspot.ToCStr();
 }
 
 MapLoadType_t CGlobals::get_load_type()
 {
-    return gpGlobals->eLoadType;
+	return gpGlobals->eLoadType;
 }
 
 bool CGlobals::get_map_load_failed()
 {
-    return gpGlobals->bMapLoadFailed;
+	return gpGlobals->bMapLoadFailed;
 }
 
 bool CGlobals::get_deathmatch()
 {
-    return gpGlobals->deathmatch;
+	return gpGlobals->deathmatch;
 }
 
 bool CGlobals::get_coop()
 {
-    return gpGlobals->coop;
+	return gpGlobals->coop;
 }
 
 bool CGlobals::get_teamplay()
 {
-    return gpGlobals->teamplay;
+	return gpGlobals->teamplay;
 }
 
 int CGlobals::get_max_entities()
 {
-    return gpGlobals->maxEntities;
+	return gpGlobals->maxEntities;
 }
 
-// CS:GO
-#if SOURCE_ENGINE == 3
 const char* CGlobals::get_map_group_name()
 {
-    return gpGlobals->mapGroupName.ToCStr();
+	return s_GlobalServerImplementation.get_map_group_name();
 }
 
 int CGlobals::get_server_count()
 {
-    return gpGlobals->serverCount;
+	return s_GlobalServerImplementation.get_server_count();
 }
 
 CEdict* CGlobals::get_edicts()
 {
-    return new CEdict(gpGlobals->pEdicts);
+	return s_GlobalServerImplementation.get_edicts();
 }
-#endif

@@ -31,6 +31,15 @@
 //-----------------------------------------------------------------------------
 #include "edict.h"
 #include "../entities/entities_wrap.h"
+#include "../../utility/wrap_macros.h"
+
+// Include the engine specific include
+#include ENGINE_INCLUDE_PATH(globals_engine_implementation.h)
+
+//-----------------------------------------------------------------------------
+// Static singletons.
+//-----------------------------------------------------------------------------
+static CGlobalServerImplementationBase s_GlobalServerImplementation;
 
 //-----------------------------------------------------------------------------
 // CGlobals class
@@ -38,39 +47,35 @@
 class CGlobals
 {
 public:
-    bool is_client();
-    bool is_remote_client();
-    int get_network_base( int nTick, int nEntity );
+	bool is_client();
+	bool is_remote_client();
+	int get_network_base( int nTick, int nEntity );
 
-    // Getter methods
-    float                get_real_time();
-    int                  get_frame_count();
-    int                  get_absolute_frame_time();
-    float                get_current_time();
-    float                get_frame_time();
-    int                  get_max_clients();
-    int                  get_tick_count();
-    float                get_interval_per_tick();
-    float                get_interpolation_amount();
-    int                  get_simulation_ticks_this_frame();
-    int                  get_network_protocol();
-    //CSaveRestoreData*    get_saved_data();
-    const char*          get_map_name();
-    int                  get_map_version();
-    const char*          get_start_spot();
-    MapLoadType_t        get_load_type();
-    bool                 get_map_load_failed();
-    bool                 get_deathmatch();
-    bool                 get_coop();
-    bool                 get_teamplay();
-    int                  get_max_entities();
-
-// CS:GO
-#if SOURCE_ENGINE == 3
-    const char*          get_map_group_name();
-    int                  get_server_count();
-    CEdict*              get_edicts();
-#endif
+	// Getter methods
+	float				get_real_time();
+	int				  get_frame_count();
+	int				  get_absolute_frame_time();
+	float				get_current_time();
+	float				get_frame_time();
+	int				  get_max_clients();
+	int				  get_tick_count();
+	float				get_interval_per_tick();
+	float				get_interpolation_amount();
+	int				  get_simulation_ticks_this_frame();
+	int				  get_network_protocol();
+	//CSaveRestoreData*	get_saved_data();
+	const char*		  get_map_name();
+	int				  get_map_version();
+	const char*		  get_start_spot();
+	MapLoadType_t		get_load_type();
+	bool				 get_map_load_failed();
+	bool				 get_deathmatch();
+	bool				 get_coop();
+	bool				 get_teamplay();
+	int				  get_max_entities();
+	const char*		  get_map_group_name();
+	int				  get_server_count();
+	CEdict*			  get_edicts();
 };
 
 //-----------------------------------------------------------------------------

@@ -31,11 +31,20 @@
 //-----------------------------------------------------------------------------
 #include "icvar.h"
 #include "convar.h"
+#include "../../utility/wrap_macros.h"
+
+// Include the engine specific include
+#include ENGINE_INCLUDE_PATH(cvar_engine_implementation.h)
 
 //-----------------------------------------------------------------------------
 // Externs
 //-----------------------------------------------------------------------------
 extern ICvar* g_pCVar;
+
+//-----------------------------------------------------------------------------
+// Static singletons.
+//-----------------------------------------------------------------------------
+static CCvarServerImplementation s_CvarServerImplementation;
 
 //-----------------------------------------------------------------------------
 // CConVar class.

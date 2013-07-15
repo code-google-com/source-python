@@ -36,6 +36,7 @@
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
 #include "core/sp_main.h"
+#include "modules/cvar/cvar_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Global say command mapping.
@@ -154,7 +155,7 @@ SayConCommand* SayConCommand::CreateCommand(const char* szName, const char* szHe
 	{
 		// Store the current command's help text and flags
 		szHelpTextCopy = strdup(pConCommand->GetHelpText());
-		iFlags = pConCommand->GetFlags();
+		iFlags = s_CvarServerImplementation.get_flags(pConCommand);
 
 		// Unregister the old command
 		g_pCVar->UnregisterConCommand(pConCommand);

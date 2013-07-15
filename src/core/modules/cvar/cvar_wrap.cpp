@@ -112,14 +112,14 @@ void CConVar::add_flags( int iFlags )
 
 void CConVar::remove_flags( int iFlags )
 {
-	ConCommandBase *convar = g_pCVar->FindCommandBase(m_Name);
-	convar->RemoveFlags(iFlags);
+	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
+	s_CvarServerImplementation.remove_flags(command, iFlags);
 }
 
 int CConVar::get_flags()
 {
 	ConVar *convar = g_pCVar->FindVar(m_Name);
-	return convar->GetFlags();
+	return s_CvarServerImplementation.get_flags(convar);
 }
 
 bool CConVar::is_command()
@@ -264,13 +264,13 @@ void CConCommandBase::add_flags( int iFlags )
 void CConCommandBase::remove_flags( int iFlags )
 {
 	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
-	command->RemoveFlags(iFlags);
+	s_CvarServerImplementation.remove_flags(command, iFlags);
 }
 
 int CConCommandBase::get_flags()
 {
 	ConCommandBase* command = g_pCVar->FindCommandBase(m_Name);
-	return command->GetFlags();
+	return s_CvarServerImplementation.get_flags(command);
 }
 
 const char *CConCommandBase::get_name()
