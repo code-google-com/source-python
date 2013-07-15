@@ -308,7 +308,12 @@ const char* CServerEntity::get_model_name()
 
 CSendProp::CSendProp( edict_t* edict, const char* prop_name )
 {
-	if( !edict )
+	// Set default values.
+	m_send_prop = NULL;
+	m_prop_offset = 0;
+	m_edict = edict;
+
+	if( !m_edict )
 	{
 		DevMsg(1, "[SP]: edict was not valid!\n");
 		return;
@@ -316,11 +321,11 @@ CSendProp::CSendProp( edict_t* edict, const char* prop_name )
 
 	// Get the base entity. This saves us from having to call
 	// this code repeatedly.
-	IServerUnknown* entity_unknown = edict->GetUnknown();
+	IServerUnknown* entity_unknown = m_edict->GetUnknown();
 	m_base_entity = entity_unknown->GetBaseEntity();
 
 	// Get the entity's classname
-	const char* szClassName = edict->GetClassName();
+	const char* szClassName = m_edict->GetClassName();
 
 	// Get the classname's prop table
 	SendPropMap::iterator sendPropIter = g_SendPropMap.find(szClassName);
@@ -344,7 +349,7 @@ CSendProp::CSendProp( edict_t* edict, const char* prop_name )
 	{
 
 		// Get the send table for this entity.
-		ServerClass* server_class = edict->GetNetworkable()->GetServerClass();
+		ServerClass* server_class = m_edict->GetNetworkable()->GetServerClass();
 		SendTable* send_table = server_class->m_pTable;
 
 		// Split the prop_name by "."
