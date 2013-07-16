@@ -57,10 +57,10 @@
 //-----------------------------------------------------------------------------
 // BinaryFile class
 //-----------------------------------------------------------------------------
-CBinaryFile::CBinaryFile(unsigned long ulAddr, unsigned long uSize)
+CBinaryFile::CBinaryFile(unsigned long ulAddr, unsigned long ulSize)
 {
     m_ulAddr = ulAddr;
-    m_uSize = uSize;
+    m_ulSize  = ulSize;
 }
 
 CPointer* CBinaryFile::find_signature(object szSignature, int iLength)
@@ -77,11 +77,11 @@ CPointer* CBinaryFile::find_signature(object szSignature, int iLength)
     {
         Signature_t sig = *iter;
         if (strcmp((const char *) sig.m_szSignature, (const char *) sigstr) == 0)
-            return new CPointer(sig.m_ulAddr);
+            return sig.m_pAddr;
     }
 
     unsigned char* base = (unsigned char *) m_ulAddr;
-    unsigned char* end  = (unsigned char *) (base + m_uSize - iLength);
+    unsigned char* end  = (unsigned char *) (base + m_ulSize - iLength);
 
     while(base < end)
     {
@@ -98,9 +98,10 @@ CPointer* CBinaryFile::find_signature(object szSignature, int iLength)
         if (i == iLength)
         {
             // Add our signature to the cache
-            Signature_t sig_t = {sigstr, (unsigned long) base};
+            CPointer* pAddr = new CPointer((unsigned long) base);
+            Signature_t sig_t = {sigstr, pAddr};
             m_Signatures.push_back(sig_t);
-            return new CPointer((unsigned long) base);
+            return pAddr;
         }
         base++;
     }
@@ -110,7 +111,8 @@ CPointer* CBinaryFile::find_signature(object szSignature, int iLength)
 CPointer* CBinaryFile::find_symbol(char* szSymbol)
 {
 #ifdef _WIN32
-    return new CPointer((unsigned long) GetProcAddress((HMODULE) m_ulAddr, szSymbol));
+    unsigned long ulAddr = (unsigned long) GetProcAddress((HMODULE) m_ulAddr, szSymbol);
+    return ulAddr ? new CPointer(ulAddr) : NULL;
 
 #elif defined(__linux__)
     // -----------------------------------------
@@ -210,7 +212,7 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
 
     // Unmap the file now.
     munmap(file_hdr, dlstat.st_size);
-    return new CPointer((unsigned long) sym_addr);
+    return sym_addr ? new CPointer((unsigned long) sym_addr) : NULL;
 
 #else
 #error "BinaryFile::find_symbol() is not implemented on this OS"
@@ -263,12 +265,12 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath)
         }
     }
 
-    unsigned long uSize;
+    unsigned long ulSize;
 
 #ifdef _WIN32
     IMAGE_DOS_HEADER* dos = (IMAGE_DOS_HEADER *) ulAddr;
     IMAGE_NT_HEADERS* nt  = (IMAGE_NT_HEADERS *) ((BYTE *) dos + dos->e_lfanew);
-    uSize = nt->OptionalHeader.SizeOfImage;
+    ulSize = nt->OptionalHeader.SizeOfImage;
     
 #elif defined(__linux__)
     // TODO: Retrieve whole size
@@ -278,18 +280,17 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath)
         dlFreeLibrary((DLLib *) ulAddr);
         return NULL;
     }
-    uSize = buf.st_size;
+    ulSize = buf.st_size;
 
 #else
 #error "BinaryManager::find_binary() is not implemented on this OS"
 #endif
 
     // Create a new Binary object and add it to the list
-    CBinaryFile* binary = new CBinaryFile(ulAddr, uSize);
+    CBinaryFile* binary = new CBinaryFile(ulAddr, ulSize);
     m_Binaries.push_front(binary);
     return binary;
 }
-
 
 //-----------------------------------------------------------------------------
 // Functions

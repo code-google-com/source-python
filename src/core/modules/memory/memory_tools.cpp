@@ -75,7 +75,7 @@ void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 
 
     if (!iSize)
     {
-        iSize = get_size();
+        iSize = g_pMemAlloc->GetSize((void *) (m_ulAddr + iOffset));
         if(!iSize)
         {
             BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve size of address.")
@@ -83,14 +83,14 @@ void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 
         }
     }
         
-    if ((int ) strlen(szText) > iSize - iOffset)
+    if ((int ) strlen(szText) > iSize)
     {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String exceeds size of memory block.")
         return;
     }
 
-    char* newAddr = (char *) (m_ulAddr + iOffset);
-    newAddr = szText;
+    // FIXME: We can't set arrays with this method, if we only got the address of that array.
+    set<char *>(szText, iOffset);
 }
 
 CPointer* CPointer::get_ptr(int iOffset /* = 0 */)
@@ -101,7 +101,8 @@ CPointer* CPointer::get_ptr(int iOffset /* = 0 */)
         return NULL;
     }
 
-    return new CPointer(*(unsigned long *) (m_ulAddr + iOffset));
+    unsigned long ulNewAddr = *(unsigned long *) (m_ulAddr + iOffset);
+    return ulNewAddr ? new CPointer(ulNewAddr) : NULL;
 }
 
 CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true */)
@@ -117,5 +118,10 @@ CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true *
         iIndex++;
 #endif
 
-    return new CPointer((unsigned long) (*(void ***) m_ulAddr)[iIndex]);
+    void** vtable = *(void ***) m_ulAddr;
+    if (!vtable)
+        return NULL;
+
+    void* pNewAddr = vtable[iIndex];
+    return pNewAddr ? new CPointer((unsigned long) pNewAddr) : NULL;
 }

@@ -37,25 +37,25 @@
 struct Signature_t
 {
     unsigned char* m_szSignature;
-    unsigned long  m_ulAddr;
+    CPointer*      m_pAddr;
 };
 
 
 class CBinaryFile
 {
 public:
-    CBinaryFile(unsigned long ulAddr, unsigned long uSize);
+    CBinaryFile(unsigned long ulAddr, unsigned long ulSize);
 
     CPointer* find_signature(object szSignature, int iLength);
     CPointer* find_symbol(char* szSymbol);
     CPointer* find_pointer(object szSignature, int iLength, int iOffset);
 
     unsigned long get_address() { return m_ulAddr; }
-    unsigned long get_size() { return m_uSize; }
+    unsigned long get_size() { return m_ulSize; }
 
 private:
     unsigned long          m_ulAddr;
-    unsigned long          m_uSize;
+    unsigned long          m_ulSize;
     std::list<Signature_t> m_Signatures;
 };
 
