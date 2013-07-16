@@ -32,6 +32,7 @@
 
 #include <stddef.h>
 #include "tier0/mem.h"
+#include "commonmacros.h"
 
 struct _CrtMemState;
 
@@ -46,6 +47,8 @@ typedef size_t (*MemAllocFailHandler_t)( size_t );
 abstract_class IMemAlloc
 {
 public:
+	inline void *IndirectAlloc( size_t nSize ) { return Alloc( nSize ); }
+
 	// Release versions
 	virtual void *Alloc( size_t nSize ) = 0;
 	virtual void *Realloc( void *pMem, size_t nSize ) = 0;
