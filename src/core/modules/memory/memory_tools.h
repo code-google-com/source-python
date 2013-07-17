@@ -57,7 +57,7 @@ public:
     void                set_string(char* szText, int iSize = 0, int iOffset = 0);
     CPointer*           get_ptr(int iOffset = 0);
 
-    int                 get_size() { return g_pMemAlloc->GetSize((void *) m_ulAddr); }
+    unsigned long       get_size() { return g_pMemAlloc->GetSize((void *) m_ulAddr); }
     unsigned long       get_address() { return m_ulAddr; }
 
     CPointer*           add(int iValue);
