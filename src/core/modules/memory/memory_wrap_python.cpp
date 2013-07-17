@@ -30,10 +30,12 @@
 #include "modules/export_main.h"
 #include "memory_scanner.h"
 #include "memory_tools.h"
+#include "dyncall.h"
 
 
 void export_binaryfile();
 void export_memtools();
+void export_dyncall();
 
 //-----------------------------------------------------------------------------
 // Exposes the memory_c module.
@@ -42,6 +44,7 @@ DECLARE_SP_MODULE(memory_c)
 {
     export_binaryfile();
     export_memtools();
+    export_dyncall();
 }
 
 //-----------------------------------------------------------------------------
@@ -161,6 +164,12 @@ void export_memtools()
         CLASS_METHOD(CPointer,
             dealloc,
             "Deallocates a memory block."
+        )
+
+        CLASS_METHOD(CPointer,
+            call,
+            "",
+            args("iConvention", "szParams", "args")
         )
         
         // get_<type> methods
@@ -358,4 +367,30 @@ void export_memtools()
         )
 
     BOOST_END_CLASS()
+}
+
+//-----------------------------------------------------------------------------
+// Exposes DynCall
+//-----------------------------------------------------------------------------
+void export_dyncall()
+{
+    // Calling conventions.
+    BOOST_GLOBAL_ATTRIBUTE("DC_CDECL",    DC_CALL_C_DEFAULT);
+    BOOST_GLOBAL_ATTRIBUTE("DC_ELLIPSIS", DC_CALL_C_ELLIPSIS);
+    BOOST_GLOBAL_ATTRIBUTE("DC_VARARGS",  DC_CALL_C_ELLIPSIS_VARARGS);
+
+#ifdef _WIN32
+    BOOST_GLOBAL_ATTRIBUTE("DC_STDCALL",  DC_CALL_C_X86_WIN32_STD);
+    BOOST_GLOBAL_ATTRIBUTE("DC_FASTCALL", DC_CALL_C_X86_WIN32_FAST_MS);
+    BOOST_GLOBAL_ATTRIBUTE("DC_THISCALL", DC_CALL_C_X86_WIN32_THIS_MS);
+
+#elif defined(__linux__)
+    BOOST_GLOBAL_ATTRIBUTE("DC_FASTCALL", DC_CALL_C_X86_WIN32_FAST_GNU);
+    BOOST_GLOBAL_ATTRIBUTE("DC_THISCALL", DC_CALL_C_X86_WIN32_THIS_GNU);
+#endif
+
+    // Other constants that are very useful.
+    BOOST_GLOBAL_ATTRIBUTE("DC_ERROR_NONE",             DC_ERROR_NONE);
+    BOOST_GLOBAL_ATTRIBUTE("DC_ERROR_UNSUPPORTED_MODE", DC_ERROR_UNSUPPORTED_MODE);
+    BOOST_GLOBAL_ATTRIBUTE("DEFAULT_ALIGNMENT",         DEFAULT_ALIGNMENT);
 }

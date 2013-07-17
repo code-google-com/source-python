@@ -28,6 +28,9 @@
 #define _MEMORY_TOOLS_H
 
 #include "memalloc.h"
+#include "boost/python.hpp" 
+
+using namespace boost::python;
 
 //-----------------------------------------------------------------------------
 // CPointer class
@@ -66,6 +69,8 @@ public:
     void                alloc(int iSize) { m_ulAddr = (unsigned long) g_pMemAlloc->IndirectAlloc(iSize); }
     void                realloc(int iSize) { m_ulAddr = (unsigned long) g_pMemAlloc->Realloc((void *) m_ulAddr, iSize); }
     void                dealloc() { g_pMemAlloc->Free((void *) m_ulAddr); m_ulAddr = 0; }
+
+    object              call(int iConvention, char* szParams, tuple args);
 
 private:
     unsigned long m_ulAddr;
