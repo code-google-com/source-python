@@ -40,7 +40,6 @@
 #include "memory_scanner.h"
 #include "memory_tools.h"
 
-
 //---------------------------------------------------------------------------------
 // Constants
 //---------------------------------------------------------------------------------
@@ -60,7 +59,7 @@
 CBinaryFile::CBinaryFile(unsigned long ulAddr, unsigned long ulSize)
 {
     m_ulAddr = ulAddr;
-    m_ulSize  = ulSize;
+    m_ulSize = ulSize;
 }
 
 CPointer* CBinaryFile::find_signature(object szSignature, int iLength)

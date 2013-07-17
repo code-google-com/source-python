@@ -29,8 +29,13 @@
 //-----------------------------------------------------------------------------
 #include <stdlib.h>
 #include "memalloc.h"
-#include "modules/export_main.h"
 #include "memory_tools.h"
+#include "utility/wrap_macros.h"
+#include "dyncall.h"
+#include "dyncall_signature.h"
+
+
+DCCallVM* g_pCallVM = dcNewCallVM(4096);
 
 //-----------------------------------------------------------------------------
 // CPointer class
@@ -56,7 +61,6 @@ const char * CPointer::get_string(int iOffset /* = 0 */, bool bIsPtr /* = true *
     if (!is_valid())
     {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-        return NULL;
     }
 
     if (bIsPtr)
@@ -70,7 +74,6 @@ void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 
     if (!is_valid())
     {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-        return;
     }
 
     if (!iSize)
@@ -79,14 +82,12 @@ void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 
         if(!iSize)
         {
             BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve size of address.")
-            return;
         }
     }
         
     if ((int ) strlen(szText) > iSize)
     {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String exceeds size of memory block.")
-        return;
     }
 
     // FIXME: We can't set arrays with this method, if we only got the address of that array.
@@ -98,7 +99,6 @@ CPointer* CPointer::get_ptr(int iOffset /* = 0 */)
     if (!is_valid())
     {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-        return NULL;
     }
 
     unsigned long ulNewAddr = *(unsigned long *) (m_ulAddr + iOffset);
@@ -110,7 +110,6 @@ CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true *
     if (!is_valid())
     {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-        return NULL;
     }
 
 #ifdef __linux__
@@ -124,4 +123,87 @@ CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true *
 
     void* pNewAddr = vtable[iIndex];
     return pNewAddr ? new CPointer((unsigned long) pNewAddr) : NULL;
+}
+
+object CPointer::call(int iConvention, char* szParams, tuple args)
+{
+    if (!is_valid())
+    {
+        BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
+    }
+
+    dcReset(g_pCallVM);
+    dcMode(g_pCallVM, iConvention);
+    char* ptr = szParams;
+    int pos = 0;
+    char ch;
+    while ((ch = *ptr) != '\0' && ch != ')')
+    {
+        object arg = args[pos];
+        switch(ch)
+        {
+            case DC_SIGCHAR_BOOL:     dcArgBool(g_pCallVM, extract<bool>(arg)); break;
+            case DC_SIGCHAR_CHAR:     dcArgChar(g_pCallVM, extract<char>(arg)); break;
+            case DC_SIGCHAR_SHORT:    dcArgShort(g_pCallVM, extract<short>(arg)); break;
+            case DC_SIGCHAR_INT:      dcArgInt(g_pCallVM, extract<int>(arg)); break;
+            case DC_SIGCHAR_LONG:     dcArgLong(g_pCallVM, extract<long>(arg)); break;
+            case DC_SIGCHAR_LONGLONG: dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
+            case DC_SIGCHAR_FLOAT:    dcArgFloat(g_pCallVM, extract<float>(arg)); break;
+            case DC_SIGCHAR_DOUBLE:   dcArgDouble(g_pCallVM, extract<double>(arg)); break;
+            case DC_SIGCHAR_POINTER:
+            {
+                unsigned long ulAddr;
+                if (strcmp(extract<char *>(arg.attr("__class__").attr("__name__")), "CPointer") == 0)
+                {
+                    CPointer* pPtr = extract<CPointer *>(arg);
+                    ulAddr = pPtr->get_address();
+                }
+                else
+                    ulAddr = extract<unsigned long>(arg);
+
+                dcArgPointer(g_pCallVM, ulAddr);
+            } break;
+            case DC_SIGCHAR_STRING:   dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
+            default:
+            {
+                BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown parameter type.")
+            }
+        }
+        pos++; ptr++;
+    }
+    
+    if (pos != len(args))
+    {
+        BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String parameter count does not equal with length of tuple.")
+    }
+
+    if (ch == '\0')
+    {
+        BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String parameter has no return type.")
+    }
+
+    object retval = object();
+    switch(*++ptr)
+    {
+        case DC_SIGCHAR_VOID: dcCallVoid(g_pCallVM, m_ulAddr); break;
+        case DC_SIGCHAR_BOOL:     retval = object(dcCallBool(g_pCallVM, m_ulAddr)); break;
+        case DC_SIGCHAR_CHAR:     retval = object(dcCallChar(g_pCallVM, m_ulAddr)); break;
+        case DC_SIGCHAR_SHORT:    retval = object(dcCallShort(g_pCallVM, m_ulAddr)); break;
+        case DC_SIGCHAR_INT:      retval = object(dcCallInt(g_pCallVM, m_ulAddr)); break;
+        case DC_SIGCHAR_LONG:     retval = object(dcCallLong(g_pCallVM, m_ulAddr)); break;
+        case DC_SIGCHAR_LONGLONG: retval = object(dcCallLongLong(g_pCallVM, m_ulAddr)); break;
+        case DC_SIGCHAR_FLOAT:    retval = object(dcCallFloat(g_pCallVM, m_ulAddr)); break;
+        case DC_SIGCHAR_DOUBLE:   retval = object(dcCallDouble(g_pCallVM, m_ulAddr)); break;
+        case DC_SIGCHAR_POINTER:
+        {
+            unsigned long ulResult = dcCallPointer(g_pCallVM, m_ulAddr);
+            retval = ulResult ? object(new CPointer(ulResult)) : object();
+        } break;
+        case DC_SIGCHAR_STRING: retval = object((char *) dcCallPointer(g_pCallVM, m_ulAddr)); break;
+        default:
+        {
+            BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown return type.")
+        }
+    }
+    return retval;
 }
