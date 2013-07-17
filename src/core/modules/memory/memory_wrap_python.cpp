@@ -76,6 +76,23 @@ void export_binaryfile()
             manage_new_object_policy()
         )
 
+        // Special methods
+        CLASS_METHOD_SPECIAL(CBinaryFile,
+            "__getattr__",
+            find_symbol,
+            "Returns the address of a symbol found in memory.",
+            args("szSymbol"),
+            manage_new_object_policy()
+        )
+
+        CLASS_METHOD_SPECIAL(CBinaryFile,
+            "__getitem__",
+            find_symbol,
+            "Returns the address of a symbol found in memory.",
+            args("szSymbol"),
+            manage_new_object_policy()
+        )
+
         // Properties
         CLASS_PROPERTY_READ_ONLY(CBinaryFile,
             "addr",

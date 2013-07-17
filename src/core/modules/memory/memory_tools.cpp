@@ -199,7 +199,7 @@ object CPointer::call(int iConvention, char* szParams, tuple args)
             unsigned long ulResult = dcCallPointer(g_pCallVM, m_ulAddr);
             retval = ulResult ? object(new CPointer(ulResult)) : object();
         } break;
-        case DC_SIGCHAR_STRING: retval = object((char *) dcCallPointer(g_pCallVM, m_ulAddr)); break;
+        case DC_SIGCHAR_STRING: retval = object((const char *) dcCallPointer(g_pCallVM, m_ulAddr)); break;
         default:
         {
             BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown return type.")
