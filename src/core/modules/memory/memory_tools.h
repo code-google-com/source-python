@@ -70,7 +70,7 @@ public:
     void                realloc(int iSize) { m_ulAddr = (unsigned long) g_pMemAlloc->Realloc((void *) m_ulAddr, iSize); }
     void                dealloc() { g_pMemAlloc->Free((void *) m_ulAddr); m_ulAddr = 0; }
 
-    object              call(int iConvention, char* szParams, tuple args);
+    object              call(int iConvention, char* szParams, object args);
 
 private:
     unsigned long m_ulAddr;
