@@ -54,7 +54,7 @@ public:
     }
     
     const char *        get_string(int iOffset = 0, bool bIsPtr = true);
-    void                set_string(char* szText, int iSize = 0, int iOffset = 0);
+    void                set_string(char* szText, int iSize = 0, int iOffset = 0, bool bIsPtr = true);
     CPointer*           get_ptr(int iOffset = 0);
 
     unsigned long       get_size() { return g_pMemAlloc->GetSize((void *) m_ulAddr); }

@@ -69,7 +69,7 @@ const char * CPointer::get_string(int iOffset /* = 0 */, bool bIsPtr /* = true *
     return (char *) (m_ulAddr + iOffset);
 }
 
-void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 */)
+void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 */, bool bIsPtr /* = true */)
 {
     if (!is_valid())
     {
@@ -90,8 +90,10 @@ void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String exceeds size of memory block.")
     }
 
-    // FIXME: We can't set arrays with this method, if we only got the address of that array.
-    set<char *>(szText, iOffset);
+    if (bIsPtr)
+        set<char *>(szText, iOffset);
+    else
+        strcpy((char *) (m_ulAddr + iOffset), szText);
 }
 
 CPointer* CPointer::get_ptr(int iOffset /* = 0 */)
