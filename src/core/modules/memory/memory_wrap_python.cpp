@@ -136,7 +136,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_short_overload, CPointer::get<short>,
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_unsigned_long_overload, CPointer::get<unsigned long>, 0, 1)
 
 // set_<type> methods
-DECLARE_CLASS_METHOD_OVERLOAD(CPointer, set_string, 1, 3);
+DECLARE_CLASS_METHOD_OVERLOAD(CPointer, set_string, 1, 4);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_bool_overload, CPointer::set<bool>, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_char_overload, CPointer::set<char>, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_double_overload, CPointer::set<double>, 1, 2)
@@ -185,7 +185,7 @@ void export_memtools()
 
         CLASS_METHOD(CPointer,
             call,
-            "",
+            "Calls the function dynamically.",
             args("iConvention", "szParams", "args")
         )
         
@@ -262,8 +262,8 @@ void export_memtools()
         // set_<type> methods
         CLASS_METHOD_OVERLOAD(CPointer,
             set_string,
-            "",
-            args("szText", "iSize", "iOffset")
+            "Sets the value at the given memory location as a string.",
+            args("szText", "iSize", "iOffset", "bIsPtr")
          )
 
         .def("set_bool",
