@@ -127,7 +127,7 @@ CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true *
     return pNewAddr ? new CPointer((unsigned long) pNewAddr) : NULL;
 }
 
-object CPointer::call(int iConvention, char* szParams, tuple args)
+object CPointer::call(int iConvention, char* szParams, object args)
 {
     if (!is_valid())
     {

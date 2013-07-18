@@ -370,6 +370,13 @@ void export_memtools()
             reference_existing_object_policy()
 		)
 
+        CLASS_METHOD_SPECIAL(CPointer,
+            "__call__",
+            call,
+            "Calls the function dynamically.",
+            args("iConvention", "szParams", "args")
+        )
+
         // Properties
         CLASS_PROPERTY_READ_ONLY(CPointer,
             "addr",
