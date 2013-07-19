@@ -265,11 +265,13 @@ Set(SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES
 Set(SOURCEPYTHON_MEMORY_MODULE_HEADERS
     core/modules/memory/memory_tools.h
     core/modules/memory/memory_scanner.h
+    core/modules/memory/memory_hooks.h
 )
 
 Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
     core/modules/memory/memory_scanner.cpp
     core/modules/memory/memory_tools.cpp
+    core/modules/memory/memory_hooks.cpp
     core/modules/memory/memory_wrap_python.cpp
 )
 

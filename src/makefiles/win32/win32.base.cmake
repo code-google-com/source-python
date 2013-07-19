@@ -62,6 +62,8 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
     ${DYNCALLSDK_LIB}/libdyncall_s.lib
     ${DYNCALLSDK_LIB}/libdyncallback_s.lib
     ${DYNCALLSDK_LIB}/libdynload_s.lib
+    ${DYNDETOURSSDK_LIB}/DynDetours.lib
+    ${DYNDETOURSSDK_LIB}/AsmJit.lib
 )
 
 # CSGO Engine adds in interfaces.lib
