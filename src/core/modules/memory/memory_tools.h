@@ -56,6 +56,7 @@ public:
     const char *        get_string(int iOffset = 0, bool bIsPtr = true);
     void                set_string(char* szText, int iSize = 0, int iOffset = 0, bool bIsPtr = true);
     CPointer*           get_ptr(int iOffset = 0);
+    void                set_ptr(CPointer* ptr, int iOffset = 0);
 
     unsigned long       get_size() { return g_pMemAlloc->GetSize((void *) m_ulAddr); }
     unsigned long       get_address() { return m_ulAddr; }
@@ -71,6 +72,10 @@ public:
     void                dealloc() { g_pMemAlloc->Free((void *) m_ulAddr); m_ulAddr = 0; }
 
     object              call(int iConvention, char* szParams, object args);
+    object              call_trampoline(object args);
+
+    void                hook(int iConvention, char* szParams, int iHookType, PyObject* callable);
+    void                unhook(int iHookType, PyObject* callable);
 
 private:
     unsigned long m_ulAddr;

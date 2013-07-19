@@ -223,8 +223,10 @@ using namespace boost::python;
 // Use this macro to raise a Python exception.
 //---------------------------------------------------------------------------------
 #define BOOST_RAISE_EXCEPTION( exceptionName, exceptionString ) \
-	PyErr_SetString(exceptionName, exceptionString); \
-	throw_error_already_set();
+    { \
+		PyErr_SetString(exceptionName, exceptionString); \
+		throw_error_already_set(); \
+    }
 
 //---------------------------------------------------------------------------------
 // Use this macro to add a specialization for a class to hold back-references.

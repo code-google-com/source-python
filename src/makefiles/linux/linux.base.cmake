@@ -41,6 +41,8 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
     ${DYNCALLSDK_LIB}/libdyncall_s.a
     ${DYNCALLSDK_LIB}/libdyncallback_s.a
     ${DYNCALLSDK_LIB}/libdynload_s.a
+    ${DYNDETOURSSDK_LIB}/libDynDetours.a
+    ${DYNDETOURSSDK_LIB}/libAsmJit.a
 )
 
 # ------------------------------------------------------------------

@@ -28,11 +28,20 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include <stdlib.h>
+#include <string>
+
 #include "memalloc.h"
-#include "memory_tools.h"
-#include "utility/wrap_macros.h"
+
 #include "dyncall.h"
 #include "dyncall_signature.h"
+
+#include "detour_class.h"
+#include "detourman_class.h"
+#include "memory_hooks.h"
+#include "dd_utils.h"
+
+#include "memory_tools.h"
+#include "utility/wrap_macros.h"
 
 
 DCCallVM* g_pCallVM = dcNewCallVM(4096);
@@ -59,9 +68,7 @@ CPointer* CPointer::sub(int iValue)
 const char * CPointer::get_string(int iOffset /* = 0 */, bool bIsPtr /* = true */)
 {
     if (!is_valid())
-    {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-    }
 
     if (bIsPtr)
         return get<char *>(iOffset);
@@ -72,23 +79,17 @@ const char * CPointer::get_string(int iOffset /* = 0 */, bool bIsPtr /* = true *
 void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 */, bool bIsPtr /* = true */)
 {
     if (!is_valid())
-    {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-    }
 
     if (!iSize)
     {
         iSize = g_pMemAlloc->GetSize((void *) (m_ulAddr + iOffset));
         if(!iSize)
-        {
             BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve size of address.")
-        }
     }
         
     if ((int ) strlen(szText) > iSize)
-    {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String exceeds size of memory block.")
-    }
 
     if (bIsPtr)
         set<char *>(szText, iOffset);
@@ -99,20 +100,23 @@ void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 
 CPointer* CPointer::get_ptr(int iOffset /* = 0 */)
 {
     if (!is_valid())
-    {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-    }
 
-    unsigned long ulNewAddr = *(unsigned long *) (m_ulAddr + iOffset);
-    return ulNewAddr ? new CPointer(ulNewAddr) : NULL;
+    return new CPointer(*(unsigned long *) (m_ulAddr + iOffset));
+}
+
+void CPointer::set_ptr(CPointer* ptr, int iOffset /* = 0 */)
+{
+    if (!is_valid())
+        BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+
+    *(unsigned long *) m_ulAddr = ptr->get_address();
 }
 
 CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true */)
 {
     if (!is_valid())
-    {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-    }
 
 #ifdef __linux__
     if (bPlatformCheck)
@@ -121,18 +125,15 @@ CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true *
 
     void** vtable = *(void ***) m_ulAddr;
     if (!vtable)
-        return NULL;
+        return new CPointer();
 
-    void* pNewAddr = vtable[iIndex];
-    return pNewAddr ? new CPointer((unsigned long) pNewAddr) : NULL;
+    return new CPointer((unsigned long) vtable[iIndex]);
 }
 
 object CPointer::call(int iConvention, char* szParams, object args)
 {
     if (!is_valid())
-    {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
-    }
 
     dcReset(g_pCallVM);
     dcMode(g_pCallVM, iConvention);
@@ -166,23 +167,16 @@ object CPointer::call(int iConvention, char* szParams, object args)
                 dcArgPointer(g_pCallVM, ulAddr);
             } break;
             case DC_SIGCHAR_STRING:   dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
-            default:
-            {
-                BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown parameter type.")
-            }
+            default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown parameter type.")
         }
         pos++; ptr++;
     }
     
     if (pos != len(args))
-    {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String parameter count does not equal with length of tuple.")
-    }
 
     if (ch == '\0')
-    {
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String parameter has no return type.")
-    }
 
     object retval = object();
     switch(*++ptr)
@@ -196,16 +190,58 @@ object CPointer::call(int iConvention, char* szParams, object args)
         case DC_SIGCHAR_LONGLONG: retval = object(dcCallLongLong(g_pCallVM, m_ulAddr)); break;
         case DC_SIGCHAR_FLOAT:    retval = object(dcCallFloat(g_pCallVM, m_ulAddr)); break;
         case DC_SIGCHAR_DOUBLE:   retval = object(dcCallDouble(g_pCallVM, m_ulAddr)); break;
-        case DC_SIGCHAR_POINTER:
-        {
-            unsigned long ulResult = dcCallPointer(g_pCallVM, m_ulAddr);
-            retval = ulResult ? object(new CPointer(ulResult)) : object();
-        } break;
-        case DC_SIGCHAR_STRING: retval = object((const char *) dcCallPointer(g_pCallVM, m_ulAddr)); break;
-        default:
-        {
-            BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown return type.")
-        }
+        case DC_SIGCHAR_POINTER:  retval = object(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))); break;
+        case DC_SIGCHAR_STRING:   retval = object((const char *) dcCallPointer(g_pCallVM, m_ulAddr)); break;
+        default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown return type.")
     }
     return retval;
+}
+
+object CPointer::call_trampoline(object args)
+{
+    CDetour* pDetour = g_DetourManager.Find_Detour((void *) m_ulAddr);
+    if (!pDetour)
+        BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
+
+    CFuncObj* pFuncObj = pDetour->GetFuncObj();
+    std::string szParams = "";
+
+    eCallConv conv = pFuncObj->GetConvention();
+    if (conv == CONV_THISCALL)
+        szParams += DC_SIGCHAR_POINTER;
+    
+    for(unsigned int i=0; i < pFuncObj->GetNumArgs(); i++)
+        szParams += TypeEnumToChar(pFuncObj->GetArg(i)->GetType());
+
+    szParams += ')';
+    szParams += TypeEnumToChar(pFuncObj->GetRetType()->GetType());
+    CPointer ptr = CPointer((unsigned long) pDetour->GetTrampoline());
+    return ptr.call(conv, (char *) szParams.data(), args);
+}
+
+void CPointer::hook(int iConvention, char* szParams, int iHookType, PyObject* callable)
+{
+    CDetour* pDetour = g_DetourManager.Add_Detour((void*) m_ulAddr, szParams, (eCallConv) iConvention);
+    if (!pDetour)
+        BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to hook function.")
+
+    ICallbackManager* mngr = pDetour->GetManager("Python", (eHookType) iHookType);
+    if (!mngr)
+    {
+        mngr = new CCallbackManager;
+        pDetour->AddManager(mngr, (eHookType) iHookType);
+    }
+
+    mngr->Add((void *) callable, (eHookType) iHookType);
+}
+
+void CPointer::unhook(int iHookType, PyObject* callable)
+{
+    CDetour* pDetour = g_DetourManager.Find_Detour((void *) m_ulAddr);
+    if (!pDetour)
+        return;
+
+    ICallbackManager* mngr = pDetour->GetManager("Python", (eHookType) iHookType);
+    if (mngr)
+        mngr->Remove((void *) callable, (eHookType) iHookType);
 }

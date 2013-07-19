@@ -31,11 +31,14 @@
 #include "memory_scanner.h"
 #include "memory_tools.h"
 #include "dyncall.h"
+#include "hook_types.h"
+#include "memory_hooks.h"
 
 
 void export_binaryfile();
 void export_memtools();
 void export_dyncall();
+void export_dyndetours();
 
 //-----------------------------------------------------------------------------
 // Exposes the memory_c module.
@@ -45,6 +48,7 @@ DECLARE_SP_MODULE(memory_c)
     export_binaryfile();
     export_memtools();
     export_dyncall();
+    export_dyndetours();
 }
 
 //-----------------------------------------------------------------------------
@@ -120,45 +124,47 @@ void export_binaryfile()
 // Exposes CPointer
 //-----------------------------------------------------------------------------
 // Overloads
-DECLARE_CLASS_METHOD_OVERLOAD(CPointer, get_ptr, 0, 1);
 DECLARE_CLASS_METHOD_OVERLOAD(CPointer, get_virtual_func, 1, 2);
 
 // get_<type> methods
-DECLARE_CLASS_METHOD_OVERLOAD(CPointer, get_string, 0, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_bool_overload, CPointer::get<bool>, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_char_overload, CPointer::get<char>, 0, 1)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_double_overload, CPointer::get<double>, 0, 1)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, CPointer::get<float>, 0, 1)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, CPointer::get<int>, 0, 1)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_long_overload, CPointer::get<long>, 0, 1)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_long_long_overload, CPointer::get<long long>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_uchar_overload, CPointer::get<unsigned char>, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_short_overload, CPointer::get<short>, 0, 1)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_unsigned_long_overload, CPointer::get<unsigned long>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_ushort_overload, CPointer::get<unsigned short>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, CPointer::get<int>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_uint_overload, CPointer::get<unsigned int>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_long_overload, CPointer::get<long>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_ulong_overload, CPointer::get<unsigned long>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_long_long_overload, CPointer::get<long long>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_ulong_long_overload, CPointer::get<unsigned long long>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, CPointer::get<float>, 0, 1)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_double_overload, CPointer::get<double>, 0, 1)
+DECLARE_CLASS_METHOD_OVERLOAD(CPointer, get_ptr, 0, 1);
+DECLARE_CLASS_METHOD_OVERLOAD(CPointer, get_string, 0, 2);
 
 // set_<type> methods
-DECLARE_CLASS_METHOD_OVERLOAD(CPointer, set_string, 1, 4);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_bool_overload, CPointer::set<bool>, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_char_overload, CPointer::set<char>, 1, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_double_overload, CPointer::set<double>, 1, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_float_overload, CPointer::set<float>, 1, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_int_overload, CPointer::set<int>, 1, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_long_overload, CPointer::set<long>, 1, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_long_long_overload, CPointer::set<long long>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_uchar_overload, CPointer::set<unsigned char>, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_short_overload, CPointer::set<short>, 1, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_unsigned_long_overload, CPointer::set<unsigned long>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ushort_overload, CPointer::set<unsigned short>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_int_overload, CPointer::set<int>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_uint_overload, CPointer::set<unsigned int>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_long_overload, CPointer::set<long>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ulong_overload, CPointer::set<unsigned long>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_long_long_overload, CPointer::set<long long>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ulong_long_overload, CPointer::set<unsigned long long>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_float_overload, CPointer::set<float>, 1, 2)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_double_overload, CPointer::set<double>, 1, 2)
+DECLARE_CLASS_METHOD_OVERLOAD(CPointer, set_ptr, 1, 2);
+DECLARE_CLASS_METHOD_OVERLOAD(CPointer, set_string, 1, 4);
 
 void export_memtools()
 {
     BOOST_CLASS_CONSTRUCTOR(CPointer, optional<unsigned long>)
 
         // Class methods
-        CLASS_METHOD_OVERLOAD_RET(CPointer, 
-            get_ptr,
-            "Returns the value at the given memory location as a CPointer instance.",
-            args("iOffset"),
-            manage_new_object_policy()
-        )
-
         CLASS_METHOD_OVERLOAD_RET(CPointer, 
             get_virtual_func,
             "Returns the address (as a CPointer instance) of a virtual function at the given index.",
@@ -182,20 +188,32 @@ void export_memtools()
             dealloc,
             "Deallocates a memory block."
         )
-
+        
         CLASS_METHOD(CPointer,
             call,
             "Calls the function dynamically.",
             args("iConvention", "szParams", "args")
         )
-        
-        // get_<type> methods
-        CLASS_METHOD_OVERLOAD(CPointer,
-            get_string,
-            "Returns the value at the given memory location as a string.",
-            args("iOffset", "bIsPtr")
-         )
 
+        CLASS_METHOD(CPointer,
+            call_trampoline,
+            "Calls the trampoline function dynamically.",
+            args("args")
+        )
+        
+        CLASS_METHOD(CPointer,
+            hook,
+            "",
+            args("iConvention", "szParams", "iHookType", "callable")
+        )
+
+        CLASS_METHOD(CPointer,
+            unhook,
+            "",
+            args("iHookType", "callable")
+        )
+
+        // get_<type> methods
         .def("get_bool",
             &CPointer::get<bool>,
             get_bool_overload(
@@ -210,39 +228,11 @@ void export_memtools()
                 "Returns the value at the given memory location as a char.")
         )
         
-        .def("get_double",
-            &CPointer::get<double>,
-            get_double_overload(
+        .def("get_uchar",
+            &CPointer::get<unsigned char>,
+            get_uchar_overload(
                 args("iOffset"),
-                "Returns the value at the given memory location as a double.")
-        )
-        
-        .def("get_float",
-            &CPointer::get<float>,
-            get_float_overload(
-                args("iOffset"),
-                "Returns the value at the given memory location as a float.")
-        )
-        
-        .def("get_int",
-            &CPointer::get<int>,
-            get_int_overload(
-                args("iOffset"),
-                "Returns the value at the given memory location as an integer.")
-        )
-        
-        .def("get_long",
-            &CPointer::get<long>,
-            get_long_overload(
-                args("iOffset"),
-                "Returns the value at the given memory location as a long.")
-        )
-        
-        .def("get_long_long",
-            &CPointer::get<long long>,
-            get_long_long_overload(
-                args("iOffset"),
-                "Returns the value at the given memory location as a long long.")
+                "Returns the value at the given memory location as an unsgined char.")
         )
         
         .def("get_short",
@@ -252,20 +242,83 @@ void export_memtools()
                 "Returns the value at the given memory location as a short.")
         )
         
-        .def("get_unsigned_long",
-            &CPointer::get<unsigned long>,
-            get_unsigned_long_overload(
+        .def("get_ushort",
+            &CPointer::get<unsigned short>,
+            get_ushort_overload(
                 args("iOffset"),
-                "Returns the value at the given memory location as a unsigned long.")
+                "Returns the value at the given memory location as a unsigned short.")
+        )
+        
+        .def("get_int",
+            &CPointer::get<int>,
+            get_int_overload(
+                args("iOffset"),
+                "Returns the value at the given memory location as an integer.")
+        )
+        
+        .def("get_uint",
+            &CPointer::get<unsigned int>,
+            get_uint_overload(
+                args("iOffset"),
+                "Returns the value at the given memory location as an unsigned integer.")
+        )
+        
+        .def("get_long",
+            &CPointer::get<long>,
+            get_long_overload(
+                args("iOffset"),
+                "Returns the value at the given memory location as a long.")
+        )
+        
+        .def("get_ulong",
+            &CPointer::get<unsigned long>,
+            get_ulong_overload(
+                args("iOffset"),
+                "Returns the value at the given memory location as an unsigned long.")
+        )
+        
+        .def("get_long_long",
+            &CPointer::get<long long>,
+            get_long_long_overload(
+                args("iOffset"),
+                "Returns the value at the given memory location as a long long.")
+        )
+        
+        .def("get_ulong_long",
+            &CPointer::get<unsigned long long>,
+            get_ulong_long_overload(
+                args("iOffset"),
+                "Returns the value at the given memory location as an unsigned long long.")
+        )
+        
+        .def("get_float",
+            &CPointer::get<float>,
+            get_float_overload(
+                args("iOffset"),
+                "Returns the value at the given memory location as a float.")
+        )
+        
+        .def("get_double",
+            &CPointer::get<double>,
+            get_double_overload(
+                args("iOffset"),
+                "Returns the value at the given memory location as a double.")
         )
 
-        // set_<type> methods
+        CLASS_METHOD_OVERLOAD_RET(CPointer, 
+            get_ptr,
+            "Returns the value at the given memory location as a CPointer instance.",
+            args("iOffset"),
+            manage_new_object_policy()
+        )
+
         CLASS_METHOD_OVERLOAD(CPointer,
-            set_string,
-            "Sets the value at the given memory location as a string.",
-            args("szText", "iSize", "iOffset", "bIsPtr")
+            get_string,
+            "Returns the value at the given memory location as a string.",
+            args("iOffset", "bIsPtr")
          )
 
+        // set_<type> methods
         .def("set_bool",
             &CPointer::set<bool>,
             set_bool_overload(
@@ -279,40 +332,12 @@ void export_memtools()
                 args("value", "iOffset"),
                 "Sets the value at the given memory location as a char.")
         )
-        
-        .def("set_double",
-            &CPointer::set<double>,
-            set_double_overload(
+
+        .def("set_uchar",
+            &CPointer::set<unsigned char>,
+            set_uchar_overload(
                 args("value", "iOffset"),
-                "Sets the value at the given memory location as a double.")
-        )
-        
-        .def("set_float",
-            &CPointer::set<float>,
-            set_float_overload(
-                args("value", "iOffset"),
-                "Sets the value at the given memory location as a float.")
-        )
-        
-        .def("set_int",
-            &CPointer::set<int>,
-            set_int_overload(
-                args("value", "iOffset"),
-                "Sets the value at the given memory location as an integer.")
-        )
-        
-        .def("set_long",
-            &CPointer::set<long>,
-            set_long_overload(
-                args("value", "iOffset"),
-                "Sets the value at the given memory location as a long.")
-        )
-        
-        .def("set_long_long",
-            &CPointer::set<long long>,
-            set_long_long_overload(
-                args("value", "iOffset"),
-                "Sets the value at the given memory location as a long long.")
+                "Sets the value at the given memory location as an unsigned char.")
         )
         
         .def("set_short",
@@ -322,12 +347,80 @@ void export_memtools()
                 "Sets the value at the given memory location as a short.")
         )
         
-        .def("set_unsigned_long",
-            &CPointer::set<unsigned long>,
-            set_unsigned_long_overload(
+        .def("set_ushort",
+            &CPointer::set<unsigned short>,
+            set_ushort_overload(
                 args("value", "iOffset"),
-                "Sets the value at the given memory location as a unsigned long.")
+                "Sets the value at the given memory location as an unsigned short.")
         )
+        
+        .def("set_int",
+            &CPointer::set<int>,
+            set_int_overload(
+                args("value", "iOffset"),
+                "Sets the value at the given memory location as an integer.")
+        )
+        
+        .def("set_uint",
+            &CPointer::set<unsigned int>,
+            set_uint_overload(
+                args("value", "iOffset"),
+                "Sets the value at the given memory location as an unsigned integer.")
+        )
+        
+        .def("set_long",
+            &CPointer::set<long>,
+            set_long_overload(
+                args("value", "iOffset"),
+                "Sets the value at the given memory location as a long.")
+        )
+        
+        .def("set_ulong",
+            &CPointer::set<unsigned long>,
+            set_ulong_overload(
+                args("value", "iOffset"),
+                "Sets the value at the given memory location as an unsigned long.")
+        )
+        
+        .def("set_long_long",
+            &CPointer::set<long long>,
+            set_long_long_overload(
+                args("value", "iOffset"),
+                "Sets the value at the given memory location as a long long.")
+        )
+        
+        .def("set_ulong_long",
+            &CPointer::set<unsigned long long>,
+            set_ulong_long_overload(
+                args("value", "iOffset"),
+                "Sets the value at the given memory location as an unsigned long long.")
+        )
+        
+        .def("set_float",
+            &CPointer::set<float>,
+            set_float_overload(
+                args("value", "iOffset"),
+                "Sets the value at the given memory location as a float.")
+        )
+        
+        .def("set_double",
+            &CPointer::set<double>,
+            set_double_overload(
+                args("value", "iOffset"),
+                "Sets the value at the given memory location as a double.")
+        )
+        
+        CLASS_METHOD_OVERLOAD(CPointer, 
+            set_ptr,
+            "Sets the value at the given memory location as a pointer.",
+            args("value", "iOffset")
+        )
+
+        CLASS_METHOD_OVERLOAD(CPointer,
+            set_string,
+            "Sets the value at the given memory location as a string.",
+            args("szText", "iSize", "iOffset", "bIsPtr")
+         )
 
         // Special methods
         CLASS_METHOD_SPECIAL(CPointer, 
@@ -417,4 +510,54 @@ void export_dyncall()
     BOOST_GLOBAL_ATTRIBUTE("DC_ERROR_NONE",             DC_ERROR_NONE);
     BOOST_GLOBAL_ATTRIBUTE("DC_ERROR_UNSUPPORTED_MODE", DC_ERROR_UNSUPPORTED_MODE);
     BOOST_GLOBAL_ATTRIBUTE("DEFAULT_ALIGNMENT",         DEFAULT_ALIGNMENT);
+}
+
+void export_dyndetours()
+{
+    BOOST_CLASS_CONSTRUCTOR(CStackData, CDetour*)
+    
+        // Special methods
+        CLASS_METHOD_SPECIAL(CStackData,
+            "__str__",
+            stringify,
+        )
+
+        CLASS_METHOD_SPECIAL(CStackData,
+            "__repr__",
+            stringify,
+        )
+        
+        CLASS_METHOD_SPECIAL(CStackData,
+            "__getitem__",
+            get_item,
+        )
+
+        CLASS_METHOD_SPECIAL(CStackData,
+            "__setitem__",
+            set_item,
+        )
+
+        // Properties
+        .add_property("esp",
+            make_function(
+                &CStackData::get_esp,
+                manage_new_object_policy()
+            )
+        )
+
+        .add_property("ecx",
+            make_function(
+                &CStackData::get_ecx,
+                manage_new_object_policy()
+            )
+        )
+
+        .add_property("eax",
+            make_function(
+                &CStackData::get_eax,
+                manage_new_object_policy()
+            )
+        )
+
+    BOOST_END_CLASS()
 }

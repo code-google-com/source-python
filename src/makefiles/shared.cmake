@@ -46,6 +46,12 @@ Set(PROTOBUF		${THIRDPARTY_DIR}/protobuf/protobuf-2.3.0)
 Set(PROTOBUF_INCLUDE	${PROTOBUF}/src)
 
 # ------------------------------------------------------------------
+# DynDetours specific.
+# ------------------------------------------------------------------
+Set(DYNDETOURSSDK        ${THIRDPARTY_DIR}/dyndetours)
+Set(DYNDETOURSSDK_LIB    ${DYNDETOURSSDK}/lib)
+
+# ------------------------------------------------------------------
 # Include directories
 # ------------------------------------------------------------------
 Include_Directories(
@@ -60,6 +66,7 @@ Include_Directories(
     ${DYNCALLSDK_INCLUDE}
     ${BOOSTSDK_INCLUDE}
     ${PROTOBUF_INCLUDE}
+    ${DYNDETOURSSDK}
     ${CMAKE_CURRENT_SOURCE_DIR}/core # Hack but required.
 )
 
