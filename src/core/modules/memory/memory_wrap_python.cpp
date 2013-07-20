@@ -30,10 +30,12 @@
 #include "modules/export_main.h"
 #include "memory_scanner.h"
 #include "memory_tools.h"
-#include "dyncall.h"
-#include "hook_types.h"
 #include "memory_hooks.h"
 
+#include "dyncall.h"
+
+#include "hook_types.h"
+#include "detour_class.h"
 
 void export_binaryfile();
 void export_memtools();
@@ -517,21 +519,25 @@ void export_dyndetours()
         CLASS_METHOD_SPECIAL(CStackData,
             "__str__",
             stringify,
+            "Returns a stringified list containing all arguments."
         )
 
         CLASS_METHOD_SPECIAL(CStackData,
             "__repr__",
             stringify,
+            "Returns a stringified list containing all arguments."
         )
         
         CLASS_METHOD_SPECIAL(CStackData,
             "__getitem__",
             get_item,
+            "Returns the argument at the specified index."
         )
 
         CLASS_METHOD_SPECIAL(CStackData,
             "__setitem__",
             set_item,
+            "Sets the argument at the specified index."
         )
 
         // Properties
