@@ -202,7 +202,7 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
         if (sym.st_shndx == SHN_UNDEF || (sym_type != STT_FUNC && sym_type != STT_OBJECT))
             continue;
 
-        if (strcmp(symbol, sym_name) == 0)
+        if (strcmp(szSymbol, sym_name) == 0)
         {
             sym_addr = (void *)(dlmap->l_addr + sym.st_value);
             break;
@@ -244,9 +244,9 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath)
 
     // Add file extension, if missing
     if (!str_ends_with(szPath, FILE_EXTENSION))
-        sprintf_s(szBinaryPath, "%s" FILE_EXTENSION, szPath);
+        sprintf(szBinaryPath, "%s" FILE_EXTENSION, szPath);
     else
-        sprintf_s(szBinaryPath, "%s", szPath);
+        sprintf(szBinaryPath, "%s", szPath);
 
     unsigned long ulAddr = (unsigned long) dlLoadLibrary(szPath);
     if (!ulAddr)
@@ -274,7 +274,7 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath)
 #elif defined(__linux__)
     // TODO: Retrieve whole size
     struct stat buf;
-    if (stat(path, &buf) == -1)
+    if (stat(szPath, &buf) == -1)
     {
         dlFreeLibrary((DLLib *) ulAddr);
         return NULL;
