@@ -27,14 +27,29 @@
 #ifndef _MEMORY_TOOLS_H
 #define _MEMORY_TOOLS_H
 
+#include "hook_types.h"
+#include "dyncall.h"
 #include "memalloc.h"
 #include "boost/python.hpp" 
-
 using namespace boost::python;
 
 //-----------------------------------------------------------------------------
 // CPointer class
 //-----------------------------------------------------------------------------
+enum Convention
+{
+    _CONV_CDECL = DC_CALL_C_DEFAULT,
+#ifdef _WIN32
+    _CONV_STDCALL = DC_CALL_C_X86_WIN32_STD,
+    _CONV_FASTCALL = DC_CALL_C_X86_WIN32_FAST_MS,
+    _CONV_THISCALL = DC_CALL_C_X86_WIN32_THIS_MS
+#else
+    _CONV_FASTCALL = DC_CALL_C_X86_WIN32_FAST_GNU,
+    _CONV_THISCALL = DC_CALL_C_X86_WIN32_THIS_GNU
+#endif
+};
+
+
 class CPointer
 {
 public:
@@ -71,14 +86,16 @@ public:
     void                realloc(int iSize) { m_ulAddr = (unsigned long) g_pMemAlloc->Realloc((void *) m_ulAddr, iSize); }
     void                dealloc() { g_pMemAlloc->Free((void *) m_ulAddr); m_ulAddr = 0; }
 
-    object              call(int iConvention, char* szParams, object args);
+    object              call(Convention eConv, char* szParams, object args);
     object              call_trampoline(object args);
 
-    void                hook(int iConvention, char* szParams, int iHookType, PyObject* callable);
-    void                unhook(int iHookType, PyObject* callable);
+    void                hook(Convention eConv, char* szParams, eHookType eType, PyObject* callable);
+    void                unhook(eHookType eType, PyObject* callable);
 
 private:
     unsigned long m_ulAddr;
 };
+
+int get_error();
 
 #endif // _MEMORY_TOOLS_H

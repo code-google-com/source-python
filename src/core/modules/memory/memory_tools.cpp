@@ -130,13 +130,13 @@ CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true *
     return new CPointer((unsigned long) vtable[iIndex]);
 }
 
-object CPointer::call(int iConvention, char* szParams, object args)
+object CPointer::call(Convention eConv, char* szParams, object args)
 {
     if (!is_valid())
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
     dcReset(g_pCallVM);
-    dcMode(g_pCallVM, iConvention);
+    dcMode(g_pCallVM, eConv);
     char* ptr = szParams;
     int pos = 0;
     char ch;
@@ -216,32 +216,37 @@ object CPointer::call_trampoline(object args)
     szParams += ')';
     szParams += TypeEnumToChar(pFuncObj->GetRetType()->GetType());
     CPointer ptr = CPointer((unsigned long) pDetour->GetTrampoline());
-    return ptr.call(conv, (char *) szParams.data(), args);
+    return ptr.call((Convention) conv, (char *) szParams.data(), args);
 }
 
-void CPointer::hook(int iConvention, char* szParams, int iHookType, PyObject* callable)
+void CPointer::hook(Convention eConv, char* szParams, eHookType eType, PyObject* callable)
 {
-    CDetour* pDetour = g_DetourManager.Add_Detour((void*) m_ulAddr, szParams, (eCallConv) iConvention);
+    CDetour* pDetour = g_DetourManager.Add_Detour((void*) m_ulAddr, szParams, (eCallConv) eConv);
     if (!pDetour)
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to hook function.")
 
-    ICallbackManager* mngr = pDetour->GetManager("Python", (eHookType) iHookType);
+    ICallbackManager* mngr = pDetour->GetManager("Python", eType);
     if (!mngr)
     {
         mngr = new CCallbackManager;
-        pDetour->AddManager(mngr, (eHookType) iHookType);
+        pDetour->AddManager(mngr, eType);
     }
 
-    mngr->Add((void *) callable, (eHookType) iHookType);
+    mngr->Add((void *) callable, eType);
 }
 
-void CPointer::unhook(int iHookType, PyObject* callable)
+void CPointer::unhook(eHookType eType, PyObject* callable)
 {
     CDetour* pDetour = g_DetourManager.Find_Detour((void *) m_ulAddr);
     if (!pDetour)
         return;
 
-    ICallbackManager* mngr = pDetour->GetManager("Python", (eHookType) iHookType);
+    ICallbackManager* mngr = pDetour->GetManager("Python", eType);
     if (mngr)
-        mngr->Remove((void *) callable, (eHookType) iHookType);
+        mngr->Remove((void *) callable, eType);
+}
+
+int get_error()
+{
+    return dcGetError(g_pCallVM);
 }
