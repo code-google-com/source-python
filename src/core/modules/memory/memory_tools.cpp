@@ -30,8 +30,6 @@
 #include <stdlib.h>
 #include <string>
 
-#include "memalloc.h"
-
 #include "dyncall.h"
 #include "dyncall_signature.h"
 
@@ -83,7 +81,7 @@ void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 
 
     if (!iSize)
     {
-        iSize = g_pMemAlloc->GetSize((void *) (m_ulAddr + iOffset));
+        iSize = getMemSize((void *) (m_ulAddr + iOffset));
         if(!iSize)
             BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve size of address.")
     }

@@ -69,7 +69,7 @@ CPointer* CBinaryFile::find_signature(object szSignature, int iLength)
     unsigned char* sigstr = NULL;
     PyArg_Parse(szSignature.ptr(), "y", &sigstr);
     if (!sigstr)
-        return NULL;
+        return new CPointer();
 
     // Search for a cached signature
     for (std::list<Signature_t>::iterator iter=m_Signatures.begin(); iter != m_Signatures.end(); iter++)
@@ -104,14 +104,13 @@ CPointer* CBinaryFile::find_signature(object szSignature, int iLength)
         }
         base++;
     }
-    return NULL;
+    return new CPointer();
 }
 
 CPointer* CBinaryFile::find_symbol(char* szSymbol)
 {
 #ifdef _WIN32
-    unsigned long ulAddr = (unsigned long) GetProcAddress((HMODULE) m_ulAddr, szSymbol);
-    return ulAddr ? new CPointer(ulAddr) : NULL;
+    return new CPointer((unsigned long) GetProcAddress((HMODULE) m_ulAddr, szSymbol));
 
 #elif defined(__linux__)
     // -----------------------------------------
@@ -141,7 +140,7 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
     if (dlfile == -1 || fstat(dlfile, &dlstat) == -1)
     {
         close(dlfile);
-        return NULL;
+        return new CPointer();
     }
 
     /* Map library file into memory */
@@ -150,14 +149,14 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
     if (file_hdr == MAP_FAILED)
     {
         close(dlfile);
-        return NULL;
+        return new CPointer();
     }
     close(dlfile);
 
     if (file_hdr->e_shoff == 0 || file_hdr->e_shstrndx == SHN_UNDEF)
     {
         munmap(file_hdr, dlstat.st_size);
-        return NULL;
+        return new CPointer();
     }
 
     sections = (Elf32_Shdr *)(map_base + file_hdr->e_shoff);
@@ -183,7 +182,7 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
     if (symtab_hdr == NULL || strtab_hdr == NULL)
     {
         munmap(file_hdr, dlstat.st_size);
-        return NULL;
+        return new CPointer();
     }
 
     symtab = (Elf32_Sym *)(map_base + symtab_hdr->sh_offset);
@@ -211,7 +210,7 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
 
     // Unmap the file now.
     munmap(file_hdr, dlstat.st_size);
-    return sym_addr ? new CPointer((unsigned long) sym_addr) : NULL;
+    return new CPointer((unsigned long) sym_addr);
 
 #else
 #error "BinaryFile::find_symbol() is not implemented on this OS"
@@ -221,7 +220,7 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
 CPointer* CBinaryFile::find_pointer(object szSignature, int iLength, int iOffset)
 {
     CPointer* ptr = find_signature(szSignature, iLength);
-    return ptr ? ptr->get_ptr(iOffset) : NULL;
+    return ptr ? ptr->get_ptr(iOffset) : ptr;
 }
 
 //-----------------------------------------------------------------------------

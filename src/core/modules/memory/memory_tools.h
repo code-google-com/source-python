@@ -27,14 +27,64 @@
 #ifndef _MEMORY_TOOLS_H
 #define _MEMORY_TOOLS_H
 
+#include <malloc.h>
+#include "memalloc.h"
+#include "utility/wrap_macros.h"
 #include "hook_types.h"
 #include "dyncall.h"
-#include "memalloc.h"
 #include "boost/python.hpp" 
 using namespace boost::python;
 
+
 //-----------------------------------------------------------------------------
-// CPointer class
+// 
+//-----------------------------------------------------------------------------
+inline size_t getMemSize(void* ptr)
+{
+#ifdef _WIN32
+    return g_pMemAlloc->GetSize(ptr);
+#elif defined(__linux__)
+    return malloc_usable_size(ptr);
+#else
+    #error "Implement me!"
+#endif
+}
+
+inline void* allocate(size_t size)
+{
+#ifdef _WIN32
+    return g_pMemAlloc->IndirectAlloc(size);
+#elif defined(__linux__)
+    return malloc(size);
+#else
+    #error "Implement me!"
+#endif
+}
+
+inline void* reallocate(void* ptr, size_t size)
+{
+#ifdef _WIN32
+    return g_pMemAlloc->Realloc(ptr, size);
+#elif defined(__linux__)
+    return realloc(ptr, size);
+#else
+    #error "Implement me!"
+#endif
+}
+
+inline void deallocate(void* ptr)
+{
+#ifdef _WIN32
+    g_pMemAlloc->Free(ptr);
+#elif defined(__linux__)
+    free(ptr);
+#else
+    #error "Implement me!"
+#endif
+}
+
+//-----------------------------------------------------------------------------
+// Convention enum
 //-----------------------------------------------------------------------------
 enum Convention
 {
@@ -49,7 +99,9 @@ enum Convention
 #endif
 };
 
-
+//-----------------------------------------------------------------------------
+// CPointer class
+//-----------------------------------------------------------------------------
 class CPointer
 {
 public:
@@ -58,12 +110,18 @@ public:
     template<class T>
     T get(int iOffset = 0)
     {
+        if (!is_valid())
+            BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+
         return *(T *) (m_ulAddr + iOffset);
     }
 
     template<class T>
     void set(T value, int iOffset = 0)
     {
+        if (!is_valid())
+            BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+
         unsigned long newAddr = m_ulAddr + iOffset;
         *(T *) newAddr = value;
     }
@@ -73,7 +131,7 @@ public:
     CPointer*           get_ptr(int iOffset = 0);
     void                set_ptr(CPointer* ptr, int iOffset = 0);
 
-    unsigned long       get_size() { return g_pMemAlloc->GetSize((void *) m_ulAddr); }
+    unsigned long       get_size() { return getMemSize((void *) m_ulAddr); }
     unsigned long       get_address() { return m_ulAddr; }
 
     CPointer*           add(int iValue);
@@ -82,9 +140,9 @@ public:
 
     CPointer*           get_virtual_func(int iIndex, bool bPlatformCheck = true);
     
-    void                alloc(int iSize) { m_ulAddr = (unsigned long) g_pMemAlloc->IndirectAlloc(iSize); }
-    void                realloc(int iSize) { m_ulAddr = (unsigned long) g_pMemAlloc->Realloc((void *) m_ulAddr, iSize); }
-    void                dealloc() { g_pMemAlloc->Free((void *) m_ulAddr); m_ulAddr = 0; }
+    void                alloc(int iSize) { m_ulAddr = (unsigned long) allocate(iSize); }
+    void                realloc(int iSize) { m_ulAddr = (unsigned long) reallocate((void *) m_ulAddr, iSize); }
+    void                dealloc() { deallocate((void *) m_ulAddr); m_ulAddr = 0; }
 
     object              call(Convention eConv, char* szParams, object args);
     object              call_trampoline(object args);
