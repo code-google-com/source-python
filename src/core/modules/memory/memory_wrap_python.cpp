@@ -192,7 +192,7 @@ void export_memtools()
         CLASS_METHOD(CPointer,
             call,
             "Calls the function dynamically.",
-            args("iConvention", "szParams", "args")
+            args("eConvention", "szParams", "args")
         )
 
         CLASS_METHOD(CPointer,
@@ -203,14 +203,14 @@ void export_memtools()
         
         CLASS_METHOD(CPointer,
             hook,
-            "",
-            args("iConvention", "szParams", "iHookType", "callable")
+            "Hooks a function dynamically.",
+            args("eConvention", "szParams", "eHookType", "callable")
         )
 
         CLASS_METHOD(CPointer,
             unhook,
-            "",
-            args("iHookType", "callable")
+            "Unhooks a function dynamically",
+            args("eHookType", "callable")
         )
 
         // get_<type> methods
@@ -491,25 +491,22 @@ void export_memtools()
 //-----------------------------------------------------------------------------
 void export_dyncall()
 {
-    // Calling conventions.
-    BOOST_GLOBAL_ATTRIBUTE("DC_CDECL",    DC_CALL_C_DEFAULT);
-    BOOST_GLOBAL_ATTRIBUTE("DC_ELLIPSIS", DC_CALL_C_ELLIPSIS);
-    BOOST_GLOBAL_ATTRIBUTE("DC_VARARGS",  DC_CALL_C_ELLIPSIS_VARARGS);
-
-#ifdef _WIN32
-    BOOST_GLOBAL_ATTRIBUTE("DC_STDCALL",  DC_CALL_C_X86_WIN32_STD);
-    BOOST_GLOBAL_ATTRIBUTE("DC_FASTCALL", DC_CALL_C_X86_WIN32_FAST_MS);
-    BOOST_GLOBAL_ATTRIBUTE("DC_THISCALL", DC_CALL_C_X86_WIN32_THIS_MS);
-
-#elif defined(__linux__)
-    BOOST_GLOBAL_ATTRIBUTE("DC_FASTCALL", DC_CALL_C_X86_WIN32_FAST_GNU);
-    BOOST_GLOBAL_ATTRIBUTE("DC_THISCALL", DC_CALL_C_X86_WIN32_THIS_GNU);
-#endif
+    BOOST_ENUM(Convention)
+        ENUM_VALUE("CDECL", _CONV_CDECL)
+    #ifdef _WIN32
+        ENUM_VALUE("STDCALL", _CONV_STDCALL)
+    #endif
+        ENUM_VALUE("FASTCALL", _CONV_FASTCALL)
+        ENUM_VALUE("THISCALL", _CONV_THISCALL)
+    BOOST_END_CLASS()
 
     // Other constants that are very useful.
     BOOST_GLOBAL_ATTRIBUTE("DC_ERROR_NONE",             DC_ERROR_NONE);
     BOOST_GLOBAL_ATTRIBUTE("DC_ERROR_UNSUPPORTED_MODE", DC_ERROR_UNSUPPORTED_MODE);
-    BOOST_GLOBAL_ATTRIBUTE("DEFAULT_ALIGNMENT",         DEFAULT_ALIGNMENT);
+
+    BOOST_FUNCTION(get_error,
+        "Returns the last DynCall error ID."
+    );
 }
 
 void export_dyndetours()
@@ -559,5 +556,10 @@ void export_dyndetours()
             )
         )
 
+    BOOST_END_CLASS()
+
+    enum_<eHookType>("HookType")
+        ENUM_VALUE("Pre", TYPE_PRE)
+        ENUM_VALUE("Post", TYPE_POST)
     BOOST_END_CLASS()
 }
