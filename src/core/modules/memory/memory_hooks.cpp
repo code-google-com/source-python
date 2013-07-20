@@ -112,7 +112,7 @@ object CStackData::get_item(unsigned int iIndex)
         if (iIndex == 0)
         {
         #ifdef __linux__
-            unsigned long thisptr = ReadAddr<unsigned long>(m_pRegisters->r_esp + 4);
+            unsigned long thisptr = *(unsigned long *) (m_pRegisters->r_esp + 4);
         #else
             unsigned long thisptr = m_pRegisters->r_ecx;
         #endif
@@ -130,7 +130,7 @@ object CStackData::get_item(unsigned int iIndex)
     int offset          = pArgNode->m_nOffset;
 
     #ifdef __linux__
-        if (pFunction->GetConvention() == CONV_THISCALL)
+        if (m_pFunction->GetConvention() == CONV_THISCALL)
             offset += 4;
     #endif
     unsigned long ulAddr = (m_pRegisters->r_esp + 4 + offset);
@@ -183,7 +183,7 @@ void CStackData::set_item(unsigned int iIndex, object value)
     int offset          = pArgNode->m_nOffset;
 
     #ifdef __linux__
-        if (pFunction->GetConvention() == CONV_THISCALL)
+        if (m_pFunction->GetConvention() == CONV_THISCALL)
             offset += 4;
     #endif
     unsigned long ulAddr = (m_pRegisters->r_esp + 4 + offset);
