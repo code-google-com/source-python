@@ -35,6 +35,16 @@
 // ----------------------------------------------------------------------------
 using namespace boost::python;
 
+
+// ----------------------------------------------------------------------------
+// This macro allows us to call a Python function OR Python method. It decides
+// what we need to use.
+// boost::python::object retval = CALL_PY_FUNC(PyObject*, ...);
+// ----------------------------------------------------------------------------
+#define CALL_PY_FUNC(pCallable, ...) \
+    PyObject_HasAttrString(pCallable, "__self__") ? boost::python::call_method<object>(PyObject_GetAttrString(pCallable, "__self__"), extract<const char*>(PyObject_GetAttrString(pCallable, "__name__")), __VA_ARGS__) : call<object>(pCallable, __VA_ARGS__)
+
+
 // ----------------------------------------------------------------------------
 // Python Logging functions
 // ----------------------------------------------------------------------------
