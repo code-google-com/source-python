@@ -46,10 +46,10 @@ DECLARE_SP_MODULE(globals_c)
 void export_maploadtype_t()
 {
 	BOOST_ENUM( MapLoadType_t )
-		ENUM_VALUE( "MapLoad_NewGame", MapLoad_NewGame )
-		ENUM_VALUE( "MapLoad_LoadGame", MapLoad_LoadGame )
-		ENUM_VALUE( "MapLoad_Transition", MapLoad_Transition )
-		ENUM_VALUE( "MapLoad_Background", MapLoad_Background )
+		ENUM_VALUE( "NewGame", MapLoad_NewGame )
+		ENUM_VALUE( "LoadGame", MapLoad_LoadGame )
+		ENUM_VALUE( "Transition", MapLoad_Transition )
+		ENUM_VALUE( "Background", MapLoad_Background )
 	BOOST_END_CLASS()
 }
 
