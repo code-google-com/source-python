@@ -11,6 +11,7 @@
 #include "memory_hooks.h"
 #include "memory_tools.h"
 #include "utility/wrap_macros.h"
+#include "utility/call_python.h"
 
 #include "boost/python.hpp"
 using namespace boost::python;
@@ -45,12 +46,6 @@ void CCallbackManager::Remove(void* pFunc, eHookType type)
     }
 }
 
-#define READ_RETVAL(type) \
-{ \
-    type tmp = extract<type>(retval); \
-    result = (void *) tmp; \
-} break;
-
 HookRetBuf_t* CCallbackManager::DoPreCalls(CDetour* pDetour)
 {
     if (!pDetour)
@@ -64,38 +59,14 @@ HookRetBuf_t* CCallbackManager::DoPreCalls(CDetour* pDetour)
     for (std::list<object>::iterator iter=m_PreCalls.begin(); iter != m_PreCalls.end(); iter++)
     {		
         BEGIN_BOOST_PY()
-
-        PyObject* pCallable = (*iter).ptr();
-        object retval;
-        if(PyObject_HasAttrString(pCallable, "__self__"))
-        {
-            PyObject *oClassInstance = PyObject_GetAttrString(pCallable, "__self__");
-            PyObject *oMethodName    = PyObject_GetAttrString(pCallable, "__name__");
-            const char* szMethodName = extract<const char*>(oMethodName);
-            retval = boost::python::call_method<object>(oClassInstance, szMethodName, argList);
-        }
-        else
-            retval = call<object>(pCallable, argList);
-        
-        eHookRes action = HOOKRES_NONE;
-        unsigned long result = 0;
+            
+        object retval = CALL_PY_FUNC((*iter).ptr(), argList);
         if (!retval.is_none())
         {
-            action = HOOKRES_OVERRIDE;
-            if (strcmp(extract<char *>(retval.attr("__class__").attr("__name__")), "CPointer") == 0)
-            {
-                CPointer* pPtr = extract<CPointer *>(retval);
-                result = pPtr->get_address();
-            }
-            else
-                result = extract<unsigned long>(retval);
+            buffer->eRes = HOOKRES_OVERRIDE;
+            buffer->pRetBuf = (void *) ExtractPyPtr(retval);
         }
 
-        if (action >= buffer->eRes)
-        {
-            buffer->eRes = action;
-            buffer->pRetBuf = (void *) result;
-        }
         END_BOOST_PY_NORET()
     }
     return buffer;
@@ -182,10 +153,7 @@ object CStackData::get_item(unsigned int iIndex)
         case TYPE_DOUBLE:    retval = ReadAddr<double>(ulAddr); break;
         case TYPE_POINTER:   retval = object(new CPointer(*(unsigned long *) ulAddr)); break;
         case TYPE_STRING:    retval = ReadAddr<const char *>(ulAddr); break;
-        default:
-        {
-            BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
-        } break;
+        default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
     }
     return retval;
 }
@@ -236,17 +204,8 @@ void CStackData::set_item(unsigned int iIndex, object value)
         case TYPE_ULONGLONG: SetAddr<unsigned long long>(ulAddr, value); break;
         case TYPE_FLOAT:     SetAddr<float>(ulAddr, value); break;
         case TYPE_DOUBLE:    SetAddr<double>(ulAddr, value); break;
-        case TYPE_POINTER: 
-        {
-            if (strcmp(extract<char *>(value.attr("__class__").attr("__name__")), "CPointer") == 0)
-            {
-                CPointer* ptr = extract<CPointer *>(value);
-                *(unsigned long *) ulAddr = ptr->get_address();
-            }
-            else
-                SetAddr<unsigned long>(ulAddr, value);
-        } break;
-        case TYPE_STRING: SetAddr<const char *>(ulAddr, value); break;
+        case TYPE_POINTER:   *(unsigned long *) ulAddr = ExtractPyPtr(value); break;
+        case TYPE_STRING:    SetAddr<const char *>(ulAddr, value); break;
         default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
     }
 }

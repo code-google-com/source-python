@@ -145,28 +145,21 @@ object CPointer::call(Convention eConv, char* szParams, object args)
         object arg = args[pos];
         switch(ch)
         {
-            case DC_SIGCHAR_BOOL:     dcArgBool(g_pCallVM, extract<bool>(arg)); break;
-            case DC_SIGCHAR_CHAR:     dcArgChar(g_pCallVM, extract<char>(arg)); break;
-            case DC_SIGCHAR_SHORT:    dcArgShort(g_pCallVM, extract<short>(arg)); break;
-            case DC_SIGCHAR_INT:      dcArgInt(g_pCallVM, extract<int>(arg)); break;
-            case DC_SIGCHAR_LONG:     dcArgLong(g_pCallVM, extract<long>(arg)); break;
-            case DC_SIGCHAR_LONGLONG: dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
-            case DC_SIGCHAR_FLOAT:    dcArgFloat(g_pCallVM, extract<float>(arg)); break;
-            case DC_SIGCHAR_DOUBLE:   dcArgDouble(g_pCallVM, extract<double>(arg)); break;
-            case DC_SIGCHAR_POINTER:
-            {
-                unsigned long ulAddr;
-                if (strcmp(extract<char *>(arg.attr("__class__").attr("__name__")), "CPointer") == 0)
-                {
-                    CPointer* pPtr = extract<CPointer *>(arg);
-                    ulAddr = pPtr->get_address();
-                }
-                else
-                    ulAddr = extract<unsigned long>(arg);
-
-                dcArgPointer(g_pCallVM, ulAddr);
-            } break;
-            case DC_SIGCHAR_STRING:   dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
+            case DC_SIGCHAR_BOOL:      dcArgBool(g_pCallVM, extract<bool>(arg)); break;
+            case DC_SIGCHAR_CHAR:      dcArgChar(g_pCallVM, extract<char>(arg)); break;
+            case DC_SIGCHAR_UCHAR:     dcArgChar(g_pCallVM, extract<unsigned char>(arg)); break;
+            case DC_SIGCHAR_SHORT:     dcArgShort(g_pCallVM, extract<short>(arg)); break;
+            case DC_SIGCHAR_USHORT:    dcArgShort(g_pCallVM, extract<unsigned short>(arg)); break;
+            case DC_SIGCHAR_INT:       dcArgInt(g_pCallVM, extract<int>(arg)); break;
+            case DC_SIGCHAR_UINT:      dcArgInt(g_pCallVM, extract<unsigned int>(arg)); break;
+            case DC_SIGCHAR_LONG:      dcArgLong(g_pCallVM, extract<long>(arg)); break;
+            case DC_SIGCHAR_ULONG:     dcArgLong(g_pCallVM, extract<unsigned long>(arg)); break;
+            case DC_SIGCHAR_LONGLONG:  dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
+            case DC_SIGCHAR_ULONGLONG: dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
+            case DC_SIGCHAR_FLOAT:     dcArgFloat(g_pCallVM, extract<float>(arg)); break;
+            case DC_SIGCHAR_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
+            case DC_SIGCHAR_POINTER:   dcArgPointer(g_pCallVM, ExtractPyPtr(arg)); break;
+            case DC_SIGCHAR_STRING:    dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
             default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown parameter type.")
         }
         pos++; ptr++;
@@ -178,23 +171,27 @@ object CPointer::call(Convention eConv, char* szParams, object args)
     if (ch == '\0')
         BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String parameter has no return type.")
 
-    object retval = object();
     switch(*++ptr)
     {
-        case DC_SIGCHAR_VOID: dcCallVoid(g_pCallVM, m_ulAddr); break;
-        case DC_SIGCHAR_BOOL:     retval = object(dcCallBool(g_pCallVM, m_ulAddr)); break;
-        case DC_SIGCHAR_CHAR:     retval = object(dcCallChar(g_pCallVM, m_ulAddr)); break;
-        case DC_SIGCHAR_SHORT:    retval = object(dcCallShort(g_pCallVM, m_ulAddr)); break;
-        case DC_SIGCHAR_INT:      retval = object(dcCallInt(g_pCallVM, m_ulAddr)); break;
-        case DC_SIGCHAR_LONG:     retval = object(dcCallLong(g_pCallVM, m_ulAddr)); break;
-        case DC_SIGCHAR_LONGLONG: retval = object(dcCallLongLong(g_pCallVM, m_ulAddr)); break;
-        case DC_SIGCHAR_FLOAT:    retval = object(dcCallFloat(g_pCallVM, m_ulAddr)); break;
-        case DC_SIGCHAR_DOUBLE:   retval = object(dcCallDouble(g_pCallVM, m_ulAddr)); break;
-        case DC_SIGCHAR_POINTER:  retval = object(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))); break;
-        case DC_SIGCHAR_STRING:   retval = object((const char *) dcCallPointer(g_pCallVM, m_ulAddr)); break;
-        default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown return type.")
+        case DC_SIGCHAR_VOID: dcCallVoid(g_pCallVM, m_ulAddr);
+        case DC_SIGCHAR_BOOL:      return object(dcCallBool(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_CHAR:      return object(dcCallChar(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_UCHAR:     return object((unsigned char) dcCallChar(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_SHORT:     return object(dcCallShort(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_USHORT:    return object((unsigned short) dcCallShort(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_INT:       return object(dcCallInt(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_UINT:      return object((unsigned int) dcCallInt(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_LONG:      return object(dcCallLong(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_ULONG:     return object((unsigned long) dcCallLong(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_LONGLONG:  return object(dcCallLongLong(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_ULONGLONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_FLOAT:     return object(dcCallFloat(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
+        case DC_SIGCHAR_POINTER:   return object(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr)));
+        case DC_SIGCHAR_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
+        default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown return type.")
     }
-    return retval;
+    return object();
 }
 
 object CPointer::call_trampoline(object args)

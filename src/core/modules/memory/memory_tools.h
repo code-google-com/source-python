@@ -98,4 +98,14 @@ private:
 
 int get_error();
 
+inline unsigned long ExtractPyPtr(object obj)
+{
+    if (strcmp(extract<char *>(obj.attr("__class__").attr("__name__")), "CPointer") == 0)
+    {
+        CPointer* pPtr = extract<CPointer *>(obj);
+        return pPtr->get_address();
+    }
+    return extract<unsigned long>(obj);
+}
+
 #endif // _MEMORY_TOOLS_H
