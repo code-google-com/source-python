@@ -48,7 +48,7 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
 # ------------------------------------------------------------------
 # Game specific library hacks.
 # ------------------------------------------------------------------
-If(SOURCE_ENGINE EQUAL 2)
+If(SOURCE_ENGINE EQUAL 1)
     # Orangebox has all the tier libraries.
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
