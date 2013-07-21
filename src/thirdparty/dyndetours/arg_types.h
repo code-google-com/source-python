@@ -22,7 +22,6 @@
 #define DC_SIGCHAR_DOUBLE       'd'
 #define DC_SIGCHAR_POINTER      'p'
 #define DC_SIGCHAR_STRING       'Z'
-#define DC_SIGCHAR_STRUCT       'T'
 
 // =======================================================================
 // Types of arguments we can have.
@@ -30,8 +29,8 @@
 enum eArgType 
 {
 	TYPE_UNKNOWN,   // Type is not a default type.
-	TYPE_VOID,		// void
-	TYPE_BOOL,		// bool
+	TYPE_VOID,		
+	TYPE_BOOL,		
     TYPE_CHAR,
     TYPE_UCHAR,
     TYPE_SHORT,

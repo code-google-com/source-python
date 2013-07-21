@@ -18,6 +18,22 @@ using namespace boost::python;
 
 
 // ============================================================================
+// >> Helper functions to read, set and convert addresses
+// ============================================================================
+template<class T>
+object ReadAddr(unsigned long ulAddr)
+{
+    return object(*(T *) ulAddr);
+}
+
+template<class T>
+void SetAddr(unsigned long ulAddr, object value)
+{
+    *(T *) ulAddr = extract<T>(value);
+}
+
+
+// ============================================================================
 // >> CCallbackManager
 // ============================================================================
 void CCallbackManager::Add(void* pFunc, eHookType type)
@@ -54,7 +70,7 @@ HookRetBuf_t* CCallbackManager::DoPreCalls(CDetour* pDetour)
     HookRetBuf_t* buffer = new HookRetBuf_t;
     buffer->eRes = HOOKRES_NONE;
     buffer->pRetBuf = 0;
-
+    
     CStackData* argList = new CStackData(pDetour);
     for (std::list<object>::iterator iter=m_PreCalls.begin(); iter != m_PreCalls.end(); iter++)
     {		
@@ -74,9 +90,50 @@ HookRetBuf_t* CCallbackManager::DoPreCalls(CDetour* pDetour)
 
 HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
 {
+    if (!pDetour)
+        return NULL;
+
     HookRetBuf_t* buffer = new HookRetBuf_t;
     buffer->eRes = HOOKRES_NONE;
     buffer->pRetBuf = 0;
+
+    CStackData* argList = new CStackData(pDetour);
+
+    unsigned long ulAddr = pDetour->GetAsmBridge()->GetConv()->GetRegisters()->r_eax;
+    object retval;
+    switch(pDetour->GetFuncObj()->GetRetType()->GetType())
+    {
+        case TYPE_BOOL:      retval = ReadAddr<bool>(ulAddr); break;
+        case TYPE_CHAR:      retval = ReadAddr<char>(ulAddr); break;
+        case TYPE_UCHAR:     retval = ReadAddr<unsigned char>(ulAddr); break;
+        case TYPE_SHORT:     retval = ReadAddr<short>(ulAddr); break;
+        case TYPE_USHORT:    retval = ReadAddr<unsigned short>(ulAddr); break;
+        case TYPE_INT:       retval = ReadAddr<int>(ulAddr); break;
+        case TYPE_UINT:      retval = ReadAddr<unsigned int>(ulAddr); break;
+        case TYPE_LONG:      retval = ReadAddr<long>(ulAddr); break;
+        case TYPE_ULONG:     retval = ReadAddr<unsigned long>(ulAddr); break;
+        case TYPE_LONGLONG:  retval = ReadAddr<long long>(ulAddr); break;
+        case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(ulAddr); break;
+        case TYPE_FLOAT:     retval = ReadAddr<float>(ulAddr); break;
+        case TYPE_DOUBLE:    retval = ReadAddr<double>(ulAddr); break;
+        case TYPE_POINTER:   retval = object(new CPointer(ulAddr)); break;
+        case TYPE_STRING:    retval = ReadAddr<const char *>(ulAddr); break;
+        default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
+    }
+
+    for (std::list<object>::iterator iter=m_PostCalls.begin(); iter != m_PostCalls.end(); iter++)
+    {		
+        BEGIN_BOOST_PY()
+            
+        object pyretval = CALL_PY_FUNC((*iter).ptr(), argList, retval);
+        if (!pyretval.is_none())
+        {
+            buffer->eRes = HOOKRES_OVERRIDE;
+            buffer->pRetBuf = (void *) ExtractPyPtr(pyretval);
+        }
+
+        END_BOOST_PY_NORET()
+    }
     return buffer;
 }
 
@@ -84,19 +141,6 @@ HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
 // ============================================================================
 // >> CStackData
 // ============================================================================
-template<class T>
-object ReadAddr(unsigned long ulAddr)
-{
-    return object(*(T *) ulAddr);
-}
-
-template<class T>
-void SetAddr(unsigned long ulAddr, object value)
-{
-    *(T *) ulAddr = extract<T>(value);
-}
-
-
 CStackData::CStackData(CDetour* pDetour)
 {
     m_pDetour    = pDetour;
