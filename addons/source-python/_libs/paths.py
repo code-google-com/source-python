@@ -5,14 +5,14 @@
 # =============================================================================
 # Site Package Imports
 #   Path
-from path import path
+from path import Path
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the game's base path
-GAME_PATH = path(path(__file__).rsplit('addons', 1)[0])
+GAME_PATH = Path(Path(__file__).rsplit('addons', 1)[0])
 
 # Get the addon's base path
 ADDON_PATH = GAME_PATH.joinpath('addons', 'source-python')
