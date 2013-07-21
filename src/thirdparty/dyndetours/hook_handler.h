@@ -20,5 +20,6 @@ class CDetour;
 // Pre-callback hooks.
 // =======================================================================
 eHookRes Dyn_PreHandler( CDetour* pDetour );
+eHookRes Dyn_PostHandler( CDetour* pDetour );
 
 #endif // _HOOK_HANDLER_H
