@@ -18,8 +18,8 @@ using namespace boost::python;
 class CCallbackManager: public ICallbackManager
 {
 private:
-    std::list<object> m_PreCalls;
-    std::list<object> m_PostCalls;
+    std::list<PyObject *> m_PreCalls;
+    std::list<PyObject *> m_PostCalls;
 
 public:
     virtual void Add(void* pFunc, eHookType type);
@@ -29,9 +29,6 @@ public:
     virtual HookRetBuf_t* DoPostCalls(CDetour* pDetour);
 
     virtual const char* GetLang() { return "Python"; }
-
-    boost::python::list get_args_list(CDetour* pDetour);
-    //void   set_args_list();
 };
 
 class CStackData
@@ -49,7 +46,6 @@ public:
     const char* stringify();
 
 private:
-    CDetour*              m_pDetour;
     CRegisterObj*         m_pRegisters;
     CFuncObj*             m_pFunction;
     CFuncStack*           m_pStack;

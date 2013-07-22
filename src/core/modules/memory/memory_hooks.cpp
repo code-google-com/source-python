@@ -40,8 +40,8 @@ void CCallbackManager::Add(void* pFunc, eHookType type)
 {
     if (!pFunc)
         return;
-
-    object callable = object(handle<>(borrowed((PyObject *) pFunc)));
+    
+    PyObject* callable = (PyObject *) pFunc;
     switch (type)
     {
         case TYPE_PRE:  m_PreCalls.push_front(callable); break;
@@ -54,7 +54,7 @@ void CCallbackManager::Remove(void* pFunc, eHookType type)
     if (!pFunc)
         return;
     
-    object callable = object(handle<>(borrowed((PyObject *) pFunc)));
+    PyObject* callable = (PyObject *) pFunc;
     switch (type)
     {
         case TYPE_PRE:  m_PreCalls.remove(callable); break;
@@ -72,11 +72,11 @@ HookRetBuf_t* CCallbackManager::DoPreCalls(CDetour* pDetour)
     buffer->pRetBuf = 0;
     
     CStackData* argList = new CStackData(pDetour);
-    for (std::list<object>::iterator iter=m_PreCalls.begin(); iter != m_PreCalls.end(); iter++)
+    for (std::list<PyObject *>::iterator iter=m_PreCalls.begin(); iter != m_PreCalls.end(); iter++)
     {		
         BEGIN_BOOST_PY()
             
-        object retval = CALL_PY_FUNC((*iter).ptr(), argList);
+        object retval = CALL_PY_FUNC(*iter, argList);
         if (!retval.is_none())
         {
             buffer->eRes = HOOKRES_OVERRIDE;
@@ -121,11 +121,11 @@ HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
         default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
     }
 
-    for (std::list<object>::iterator iter=m_PostCalls.begin(); iter != m_PostCalls.end(); iter++)
+    for (std::list<PyObject *>::iterator iter=m_PostCalls.begin(); iter != m_PostCalls.end(); iter++)
     {		
         BEGIN_BOOST_PY()
             
-        object pyretval = CALL_PY_FUNC((*iter).ptr(), argList, retval);
+        object pyretval = CALL_PY_FUNC(*iter, argList, retval);
         if (!pyretval.is_none())
         {
             buffer->eRes = HOOKRES_OVERRIDE;
@@ -143,7 +143,6 @@ HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
 // ============================================================================
 CStackData::CStackData(CDetour* pDetour)
 {
-    m_pDetour    = pDetour;
     m_pRegisters = pDetour->GetAsmBridge()->GetConv()->GetRegisters();
     m_pFunction  = pDetour->GetFuncObj();
     m_pStack     = m_pFunction->GetStack();
