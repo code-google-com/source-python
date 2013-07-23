@@ -157,6 +157,10 @@ SayConCommand* SayConCommand::CreateCommand(const char* szName, const char* szHe
 		szHelpTextCopy = strdup(pConCommand->GetHelpText());
 		iFlags = s_CvarServerImplementation.get_flags(pConCommand);
 
+		// For now, we need to hard-code the flags for the OrangeBox
+		// Once we figure out how to properly fix this, remove this
+		iFlags = 4;
+
 		// Unregister the old command
 		g_pCVar->UnregisterConCommand(pConCommand);
 	}

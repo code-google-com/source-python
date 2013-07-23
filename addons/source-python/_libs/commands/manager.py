@@ -158,7 +158,7 @@ class _CallbackList(list):
             else:
 
                 # Does the command need blocked?
-                if not return_value:
+                if not (return_value is None or return_value):
 
                     # Block the command
                     return CommandReturn.BLOCK
