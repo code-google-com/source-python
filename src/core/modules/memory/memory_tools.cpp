@@ -185,7 +185,7 @@ object CPointer::call(Convention eConv, char* szParams, object args)
         case DC_SIGCHAR_ULONGLONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
         case DC_SIGCHAR_FLOAT:     return object(dcCallFloat(g_pCallVM, m_ulAddr));
         case DC_SIGCHAR_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
-        case DC_SIGCHAR_POINTER:   return object(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr)));
+        case DC_SIGCHAR_POINTER:   return object(CPointer(dcCallPointer(g_pCallVM, m_ulAddr)));
         case DC_SIGCHAR_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
         default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown return type.")
     }
