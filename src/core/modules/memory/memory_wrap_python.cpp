@@ -56,6 +56,9 @@ DECLARE_SP_MODULE(memory_c)
 //-----------------------------------------------------------------------------
 // Exposes CBinaryFile
 //-----------------------------------------------------------------------------
+// Overloads
+BOOST_PYTHON_FUNCTION_OVERLOADS(find_binary_overload, find_binary, 1, 2);
+
 void export_binaryfile()
 {
     BOOST_ABSTRACT_CLASS(CBinaryFile)
@@ -114,10 +117,11 @@ void export_binaryfile()
 
     BOOST_END_CLASS()
 
-    BOOST_FUNCTION(find_binary,
-        "Returns a CBinaryFile object or NULL.",
-        args("szPath"),
-        reference_existing_object_policy()
+    def("find_binary",
+        &find_binary,
+        find_binary_overload(
+            args("szPath", "bSrvCheck"),
+            "Returns a CBinaryFile object or None.")[reference_existing_object_policy()]
     );
 }
 

@@ -40,18 +40,6 @@
 #include "memory_scanner.h"
 #include "memory_tools.h"
 
-//---------------------------------------------------------------------------------
-// Constants
-//---------------------------------------------------------------------------------
-#define MAX_BINARY_PATH 1024
-#ifdef _WIN32
-    #define FILE_EXTENSION ".dll"
-#elif defined(__linux__)
-    #define FILE_EXTENSION ".so"
-#else
-    #error "Implement me!"
-#endif
-
 
 //-----------------------------------------------------------------------------
 // BinaryFile class
@@ -224,10 +212,10 @@ CPointer* CBinaryFile::find_pointer(object szSignature, int iLength, int iOffset
 }
 
 //-----------------------------------------------------------------------------
-// BinaryManager class
+// CBinaryManager class
 //-----------------------------------------------------------------------------
 // Small helper function
-bool str_ends_with(char *szString, char *szSuffix)
+bool str_ends_with(const char *szString, const char *szSuffix)
 {
     int stringlen = strlen(szString);
     int suffixlen = strlen(szSuffix);
@@ -237,17 +225,17 @@ bool str_ends_with(char *szString, char *szSuffix)
     return strncmp(szString + stringlen - suffixlen, szSuffix, suffixlen) == 0;
 }
 
-CBinaryFile* CBinaryManager::find_binary(char* szPath)
+CBinaryFile* CBinaryManager::find_binary(char* szPath, bool bSrvCheck /* = true */)
 {
-    char szBinaryPath[MAX_BINARY_PATH];
+    std::string szBinaryPath = szPath;
+#ifdef __linux__
+    if (bSrvCheck && !str_ends_with(szBinaryPath.data(), "_srv"))
+        szBinaryPath += "_srv.so";
+    else if (!str_ends_with(szBinaryPath.data(), ".so"))
+        szBinaryPath += ".so";
+#endif
 
-    // Add file extension, if missing
-    if (!str_ends_with(szPath, FILE_EXTENSION))
-        sprintf(szBinaryPath, "%s" FILE_EXTENSION, szPath);
-    else
-        sprintf(szBinaryPath, "%s", szPath);
-
-    unsigned long ulAddr = (unsigned long) dlLoadLibrary(szPath);
+    unsigned long ulAddr = (unsigned long) dlLoadLibrary(szBinaryPath.data());
     if (!ulAddr)
         return NULL;
 
@@ -273,7 +261,7 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath)
 #elif defined(__linux__)
     // TODO: Retrieve whole size
     struct stat buf;
-    if (stat(szPath, &buf) == -1)
+    if (stat(szBinaryPath.data(), &buf) == -1)
     {
         dlFreeLibrary((DLLib *) ulAddr);
         return NULL;
@@ -293,7 +281,7 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath)
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
-CBinaryFile* find_binary(char* szPath)
+CBinaryFile* find_binary(char* szPath, bool bSrvCheck /* = true */)
 {
-    return s_pBinaryManager->find_binary(szPath);
+    return s_pBinaryManager->find_binary(szPath, bSrvCheck);
 }
