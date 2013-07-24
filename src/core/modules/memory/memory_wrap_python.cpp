@@ -67,7 +67,7 @@ void export_binaryfile()
         CLASS_METHOD(CBinaryFile,
             find_signature,
             "Returns the address of a signature found in memory.",
-            args("szSignature", "iLength"),
+            args("szSignature"),
             manage_new_object_policy()
         )
 
@@ -81,7 +81,7 @@ void export_binaryfile()
         CLASS_METHOD(CBinaryFile,
             find_pointer,
             "Rips out a pointer from a function.",
-            args("szSignature", "iLength", "iOffset"),
+            args("szSignature", "iOffset"),
             manage_new_object_policy()
         )
 
