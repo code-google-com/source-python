@@ -71,12 +71,12 @@ HookRetBuf_t* CCallbackManager::DoPreCalls(CDetour* pDetour)
     buffer->eRes = HOOKRES_NONE;
     buffer->pRetBuf = 0;
     
-    CStackData* argList = new CStackData(pDetour);
+    CStackData stackdata = CStackData(pDetour);
     for (std::list<PyObject *>::iterator iter=m_PreCalls.begin(); iter != m_PreCalls.end(); iter++)
     {		
         BEGIN_BOOST_PY()
             
-        object retval = CALL_PY_FUNC(*iter, argList);
+        object retval = CALL_PY_FUNC(*iter, stackdata);
         if (!retval.is_none())
         {
             buffer->eRes = HOOKRES_OVERRIDE;
@@ -97,7 +97,7 @@ HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
     buffer->eRes = HOOKRES_NONE;
     buffer->pRetBuf = 0;
 
-    CStackData* argList = new CStackData(pDetour);
+    CStackData stackdata = CStackData(pDetour);
 
     unsigned long ulAddr = pDetour->GetAsmBridge()->GetConv()->GetRegisters()->r_eax;
     object retval;
@@ -116,7 +116,7 @@ HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
         case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(ulAddr); break;
         case TYPE_FLOAT:     retval = ReadAddr<float>(ulAddr); break;
         case TYPE_DOUBLE:    retval = ReadAddr<double>(ulAddr); break;
-        case TYPE_POINTER:   retval = object(new CPointer(ulAddr)); break;
+        case TYPE_POINTER:   retval = object(CPointer(ulAddr)); break;
         case TYPE_STRING:    retval = ReadAddr<const char *>(ulAddr); break;
         default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
     }
@@ -125,7 +125,7 @@ HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
     {		
         BEGIN_BOOST_PY()
             
-        object pyretval = CALL_PY_FUNC(*iter, argList, retval);
+        object pyretval = CALL_PY_FUNC(*iter, stackdata, retval);
         if (!pyretval.is_none())
         {
             buffer->eRes = HOOKRES_OVERRIDE;
@@ -159,7 +159,7 @@ object CStackData::get_item(unsigned int iIndex)
         #else
             unsigned long thisptr = m_pRegisters->r_ecx;
         #endif
-            return object(new CPointer(thisptr));
+            return object(CPointer(thisptr));
         }
         else
             iIndex--;
@@ -194,7 +194,7 @@ object CStackData::get_item(unsigned int iIndex)
         case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(ulAddr); break;
         case TYPE_FLOAT:     retval = ReadAddr<float>(ulAddr); break;
         case TYPE_DOUBLE:    retval = ReadAddr<double>(ulAddr); break;
-        case TYPE_POINTER:   retval = object(new CPointer(*(unsigned long *) ulAddr)); break;
+        case TYPE_POINTER:   retval = object(CPointer(*(unsigned long *) ulAddr)); break;
         case TYPE_STRING:    retval = ReadAddr<const char *>(ulAddr); break;
         default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
     }
