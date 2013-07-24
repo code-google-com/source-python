@@ -50,7 +50,7 @@ CBinaryFile::CBinaryFile(unsigned long ulAddr, unsigned long ulSize)
     m_ulSize = ulSize;
 }
 
-CPointer* CBinaryFile::find_signature(object szSignature, int iLength)
+CPointer* CBinaryFile::find_signature(object szSignature)
 {
     // This is required because there's no straight way to get a string from a python
     // object from boost (without using the stl).
@@ -66,6 +66,8 @@ CPointer* CBinaryFile::find_signature(object szSignature, int iLength)
         if (strcmp((const char *) sig.m_szSignature, (const char *) sigstr) == 0)
             return sig.m_pAddr;
     }
+    
+    int iLength = len(szSignature);
 
     unsigned char* base = (unsigned char *) m_ulAddr;
     unsigned char* end  = (unsigned char *) (base + m_ulSize - iLength);
@@ -205,9 +207,9 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
 #endif
 }
 
-CPointer* CBinaryFile::find_pointer(object szSignature, int iLength, int iOffset)
+CPointer* CBinaryFile::find_pointer(object szSignature, int iOffset)
 {
-    CPointer* ptr = find_signature(szSignature, iLength);
+    CPointer* ptr = find_signature(szSignature);
     return ptr ? ptr->get_ptr(iOffset) : ptr;
 }
 

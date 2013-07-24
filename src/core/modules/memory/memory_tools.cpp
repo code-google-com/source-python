@@ -171,7 +171,7 @@ object CPointer::call(Convention eConv, char* szParams, object args)
 
     switch(*++ptr)
     {
-        case DC_SIGCHAR_VOID: dcCallVoid(g_pCallVM, m_ulAddr);
+        case DC_SIGCHAR_VOID: dcCallVoid(g_pCallVM, m_ulAddr); break;
         case DC_SIGCHAR_BOOL:      return object(dcCallBool(g_pCallVM, m_ulAddr));
         case DC_SIGCHAR_CHAR:      return object(dcCallChar(g_pCallVM, m_ulAddr));
         case DC_SIGCHAR_UCHAR:     return object((unsigned char) dcCallChar(g_pCallVM, m_ulAddr));
