@@ -12,6 +12,8 @@
 
 #include "memory_tools.h"
 
+#include <vector>
+
 using namespace boost::python;
 
 
@@ -42,13 +44,15 @@ public:
 
     object get_item(unsigned int iIndex);
     void   set_item(unsigned int iIndex, object value);
-
-    const char* stringify();
+    
+    vector<object>::iterator begin() { return m_vecArgs.begin(); }
+    vector<object>::iterator end() { return m_vecArgs.end(); }
 
 private:
     CRegisterObj*         m_pRegisters;
     CFuncObj*             m_pFunction;
     CFuncStack*           m_pStack;
+    vector<object>        m_vecArgs;
 };
 
 #endif // MEMORY_HOOKS_H
