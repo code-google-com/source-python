@@ -521,28 +521,18 @@ void export_dyndetours()
 
         // Special methods
         CLASS_METHOD_SPECIAL(CStackData,
-            "__str__",
-            stringify,
-            "Returns a stringified list containing all arguments."
-        )
-
-        CLASS_METHOD_SPECIAL(CStackData,
-            "__repr__",
-            stringify,
-            "Returns a stringified list containing all arguments."
-        )
-
-        CLASS_METHOD_SPECIAL(CStackData,
             "__getitem__",
             get_item,
             "Returns the argument at the specified index."
         )
-
+        
         CLASS_METHOD_SPECIAL(CStackData,
             "__setitem__",
             set_item,
             "Sets the argument at the specified index."
         )
+
+        .def("__iter__", range(&CStackData::begin, &CStackData::end))
 
         // Properties
         .add_property("esp",
