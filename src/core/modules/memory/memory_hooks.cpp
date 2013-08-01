@@ -146,71 +146,82 @@ CStackData::CStackData(CDetour* pDetour)
     m_pRegisters = pDetour->GetAsmBridge()->GetConv()->GetRegisters();
     m_pFunction  = pDetour->GetFuncObj();
     m_pStack     = m_pFunction->GetStack();
+}
 
-    // Build argument list
+unsigned int CStackData::get_arg_num()
+{
+    int argnum = m_pFunction->GetNumArgs();
+    if (m_pFunction->GetConvention() == CONV_THISCALL)
+        argnum++;
+
+    return argnum;
+}
+
+object CStackData::get_item(unsigned int iIndex)
+{
+    if (iIndex >= get_arg_num())
+        BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
+
+    // Argument already cached?
+    object retval = m_mapCache[iIndex];
+    if (retval)
+        return retval;
+
     if (m_pFunction->GetConvention() == CONV_THISCALL)
     {
+        if (iIndex == 0)
+        {
         #ifdef __linux__
             unsigned long thisptr = *(unsigned long *) (m_pRegisters->r_esp + 4);
         #else
             unsigned long thisptr = m_pRegisters->r_ecx;
         #endif
-            m_vecArgs.push_back(object(CPointer(thisptr)));
+            retval = m_mapCache[0] = object(CPointer(thisptr));
+            return retval;
+        }
     }
     
-    for(unsigned int i=0; i < m_pFunction->GetNumArgs(); i++)
+    ArgNode_t* pArgNode = m_pStack->GetArgument(m_pFunction->GetConvention() == CONV_THISCALL ? iIndex-1 : iIndex);
+    int        offset   = pArgNode->m_nOffset;
+
+    #ifdef __linux__
+        if (m_pFunction->GetConvention() == CONV_THISCALL)
+            // Add size of "this" pointer
+            offset += 4;
+    #endif
+
+    unsigned long ulAddr = (m_pRegisters->r_esp + 4 + offset);
+    switch(pArgNode->m_pArg->GetType())
     {
-        ArgNode_t* pArgNode = m_pStack->GetArgument(i);
-        CFuncArg* pArg      = pArgNode->m_pArg;
-        int offset          = pArgNode->m_nOffset;
-
-        #ifdef __linux__
-            if (m_pFunction->GetConvention() == CONV_THISCALL)
-                // Add size of "this" pointer
-                offset += 4;
-        #endif
-
-        unsigned long ulAddr = (m_pRegisters->r_esp + 4 + offset);
-
-        object retval;
-        switch(pArg->GetType())
-        {
-            case TYPE_BOOL:      retval = ReadAddr<bool>(ulAddr); break;
-            case TYPE_CHAR:      retval = ReadAddr<char>(ulAddr); break;
-            case TYPE_UCHAR:     retval = ReadAddr<unsigned char>(ulAddr); break;
-            case TYPE_SHORT:     retval = ReadAddr<short>(ulAddr); break;
-            case TYPE_USHORT:    retval = ReadAddr<unsigned short>(ulAddr); break;
-            case TYPE_INT:       retval = ReadAddr<int>(ulAddr); break;
-            case TYPE_UINT:      retval = ReadAddr<unsigned int>(ulAddr); break;
-            case TYPE_LONG:      retval = ReadAddr<long>(ulAddr); break;
-            case TYPE_ULONG:     retval = ReadAddr<unsigned long>(ulAddr); break;
-            case TYPE_LONGLONG:  retval = ReadAddr<long long>(ulAddr); break;
-            case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(ulAddr); break;
-            case TYPE_FLOAT:     retval = ReadAddr<float>(ulAddr); break;
-            case TYPE_DOUBLE:    retval = ReadAddr<double>(ulAddr); break;
-            case TYPE_POINTER:   retval = object(CPointer(*(unsigned long *) ulAddr)); break;
-            case TYPE_STRING:    retval = ReadAddr<const char *>(ulAddr); break;
-            default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
-        }
-        m_vecArgs.push_back(retval);
+        case TYPE_BOOL:      retval = ReadAddr<bool>(ulAddr); break;
+        case TYPE_CHAR:      retval = ReadAddr<char>(ulAddr); break;
+        case TYPE_UCHAR:     retval = ReadAddr<unsigned char>(ulAddr); break;
+        case TYPE_SHORT:     retval = ReadAddr<short>(ulAddr); break;
+        case TYPE_USHORT:    retval = ReadAddr<unsigned short>(ulAddr); break;
+        case TYPE_INT:       retval = ReadAddr<int>(ulAddr); break;
+        case TYPE_UINT:      retval = ReadAddr<unsigned int>(ulAddr); break;
+        case TYPE_LONG:      retval = ReadAddr<long>(ulAddr); break;
+        case TYPE_ULONG:     retval = ReadAddr<unsigned long>(ulAddr); break;
+        case TYPE_LONGLONG:  retval = ReadAddr<long long>(ulAddr); break;
+        case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(ulAddr); break;
+        case TYPE_FLOAT:     retval = ReadAddr<float>(ulAddr); break;
+        case TYPE_DOUBLE:    retval = ReadAddr<double>(ulAddr); break;
+        case TYPE_POINTER:   retval = object(CPointer(*(unsigned long *) ulAddr)); break;
+        case TYPE_STRING:    retval = ReadAddr<const char *>(ulAddr); break;
+        default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
     }
-}
 
-object CStackData::get_item(unsigned int iIndex)
-{
-    if (iIndex >= m_vecArgs.size())
-        BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
-
-    return m_vecArgs[iIndex];
+    m_mapCache[iIndex] = retval;
+    return retval;
 }
 
 void CStackData::set_item(unsigned int iIndex, object value)
 {
-    if (iIndex >= m_vecArgs.size())
+    if (iIndex >= get_arg_num())
         BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
 
-    // Update argument list
-    m_vecArgs[iIndex] = value;
+    // Update cache
+    m_mapCache[iIndex] = value;
 
     // Update address
     if (m_pFunction->GetConvention() == CONV_THISCALL)
@@ -224,13 +235,10 @@ void CStackData::set_item(unsigned int iIndex, object value)
         #endif
             return;
         }
-        else
-            iIndex--;
     }
         
-    ArgNode_t* pArgNode = m_pStack->GetArgument(iIndex);
-    CFuncArg* pArg      = pArgNode->m_pArg;
-    int offset          = pArgNode->m_nOffset;
+    ArgNode_t* pArgNode = m_pStack->GetArgument(m_pFunction->GetConvention() == CONV_THISCALL ? iIndex-1 : iIndex);
+    int        offset   = pArgNode->m_nOffset;
 
     #ifdef __linux__
         if (m_pFunction->GetConvention() == CONV_THISCALL)
@@ -239,7 +247,7 @@ void CStackData::set_item(unsigned int iIndex, object value)
     #endif
 
     unsigned long ulAddr = (m_pRegisters->r_esp + 4 + offset);
-    switch(pArg->GetType())
+    switch(pArgNode->m_pArg->GetType())
     {
         case TYPE_BOOL:      SetAddr<bool>(ulAddr, value); break;
         case TYPE_CHAR:      SetAddr<char>(ulAddr, value); break;
