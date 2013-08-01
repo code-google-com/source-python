@@ -532,8 +532,6 @@ void export_dyndetours()
             "Sets the argument at the specified index."
         )
 
-        .def("__iter__", range(&CStackData::begin, &CStackData::end))
-
         // Properties
         .add_property("esp",
             make_function(

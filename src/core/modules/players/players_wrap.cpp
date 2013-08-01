@@ -139,9 +139,9 @@ bool CPlayerInfo::is_observer() const
 	return m_iplayerinfo_ptr->IsObserver();
 }
 
-const Vector CPlayerInfo::get_abs_origin() const
+const CVector CPlayerInfo::get_abs_origin() const
 {
-	return m_iplayerinfo_ptr->GetAbsOrigin();
+	return CVector(m_iplayerinfo_ptr->GetAbsOrigin());
 }
 
 const QAngle CPlayerInfo::get_abs_angles() const
@@ -149,14 +149,14 @@ const QAngle CPlayerInfo::get_abs_angles() const
 	return m_iplayerinfo_ptr->GetAbsAngles();
 }
 
-const Vector CPlayerInfo::get_player_mins() const
+const CVector CPlayerInfo::get_player_mins() const
 {
-	return m_iplayerinfo_ptr->GetPlayerMins();
+	return CVector(m_iplayerinfo_ptr->GetPlayerMins());
 }
 
-const Vector CPlayerInfo::get_player_maxs() const
+const CVector CPlayerInfo::get_player_maxs() const
 {
-	return m_iplayerinfo_ptr->GetPlayerMaxs();
+	return CVector(m_iplayerinfo_ptr->GetPlayerMaxs());
 }
 
 const char* CPlayerInfo::get_weapon_name() const

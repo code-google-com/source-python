@@ -276,6 +276,18 @@ Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Vecmath module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_VECMATH_MODULE_HEADERS
+    core/modules/vecmath/vecmath_wrap.h
+)
+
+Set(SOURCEPYTHON_VECMATH_MODULE_SOURCES
+    core/modules/vecmath/vecmath_wrap.cpp
+    core/modules/vecmath/vecmath_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -308,6 +320,9 @@ Set(SOURCEPYTHON_MODULE_FILES
     
     ${SOURCEPYTHON_MEMORY_MODULE_HEADERS}
     ${SOURCEPYTHON_MEMORY_MODULE_SOURCES}
+    
+    ${SOURCEPYTHON_VECMATH_MODULE_HEADERS}
+    ${SOURCEPYTHON_VECMATH_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -329,6 +344,7 @@ Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\TickListeners"          FILES ${SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Vecmath"                FILES ${SOURCEPYTHON_VECMATH_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons" 		                FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"   		                FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -346,6 +362,7 @@ Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\TickListeners"          FILES ${SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Vecmath"                FILES ${SOURCEPYTHON_VECMATH_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 

@@ -34,6 +34,7 @@
 #include "mathlib/vector.h"
 #include "modules/entities/entities_wrap.h"
 #include "inetchannelinfo.h"
+#include "modules/vecmath/vecmath_wrap.h"
 
 // ----------------------------------------------------------------------------
 // CPlayerInfo class.
@@ -66,10 +67,10 @@ public:
 	virtual bool 				is_dead() const;
 	virtual bool 				is_in_a_vehicle() const;
 	virtual bool 				is_observer() const;
-	virtual const Vector 		get_abs_origin() const;
+	virtual const CVector 		get_abs_origin() const;
 	virtual const QAngle 		get_abs_angles() const;
-	virtual const Vector 		get_player_mins() const;
-	virtual const Vector 		get_player_maxs() const;
+	virtual const CVector 		get_player_mins() const;
+	virtual const CVector 		get_player_maxs() const;
 	virtual const char* 		get_weapon_name() const;
 	virtual const char* 		get_model_name() const;
 	virtual int 				get_health() const;
