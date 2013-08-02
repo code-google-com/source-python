@@ -99,25 +99,30 @@ HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
 
 	CStackData stackdata = CStackData(pDetour);
 
-	unsigned long ulAddr = pDetour->GetAsmBridge()->GetConv()->GetRegisters()->r_eax;
+	unsigned long eax = pDetour->GetAsmBridge()->GetConv()->GetRegisters()->r_eax;
 	object retval;
 	switch(pDetour->GetFuncObj()->GetRetType()->GetType())
 	{
-		case TYPE_BOOL:      retval = ReadAddr<bool>(ulAddr); break;
-		case TYPE_CHAR:      retval = ReadAddr<char>(ulAddr); break;
-		case TYPE_UCHAR:     retval = ReadAddr<unsigned char>(ulAddr); break;
-		case TYPE_SHORT:     retval = ReadAddr<short>(ulAddr); break;
-		case TYPE_USHORT:    retval = ReadAddr<unsigned short>(ulAddr); break;
-		case TYPE_INT:       retval = ReadAddr<int>(ulAddr); break;
-		case TYPE_UINT:      retval = ReadAddr<unsigned int>(ulAddr); break;
-		case TYPE_LONG:      retval = ReadAddr<long>(ulAddr); break;
-		case TYPE_ULONG:     retval = ReadAddr<unsigned long>(ulAddr); break;
-		case TYPE_LONGLONG:  retval = ReadAddr<long long>(ulAddr); break;
-		case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(ulAddr); break;
-		case TYPE_FLOAT:     retval = ReadAddr<float>(ulAddr); break;
-		case TYPE_DOUBLE:    retval = ReadAddr<double>(ulAddr); break;
-		case TYPE_POINTER:   retval = object(CPointer(ulAddr)); break;
-		case TYPE_STRING:    retval = ReadAddr<const char *>(ulAddr); break;
+		case TYPE_VOID:		 retval = object(); break;
+		case TYPE_CHAR:      retval = object((char) eax); break;
+		case TYPE_BOOL:
+		case TYPE_UCHAR:
+		case TYPE_SHORT:
+		case TYPE_USHORT:
+		case TYPE_INT:
+		case TYPE_UINT:
+		case TYPE_LONG:
+		case TYPE_ULONG:     retval = object(eax); break;
+
+		// Fixme!
+		case TYPE_LONGLONG:  retval = ReadAddr<long long>(eax); break;
+		case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(eax); break;
+		case TYPE_FLOAT:     retval = ReadAddr<float>(eax); break;
+		case TYPE_DOUBLE:    retval = ReadAddr<double>(eax); break;
+
+		case TYPE_POINTER:   retval = object(CPointer(eax)); break;
+		case TYPE_STRING:    retval = object((const char*) eax); break;
+
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
 	}
 

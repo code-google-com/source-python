@@ -140,6 +140,12 @@ object CPointer::call(Convention eConv, char* szParams, object args)
 	char ch;
 	while ((ch = *ptr) != '\0' && ch != ')')
 	{
+		if (ch == DC_SIGCHAR_VOID)
+		{
+			ptr++;
+			break;
+		}
+
 		object arg = args[pos];
 		switch(ch)
 		{
