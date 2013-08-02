@@ -142,7 +142,10 @@ CVector* CVector::operator+(object value)
     }
 
     float fValue = extract<float>(value);
-    return new CVector(m_Vector + fValue);
+
+    // CS:GO SDK does not define Vector::operator+(float fValue), so we make it easy
+    // and create a new vector
+    return new CVector(m_Vector + CVector(fValue, fValue, fValue).get_vector());
 }
 
 CVector* CVector::operator-(object value)
@@ -154,7 +157,10 @@ CVector* CVector::operator-(object value)
     }
 
     float fValue = extract<float>(value);
-    return new CVector(m_Vector - fValue);
+
+    // CS:GO SDK does not define Vector::operator+(float fValue), so we make it easy
+    // and create a new vector
+    return new CVector(m_Vector - CVector(fValue, fValue, fValue).get_vector());
 }
 
 CVector* CVector::operator*(object value)
