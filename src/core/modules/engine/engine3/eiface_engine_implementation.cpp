@@ -47,7 +47,7 @@ bool CEngineServerImplementation::is_log_enabled()
 }
 
 ISpatialPartition * CEngineServerImplementation::create_spatial_partition(
-	const Vector &worldmin, const Vector &worldmax)
+	const CVector &worldmin, const CVector &worldmax)
 {
 	return engine->CreateSpatialPartition(worldmin, worldmax);
 }
@@ -153,12 +153,12 @@ bool CEngineServerImplementation::has_paintmap()
 	return engine->HasPaintmap();
 }
 
-bool CEngineServerImplementation::sphere_paint_surface( const model_t *pModel, const Vector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent )
+bool CEngineServerImplementation::sphere_paint_surface( const model_t *pModel, const CVector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent )
 {
 	return engine->SpherePaintSurface(pModel, vPosition, color, flSphereRadius, flPaintCoatPercent);
 }
 
-void CEngineServerImplementation::sphere_trace_paint_surface( const model_t *pModel, const Vector & vPosition, const Vector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors )
+void CEngineServerImplementation::sphere_trace_paint_surface( const model_t *pModel, const CVector & vPosition, const CVector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors )
 {
 	engine->SphereTracePaintSurface(pModel, vPosition, vContactNormal, flSphereRadius, surfColors);
 }

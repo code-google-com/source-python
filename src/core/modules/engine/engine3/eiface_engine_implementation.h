@@ -57,8 +57,8 @@ public:
 	virtual bool is_userid_in_use( int userID );
 	virtual int get_loading_progress_for_userid( int userID );
 	virtual bool is_log_enabled();
-	virtual ISpatialPartition * create_spatial_partition(const Vector &worldmin,
-		const Vector &worldmax);
+	virtual ISpatialPartition * create_spatial_partition(const CVector &worldmin,
+		const CVector &worldmax);
 	virtual float get_timescale() const;
 	virtual bool is_level_main_menu_background();
 	virtual bool is_any_client_low_violence();
@@ -86,8 +86,8 @@ public:
 	
 	virtual void refresh_screen_if_necessary();
 	virtual bool has_paintmap();
-	virtual bool sphere_paint_surface( const model_t *pModel, const Vector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent );
-	virtual void sphere_trace_paint_surface( const model_t *pModel, const Vector & vPosition, const Vector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors );
+	virtual bool sphere_paint_surface( const model_t *pModel, const CVector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent );
+	virtual void sphere_trace_paint_surface( const model_t *pModel, const CVector & vPosition, const CVector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors );
 	virtual void remove_all_paint();
 	virtual void paint_all_surfaces( unsigned char color );
 	virtual void remove_paint( const model_t *pModel );
