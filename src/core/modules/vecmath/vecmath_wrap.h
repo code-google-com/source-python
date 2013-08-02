@@ -35,55 +35,56 @@ using namespace boost::python;
 class CVector
 {
 public:
-    CVector(float x, float y, float z);
-    CVector();
-    CVector(Vector vec);
+	CVector(float x, float y, float z);
+	CVector();
+	CVector(Vector vec);
 
-    Vector      get_vector();
+	operator Vector();
+	operator Vector() const;
 
-    float       get_x();
-    void        set_x(float fValue);
+	float		get_x();
+	void		set_x(float fValue);
 
-    float       get_y();
-    void        set_y(float fValue);
+	float		get_y();
+	void		set_y(float fValue);
 
-    float       get_z();
-    void        set_z(float fValue);
+	float		get_z();
+	void		set_z(float fValue);
 
-    float       get_item(int iIndex);
-    void        set_item(int iIndex, float fValue);
+	float		get_item(int iIndex);
+	void		set_item(int iIndex, float fValue);
 
-    bool        is_valid();
-    void        invalidate();
-    void        random(float fMin, float fMax);
-    void        zero();
-    
-	bool        operator==(CVector* pOther);
-	bool        operator!=(CVector* pOther);	
+	bool		is_valid();
+	void		invalidate();
+	void		random(float fMin, float fMax);
+	void		zero();
 
-	CVector*    operator+(object value);
-	CVector*    operator-(object value);
-	CVector*    operator*(object value);
-	CVector*    operator/(object value);
+	bool		operator==(CVector* pOther);
+	bool		operator!=(CVector* pOther);
 
-    void        negate();
-    float       get_length();
-    float       get_length_sqr();
-    bool        is_zero(float fTolerance = 0.01f);
-    float       normalize();
-    bool        is_within_box(CVector* pMins, CVector* pMaxs);
-    float       get_distance(CVector* pOther);
-    float       get_distance_sqr(CVector* pOther);
-    void        mul_add(CVector* pA, CVector* pB, float fScalar);
-    float       dot(CVector* pOther);
-    float       get_length_2D();
-    float       get_length_2D_sqr();
-    CVector*    cross(CVector* pOther);
-    CVector*    get_min(CVector* pOther);
-    CVector*    get_max(CVector* pOther);
+	CVector*	operator+(object value);
+	CVector*	operator-(object value);
+	CVector*	operator*(object value);
+	CVector*	operator/(object value);
+
+	void		negate();
+	float		get_length();
+	float		get_length_sqr();
+	bool		is_zero(float fTolerance = 0.01f);
+	float		normalize();
+	bool		is_within_box(CVector* pMins, CVector* pMaxs);
+	float		get_distance(CVector* pOther);
+	float		get_distance_sqr(CVector* pOther);
+	void		mul_add(CVector* pA, CVector* pB, float fScalar);
+	float		dot(CVector* pOther);
+	float		get_length_2D();
+	float		get_length_2D_sqr();
+	CVector*	cross(CVector* pOther);
+	CVector*	get_min(CVector* pOther);
+	CVector*	get_max(CVector* pOther);
 
 private:
-    Vector m_Vector;
+	Vector m_Vector;
 };
 
 #endif // _VECMATH_WRAP_H

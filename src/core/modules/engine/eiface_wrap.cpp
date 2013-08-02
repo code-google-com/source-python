@@ -97,7 +97,7 @@ bool CEngineServer::is_generic_precached( char const *s ) const
 	return engine->IsGenericPrecached(s);
 }
 
-int CEngineServer::get_cluster_for_origin( const Vector &org )
+int CEngineServer::get_cluster_for_origin( const CVector &org )
 {
 	return engine->GetClusterForOrigin(org);
 }
@@ -107,12 +107,12 @@ int CEngineServer::get_pvs_for_cluster( int cluster, int outputpvslength, unsign
 	return engine->GetPVSForCluster(cluster, outputpvslength, outputpvs);
 }
 
-bool CEngineServer::check_origin_in_pvs( const Vector &org, const unsigned char *checkpvs, int checkpvssize )
+bool CEngineServer::check_origin_in_pvs( const CVector &org, const unsigned char *checkpvs, int checkpvssize )
 {
 	return engine->CheckOriginInPVS(org, checkpvs, checkpvssize);
 }
 
-bool CEngineServer::check_box_in_pvs( const Vector &mins, const Vector &maxs, const unsigned char *checkpvs, int checkpvssize )
+bool CEngineServer::check_box_in_pvs( const CVector &mins, const CVector &maxs, const unsigned char *checkpvs, int checkpvssize )
 {
 	return engine->CheckBoxInPVS(mins, maxs, checkpvs, checkpvssize);
 }
@@ -182,7 +182,7 @@ void CEngineServer::save_free_memory( void *pSaveMem )
 	engine->SaveFreeMemory(pSaveMem);
 }
 
-void CEngineServer::emit_ambient_sound( int entindex, const Vector &pos, const char *samp, float vol, soundlevel_t soundlevel, int fFlags, int pitch, float delay /*= 0.0f */ )
+void CEngineServer::emit_ambient_sound( int entindex, const CVector &pos, const char *samp, float vol, soundlevel_t soundlevel, int fFlags, int pitch, float delay /*= 0.0f */ )
 {
 	engine->EmitAmbientSound(entindex, pos, samp, vol, soundlevel, fFlags, pitch, delay);
 }
@@ -247,12 +247,12 @@ void CEngineServer::light_style( int style, const char *val )
 	engine->LightStyle(style, val);
 }
 
-void CEngineServer::static_decal( const Vector &originInEntitySpace, int decalIndex, int entityIndex, int modelIndex, bool lowpriority )
+void CEngineServer::static_decal( const CVector &originInEntitySpace, int decalIndex, int entityIndex, int modelIndex, bool lowpriority )
 {
 	engine->StaticDecal(originInEntitySpace, decalIndex, entityIndex, modelIndex, lowpriority);
 }
 
-void CEngineServer::message_determine_multicast_recipients( bool usepas, const Vector& origin, CPlayerBitVecWrapper& playerbits )
+void CEngineServer::message_determine_multicast_recipients( bool usepas, const CVector& origin, CPlayerBitVecWrapper& playerbits )
 {
 	engine->Message_DetermineMulticastRecipients(usepas, origin, playerbits);
 }
@@ -334,7 +334,7 @@ void CEngineServer::reset_pvs( byte *pvs, int pvssize )
 	engine->ResetPVS(pvs, pvssize);
 }
 
-void CEngineServer::add_origin_to_pvs( const Vector &origin )
+void CEngineServer::add_origin_to_pvs( const CVector &origin )
 {
 	engine->AddOriginToPVS(origin);
 }
@@ -359,7 +359,7 @@ int CEngineServer::check_areas_connected( int area1, int area2 )
 	return engine->CheckAreasConnected(area1, area2);
 }
 
-int CEngineServer::get_area( const Vector &origin )
+int CEngineServer::get_area( const CVector &origin )
 {
 	return engine->GetArea(origin);
 }
@@ -369,7 +369,7 @@ void CEngineServer::get_area_bits( int area, unsigned char *bits, int buflen )
 	engine->GetAreaBits(area, bits, buflen);
 }
 
-bool CEngineServer::get_area_portal_plane( Vector const &vViewOrigin, int portalKey, VPlane *pPlane )
+bool CEngineServer::get_area_portal_plane( CVector const &vViewOrigin, int portalKey, VPlane *pPlane )
 {
 	return engine->GetAreaPortalPlane(vViewOrigin, portalKey, pPlane);
 }
@@ -414,9 +414,9 @@ void CEngineServer::build_entity_cluster_list( CEdict* edict, PVSInfo_t *pPVSInf
 	engine->BuildEntityClusterList(edict->get_edict(), pPVSInfo);
 }
 
-void CEngineServer::solid_moved( CEdict* edict, ICollideable *pSolidCollide, const Vector* pPrevAbsOrigin, bool testSurroundingBoundsOnly )
+void CEngineServer::solid_moved( CEdict* edict, ICollideable *pSolidCollide, const CVector* pPrevAbsOrigin, bool testSurroundingBoundsOnly )
 {
-	engine->SolidMoved(edict->get_edict(), pSolidCollide, pPrevAbsOrigin, testSurroundingBoundsOnly);
+	engine->SolidMoved(edict->get_edict(), pSolidCollide, (Vector *) pPrevAbsOrigin, testSurroundingBoundsOnly);
 }
 
 void CEngineServer::trigger_moved( CEdict* edict, bool testSurroundingBoundsOnly )
@@ -424,7 +424,7 @@ void CEngineServer::trigger_moved( CEdict* edict, bool testSurroundingBoundsOnly
 	engine->TriggerMoved(edict->get_edict(), testSurroundingBoundsOnly);
 }
 
-ISpatialPartition * CEngineServer::create_spatial_partition( const Vector& worldmin, const Vector& worldmax )
+ISpatialPartition * CEngineServer::create_spatial_partition( const CVector& worldmin, const CVector& worldmax )
 {
 	return m_engine_server_implementation.create_spatial_partition(worldmin, worldmax);
 }
@@ -459,7 +459,7 @@ void CEngineServer::force_exact_file( const char *s )
 	engine->ForceExactFile(s);
 }
 
-void CEngineServer::force_model_bounds( const char *s, const Vector &mins, const Vector &maxs )
+void CEngineServer::force_model_bounds( const char *s, const CVector &mins, const CVector &maxs )
 {
 	engine->ForceModelBounds(s, mins, maxs);
 }
@@ -704,12 +704,12 @@ bool CEngineServer::has_paintmap()
 	return m_engine_server_implementation.has_paintmap();
 }
 
-bool CEngineServer::sphere_paint_surface( const model_t *pModel, const Vector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent )
+bool CEngineServer::sphere_paint_surface( const model_t *pModel, const CVector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent )
 {
 	return m_engine_server_implementation.sphere_paint_surface(pModel, vPosition, color, flSphereRadius, flPaintCoatPercent);
 }
 
-void CEngineServer::sphere_trace_paint_surface( const model_t *pModel, const Vector & vPosition, const Vector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors )
+void CEngineServer::sphere_trace_paint_surface( const model_t *pModel, const CVector & vPosition, const CVector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors )
 {
 	m_engine_server_implementation.sphere_trace_paint_surface(pModel, vPosition, vContactNormal, flSphereRadius, surfColors);
 }

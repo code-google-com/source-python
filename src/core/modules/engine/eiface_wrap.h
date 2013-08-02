@@ -70,10 +70,10 @@ public:
 	virtual bool is_decal_precached( char const *s ) const;
 	virtual bool is_generic_precached( char const *s ) const;
 
-	virtual int	get_cluster_for_origin( const Vector &org );
+	virtual int	get_cluster_for_origin( const CVector &org );
 	virtual int	get_pvs_for_cluster( int cluster, int outputpvslength, unsigned char *outputpvs );
-	virtual bool check_origin_in_pvs( const Vector &org, const unsigned char *checkpvs, int checkpvssize );
-	virtual bool check_box_in_pvs( const Vector &mins, const Vector &maxs, const unsigned char *checkpvs, int checkpvssize );
+	virtual bool check_origin_in_pvs( const CVector &org, const unsigned char *checkpvs, int checkpvssize );
+	virtual bool check_box_in_pvs( const CVector &mins, const CVector &maxs, const unsigned char *checkpvs, int checkpvssize );
 
 	virtual int	get_player_userid( CEdict* edict );
 	virtual const char* get_player_network_id_string( CEdict* edict );
@@ -91,7 +91,7 @@ public:
 	virtual void *save_alloc_memory( size_t num, size_t size );
 	virtual void save_free_memory( void *pSaveMem );
 
-	virtual void emit_ambient_sound( int entindex, const Vector &pos, const char *samp, float vol, soundlevel_t soundlevel, int fFlags, int pitch, float delay = 0.0f );
+	virtual void emit_ambient_sound( int entindex, const CVector &pos, const char *samp, float vol, soundlevel_t soundlevel, int fFlags, int pitch, float delay = 0.0f );
 	virtual void fade_client_volume( CEdict* edict, float fadePercent, float fadeOutSeconds, float holdTime, float fadeInSeconds );
 
 	virtual int	sentence_group_pick( int groupIndex, char *name, int nameBufLen );
@@ -112,9 +112,9 @@ public:
 
 	virtual void light_style( int style, const char *val );
 
-	virtual void static_decal( const Vector &originInEntitySpace, int decalIndex, int entityIndex, int modelIndex, bool lowpriority );
+	virtual void static_decal( const CVector &originInEntitySpace, int decalIndex, int entityIndex, int modelIndex, bool lowpriority );
 
-	virtual void message_determine_multicast_recipients( bool usepas, const Vector& origin, CPlayerBitVecWrapper& playerbits );
+	virtual void message_determine_multicast_recipients( bool usepas, const CVector& origin, CPlayerBitVecWrapper& playerbits );
 	virtual bf_write* entity_message_begin( int ent_index, ServerClass * ent_class, bool reliable );
 
 	virtual void send_user_message(CUserMessage &msg);
@@ -144,7 +144,7 @@ public:
 	virtual bool copy_file( const char *source, const char *destination );
 
 	virtual void reset_pvs( byte *pvs, int pvssize );
-	virtual void add_origin_to_pvs( const Vector &origin );
+	virtual void add_origin_to_pvs( const CVector &origin );
 
 	virtual void set_area_portal_state( int portalNumber, int isOpen );
 
@@ -152,9 +152,9 @@ public:
 	
 	virtual int check_head_node_visible( int nodenum, const byte *pvs, int vissize );
 	virtual int	check_areas_connected( int area1, int area2 );
-	virtual int	get_area( const Vector &origin );
+	virtual int	get_area( const CVector &origin );
 	virtual void get_area_bits( int area, unsigned char *bits, int buflen );
-	virtual bool get_area_portal_plane( Vector const &vViewOrigin, int portalKey, VPlane *pPlane );
+	virtual bool get_area_portal_plane( CVector const &vViewOrigin, int portalKey, VPlane *pPlane );
 
 	virtual bool load_game_state( char const *pMapName, bool createPlayers );
 	virtual void load_adjacent_ents( const char *pOldLevel, const char *pLandmarkName );
@@ -169,10 +169,10 @@ public:
 
 	virtual void build_entity_cluster_list( CEdict* edict, PVSInfo_t *pPVSInfo );
 
-	virtual void solid_moved( CEdict* edict, ICollideable *pSolidCollide, const Vector* pPrevAbsOrigin, bool testSurroundingBoundsOnly );
+	virtual void solid_moved( CEdict* edict, ICollideable *pSolidCollide, const CVector* pPrevAbsOrigin, bool testSurroundingBoundsOnly );
 	virtual void trigger_moved( CEdict* edict, bool testSurroundingBoundsOnly );
 
-	virtual ISpatialPartition *create_spatial_partition( const Vector& worldmin, const Vector& worldmax );
+	virtual ISpatialPartition *create_spatial_partition( const CVector& worldmin, const CVector& worldmax );
 	virtual void destroy_spatial_partition( ISpatialPartition *partition );
 
 	virtual void draw_map_to_scratch_pad( IScratchPad3D *pPad, unsigned long iFlags );
@@ -185,7 +185,7 @@ public:
 
 	virtual void  force_exact_file( const char *s );
 
-	virtual void  force_model_bounds( const char *s, const Vector &mins, const Vector &maxs );
+	virtual void  force_model_bounds( const char *s, const CVector &mins, const CVector &maxs );
 
 	virtual void  clear_save_dir_after_client_load();
 
@@ -267,8 +267,8 @@ public:
 	virtual void refresh_screen_if_necessary();
 
 	virtual bool has_paintmap();
-	virtual bool sphere_paint_surface( const model_t *pModel, const Vector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent);
-	virtual void sphere_trace_paint_surface( const model_t *pModel, const Vector & vPosition, const Vector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors );
+	virtual bool sphere_paint_surface( const model_t *pModel, const CVector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent);
+	virtual void sphere_trace_paint_surface( const model_t *pModel, const CVector & vPosition, const CVector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors );
 	virtual void remove_all_paint();
 	virtual void paint_all_surfaces( unsigned char color);
 	virtual void remove_paint( const model_t *pModel );
