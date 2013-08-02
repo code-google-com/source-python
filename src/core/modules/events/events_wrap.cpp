@@ -164,7 +164,11 @@ void CGameEventListener::fire_game_event( CGameEvent* game_event )
 
 int CGameEventListener::get_event_debug_id()
 {
-	return 0; // EVENT_DEBUG_ID_INIT;
+#ifdef EVENT_DEBUG_ID_INIT
+	return EVENT_DEBUG_ID_INIT;
+#else
+    return 0;
+#endif
 }
 
 void CGameEventListener::FireGameEvent( IGameEvent *event )
