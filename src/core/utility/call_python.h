@@ -24,6 +24,9 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _CALL_PYTHON_H
+#define _CALL_PYTHON_H
+
 // ----------------------------------------------------------------------------
 // Includes.
 // ----------------------------------------------------------------------------
@@ -48,7 +51,7 @@ using namespace boost::python;
 // ----------------------------------------------------------------------------
 // Python Logging functions
 // ----------------------------------------------------------------------------
-void PythonLog( const char* szLevel, const char* szMessage )
+inline void PythonLog( const char* szLevel, const char* szMessage )
 {
 	// Get the std::string instance of szMessage
 	std::string szMethod = szLevel;
@@ -73,7 +76,7 @@ void PythonLog( const char* szLevel, const char* szMessage )
 	END_BOOST_PY()
 }
 
-void PythonLog( int iLevel, const char* szMessage )
+inline void PythonLog( int iLevel, const char* szMessage )
 {
 	BEGIN_BOOST_PY()
 
@@ -91,3 +94,5 @@ void PythonLog( int iLevel, const char* szMessage )
 
 	END_BOOST_PY()
 }
+
+#endif // _CALL_PYTHON_H

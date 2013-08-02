@@ -32,54 +32,54 @@
 #include "utility/wrap_macros.h"
 #include "hook_types.h"
 #include "dyncall.h"
-#include "boost/python.hpp" 
+#include "boost/python.hpp"
 using namespace boost::python;
 
 
 //-----------------------------------------------------------------------------
-// 
+//
 //-----------------------------------------------------------------------------
 inline size_t getMemSize(void* ptr)
 {
 #ifdef _WIN32
-    return g_pMemAlloc->GetSize(ptr);
+	return g_pMemAlloc->GetSize(ptr);
 #elif defined(__linux__)
-    return malloc_usable_size(ptr);
+	return malloc_usable_size(ptr);
 #else
-    #error "Implement me!"
+	#error "Implement me!"
 #endif
 }
 
 inline void* allocate(size_t size)
 {
 #ifdef _WIN32
-    return g_pMemAlloc->IndirectAlloc(size);
+	return g_pMemAlloc->IndirectAlloc(size);
 #elif defined(__linux__)
-    return malloc(size);
+	return malloc(size);
 #else
-    #error "Implement me!"
+	#error "Implement me!"
 #endif
 }
 
 inline void* reallocate(void* ptr, size_t size)
 {
 #ifdef _WIN32
-    return g_pMemAlloc->Realloc(ptr, size);
+	return g_pMemAlloc->Realloc(ptr, size);
 #elif defined(__linux__)
-    return realloc(ptr, size);
+	return realloc(ptr, size);
 #else
-    #error "Implement me!"
+	#error "Implement me!"
 #endif
 }
 
 inline void deallocate(void* ptr)
 {
 #ifdef _WIN32
-    g_pMemAlloc->Free(ptr);
+	g_pMemAlloc->Free(ptr);
 #elif defined(__linux__)
-    free(ptr);
+	free(ptr);
 #else
-    #error "Implement me!"
+	#error "Implement me!"
 #endif
 }
 
@@ -88,14 +88,14 @@ inline void deallocate(void* ptr)
 //-----------------------------------------------------------------------------
 enum Convention
 {
-    _CONV_CDECL = DC_CALL_C_DEFAULT,
+	_CONV_CDECL = DC_CALL_C_DEFAULT,
 #ifdef _WIN32
-    _CONV_STDCALL = DC_CALL_C_X86_WIN32_STD,
-    _CONV_FASTCALL = DC_CALL_C_X86_WIN32_FAST_MS,
-    _CONV_THISCALL = DC_CALL_C_X86_WIN32_THIS_MS
+	_CONV_STDCALL = DC_CALL_C_X86_WIN32_STD,
+	_CONV_FASTCALL = DC_CALL_C_X86_WIN32_FAST_MS,
+	_CONV_THISCALL = DC_CALL_C_X86_WIN32_THIS_MS
 #else
-    _CONV_FASTCALL = DC_CALL_C_X86_WIN32_FAST_GNU,
-    _CONV_THISCALL = DC_CALL_C_X86_WIN32_THIS_GNU
+	_CONV_FASTCALL = DC_CALL_C_X86_WIN32_FAST_GNU,
+	_CONV_THISCALL = DC_CALL_C_X86_WIN32_THIS_GNU
 #endif
 };
 
@@ -105,65 +105,65 @@ enum Convention
 class CPointer
 {
 public:
-    CPointer(unsigned long ulAddr = 0);
+	CPointer(unsigned long ulAddr = 0);
 
-    template<class T>
-    T get(int iOffset = 0)
-    {
-        if (!is_valid())
-            BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+	template<class T>
+	T get(int iOffset = 0)
+	{
+		if (!is_valid())
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
-        return *(T *) (m_ulAddr + iOffset);
-    }
+		return *(T *) (m_ulAddr + iOffset);
+	}
 
-    template<class T>
-    void set(T value, int iOffset = 0)
-    {
-        if (!is_valid())
-            BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+	template<class T>
+	void set(T value, int iOffset = 0)
+	{
+		if (!is_valid())
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
-        unsigned long newAddr = m_ulAddr + iOffset;
-        *(T *) newAddr = value;
-    }
-    
-    const char *        get_string(int iOffset = 0, bool bIsPtr = true);
-    void                set_string(char* szText, int iSize = 0, int iOffset = 0, bool bIsPtr = true);
-    CPointer*           get_ptr(int iOffset = 0);
-    void                set_ptr(CPointer* ptr, int iOffset = 0);
+		unsigned long newAddr = m_ulAddr + iOffset;
+		*(T *) newAddr = value;
+	}
 
-    unsigned long       get_size() { return getMemSize((void *) m_ulAddr); }
-    unsigned long       get_address() { return m_ulAddr; }
+	const char *        get_string(int iOffset = 0, bool bIsPtr = true);
+	void                set_string(char* szText, int iSize = 0, int iOffset = 0, bool bIsPtr = true);
+	CPointer*           get_ptr(int iOffset = 0);
+	void                set_ptr(CPointer* ptr, int iOffset = 0);
 
-    CPointer*           add(int iValue);
-    CPointer*           sub(int iValue);
-    bool                is_valid() { return m_ulAddr ? true: false; }
+	unsigned long       get_size() { return getMemSize((void *) m_ulAddr); }
+	unsigned long       get_address() { return m_ulAddr; }
 
-    CPointer*           get_virtual_func(int iIndex, bool bPlatformCheck = true);
-    
-    void                alloc(int iSize) { m_ulAddr = (unsigned long) allocate(iSize); }
-    void                realloc(int iSize) { m_ulAddr = (unsigned long) reallocate((void *) m_ulAddr, iSize); }
-    void                dealloc() { deallocate((void *) m_ulAddr); m_ulAddr = 0; }
+	CPointer*           add(int iValue);
+	CPointer*           sub(int iValue);
+	bool                is_valid() { return m_ulAddr ? true: false; }
 
-    object              call(Convention eConv, char* szParams, object args);
-    object              call_trampoline(object args);
+	CPointer*           get_virtual_func(int iIndex, bool bPlatformCheck = true);
 
-    void                hook(Convention eConv, char* szParams, eHookType eType, PyObject* callable);
-    void                unhook(eHookType eType, PyObject* callable);
+	void                alloc(int iSize) { m_ulAddr = (unsigned long) allocate(iSize); }
+	void                realloc(int iSize) { m_ulAddr = (unsigned long) reallocate((void *) m_ulAddr, iSize); }
+	void                dealloc() { deallocate((void *) m_ulAddr); m_ulAddr = 0; }
+
+	object              call(Convention eConv, char* szParams, object args);
+	object              call_trampoline(object args);
+
+	void                hook(Convention eConv, char* szParams, eHookType eType, PyObject* callable);
+	void                unhook(eHookType eType, PyObject* callable);
 
 private:
-    unsigned long m_ulAddr;
+	unsigned long m_ulAddr;
 };
 
 int get_error();
 
 inline unsigned long ExtractPyPtr(object obj)
 {
-    if (strcmp(extract<char *>(obj.attr("__class__").attr("__name__")), "CPointer") == 0)
-    {
-        CPointer* pPtr = extract<CPointer *>(obj);
-        return pPtr->get_address();
-    }
-    return extract<unsigned long>(obj);
+	if (strcmp(extract<char *>(obj.attr("__class__").attr("__name__")), "CPointer") == 0)
+	{
+		CPointer* pPtr = extract<CPointer *>(obj);
+		return pPtr->get_address();
+	}
+	return extract<unsigned long>(obj);
 }
 
 #endif // _MEMORY_TOOLS_H

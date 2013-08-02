@@ -20,38 +20,38 @@ using namespace boost::python;
 class CCallbackManager: public ICallbackManager
 {
 private:
-    std::list<PyObject *> m_PreCalls;
-    std::list<PyObject *> m_PostCalls;
+	std::list<PyObject *> m_PreCalls;
+	std::list<PyObject *> m_PostCalls;
 
 public:
-    virtual void Add(void* pFunc, eHookType type);
-    virtual void Remove(void* pFunc, eHookType type);
+	virtual void Add(void* pFunc, eHookType type);
+	virtual void Remove(void* pFunc, eHookType type);
 
-    virtual HookRetBuf_t* DoPreCalls(CDetour* pDetour);
-    virtual HookRetBuf_t* DoPostCalls(CDetour* pDetour);
+	virtual HookRetBuf_t* DoPreCalls(CDetour* pDetour);
+	virtual HookRetBuf_t* DoPostCalls(CDetour* pDetour);
 
-    virtual const char* GetLang() { return "Python"; }
+	virtual const char* GetLang() { return "Python"; }
 };
 
 class CStackData
 {
 public:
-    CStackData(CDetour* pDetour);
+	CStackData(CDetour* pDetour);
 
-    CPointer* get_esp() { return new CPointer(m_pRegisters->r_esp); }
-    CPointer* get_ecx() { return new CPointer(m_pRegisters->r_ecx); }
-    CPointer* get_eax() { return new CPointer(m_pRegisters->r_eax); }
+	CPointer* get_esp() { return new CPointer(m_pRegisters->r_esp); }
+	CPointer* get_ecx() { return new CPointer(m_pRegisters->r_ecx); }
+	CPointer* get_eax() { return new CPointer(m_pRegisters->r_eax); }
 
-    object get_item(unsigned int iIndex);
-    void   set_item(unsigned int iIndex, object value);
+	object get_item(unsigned int iIndex);
+	void   set_item(unsigned int iIndex, object value);
 
-    unsigned int get_arg_num();
+	unsigned int get_arg_num();
 
 private:
-    CRegisterObj*         m_pRegisters;
-    CFuncObj*             m_pFunction;
-    CFuncStack*           m_pStack;
-    map<int, object>      m_mapCache;
+	CRegisterObj*         m_pRegisters;
+	CFuncObj*             m_pFunction;
+	CFuncStack*           m_pStack;
+	map<int, object>      m_mapCache;
 };
 
 #endif // MEMORY_HOOKS_H
