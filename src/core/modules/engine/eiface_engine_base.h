@@ -60,7 +60,7 @@ public:
 	virtual bool is_log_enabled();
 
 	// Default functionality - return NULL
-	virtual ISpatialPartition * create_spatial_partition(const Vector &worldmin, const Vector &worldmax);
+	virtual ISpatialPartition * create_spatial_partition(const CVector &worldmin, const CVector &worldmax);
 
 	// Default functionality - return 1.0
 	virtual float get_timescale() const;
@@ -124,10 +124,10 @@ public:
 	virtual bool has_paintmap();
 
 	// Default functionality - return false
-	virtual bool sphere_paint_surface( const model_t *pModel, const Vector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent );
+	virtual bool sphere_paint_surface( const model_t *pModel, const CVector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent );
 
 	// Default functionality - do nothing
-	virtual void sphere_trace_paint_surface( const model_t *pModel, const Vector & vPosition, const Vector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors );
+	virtual void sphere_trace_paint_surface( const model_t *pModel, const CVector & vPosition, const CVector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors );
 
 	// Default functionality - do nothing
 	virtual void remove_all_paint();

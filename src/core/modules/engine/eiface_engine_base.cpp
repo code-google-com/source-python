@@ -71,7 +71,7 @@ bool CEngineServerImplementationBase::is_log_enabled()
 	return false;
 }
 
-ISpatialPartition * CEngineServerImplementationBase::create_spatial_partition( const Vector &worldmin, const Vector &worldmax )
+ISpatialPartition * CEngineServerImplementationBase::create_spatial_partition( const CVector &worldmin, const CVector &worldmax )
 {
 	return NULL;
 }
@@ -171,12 +171,12 @@ bool CEngineServerImplementationBase::has_paintmap()
 	return false;
 }
 
-bool CEngineServerImplementationBase::sphere_paint_surface( const model_t *pModel, const Vector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent )
+bool CEngineServerImplementationBase::sphere_paint_surface( const model_t *pModel, const CVector & vPosition, unsigned char color, float flSphereRadius, float flPaintCoatPercent )
 {
 	return false;
 }
 
-void CEngineServerImplementationBase::sphere_trace_paint_surface( const model_t *pModel, const Vector & vPosition, const Vector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors )
+void CEngineServerImplementationBase::sphere_trace_paint_surface( const model_t *pModel, const CVector & vPosition, const CVector & vContactNormal, float flSphereRadius, CUtlVector<unsigned char> & surfColors )
 {
 }
 
