@@ -32,6 +32,7 @@
 #include "edict.h"
 #include "server_class.h"
 #include <cstdint>
+#include "modules/vecmath/vecmath_wrap.h"
 
 //---------------------------------------------------------------------------------
 // Forward declarations
@@ -101,10 +102,12 @@ public:
 	void			set_int( int value );
 	void			set_float( float value );
 	void			set_string( const char* value );
+	void			set_vector( CVector* pVec );
 
 	int				get_int();
 	float			get_float();
-	const char*	get_string();
+	const char*		get_string();
+	CVector*		get_vector();
 
 private:
 	// Offset from the beginning of the network table that

@@ -308,6 +308,12 @@ void export_send_prop()
 		)
 
 		CLASS_METHOD(CSendProp,
+			set_vector,
+			"Sets this prop's vector value.",
+			args("value")
+		)
+
+		CLASS_METHOD(CSendProp,
 			get_int,
 			"Returns this prop's value as an integer."
 		)
@@ -320,6 +326,12 @@ void export_send_prop()
 		CLASS_METHOD(CSendProp,
 			get_string,
 			"Returns this prop's string value."
+		)
+		
+		CLASS_METHOD(CSendProp,
+			get_vector,
+			"Returns this prop's vector value.",
+			manage_new_object_policy()
 		)
 
 	BOOST_END_CLASS()

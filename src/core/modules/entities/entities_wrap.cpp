@@ -36,6 +36,7 @@
 #include "boost/unordered_map.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/foreach.hpp"
+#include "utility/wrap_macros.h"
 
 //-----------------------------------------------------------------------------
 // If these aren't defined, we get linker errors about CBaseEdict.
@@ -435,6 +436,8 @@ void CSendProp::set_int( int value )
 		// Force a network update.
 		m_edict->StateChanged();
 	}
+	else
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not an integer.")
 }
 
 void CSendProp::set_float( float value )
@@ -447,6 +450,8 @@ void CSendProp::set_float( float value )
 		// Force a network update.
 		m_edict->StateChanged();
 	}
+	else
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a float.")
 }
 
 void CSendProp::set_string( const char* value )
@@ -462,6 +467,21 @@ void CSendProp::set_string( const char* value )
 		// Force a network update.
 		m_edict->StateChanged();
 	}
+	else
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a string.")
+}
+
+void CSendProp::set_vector( CVector* pVec )
+{
+	if( m_send_prop && (get_type() == DPT_Vector) )
+	{
+		*(Vector *)((char *)m_base_entity + m_prop_offset) = *(Vector *) pVec;
+		
+		// Force a network update.
+		m_edict->StateChanged();
+	}
+	else
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a vector.")
 }
 
 int CSendProp::get_int()
@@ -470,7 +490,8 @@ int CSendProp::get_int()
 	{
 		return *(int *)((char *)m_base_entity + m_prop_offset);
 	}
-
+	
+	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not an integer.")
 	return -1;
 }
 
@@ -480,7 +501,8 @@ float CSendProp::get_float()
 	{
 		return *(float *)((char *)m_base_entity + m_prop_offset);
 	}
-
+	
+	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a float.")
 	return -1.0f;
 }
 
@@ -490,6 +512,18 @@ const char* CSendProp::get_string()
 	{
 		return (const char *)((char *)m_base_entity + m_prop_offset);
 	}
-
+	
+	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a string.")
 	return "";
+}
+
+CVector* CSendProp::get_vector()
+{
+	if( m_send_prop && (get_type() == DPT_Vector) )
+	{
+		return new CVector(*(Vector *) ((char *)m_base_entity + m_prop_offset));
+	}
+	
+	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a vector.")
+	return NULL;
 }
