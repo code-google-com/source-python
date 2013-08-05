@@ -28,6 +28,7 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "ticklisteners_wrap.h"
+#include "utility/call_python.h"
 
 //-----------------------------------------------------------------------------
 // Static singletons.
@@ -82,25 +83,8 @@ void CTickListenerManager::call_tick_listeners()
 			// Get the PyObject instance of the callable
 			PyObject* pCallable = m_vecCallables[i].ptr();
 
-			// Is the object an instance or class method?
-			if(PyObject_HasAttrString(pCallable, "__self__"))
-			{
-				// Get the class' instance
-				PyObject *oClassInstance = PyObject_GetAttrString(pCallable, "__self__");
-
-				// Get the name of the method needed to be called
-				PyObject *oMethodName = PyObject_GetAttrString(pCallable, "__name__");
-				const char* szMethodName = extract<const char*>(oMethodName);
-
-				// Call the callable
-				boost::python::call_method<void>(oClassInstance, szMethodName);
-			}
-
-			else
-			{
-				// Call the callable
-				call<void>(pCallable);
-			}
+			// Call the callable
+			CALL_PY_FUNC(pCallable);
 
 		END_BOOST_PY_NORET()
 	}
