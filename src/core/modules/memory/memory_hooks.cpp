@@ -274,7 +274,7 @@ void CStackData::set_item(unsigned int iIndex, object value)
 		if (iIndex == 0)
 		{
 		#ifdef __linux__
-			SetAddr<unsigned long>(m_pRegisters->r_esp + 4, value);
+			SetAddr<unsigned long>((void *) (m_pRegisters->r_esp + 4), value);
 		#else
 			m_pRegisters->r_ecx = extract<unsigned long>(value);
 		#endif
