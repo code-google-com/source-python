@@ -33,9 +33,9 @@ class CRegisterObj
 			// ------------------------------------
 			r_esp = 0;
 			r_ebp = 0;
-			r_eax = 0;
 			r_ecx = 0;
 			r_edx = 0;
+			r_retreg = NULL;
 		}
 
 		// ------------------------------------
@@ -46,9 +46,9 @@ class CRegisterObj
 		// ------------------------------------
 		unsigned long r_esp; // Stack pointer.
 		unsigned long r_ebp; // Base pointer.
-		unsigned long r_eax; // Accumulator.
 		unsigned long r_ecx; // Counter. Used for thiscalls on windows.	
 		unsigned long r_edx;
+		void* r_retreg; // eax and st0 at once
 };
 
 

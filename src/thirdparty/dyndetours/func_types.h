@@ -12,8 +12,8 @@
 enum eCallConv
 {
 	CONV_CDECL = 0,
-	CONV_STDCALL = 2,
 #ifdef _WIN32
+	CONV_STDCALL = 2,
 	CONV_THISCALL = 5,
 #else
 	CONV_THISCALL = 6,
