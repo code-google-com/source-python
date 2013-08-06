@@ -549,6 +549,22 @@ void export_dyndetours()
 			"Counter register."
 		)
 
+		.add_property("ebp",
+			make_function(
+				&CStackData::get_ebp,
+				manage_new_object_policy()
+			),
+			"Base pointer register."
+		)
+
+		.add_property("edx",
+			make_function(
+				&CStackData::get_edx,
+				manage_new_object_policy()
+			),
+			"Data register."
+		)
+
 	BOOST_END_CLASS()
 
 	enum_<eHookType>("HookType")
