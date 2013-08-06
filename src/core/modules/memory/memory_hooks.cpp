@@ -21,17 +21,16 @@ using namespace boost::python;
 // >> Helper functions to read, set and convert addresses
 // ============================================================================
 template<class T>
-object ReadAddr(unsigned long ulAddr)
+object ReadAddr(void* pAddr)
 {
-	return object(*(T *) ulAddr);
+	return object(*(T *) pAddr);
 }
 
 template<class T>
-void SetAddr(unsigned long ulAddr, object value)
+void SetAddr(void* pAddr, object value)
 {
-	*(T *) ulAddr = extract<T>(value);
+	*(T *) pAddr = extract<T>(value);
 }
-
 
 // ============================================================================
 // >> CCallbackManager
@@ -69,9 +68,10 @@ HookRetBuf_t* CCallbackManager::DoPreCalls(CDetour* pDetour)
 
 	HookRetBuf_t* buffer = new HookRetBuf_t;
 	buffer->eRes = HOOKRES_NONE;
-	buffer->pRetBuf = 0;
+	buffer->pRetBuf = NULL;
 
 	CStackData stackdata = CStackData(pDetour);
+	void* pRetReg = pDetour->GetAsmBridge()->GetConv()->GetRegisters()->r_retreg;
 	for (std::list<PyObject *>::iterator iter=m_PreCalls.begin(); iter != m_PreCalls.end(); iter++)
 	{
 		BEGIN_BOOST_PY()
@@ -80,7 +80,29 @@ HookRetBuf_t* CCallbackManager::DoPreCalls(CDetour* pDetour)
 		if (!retval.is_none())
 		{
 			buffer->eRes = HOOKRES_OVERRIDE;
-			buffer->pRetBuf = (void *) ExtractPyPtr(retval);
+			switch(pDetour->GetFuncObj()->GetRetType()->GetType())
+			{
+				case TYPE_BOOL:			SetAddr<bool>(pRetReg, retval); break;
+				case TYPE_CHAR:			SetAddr<char>(pRetReg, retval); break;
+				case TYPE_UCHAR:		SetAddr<unsigned >(pRetReg, retval); break;
+				case TYPE_SHORT:		SetAddr<short>(pRetReg, retval); break;
+				case TYPE_USHORT:		SetAddr<unsigned short>(pRetReg, retval); break;
+				case TYPE_INT:			SetAddr<int>(pRetReg, retval); break;
+				case TYPE_UINT:			SetAddr<unsigned int>(pRetReg, retval); break;
+				case TYPE_LONG:			SetAddr<long>(pRetReg, retval); break;
+				case TYPE_ULONG:		SetAddr<unsigned long>(pRetReg, retval); break;
+				case TYPE_LONGLONG:		SetAddr<long long>(pRetReg, retval); break;
+				case TYPE_ULONGLONG:	SetAddr<unsigned long long>(pRetReg, retval); break;
+				case TYPE_FLOAT:		SetAddr<float>(pRetReg, retval); break;
+				case TYPE_DOUBLE:		SetAddr<double>(pRetReg, retval); break;
+				case TYPE_POINTER:
+				{
+					unsigned long retptr = ExtractPyPtr(retval);
+					memcpy(pRetReg, &retptr, sizeof(unsigned long));
+				} break;
+				case TYPE_STRING:		SetAddr<const char*>(pRetReg, retval); break;
+				default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
+			}
 		}
 
 		END_BOOST_PY_NORET()
@@ -95,37 +117,33 @@ HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
 
 	HookRetBuf_t* buffer = new HookRetBuf_t;
 	buffer->eRes = HOOKRES_NONE;
-	buffer->pRetBuf = 0;
+	buffer->pRetBuf = NULL;
 
 	CStackData stackdata = CStackData(pDetour);
 
-	unsigned long eax = pDetour->GetAsmBridge()->GetConv()->GetRegisters()->r_eax;
+	void* pRetReg = pDetour->GetAsmBridge()->GetConv()->GetRegisters()->r_retreg;
 	object retval;
 	switch(pDetour->GetFuncObj()->GetRetType()->GetType())
 	{
-		case TYPE_VOID:		 retval = object(); break;
-		case TYPE_CHAR:      retval = object((char) eax); break;
-		case TYPE_BOOL:
-		case TYPE_UCHAR:
-		case TYPE_SHORT:
-		case TYPE_USHORT:
-		case TYPE_INT:
-		case TYPE_UINT:
-		case TYPE_LONG:
-		case TYPE_ULONG:     retval = object(eax); break;
-
-		// Fixme!
-		case TYPE_LONGLONG:  retval = ReadAddr<long long>(eax); break;
-		case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(eax); break;
-		case TYPE_FLOAT:     retval = ReadAddr<float>(eax); break;
-		case TYPE_DOUBLE:    retval = ReadAddr<double>(eax); break;
-
-		case TYPE_POINTER:   retval = object(CPointer(eax)); break;
-		case TYPE_STRING:    retval = object((const char*) eax); break;
-
-		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
+		case TYPE_VOID:			retval = object(); break;
+		case TYPE_BOOL:			retval = ReadAddr<bool>(pRetReg); break;
+		case TYPE_CHAR:			retval = ReadAddr<char>(pRetReg); break;
+		case TYPE_UCHAR:		retval = ReadAddr<unsigned char>(pRetReg); break;
+		case TYPE_SHORT:		retval = ReadAddr<short>(pRetReg); break;
+		case TYPE_USHORT:		retval = ReadAddr<unsigned short>(pRetReg); break;
+		case TYPE_INT:			retval = ReadAddr<int>(pRetReg); break;
+		case TYPE_UINT:			retval = ReadAddr<unsigned int>(pRetReg); break;
+		case TYPE_LONG:			retval = ReadAddr<long>(pRetReg); break;
+		case TYPE_ULONG:		retval = ReadAddr<unsigned long>(pRetReg); break;
+		case TYPE_LONGLONG:		retval = ReadAddr<long long>(pRetReg); break;
+		case TYPE_ULONGLONG:	retval = ReadAddr<unsigned long long>(pRetReg); break;
+		case TYPE_FLOAT:		retval = ReadAddr<float>(pRetReg); break;
+		case TYPE_DOUBLE:		retval = ReadAddr<double>(pRetReg); break;
+		case TYPE_POINTER:		retval = object(CPointer(*(unsigned long *) pRetReg)); break;
+		case TYPE_STRING:		retval = ReadAddr<const char *>(pRetReg); break;
+		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.");
 	}
-
+	
 	for (std::list<PyObject *>::iterator iter=m_PostCalls.begin(); iter != m_PostCalls.end(); iter++)
 	{
 		BEGIN_BOOST_PY()
@@ -134,7 +152,29 @@ HookRetBuf_t* CCallbackManager::DoPostCalls(CDetour* pDetour)
 		if (!pyretval.is_none())
 		{
 			buffer->eRes = HOOKRES_OVERRIDE;
-			buffer->pRetBuf = (void *) ExtractPyPtr(pyretval);
+			switch(pDetour->GetFuncObj()->GetRetType()->GetType())
+			{
+				case TYPE_BOOL:			SetAddr<bool>(pRetReg, pyretval); break;
+				case TYPE_CHAR:			SetAddr<char>(pRetReg, pyretval); break;
+				case TYPE_UCHAR:		SetAddr<unsigned >(pRetReg, pyretval); break;
+				case TYPE_SHORT:		SetAddr<short>(pRetReg, pyretval); break;
+				case TYPE_USHORT:		SetAddr<unsigned short>(pRetReg, pyretval); break;
+				case TYPE_INT:			SetAddr<int>(pRetReg, pyretval); break;
+				case TYPE_UINT:			SetAddr<unsigned int>(pRetReg, pyretval); break;
+				case TYPE_LONG:			SetAddr<long>(pRetReg, pyretval); break;
+				case TYPE_ULONG:		SetAddr<unsigned long>(pRetReg, pyretval); break;
+				case TYPE_LONGLONG:		SetAddr<long long>(pRetReg, pyretval); break;
+				case TYPE_ULONGLONG:	SetAddr<unsigned long long>(pRetReg, pyretval); break;
+				case TYPE_FLOAT:		SetAddr<float>(pRetReg, pyretval); break;
+				case TYPE_DOUBLE:		SetAddr<double>(pRetReg, pyretval); break;
+				case TYPE_POINTER:
+				{
+					unsigned long retptr = ExtractPyPtr(pyretval);
+					memcpy(pRetReg, &retptr, sizeof(unsigned long));
+				} break;
+				case TYPE_STRING:		SetAddr<const char*>(pRetReg, pyretval); break;
+				default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
+			}
 		}
 
 		END_BOOST_PY_NORET()
@@ -195,24 +235,24 @@ object CStackData::get_item(unsigned int iIndex)
 			offset += 4;
 	#endif
 
-	unsigned long ulAddr = (m_pRegisters->r_esp + 4 + offset);
+	void* pAddr = (void *) (m_pRegisters->r_esp + 4 + offset);
 	switch(pArgNode->m_pArg->GetType())
 	{
-		case TYPE_BOOL:      retval = ReadAddr<bool>(ulAddr); break;
-		case TYPE_CHAR:      retval = ReadAddr<char>(ulAddr); break;
-		case TYPE_UCHAR:     retval = ReadAddr<unsigned char>(ulAddr); break;
-		case TYPE_SHORT:     retval = ReadAddr<short>(ulAddr); break;
-		case TYPE_USHORT:    retval = ReadAddr<unsigned short>(ulAddr); break;
-		case TYPE_INT:       retval = ReadAddr<int>(ulAddr); break;
-		case TYPE_UINT:      retval = ReadAddr<unsigned int>(ulAddr); break;
-		case TYPE_LONG:      retval = ReadAddr<long>(ulAddr); break;
-		case TYPE_ULONG:     retval = ReadAddr<unsigned long>(ulAddr); break;
-		case TYPE_LONGLONG:  retval = ReadAddr<long long>(ulAddr); break;
-		case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(ulAddr); break;
-		case TYPE_FLOAT:     retval = ReadAddr<float>(ulAddr); break;
-		case TYPE_DOUBLE:    retval = ReadAddr<double>(ulAddr); break;
-		case TYPE_POINTER:   retval = object(CPointer(*(unsigned long *) ulAddr)); break;
-		case TYPE_STRING:    retval = ReadAddr<const char *>(ulAddr); break;
+		case TYPE_BOOL:      retval = ReadAddr<bool>(pAddr); break;
+		case TYPE_CHAR:      retval = ReadAddr<char>(pAddr); break;
+		case TYPE_UCHAR:     retval = ReadAddr<unsigned char>(pAddr); break;
+		case TYPE_SHORT:     retval = ReadAddr<short>(pAddr); break;
+		case TYPE_USHORT:    retval = ReadAddr<unsigned short>(pAddr); break;
+		case TYPE_INT:       retval = ReadAddr<int>(pAddr); break;
+		case TYPE_UINT:      retval = ReadAddr<unsigned int>(pAddr); break;
+		case TYPE_LONG:      retval = ReadAddr<long>(pAddr); break;
+		case TYPE_ULONG:     retval = ReadAddr<unsigned long>(pAddr); break;
+		case TYPE_LONGLONG:  retval = ReadAddr<long long>(pAddr); break;
+		case TYPE_ULONGLONG: retval = ReadAddr<unsigned long long>(pAddr); break;
+		case TYPE_FLOAT:     retval = ReadAddr<float>(pAddr); break;
+		case TYPE_DOUBLE:    retval = ReadAddr<double>(pAddr); break;
+		case TYPE_POINTER:   retval = object(CPointer(*(unsigned long *) pAddr)); break;
+		case TYPE_STRING:    retval = ReadAddr<const char *>(pAddr); break;
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
 	}
 
@@ -251,7 +291,7 @@ void CStackData::set_item(unsigned int iIndex, object value)
 			offset += 4;
 	#endif
 
-	unsigned long ulAddr = (m_pRegisters->r_esp + 4 + offset);
+	void* ulAddr = (void*)(m_pRegisters->r_esp + 4 + offset);
 	switch(pArgNode->m_pArg->GetType())
 	{
 		case TYPE_BOOL:      SetAddr<bool>(ulAddr, value); break;

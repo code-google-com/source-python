@@ -549,14 +549,6 @@ void export_dyndetours()
 			"Counter register."
 		)
 
-		.add_property("eax",
-			make_function(
-				&CStackData::get_eax,
-				manage_new_object_policy()
-			),
-			"Accumulator register."
-		)
-
 	BOOST_END_CLASS()
 
 	enum_<eHookType>("HookType")

@@ -40,7 +40,6 @@ public:
 
 	CPointer* get_esp() { return new CPointer(m_pRegisters->r_esp); }
 	CPointer* get_ecx() { return new CPointer(m_pRegisters->r_ecx); }
-	CPointer* get_eax() { return new CPointer(m_pRegisters->r_eax); }
 
 	object get_item(unsigned int iIndex);
 	void   set_item(unsigned int iIndex, object value);
