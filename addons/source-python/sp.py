@@ -32,6 +32,9 @@
 # Source.Python Imports
 from cvar_c import CConVar
 from _core.settings import _CoreSettingsInstance
+
+import _core.commands # Don't remove this! It registers the "sp" command
+
 #   Translations
 from translations.manager import LanguageManager
 
