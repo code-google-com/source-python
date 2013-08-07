@@ -10,6 +10,7 @@ import time
 # Source.Python Imports
 from tick_c import get_tick_listener_manager
 from excepthooks import ExceptHooks
+from public import public
 #   Tick
 from tick import TickLogger
 
@@ -81,6 +82,7 @@ class _Times(list):
             item()
 
 
+@public
 class _TickDelays(dict):
     '''Class used to store delays to be called by a tick listener'''
 

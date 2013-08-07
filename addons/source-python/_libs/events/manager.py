@@ -5,8 +5,9 @@
 # =============================================================================
 # Source.Python Imports
 from event_c import get_game_event_manager
+from public import public
 #   Events
-from loggers import SPLogger
+from events import EventsLogger
 from events.listener import _EventListener
 
 
@@ -17,12 +18,13 @@ from events.listener import _EventListener
 GameEventManager = get_game_event_manager()
 
 # Get the sp.events.manager logger
-EventsManagerLogger = SPLogger.events.manager
+EventsManagerLogger = EventsLogger.manager
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class _EventRegistry(dict):
     '''Dictionary object used to hold Event names with all registered callbacks
     '''

@@ -20,6 +20,7 @@ from cvar_c import CConVar
 from core import GameEngine
 from core import echo_console
 from paths import LOG_PATH
+from public import public
 
 
 # =============================================================================
@@ -151,7 +152,7 @@ class _LogInstance(dict):
             echo_console(msg)
 
         # Print to the script's log file?
-        if SCRIPT_LOG & areas and self.root != SPLogger:
+        if SCRIPT_LOG & areas and self.root != _SPLogger:
 
             # Print message to the log file
             self.logger.log(level, msg, *args, **kwargs)
@@ -160,7 +161,7 @@ class _LogInstance(dict):
         if SP_LOG & areas:
 
             # Print to the SP log file
-            SPLogger.logger.log(level, msg, *args, **kwargs)
+            _SPLogger.logger.log(level, msg, *args, **kwargs)
 
     @staticmethod
     def _get_level_value(level):
@@ -204,6 +205,7 @@ class _LogInstance(dict):
         return self._logger
 
 
+@public
 class LogManager(_LogInstance):
     '''Main log class used as a root to create children instances'''
 
@@ -247,7 +249,7 @@ _areas = CConVar(
     'sp_logging_areas', '1', 0, 'The Source.Python base logging areas')
 
 # Get the Source.Python main LogManager instance
-SPLogger = LogManager(
+_SPLogger = LogManager(
     'sp', _level, _areas, 'source-python',
     '%(asctime)s - %(name)s\t-\t%(levelname)s\n%(message)s',
     '%m-%d-%Y %H:%M:%S')

@@ -13,6 +13,7 @@ import sys
 from core import AutoUnload
 from excepthooks import ExceptHooks
 from paths import ADDON_PATH
+from public import public
 #   Addons
 from addons import AddonLogger
 from addons.errors import AddonFileNotFoundError
@@ -33,7 +34,8 @@ AddonManagerLogger = AddonLogger.manager
 # =============================================================================
 # >> MAIN CLASSES
 # =============================================================================
-class _AddonManagementDictionary(OrderedDict):
+@public
+class _AddonManager(OrderedDict):
     '''Stores addon's and their instances'''
 
     def __missing__(self, addon_name):
@@ -119,7 +121,7 @@ class _AddonManagementDictionary(OrderedDict):
         self._remove_modules(addon_name)
 
         # Remove the addon from the dictionary
-        super(_AddonManagementDictionary, self).__delitem__(addon_name)
+        super(_AddonManager, self).__delitem__(addon_name)
 
     def get_addon_instance(self, addon_name):
         '''Returns an addon's instance if it is loaded'''
@@ -203,8 +205,8 @@ class _AddonManagementDictionary(OrderedDict):
                 # Loop through all items in the module
                 self._unload_instances(new_instance, new_module)
 
-# Get the _AddonManagementDictionary instance
-AddonManager = _AddonManagementDictionary()
+# Get the _AddonManager instance
+AddonManager = _AddonManager()
 
 
 class _LoadedAddon(object):

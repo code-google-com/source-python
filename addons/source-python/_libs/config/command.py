@@ -9,9 +9,16 @@ from translations.strings import TranslationStrings
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
-class CommandManager(object):
+class _CommandManager(object):
     '''Class used to store a command instance'''
 
     def __init__(self, name, description):

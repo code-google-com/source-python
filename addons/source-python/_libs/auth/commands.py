@@ -15,6 +15,13 @@ from auth.manager import _auth_strings
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.auth.commands logger
@@ -187,16 +194,16 @@ def _print_auth_providers():
     AuthCommandsLogger.log_message(message + '=' * 61)
 
 # Get the _AuthCommands instance
-AuthCommands = _AuthCommands()
+_AuthCommandsInstance = _AuthCommands()
 
 # Add all auth loading/unloading commands to the dictionary
-AuthCommands['load'] = _load_auth_providers
-AuthCommands['load'].args = ['<provider>', '[provider]',  '...']
-AuthCommands['unload'] = _unload_auth_providers
-AuthCommands['unload'].args = ['<provider>', '[provider]',  '...']
-AuthCommands['reload'] = _reload_auth_providers
-AuthCommands['reload'].args = ['[provider]', '[provider]',  '...']
+_AuthCommandsInstance['load'] = _load_auth_providers
+_AuthCommandsInstance['load'].args = ['<provider>', '[provider]',  '...']
+_AuthCommandsInstance['unload'] = _unload_auth_providers
+_AuthCommandsInstance['unload'].args = ['<provider>', '[provider]',  '...']
+_AuthCommandsInstance['reload'] = _reload_auth_providers
+_AuthCommandsInstance['reload'].args = ['[provider]', '[provider]',  '...']
 
 # Add all printing commands to the dictionary
-AuthCommands['list'] = _print_auth_providers
-AuthCommands['help'] = AuthCommands._print_auth_help
+_AuthCommandsInstance['list'] = _print_auth_providers
+_AuthCommandsInstance['help'] = _AuthCommandsInstance._print_auth_help

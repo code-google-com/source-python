@@ -13,10 +13,11 @@ from textwrap import TextWrapper
 from core import GameEngine
 from excepthooks import ExceptHooks
 from paths import CFG_PATH
+from public import public
 #   Config
-from config.cvar import CvarManager
-from config.section import SectionManager
-from config.command import CommandManager
+from config.cvar import _CvarManager
+from config.section import _SectionManager
+from config.command import _CommandManager
 #   Translations
 from translations.strings import LangStrings
 from translations.strings import TranslationStrings
@@ -32,6 +33,7 @@ _config_strings = LangStrings('_core/config_strings')
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class ConfigManager(object):
     '''Config Management class used to create a config file'''
 
@@ -89,44 +91,44 @@ class ConfigManager(object):
             description='', min_value=None, max_value=None):
         '''Adds/returns a cvar instance to add to the config file'''
 
-        # Get the CvarManager instance for the given arguments
-        section = CvarManager(
+        # Get the _CvarManager instance for the given arguments
+        section = _CvarManager(
             name, default, flags, description, min_value, max_value)
 
         # Add the cvar to the list of cvars
         self._cvars.add(name)
 
-        # Add the CvarManager instance to the list of sections
+        # Add the _CvarManager instance to the list of sections
         self._sections.append(section)
 
-        # Return the CvarManager instance
+        # Return the _CvarManager instance
         return section
 
     def section(self, name, separator='#'):
         '''Adds/returns a section instance to add to the config file'''
 
-        # Get the SectionManager instance for the given arguments
-        section = SectionManager(name, separator)
+        # Get the _SectionManager instance for the given arguments
+        section = _SectionManager(name, separator)
 
-        # Add the SectionManager instance to the list of sections
+        # Add the _SectionManager instance to the list of sections
         self._sections.append(section)
 
-        # Return the SectionManager instance
+        # Return the _SectionManager instance
         return section
 
     def command(self, name, description=''):
         '''Adds/returns a command instance to add to the config file'''
 
-        # Get the CommandManager instance for the given arguments
-        section = CommandManager(name, description)
+        # Get the _CommandManager instance for the given arguments
+        section = _CommandManager(name, description)
 
         # Add the command to the list of commands
         self._commands.add(name)
 
-        # Add the CommandManager instance to the list of sections
+        # Add the _CommandManager instance to the list of sections
         self._sections.append(section)
 
-        # Return the CommandManager instance
+        # Return the _CommandManager instance
         return section
 
     def text(self, text):
@@ -231,7 +233,7 @@ class ConfigManager(object):
             for section in self._sections:
 
                 # Is the current section a Cvar?
-                if isinstance(section, CvarManager):
+                if isinstance(section, _CvarManager):
 
                     # Has any text been added to the file?
                     if open_file.tell():
@@ -285,7 +287,7 @@ class ConfigManager(object):
                             section.name + ' %s\n\n\n' % section.default)
 
                 # Is the current section a Section?
-                elif isinstance(section, SectionManager):
+                elif isinstance(section, _SectionManager):
 
                     # Has any text been added to the file?
                     if open_file.tell():
@@ -327,7 +329,7 @@ class ConfigManager(object):
                     open_file.write(separator)
 
                 # Is the current section a Command?
-                elif isinstance(section, CommandManager):
+                elif isinstance(section, _CommandManager):
 
                     # Has any text been added to the file?
                     if open_file.tell():

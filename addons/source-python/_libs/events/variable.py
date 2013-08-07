@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+from public import public
 #   Events
 from events import EventsLogger
 
@@ -48,31 +49,37 @@ class _EventVariable(object):
         return self.__class__.__name__.lower().replace('variable', '')
 
 
+@public
 class BoolVariable(_EventVariable):
     '''Class used to store bool event variables'''
     _method = 'bool'
 
 
+@public
 class ByteVariable(_EventVariable):
     '''Class used to store byte event variables'''
     _method = 'int'
 
 
+@public
 class ShortVariable(_EventVariable):
     '''Class used to store short event variables'''
     _method = 'int'
 
 
+@public
 class LongVariable(_EventVariable):
     '''Class used to store long event variables'''
     _method = 'int'
 
 
+@public
 class FloatVariable(_EventVariable):
     '''Class used to store floating point event variables'''
     _method = 'float'
 
 
+@public
 class StringVariable(_EventVariable):
     '''Class used to store string event variables'''
     _method = 'string'

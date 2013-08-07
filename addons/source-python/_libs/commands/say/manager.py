@@ -7,6 +7,7 @@
 from command_c import get_say_command
 from command_c import register_say_filter
 from command_c import unregister_say_filter
+from public import public
 #   Commands
 from commands.player import _PlayerCommandManager
 
@@ -14,6 +15,7 @@ from commands.player import _PlayerCommandManager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class _SayCommandManager(_PlayerCommandManager):
     '''Manager class used to register say commands and say filters'''
 

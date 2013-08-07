@@ -4,11 +4,18 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from loggers import SPLogger
+from loggers import _SPLogger
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.addons logger
-AddonLogger = SPLogger.addons
+AddonLogger = _SPLogger.addons

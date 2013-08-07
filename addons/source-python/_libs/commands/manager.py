@@ -9,6 +9,13 @@ from excepthooks import ExceptHooks
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _BaseCommandManager(dict):
@@ -16,7 +23,7 @@ class _BaseCommandManager(dict):
 
     # Store the base attributes
     _use_args = True
-    _CallbackManager = None
+    _callback_manager = None
 
     def register_commands(self, names, callback, *args, **kwargs):
         '''Registers the given commands to the given callback'''
@@ -36,10 +43,10 @@ class _BaseCommandManager(dict):
                 'list, tuple, or string, not "%s"' % type(names).__name__)
 
         # Is there a specified callback manager for this class?
-        if not self._CallbackManager is None:
+        if not self._callback_manager is None:
 
             # Get the callback manager's instance for the given callback
-            callback = self._CallbackManager(callback, *args, **kwargs)
+            callback = self._callback_manager(callback, *args, **kwargs)
 
         # Loop through the given names
         for name in names:
@@ -94,7 +101,7 @@ class _BaseCommandManager(dict):
                 raise KeyError('Command "%s" not registered' % name)
 
             # Is there a specified callback manager for this class?
-            if not self._CallbackManager is None:
+            if not self._callback_manager is None:
 
                 # Loop through each callback in the command's list
                 for registered_callback in self[name]:

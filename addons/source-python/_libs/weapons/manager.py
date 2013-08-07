@@ -11,6 +11,7 @@ from configobj import ConfigObj
 from core import GAME_NAME
 from cvars import ServerVar
 from paths import DATA_PATH
+from public import public
 #   Weapons
 from weapons.default import NoWeaponManager
 
@@ -25,6 +26,7 @@ _gamepath = DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class _WeaponManager(dict):
     '''Dictionary class to store basic weapon information'''
 

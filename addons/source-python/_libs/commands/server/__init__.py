@@ -7,3 +7,10 @@
 #   Commands
 from commands.server.command import ServerCommand
 from commands.server.manager import ServerCommandManager
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all imported classes to all
+__all__ = list(globals())

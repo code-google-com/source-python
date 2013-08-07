@@ -35,3 +35,6 @@ SOUND_PATH = GAME_PATH.joinpath('sound', 'source-python')
 
 # Get the data's base path
 DATA_PATH = ADDON_PATH.joinpath('_libs', '_data')
+
+# Add all paths to __all__
+__all__ = [x for x in globals() if x.isupper()]

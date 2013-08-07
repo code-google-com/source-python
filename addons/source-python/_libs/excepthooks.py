@@ -12,8 +12,9 @@ import sys
 from traceback import format_exception
 
 # Source.Python Imports
-from loggers import SPLogger
+from loggers import _SPLogger
 from paths import GAME_PATH
+from public import public
 #   Translations
 from translations.strings import LangStrings
 
@@ -24,12 +25,13 @@ from translations.strings import LangStrings
 _excepthook_strings = LangStrings('_core/excepthooks_strings')
 
 # Get the sp.excepthooks logger
-ExceptHooksLogger = SPLogger.excepthooks
+ExceptHooksLogger = _SPLogger.excepthooks
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class _ExceptHooks(list):
     '''List class that stores callbacks to be called on an exception'''
 

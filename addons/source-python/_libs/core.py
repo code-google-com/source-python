@@ -10,6 +10,14 @@ from os import sep
 # Source.Python Imports
 from engine_c import get_engine_interface
 from paths import GAME_PATH
+from public import public
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = ['GAME_NAME', 'GameEngine']
 
 
 # =============================================================================
@@ -25,6 +33,7 @@ GameEngine = get_engine_interface()
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class AutoUnload(object):
     '''
         Class used to auto unload specific instances.
@@ -37,6 +46,7 @@ class AutoUnload(object):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
+@public
 def echo_console(text):
     '''echos a message to the server's console'''
 

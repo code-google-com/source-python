@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python imports
+from public import public
 #   Auth
 from auth import AuthLogger
 from auth.paths import AUTH_PROVIDER_PATH
@@ -26,6 +27,7 @@ AuthManagerLogger = AuthLogger.manager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class _AuthManager(dict):
     '''Class used to store loaded auth providers
         and check if a player is authorized'''
