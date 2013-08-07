@@ -5,6 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from entity_c import CEntityGenerator
+from public import public
 #   Entities
 from entities.entity import BaseEntity
 from entities.helpers import basehandle_from_edict
@@ -28,6 +29,7 @@ class _WeaponEdictIterManager(_BaseFilterManager):
 WeaponEdictIterManager = _WeaponEdictIterManager()
 
 
+@public
 class WeaponEdictIter(_IterObject):
     '''Weapon iterate class'''
 
@@ -58,6 +60,7 @@ class _WeaponClassIterManager(_BaseFilterManager):
 WeaponClassIterManager = _WeaponClassIterManager()
 
 
+@public
 class WeaponClassIter(_IterObject):
     '''Weapon tag iterate class'''
 

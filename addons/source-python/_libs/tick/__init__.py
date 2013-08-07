@@ -6,7 +6,8 @@
 # Source.Python Imports
 from tick_c import get_tick_listener_manager
 from core import AutoUnload
-from loggers import SPLogger
+from loggers import _SPLogger
+from public import public
 
 
 # =============================================================================
@@ -16,12 +17,13 @@ from loggers import SPLogger
 TickListenerManager = get_tick_listener_manager()
 
 # Get the sp.tick logger
-TickLogger = SPLogger.tick
+TickLogger = _SPLogger.tick
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class Tick(AutoUnload):
     '''Decorator class used to register/unregister a tick listener'''
 

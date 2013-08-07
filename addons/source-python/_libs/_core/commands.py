@@ -20,7 +20,7 @@ from addons.info import AddonInfo
 from addons.manager import AddonManager
 from addons.manager import AddonManagerLogger
 #   Auth
-from auth.commands import AuthCommands
+from auth.commands import _AuthCommandsInstance
 #   Commands
 from commands.server import ServerCommand
 #   Tick
@@ -30,13 +30,20 @@ from translations.strings import LangStrings
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the core commands language strings
 _command_strings = LangStrings('_core/core_commands_strings')
 
 # Get the sp._core.commands logger
-SPCommandsLogger = _CoreLogger.commands
+_CoreCommandsLogger = _CoreLogger.commands
 
 
 # =============================================================================
@@ -81,7 +88,7 @@ class _SPCommands(OrderedDict):
             if len(args) < len(required):
 
                 # Send a message about the sub-command's valid arguments
-                SPCommandsLogger.log_message(
+                _CoreCommandsLogger.log_message(
                     '[SP] ' + _command_strings['Invalid Arguments'].get_string(
                         command=command) + ' '.join(self[command].args))
 
@@ -95,9 +102,9 @@ class _SPCommands(OrderedDict):
                 if len(args) != len(required):
 
                     # Send a message about the sub-command's valid arguments
-                    SPCommandsLogger.log_message(
-                        '[SP] ' + _command_strings['Invalid Arguments'].get_string(
-                            command=command) + ' '.join(self[command].args))
+                    _CoreCommandsLogger.log_message('[SP] ' +
+                        _command_strings['Invalid Arguments'].get_string(
+                        command=command) + ' '.join(self[command].args))
 
                     # Go no further
                     return
@@ -153,10 +160,10 @@ class _SPCommands(OrderedDict):
                 item].__doc__.rjust(78 - len(text))
 
         # Send ending message
-        SPCommandsLogger.log_message(message + '\n' + '=' * 78)
+        _CoreCommandsLogger.log_message(message + '\n' + '=' * 78)
 
 # Get the _SPCommands instance
-SPCommands = _SPCommands()
+_SPCommandsInstance = _SPCommands()
 
 
 # =============================================================================
@@ -192,7 +199,7 @@ def _sp_command_callback(CICommand):
     command = command.lower()
 
     # execute the called command
-    SPCommands.call_command(command, args)
+    _SPCommandsInstance.call_command(command, args)
 
 
 # =============================================================================
@@ -318,7 +325,7 @@ def _print_addons():
         message += '\n'
 
     # Print the message
-    SPCommandsLogger.log_message(message + '=' * 61)
+    _CoreCommandsLogger.log_message(message + '=' * 61)
 
 
 def _print_version():
@@ -353,25 +360,25 @@ def _print_credits():
         message += '\n'
 
     # Print the ending message
-    SPCommandsLogger.log_message(message + '=' * 61 + '\n\n')
+    _CoreCommandsLogger.log_message(message + '=' * 61 + '\n\n')
 
 # Add addon loading/unloading commands to the dictionary
-SPCommands['load'] = _load_addon
-SPCommands['load'].args = ['<addon>']
-SPCommands['unload'] = _unload_addon
-SPCommands['unload'].args = ['<addon>']
-SPCommands['reload'] = _reload_addon
-SPCommands['reload'].args = ['<addon>']
+_SPCommandsInstance['load'] = _load_addon
+_SPCommandsInstance['load'].args = ['<addon>']
+_SPCommandsInstance['unload'] = _unload_addon
+_SPCommandsInstance['unload'].args = ['<addon>']
+_SPCommandsInstance['reload'] = _reload_addon
+_SPCommandsInstance['reload'].args = ['<addon>']
 
 # Add the auth command to the dictionary
-SPCommands['auth'] = AuthCommands
+_SPCommandsInstance['auth'] = _AuthCommandsInstance
 
 # Add the delay command to the dictionary
-SPCommands['delay'] = _delay_execution
-SPCommands['delay'].args = ['<delay>', '<command>', '[arguments]']
+_SPCommandsInstance['delay'] = _delay_execution
+_SPCommandsInstance['delay'].args = ['<delay>', '<command>', '[arguments]']
 
 # Add all printing commands to the dictionary
-SPCommands['list'] = _print_addons
-SPCommands['version'] = _print_version
-SPCommands['credits'] = _print_credits
-SPCommands['help'] = SPCommands._print_help
+_SPCommandsInstance['list'] = _print_addons
+_SPCommandsInstance['version'] = _print_version
+_SPCommandsInstance['credits'] = _print_credits
+_SPCommandsInstance['help'] = _SPCommandsInstance._print_help

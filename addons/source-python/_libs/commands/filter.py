@@ -8,6 +8,13 @@ from core import AutoUnload
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _BaseFilter(AutoUnload):
@@ -27,8 +34,8 @@ class _BaseFilter(AutoUnload):
         self.callback = callback
 
         # Register the filter
-        self._ManagerClass.register_filter(self.callback)
+        self._manager_class.register_filter(self.callback)
 
     def _unload_instance(self):
         '''Unregisters the filter'''
-        self._ManagerClass.unregister_filter(self.callback)
+        self._manager_class.unregister_filter(self.callback)

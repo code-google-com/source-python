@@ -4,13 +4,14 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
-#   Recipient
 from recipientfilter_c import CMRecipientFilter
+from public import public
 
 
 # ============================================================================
 # >> CLASSES
 # ============================================================================
+@public
 class RecipientFilter(CMRecipientFilter):
     '''Class used to improve the ease of use of a CMRecipientFilter instance'''
 

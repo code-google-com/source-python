@@ -6,6 +6,7 @@
 # Source.Python Imports
 from player_c import CPlayerInfo
 from core import GameEngine
+from public import public
 #   Entities
 from entities.entity import BaseEntity
 #   Players
@@ -17,6 +18,7 @@ from players.weapons import _PlayerWeapons
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class PlayerEntity(BaseEntity, _PlayerWeapons):
     '''Class used to interact directly with players'''
 

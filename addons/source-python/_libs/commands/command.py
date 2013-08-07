@@ -8,6 +8,13 @@ from core import AutoUnload
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _BaseCommand(AutoUnload):
@@ -32,9 +39,9 @@ class _BaseCommand(AutoUnload):
         self.callback = callback
 
         # Register the commands
-        self._ManagerClass.register_commands(
+        self._manager_class.register_commands(
             self.names, self.callback, *self.args, **self.kwargs)
 
     def _unload_instance(self):
         '''Unregisters the commands'''
-        self._ManagerClass.unregister_commands(self.names, self.callback)
+        self._manager_class.unregister_commands(self.names, self.callback)

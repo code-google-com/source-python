@@ -9,6 +9,7 @@ from collections import OrderedDict
 
 # Source.Python Imports
 from event_c import CGameEvent
+from public import public
 #   Events
 from events import EventsLogger
 
@@ -53,6 +54,7 @@ class _EventMeta(type):
         return cls
 
 
+@public
 class CustomEvent(metaclass=_EventMeta):
     '''Class inherited to create custom events'''
 

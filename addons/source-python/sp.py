@@ -31,10 +31,21 @@
 # =============================================================================
 # Source.Python Imports
 from cvar_c import CConVar
-from _core.settings import CoreSettings
-from _core.commands import SPCommands
+from _core.settings import _CoreSettingsInstance
 #   Translations
 from translations.manager import LanguageManager
+
+
+# =============================================================================
+# >> LOGGING SETUP
+# =============================================================================
+# Set the logging level
+CConVar('sp_logging_level').set_int(
+    int(_CoreSettingsInstance['LOG_SETTINGS']['level']))
+
+# Set the logging areas
+CConVar('sp_logging_areas').set_int(
+    int(_CoreSettingsInstance['LOG_SETTINGS']['areas']))
 
 
 # =============================================================================
@@ -42,27 +53,20 @@ from translations.manager import LanguageManager
 # =============================================================================
 # Set the default language
 LanguageManager._register_default_language(
-    CoreSettings['BASE_SETTINGS']['language'])
-
-
-# =============================================================================
-# >> LOGGING SETUP
-# =============================================================================
-# Set the logging level
-CConVar('sp_logging_level').set_int(int(CoreSettings['LOG_SETTINGS']['level']))
-
-# Set the logging areas
-CConVar('sp_logging_areas').set_int(int(CoreSettings['LOG_SETTINGS']['areas']))
+    _CoreSettingsInstance['BASE_SETTINGS']['language'])
 
 
 # =============================================================================
 # >> AUTH SETUP
 # =============================================================================
 # Get the auth providers that should be loaded
-auth_providers = CoreSettings['AUTH_SETTINGS']['providers'].split()
+auth_providers = _CoreSettingsInstance['AUTH_SETTINGS']['providers'].split()
 
 # Should any providers be loaded?
 if auth_providers:
 
+    # Import the the SP Commands
+    from _core.commands import _SPCommandsInstance
+
     # Load the auth providers
-    SPCommands.call_command('auth', ['load'] + auth_providers)
+    _SPCommandsInstance.call_command('auth', ['load'] + auth_providers)

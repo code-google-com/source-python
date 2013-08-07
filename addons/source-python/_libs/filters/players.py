@@ -12,6 +12,7 @@ from player_c import CPlayerGenerator
 from core import GameEngine
 from core import GAME_NAME
 from paths import DATA_PATH
+from public import public
 #   Filters
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
@@ -45,6 +46,7 @@ class _PlayerIterManager(_BaseFilterManager):
 PlayerIterManager = _PlayerIterManager()
 
 
+@public
 class PlayerIter(_IterObject):
     '''Player iterate class'''
 
@@ -71,7 +73,7 @@ class _PlayerTeams(dict):
         super(_PlayerTeams, self).__setitem__(item, instance)
 
 # Get the _PlayerTeams instance
-PlayerTeams = _PlayerTeams()
+_PlayerTeamsInstance = _PlayerTeams()
 
 
 class _Team(object):
@@ -127,28 +129,28 @@ PlayerIterManager.register_filter('dead', _player_is_dead)
 # Loop through all teams in the game's team file
 for team in _game_teams:
 
-    # Add the team to the PlayerTeams dictionary
-    PlayerTeams[team] = _game_teams[team]
+    # Add the team to the _PlayerTeamsInstance dictionary
+    _PlayerTeamsInstance[team] = _game_teams[team]
 
     # Register the filter
     PlayerIterManager.register_filter(
-        team, PlayerTeams[team]._player_is_on_team)
+        team, _PlayerTeamsInstance[team]._player_is_on_team)
 
 # Loop through all base team names
 for number, team in enumerate(('un', 'spec', 't', 'ct')):
 
-    # Has the team already been added to the PlayerTeams dictionary
-    if team in PlayerTeams:
+    # Has the team already been added to the _PlayerTeamsInstance dictionary
+    if team in _PlayerTeamsInstance:
 
         # If it has been added, do not re-add it
         continue
 
-    # Add the team to the PlayerTeams dictionary
-    PlayerTeams[team] = number
+    # Add the team to the _PlayerTeamsInstance dictionary
+    _PlayerTeamsInstance[team] = number
 
     # Register the filter
     PlayerIterManager.register_filter(
-        team, PlayerTeams[team]._player_is_on_team)
+        team, _PlayerTeamsInstance[team]._player_is_on_team)
 
 
 # =============================================================================

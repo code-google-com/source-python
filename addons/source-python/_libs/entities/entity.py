@@ -6,6 +6,7 @@
 # Source.Python Imports
 #from Source import Binutils
 from entity_c import CEdict
+from public import public
 #   Entities
 #from entities.functions import Functions
 from entities.keyvalues import KeyValues
@@ -18,6 +19,7 @@ from entities.properties import Properties
 # >> CLASSES
 # =============================================================================
 #class BaseEntity(_EntitySpecials):
+@public
 class BaseEntity(object):
     '''Class used to interact directly with entities'''
 

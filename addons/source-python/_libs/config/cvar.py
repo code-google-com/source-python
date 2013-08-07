@@ -10,9 +10,16 @@ from translations.strings import TranslationStrings
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
-class CvarManager(dict):
+class _CvarManager(dict):
     '''Class used to store a cvar instance'''
 
     def __init__(

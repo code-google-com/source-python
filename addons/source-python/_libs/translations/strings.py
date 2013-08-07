@@ -22,6 +22,7 @@ from configobj import Section
 # Source.Python Imports
 from paths import TRANSLATION_PATH
 from paths import GAME_PATH
+from public import public
 #   Translations
 from translations.manager import LanguageManager
 
@@ -38,6 +39,7 @@ _double_escaped_pattern = re_compile(
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class LangStrings(dict):
     '''Dictionary class used to store all strings for an addon'''
 
@@ -209,6 +211,7 @@ class LangStrings(dict):
         return given_string
 
 
+@public
 class TranslationStrings(dict):
     '''Dictionary used to store and get language
         strings for a particular string'''

@@ -7,6 +7,7 @@
 from Source import Misc
 from core import AutoUnload
 from core import GameEngine
+from public import public
 #   Events
 from events.manager import EventRegistry
 
@@ -14,6 +15,7 @@ from events.manager import EventRegistry
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class Downloadables(AutoUnload, set):
     '''Class used to store downloadables for a script'''
 

@@ -10,6 +10,13 @@ from commands.auth import _AuthCallback
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _PlayerCommandManager(_BaseCommandManager):
@@ -17,4 +24,4 @@ class _PlayerCommandManager(_BaseCommandManager):
 
     # Store the base attributes
     _use_args = False
-    _CallbackManager = _AuthCallback
+    _callback_manager = _AuthCallback

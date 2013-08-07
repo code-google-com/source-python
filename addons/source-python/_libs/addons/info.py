@@ -7,10 +7,14 @@
 #   Collections
 from collections import OrderedDict
 
+# Source.Python Imports
+from public import public
+
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class AddonInfo(OrderedDict):
     '''Stores information for an addon'''
 

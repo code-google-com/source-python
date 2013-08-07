@@ -10,12 +10,20 @@ from collections import OrderedDict
 from configobj import ConfigObj
 
 # Source.Python Imports
+from _core import _CoreLogger
 from paths import GAME_PATH
 from paths import CFG_PATH
 #   Auth
 from auth.paths import AUTH_PROVIDER_PATH
 #   Translations
 from translations.strings import LangStrings
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
 
 
 # =============================================================================
@@ -28,6 +36,9 @@ _core_strings = LangStrings('_core/core_settings_strings')
 _auth_providers = [
     provider.namebase for provider in AUTH_PROVIDER_PATH.files() +
     AUTH_PROVIDER_PATH.dirs() if not provider.namebase.startswith('__')]
+
+# Get the sp._core.settings logger
+_CoreSettingsLogger = _CoreLogger.settings
 
 
 # =============================================================================
@@ -168,4 +179,4 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
             'log_areas'].get_string(self._language).splitlines()
 
 # Get the _CoreSettings instance
-CoreSettings = _CoreSettings(CFG_PATH.joinpath('core_settings.ini'))
+_CoreSettingsInstance = _CoreSettings(CFG_PATH.joinpath('core_settings.ini'))

@@ -9,9 +9,16 @@ from translations.strings import TranslationStrings
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
-class SectionManager(object):
+class _SectionManager(object):
     '''Class used to store a section instance'''
 
     def __init__(self, name, separator):

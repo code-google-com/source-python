@@ -9,6 +9,7 @@ import time
 
 # Source.Python Imports
 from core import AutoUnload
+from public import public
 #   Tick
 from tick import TickLogger
 from tick.delays import TickDelays
@@ -24,11 +25,13 @@ TickRepeatLogger = TickLogger.repeat
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class Status(object):
     '''Class used to store Status values'''
     STOPPED, RUNNING, PAUSED = range(1, 4)
 
 
+@public
 class Repeat(AutoUnload):
     '''Class used to create and call repeats'''
 

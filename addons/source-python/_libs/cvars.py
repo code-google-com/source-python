@@ -5,11 +5,13 @@
 # =============================================================================
 # Source.Python Imports
 import cvar_c
+from public import public
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class ServerVar(cvar_c.CConVar):
     '''ConVar wrapper to provide easy access to cvars.'''
 

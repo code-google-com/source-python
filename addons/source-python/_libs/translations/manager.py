@@ -9,11 +9,13 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 from paths import DATA_PATH
+from public import public
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+@public
 class _LanguageManager(ConfigObj):
     '''Dictionary class used to store languages and their shortnames'''
 
