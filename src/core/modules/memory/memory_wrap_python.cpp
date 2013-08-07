@@ -196,27 +196,10 @@ void export_memtools()
 		)
 
 		CLASS_METHOD(CPointer,
-			call,
-			"Calls the function dynamically.",
-			args("eConvention", "szParams", "args")
-		)
-
-		CLASS_METHOD(CPointer,
-			call_trampoline,
-			"Calls the trampoline function dynamically.",
-			args("args")
-		)
-
-		CLASS_METHOD(CPointer,
-			hook,
-			"Hooks a function dynamically.",
-			args("eConvention", "szParams", "eHookType", "callable")
-		)
-
-		CLASS_METHOD(CPointer,
-			unhook,
-			"Unhooks a function dynamically",
-			args("eHookType", "callable")
+			make_function,
+			"Creates a new CFunction instance.",
+			args("eConv", "szParams"),
+			manage_new_object_policy()
 		)
 
 		// get_<type> methods
@@ -469,13 +452,6 @@ void export_memtools()
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD_SPECIAL(CPointer,
-			"__call__",
-			call,
-			"Calls the function dynamically.",
-			args("iConvention", "szParams", "args")
-		)
-
 		// Properties
 		CLASS_PROPERTY_READ_ONLY(CPointer,
 			"addr",
@@ -490,6 +466,43 @@ void export_memtools()
 		)
 
 	BOOST_END_CLASS()
+
+	BOOST_INHERITED_CLASS_CONSTRUCTOR(CFunction, CPointer, unsigned long, Convention, char*)
+
+		CLASS_METHOD_VARIADIC(CFunction,
+			__call__,
+			"Calls the function dynamically."
+		)
+
+		CLASS_METHOD_VARIADIC(CFunction,
+			call_trampoline,
+			"Calls the trampoline function dynamically."
+		)
+
+		CLASS_METHOD(CFunction,
+			add_pre_hook,
+			"Adds a pre-hook callback."
+		)
+
+		CLASS_METHOD(CFunction,
+			add_post_hook,
+			"Adds a post-hook callback."
+		)
+
+		CLASS_METHOD(CFunction,
+			remove_pre_hook,
+			"Removes a pre-hook callback."
+		)
+
+		CLASS_METHOD(CFunction,
+			remove_post_hook,
+			"Removes a post-hook callback."
+		)
+
+	BOOST_END_CLASS()
+	
+	DEFINE_CLASS_METHOD_VARIADIC(CFunction, __call__);
+	DEFINE_CLASS_METHOD_VARIADIC(CFunction, call_trampoline);
 }
 
 //-----------------------------------------------------------------------------
@@ -565,10 +578,5 @@ void export_dyndetours()
 			"Data register."
 		)
 
-	BOOST_END_CLASS()
-
-	enum_<eHookType>("HookType")
-		ENUM_VALUE("Pre", TYPE_PRE)
-		ENUM_VALUE("Post", TYPE_POST)
 	BOOST_END_CLASS()
 }
