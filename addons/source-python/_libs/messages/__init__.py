@@ -5,7 +5,7 @@
 # ============================================================================
 # Source.Python Imports
 from core import GAME_NAME
-from loggers import SPLogger
+from loggers import _SPLogger
 from paths import DATA_PATH
 #   Messages
 from messages.base import _UserMessages
@@ -15,7 +15,7 @@ from messages.base import _UserMessages
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.messages logger
-MessagesLogger = SPLogger.messages
+MessagesLogger = _SPLogger.messages
 
 
 # ============================================================================
