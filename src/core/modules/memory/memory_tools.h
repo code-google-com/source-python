@@ -102,6 +102,8 @@ enum Convention
 //-----------------------------------------------------------------------------
 // CPointer class
 //-----------------------------------------------------------------------------
+class CFunction;
+
 class CPointer
 {
 public:
@@ -144,14 +146,32 @@ public:
 	void                realloc(int iSize) { m_ulAddr = (unsigned long) reallocate((void *) m_ulAddr, iSize); }
 	void                dealloc() { deallocate((void *) m_ulAddr); m_ulAddr = 0; }
 
-	object              call(Convention eConv, char* szParams, object args);
-	object              call_trampoline(object args);
+	CFunction*          make_function(Convention eConv, char* szParams);
 
-	void                hook(Convention eConv, char* szParams, eHookType eType, PyObject* callable);
-	void                unhook(eHookType eType, PyObject* callable);
-
-private:
+protected:
 	unsigned long m_ulAddr;
+};
+
+class CFunction: public CPointer
+{
+public:
+	CFunction(unsigned long ulAddr, Convention eConv, char* szParams);
+    
+	object __call__(object args);
+	object call_trampoline(object args);
+	
+	void hook(eHookType eType, PyObject* pCallable);
+	void unhook(eHookType eType, PyObject* pCallable);
+    
+	void add_pre_hook(PyObject* pCallable);
+	void add_post_hook(PyObject* pCallable);
+    
+	void remove_pre_hook(PyObject* pCallable);
+	void remove_post_hook(PyObject* pCallable);
+    
+private:
+	std::string m_szParams;
+	Convention  m_eConv;
 };
 
 int get_error();

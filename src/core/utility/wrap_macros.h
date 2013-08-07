@@ -104,6 +104,13 @@ using namespace boost::python;
 	class_<classname, bases<baseclass> >(XSTRINGIFY(classname))
 
 //---------------------------------------------------------------------------------
+// Use this to wrap a class that inherits a base class and has a non-default
+// constructor
+//---------------------------------------------------------------------------------
+#define BOOST_INHERITED_CLASS_CONSTRUCTOR( classname, baseclass, ... ) \
+	class_<classname, bases<baseclass> >(XSTRINGIFY(classname), init< __VA_ARGS__ >())
+
+//---------------------------------------------------------------------------------
 // Use this to wrap an inherited class that shouldn't be copied.
 //---------------------------------------------------------------------------------
 #define BOOST_INHERITED_CLASS_NOCOPY( classname, baseclass, ... ) \
@@ -205,13 +212,33 @@ using namespace boost::python;
 // Use this macro for read only properties
 //---------------------------------------------------------------------------------
 #define CLASS_PROPERTY_READ_ONLY( classname, propertyname, fget, docstring) \
-    .add_property(propertyname, &classname::fget, docstring)
+	.add_property(propertyname, &classname::fget, docstring)
 
 //---------------------------------------------------------------------------------
 // Use this macro for read- and writeable properties
 //---------------------------------------------------------------------------------
 #define CLASS_PROPERTY_READWRITE( classname, propertyname, fget, fset, docstring) \
-    .add_property(propertyname, &classname::fget, &classname::fset, docstring)
+	.add_property(propertyname, &classname::fget, &classname::fset, docstring)
+
+//---------------------------------------------------------------------------------
+// Use this macro to expose a variadic function.
+//---------------------------------------------------------------------------------
+#define BOOST_VARIADIC_FUNCTION(name, function, ...) \
+	def("__" name, &function, ##__VA_ARGS__); \
+	exec("def " name "(*args): __" name "(args)", scope().attr("__dict__"))
+
+//---------------------------------------------------------------------------------
+// Use this macro to expose a variadic class method. Don't forget to call
+// DEFINE_CLASS_METHOD_VARIADIC after that.
+//---------------------------------------------------------------------------------
+#define CLASS_METHOD_VARIADIC(classname, method, ...) \
+	.def("__" #method, &classname::method, ##__VA_ARGS__)
+
+//---------------------------------------------------------------------------------
+// Use this macro to define a variadic class method.
+//---------------------------------------------------------------------------------
+#define DEFINE_CLASS_METHOD_VARIADIC(classname, method) \
+	scope().attr(#classname).attr(#method) = eval("lambda self, *args: self.__" #method "(args)")
 
 //---------------------------------------------------------------------------------
 // Use this macro to define a global attribute

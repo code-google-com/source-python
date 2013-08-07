@@ -128,14 +128,32 @@ CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true *
 	return new CPointer((unsigned long) vtable[iIndex]);
 }
 
-object CPointer::call(Convention eConv, char* szParams, object args)
+CFunction* CPointer::make_function(Convention eConv, char* szParams)
 {
+	if (!is_valid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+
+	return new CFunction(m_ulAddr, eConv, szParams);
+}
+
+//-----------------------------------------------------------------------------
+// CFunction class
+//-----------------------------------------------------------------------------
+CFunction::CFunction(unsigned long ulAddr, Convention eConv, char* szParams)
+{
+	m_ulAddr = ulAddr;
+	m_eConv = eConv;
+	m_szParams = szParams;
+}
+
+object CFunction::__call__(object args)
+{	
 	if (!is_valid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
 	dcReset(g_pCallVM);
-	dcMode(g_pCallVM, eConv);
-	char* ptr = szParams;
+	dcMode(g_pCallVM, m_eConv);
+	char* ptr = (char *) m_szParams.data();
 	int pos = 0;
 	char ch;
 	while ((ch = *ptr) != '\0' && ch != ')')
@@ -198,7 +216,7 @@ object CPointer::call(Convention eConv, char* szParams, object args)
 	return object();
 }
 
-object CPointer::call_trampoline(object args)
+object CFunction::call_trampoline(object args)
 {
 	if (!is_valid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
@@ -207,28 +225,15 @@ object CPointer::call_trampoline(object args)
 	if (!pDetour)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
-	CFuncObj* pFuncObj = pDetour->GetFuncObj();
-	std::string szParams = "";
-
-	eCallConv conv = pFuncObj->GetConvention();
-	if (conv == CONV_THISCALL)
-		szParams += DC_SIGCHAR_POINTER;
-
-	for(unsigned int i=0; i < pFuncObj->GetNumArgs(); i++)
-		szParams += TypeEnumToChar(pFuncObj->GetArg(i)->GetType());
-
-	szParams += ')';
-	szParams += TypeEnumToChar(pFuncObj->GetRetType()->GetType());
-	CPointer ptr = CPointer((unsigned long) pDetour->GetTrampoline());
-	return ptr.call((Convention) conv, (char *) szParams.data(), args);
+	return CFunction((unsigned long) pDetour->GetTrampoline(), m_eConv, (char *) m_szParams.data()).__call__(args);
 }
 
-void CPointer::hook(Convention eConv, char* szParams, eHookType eType, PyObject* callable)
+void CFunction::hook(eHookType eType, PyObject* pCallable)
 {
 	if (!is_valid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	CDetour* pDetour = g_DetourManager.Add_Detour((void*) m_ulAddr, szParams, (eCallConv) eConv);
+	CDetour* pDetour = g_DetourManager.Add_Detour((void*) m_ulAddr, m_szParams.data(), (eCallConv) m_eConv);
 	if (!pDetour)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to hook function.")
 
@@ -239,10 +244,10 @@ void CPointer::hook(Convention eConv, char* szParams, eHookType eType, PyObject*
 		pDetour->AddManager(mngr, eType);
 	}
 
-	mngr->Add((void *) callable, eType);
+	mngr->Add((void *) pCallable, eType);
 }
 
-void CPointer::unhook(eHookType eType, PyObject* callable)
+void CFunction::unhook(eHookType eType, PyObject* pCallable)
 {
 	if (!is_valid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
@@ -253,9 +258,32 @@ void CPointer::unhook(eHookType eType, PyObject* callable)
 
 	ICallbackManager* mngr = pDetour->GetManager("Python", eType);
 	if (mngr)
-		mngr->Remove((void *) callable, eType);
+		mngr->Remove((void *) pCallable, eType);
 }
 
+void CFunction::add_pre_hook(PyObject* pCallable)
+{
+	hook(TYPE_PRE, pCallable);
+}
+
+void CFunction::add_post_hook(PyObject* pCallable)
+{
+	hook(TYPE_POST, pCallable);
+}
+
+void CFunction::remove_pre_hook(PyObject* pCallable)
+{
+	unhook(TYPE_PRE, pCallable);
+}
+
+void CFunction::remove_post_hook(PyObject* pCallable)
+{
+	unhook(TYPE_POST, pCallable);
+}
+
+//-----------------------------------------------------------------------------
+// Functions
+//-----------------------------------------------------------------------------
 int get_error()
 {
 	return dcGetError(g_pCallVM);
