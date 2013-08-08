@@ -82,12 +82,10 @@ public:
 	void revert();
 	const char *get_default();
 
-/*
 	bool has_min();
 	bool has_max();
 	float get_min_value();
 	float get_max_value();
-*/
 
 private:
 	const char *m_Name;

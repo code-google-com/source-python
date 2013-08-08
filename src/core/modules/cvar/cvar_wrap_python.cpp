@@ -204,7 +204,6 @@ void export_convar()
 			"Returns the original value of the ConVar"
 		)
 
-/*
 		CLASS_METHOD(CConVar,
 			has_min,
 			"Returns whether the ConVar has a min value"
@@ -224,7 +223,6 @@ void export_convar()
 			get_max_value,
 			"Returns the maximum float value for the ConVar"
 		)
-*/
 
 	BOOST_END_CLASS()
 }

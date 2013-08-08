@@ -30,10 +30,14 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "wchartypes.h" // Required for shake.h (Linux)
-#include "shake.h" // Required for IEffects.h (Linux)
-#include "IEffects.h"
+// These includes are really important. Be careful if you try to change the
+// order or remove an include!
+#include <stddef.h>
+#include "wchartypes.h"
+#include "string_t.h"
 #include "../vecmath/vecmath_wrap.h"
+#include "shake.h"
+#include "IEffects.h"
 
 
 //-----------------------------------------------------------------------------

@@ -188,31 +188,35 @@ const char *CConVar::get_default()
 	return convar->GetDefault();
 }
 
-/*
 bool CConVar::has_min()
 {
 	ConVar *convar = g_pCVar->FindVar(m_Name);
-	return convar->HasMin();
+	float fMin;
+	return convar->GetMin(fMin);
 }
 
 bool CConVar::has_max()
 {
 	ConVar *convar = g_pCVar->FindVar(m_Name);
-	return convar->HasMax();
+	float fMax;
+	return convar->GetMax(fMax);
 }
 
 float CConVar::get_min_value()
 {
 	ConVar *convar = g_pCVar->FindVar(m_Name);
-	return convar->GetMinValue();
+	float fMin;
+	convar->GetMin(fMin);
+	return fMin;
 }
 
 float CConVar::get_max_value()
 {
 	ConVar *convar = g_pCVar->FindVar(m_Name);
-	return convar->GetMaxValue();
+	float fMax;
+	convar->GetMax(fMax);
+	return fMax;
 }
-*/
 
 //-----------------------------------------------------------------------------
 // CConCommandBase constructors.
