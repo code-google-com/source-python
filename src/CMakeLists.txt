@@ -34,6 +34,7 @@ Set(SOURCEPYTHON_UTIL_HEADERS
 	core/utility/mrecipientfilter.h
     core/utility/mrecipientfilter_wrap.h
     core/utility/ipythongenerator.h
+    core/utility/patches/engine${SOURCE_ENGINE}/patches.h
 )
 
 Set(SOURCEPYTHON_UTIL_SOURCES
@@ -122,14 +123,10 @@ Set(SOURCEPYTHON_COMMAND_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CVAR_MODULE_HEADERS
     core/modules/cvar/cvar_wrap.h
-    core/modules/cvar/cvar_engine_base.h
-    core/modules/cvar/engine${SOURCE_ENGINE}/cvar_engine_implementation.h
 )
 
 Set(SOURCEPYTHON_CVAR_MODULE_SOURCES
     core/modules/cvar/cvar_wrap.cpp
-    core/modules/cvar/cvar_engine_base.cpp
-    core/modules/cvar/engine${SOURCE_ENGINE}/cvar_engine_implementation.cpp
     core/modules/cvar/cvar_wrap_python.cpp
 )
 

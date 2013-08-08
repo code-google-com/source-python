@@ -24,4 +24,7 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "cvar_engine_implementation.h"
+#ifndef _PATCHES_H
+#define _PATCHES_H
+
+#endif // _PATCHES_H

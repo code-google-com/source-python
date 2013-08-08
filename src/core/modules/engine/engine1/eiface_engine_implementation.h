@@ -39,6 +39,12 @@ extern IVEngineServer * engine;
 //---------------------------------------------------------------------------------
 // Purpose: Source Engine 1 Specific engine implementation calls
 //---------------------------------------------------------------------------------
+// Engine 1 does not define bbox_t. There are only forward declarations.
+struct bbox_t
+{
+	Vector mins;
+	Vector maxs;
+};
 
 // Engine 1 uses CBitVec<ABSOLUTE_PLAYER_LIMIT> all the time as CPlayerBitVec
 // is not a define in the OB SDK

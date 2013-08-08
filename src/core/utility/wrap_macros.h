@@ -294,4 +294,12 @@ typedef return_value_policy<reference_existing_object> reference_existing_object
 //---------------------------------------------------------------------------------
 typedef return_value_policy<copy_const_reference> copy_const_reference_policy;
 
+
+//---------------------------------------------------------------------------------
+// This includes patches/engine<SOURCE_ENGINE>/patches.h
+//---------------------------------------------------------------------------------
+#define GET_PATCH_VALUE() patches/engine
+#include JOIN_PATH(GET_PATCH_VALUE()SOURCE_ENGINE, patches.h)
+#undef GET_PATCH_VALUE
+
 #endif // _WRAP_MACROS_H

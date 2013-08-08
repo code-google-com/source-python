@@ -24,20 +24,17 @@
 * Development Team grants this exception to all derivative works.
 */
 
-//-----------------------------------------------------------------------------
-// Includes
-//-----------------------------------------------------------------------------
-#include "../cvar_engine_base.h"
+#ifndef _PATCHES_H
+#define _PATCHES_H
 
-//-----------------------------------------------------------------------------
-// Global externs we need.
-//-----------------------------------------------------------------------------
-extern ICvar* g_pCVar;
+#include "convar.h"
+#ifndef PATCH_CONVAR_H_REMOVE_FLAGS
+#error "PATCH_CONVAR_H_REMOVE_FLAGS - Implement ConCommandBase::RemoveFlags in public/tier1/convar.h"
+#endif
 
-//-----------------------------------------------------------------------------
-// Purpose: Source Engine 1 Specific engine implementation calls
-//-----------------------------------------------------------------------------
-class CCvarServerImplementation : public CCvarServerImplementationBase
-{
-public:
-};
+#include "convar.h"
+#ifndef PATCH_CONVAR_H_GET_FLAGS
+#error "PATCH_CONVAR_H_GET_FLAGS - Implement ConCommandBase::GetFlags in public/tier1/convar.h"
+#endif
+
+#endif // _PATCHES_H

@@ -30,6 +30,8 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
+#include "wchartypes.h" // Required for shake.h (Linux)
+#include "shake.h" // Required for IEffects.h (Linux)
 #include "IEffects.h"
 #include "../vecmath/vecmath_wrap.h"
 
