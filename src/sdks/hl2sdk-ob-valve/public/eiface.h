@@ -72,11 +72,7 @@ typedef struct player_info_s player_info_t;
 
 #define INTERFACEVERSION_VENGINESERVER	"VEngineServer021"
 
-struct bbox_t
-{
-	Vector mins;
-	Vector maxs;
-};
+struct bbox_t;
 
 //-----------------------------------------------------------------------------
 // Purpose: Interface the engine exposes to the game DLL
