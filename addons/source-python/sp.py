@@ -29,34 +29,69 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+from configobj import ParseError
+
 # Source.Python Imports
 from cvar_c import CConVar
-from _core.settings import _CoreSettingsInstance
-
-import _core.commands # Don't remove this! It registers the "sp" command
-
-#   Translations
-from translations.manager import LanguageManager
 
 
 # =============================================================================
 # >> LOGGING SETUP
 # =============================================================================
-# Set the logging level
-CConVar('sp_logging_level').set_int(
-    int(_CoreSettingsInstance['LOG_SETTINGS']['level']))
+# Use try/except in case the logging values are not integers
+try:
 
-# Set the logging areas
-CConVar('sp_logging_areas').set_int(
-    int(_CoreSettingsInstance['LOG_SETTINGS']['areas']))
+    # Import the core settings dictionary
+    from _core.settings import _CoreSettingsInstance
+
+    # Set the logging level
+    CConVar('sp_logging_level').set_int(
+        int(_CoreSettingsInstance['LOG_SETTINGS']['level']))
+
+    # Set the logging areas
+    CConVar('sp_logging_areas').set_int(
+        int(_CoreSettingsInstance['LOG_SETTINGS']['areas']))
+
+# Was an exception raised?
+except (ValueError, ParseError):
+
+    # Set the logging level to max (5)
+    CConVar('sp_logging_level').set_int(5)
+
+    # Set the logging area to include console, SP logs, and main log
+    CConVar('sp_logging_areas').set_int(7)
+
+    # Initialize ExceptHooks
+    from excepthooks import ExceptHooks
+
+    # Import the _SPLogger
+    from loggers import _SPLogger
+
+    # Log a message about the value
+    _SPLogger.log_message(
+        '[Source.Python] Plugin did not load properly ' +
+        'due to the following error:')
+
+    # Re-raise the error
+    raise
 
 
 # =============================================================================
 # >> TRANSLATIONS SETUP
 # =============================================================================
+# Import the Language Manager
+from translations.manager import LanguageManager
+
 # Set the default language
 LanguageManager._register_default_language(
     _CoreSettingsInstance['BASE_SETTINGS']['language'])
+
+
+# =============================================================================
+# >> INITIALIZE SP COMMAND
+# =============================================================================
+from _core.commands import _SPCommandsInstance
 
 
 # =============================================================================
@@ -67,9 +102,6 @@ auth_providers = _CoreSettingsInstance['AUTH_SETTINGS']['providers'].split()
 
 # Should any providers be loaded?
 if auth_providers:
-
-    # Import the the SP Commands
-    from _core.commands import _SPCommandsInstance
 
     # Load the auth providers
     _SPCommandsInstance.call_command('auth', ['load'] + auth_providers)
