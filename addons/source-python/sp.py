@@ -30,10 +30,12 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-from configobj import ParseError
+from configobj import ConfigObjError
 
 # Source.Python Imports
 from cvar_c import CConVar
+#   ExceptHooks - this is done to register sys.excepthook
+from excepthooks import ExceptHooks
 
 
 # =============================================================================
@@ -54,16 +56,13 @@ try:
         int(_CoreSettingsInstance['LOG_SETTINGS']['areas']))
 
 # Was an exception raised?
-except (ValueError, ParseError):
+except (ValueError, ConfigObjError):
 
     # Set the logging level to max (5)
     CConVar('sp_logging_level').set_int(5)
 
     # Set the logging area to include console, SP logs, and main log
     CConVar('sp_logging_areas').set_int(7)
-
-    # Initialize ExceptHooks
-    from excepthooks import ExceptHooks
 
     # Import the _SPLogger
     from loggers import _SPLogger
