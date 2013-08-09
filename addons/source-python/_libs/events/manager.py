@@ -7,7 +7,7 @@
 from event_c import get_game_event_manager
 from public import public
 #   Events
-from events import EventsLogger
+from loggers import _SPLogger
 from events.listener import _EventListener
 
 
@@ -18,7 +18,7 @@ from events.listener import _EventListener
 GameEventManager = get_game_event_manager()
 
 # Get the sp.events.manager logger
-EventsManagerLogger = EventsLogger.manager
+EventsManagerLogger = _SPLogger.events.manager
 
 
 # =============================================================================
