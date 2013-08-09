@@ -229,9 +229,8 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 void CSourcePython::Unload( void )
 {
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
-	ConVar_Unregister( );
-
 	ClearAllCommands();
+	ConVar_Unregister( );
 
 	g_PythonManager.Shutdown();
 
