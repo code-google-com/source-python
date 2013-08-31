@@ -5,9 +5,9 @@
 # =============================================================================
 # Source.Python Imports
 from event_c import get_game_event_manager
+from loggers import _SPLogger
 from public import public
 #   Events
-from loggers import _SPLogger
 from events.listener import _EventListener
 
 
