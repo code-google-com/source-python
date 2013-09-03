@@ -23,18 +23,3 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-
-#ifndef _PATCHES_H
-#define _PATCHES_H
-
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_REMOVE_FLAGS
-#error "PATCH_CONVAR_H_REMOVE_FLAGS - Implement ConCommandBase::RemoveFlags in public/tier1/convar.h"
-#endif
-
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_GET_FLAGS
-#error "PATCH_CONVAR_H_GET_FLAGS - Implement ConCommandBase::GetFlags in public/tier1/convar.h"
-#endif
-
-#endif // _PATCHES_H

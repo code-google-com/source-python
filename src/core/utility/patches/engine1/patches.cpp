@@ -24,7 +24,12 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _PATCHES_H
-#define _PATCHES_H
+#include "convar.h"
+#ifndef PATCH_CONVAR_H_REMOVE_FLAGS
+#error "Implement ConCommandBase::RemoveFlags in public/tier1/convar.h"
+#endif
 
-#endif // _PATCHES_H
+#include "convar.h"
+#ifndef PATCH_CONVAR_H_GET_FLAGS
+#error "Implement ConCommandBase::GetFlags in public/tier1/convar.h"
+#endif"

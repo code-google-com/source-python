@@ -34,13 +34,13 @@ Set(SOURCEPYTHON_UTIL_HEADERS
 	core/utility/mrecipientfilter.h
     core/utility/mrecipientfilter_wrap.h
     core/utility/ipythongenerator.h
-    core/utility/patches/engine${SOURCE_ENGINE}/patches.h
 )
 
 Set(SOURCEPYTHON_UTIL_SOURCES
 	core/utility/mrecipientfilter.cpp
     core/utility/mrecipientfilter_wrap.cpp
     core/utility/mrecipientfilter_wrap_python.cpp
+    core/utility/patches/engine${SOURCE_ENGINE}/patches.cpp
 )
 
 Set(SOURCEPYTHON_UTIL_FILES
