@@ -51,12 +51,12 @@ CBinaryFile::CBinaryFile(unsigned long ulAddr, unsigned long ulSize)
 	m_ulSize = ulSize;
 }
 
-CPointer* CBinaryFile::find_signature(object szSignature)
+CPointer* CBinaryFile::find_signature(object oSignature)
 {
 	// This is required because there's no straight way to get a string from a python
 	// object from boost (without using the stl).
 	unsigned char* sigstr = NULL;
-	PyArg_Parse(szSignature.ptr(), "y", &sigstr);
+	PyArg_Parse(oSignature.ptr(), "y", &sigstr);
 	if (!sigstr)
 		return new CPointer();
 
@@ -68,7 +68,7 @@ CPointer* CBinaryFile::find_signature(object szSignature)
 			return new CPointer(sig.m_ulAddr);
 	}
 
-	int iLength = len(szSignature);
+	int iLength = len(oSignature);
 
 	unsigned char* base = (unsigned char *) m_ulAddr;
 	unsigned char* end  = (unsigned char *) (base + m_ulSize - iLength);
@@ -210,10 +210,20 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
 #endif
 }
 
-CPointer* CBinaryFile::find_pointer(object szSignature, int iOffset)
+CPointer* CBinaryFile::find_pointer(object oIdentifier, int iOffset)
 {
-	CPointer* ptr = find_signature(szSignature);
+	CPointer* ptr = find_address(oIdentifier);
 	return ptr->is_valid() ? ptr->get_ptr(iOffset) : ptr;
+}
+
+CPointer* CBinaryFile::find_address(object oIdentifier)
+{
+#ifdef _WIN32
+	if(strcmp(extract<const char*>(oIdentifier.attr("__class__").attr("__name__")), "bytes") == 0)
+		return find_signature(oIdentifier);
+#endif
+	
+	return find_symbol(extract<char*>(oIdentifier));
 }
 
 //-----------------------------------------------------------------------------
@@ -242,7 +252,14 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath, bool bSrvCheck /* = true 
 
 	unsigned long ulAddr = (unsigned long) dlLoadLibrary(szBinaryPath.data());
 	if (!ulAddr)
-		return NULL;
+	{
+		szBinaryPath = "Unable to find " + szBinaryPath;
+		#ifdef _WIN32
+			if (!str_ends_with(szBinaryPath.data(), ".dll"))
+				szBinaryPath += ".dll";
+		#endif
+		BOOST_RAISE_EXCEPTION(PyExc_IOError, szBinaryPath.data())
+	}
 
 	// Search for an existing BinaryFile object
 	for (std::list<CBinaryFile *>::iterator iter=m_Binaries.begin(); iter != m_Binaries.end(); iter++)
