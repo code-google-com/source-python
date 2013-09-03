@@ -148,6 +148,42 @@ public:
 
 	CFunction*          make_function(Convention eConv, char* szParams);
 
+	void reset_vm();
+	void set_mode(int iMode);
+
+	void set_arg_bool(bool value);
+	void set_arg_char(char value);
+	void set_arg_uchar(unsigned char value);
+	void set_arg_short(short value);
+	void set_arg_ushort(unsigned short value);
+	void set_arg_int(int value);
+	void set_arg_uint(unsigned int value);
+	void set_arg_long(long value);
+	void set_arg_ulong(unsigned long value);
+	void set_arg_long_long(long long value);
+	void set_arg_ulong_long(unsigned long long value);
+	void set_arg_float(float value);
+	void set_arg_double(double value);
+	void set_arg_pointer(object value);
+	void set_arg_string(char* value);
+
+	void				call_void();
+	bool				call_bool();
+	char				call_char();
+	unsigned char		call_uchar();
+	short				call_short();
+	unsigned short		call_ushort();
+	int					call_int();
+	unsigned int		call_uint();
+	long				call_long();
+	unsigned long		call_ulong();
+	long long			call_long_long();
+	unsigned long long	call_ulong_long();
+	float				call_float();
+	double				call_double();
+	CPointer*			call_pointer();
+	const char*			call_string();
+
 protected:
 	unsigned long m_ulAddr;
 };

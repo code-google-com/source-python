@@ -195,6 +195,189 @@ void export_memtools()
 			manage_new_object_policy()
 		)
 
+		CLASS_METHOD(CPointer,
+			reset_vm,
+			"Resets the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			set_mode,
+			"Sets the calling convention.",
+			args("convention")
+		)
+
+		// DynCall
+		CLASS_METHOD(CPointer,
+			set_arg_bool,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_char,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_uchar,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_short,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_ushort,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_int,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_uint,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_long,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_ulong,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_long_long,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_ulong_long,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_float,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_double,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_pointer,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			set_arg_string,
+			"Adds a new parameter to the virtual machine.",
+			args("value")
+		)
+
+		CLASS_METHOD(CPointer,
+			call_void,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_bool,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_char,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_uchar,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_short,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_ushort,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_int,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_uint,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_long,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_ulong,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_long_long,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_ulong_long,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_float,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_double,
+			"Calls the virtual machine."
+		)
+
+		CLASS_METHOD(CPointer,
+			call_pointer,
+			"Calls the virtual machine.",
+			manage_new_object_policy()
+		)
+
+		CLASS_METHOD(CPointer,
+			call_string,
+			"Calls the virtual machine."
+		)
+
 		// get_<type> methods
 		.def("get_bool",
 			&CPointer::get<bool>,
