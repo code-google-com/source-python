@@ -23,8 +23,3 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-
-#ifndef _PATCHES_H
-#define _PATCHES_H
-
-#endif // _PATCHES_H
