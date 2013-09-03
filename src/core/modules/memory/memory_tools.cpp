@@ -136,6 +136,173 @@ CFunction* CPointer::make_function(Convention eConv, char* szParams)
 	return new CFunction(m_ulAddr, eConv, szParams);
 }
 
+// DynCall
+void CPointer::reset_vm()
+{
+	dcReset(g_pCallVM);
+}
+
+void CPointer::set_mode(int iMode)
+{
+	dcMode(g_pCallVM, iMode);
+}
+
+void CPointer::set_arg_bool(bool value)
+{
+	dcArgBool(g_pCallVM, value);
+}
+
+void CPointer::set_arg_char(char value)
+{
+	dcArgChar(g_pCallVM, value);
+}
+
+void CPointer::set_arg_uchar(unsigned char value)
+{
+	dcArgChar(g_pCallVM, value);
+}
+
+void CPointer::set_arg_short(short value)
+{
+	dcArgShort(g_pCallVM, value);
+}
+
+void CPointer::set_arg_ushort(unsigned short value)
+{
+	dcArgShort(g_pCallVM, value);
+}
+
+void CPointer::set_arg_int(int value)
+{
+	dcArgInt(g_pCallVM, value);
+}
+
+void CPointer::set_arg_uint(unsigned int value)
+{
+	dcArgInt(g_pCallVM, value);
+}
+
+void CPointer::set_arg_long(long value)
+{
+	dcArgLong(g_pCallVM, value);
+}
+
+void CPointer::set_arg_ulong(unsigned long value)
+{
+	dcArgLong(g_pCallVM, value);
+}
+
+void CPointer::set_arg_long_long(long long value)
+{
+	dcArgLongLong(g_pCallVM, value);
+}
+
+void CPointer::set_arg_ulong_long(unsigned long long value)
+{
+	dcArgLongLong(g_pCallVM, value);
+}
+
+void CPointer::set_arg_float(float value)
+{
+	dcArgFloat(g_pCallVM, value);
+}
+
+void CPointer::set_arg_double(double value)
+{
+	dcArgDouble(g_pCallVM, value);
+}
+
+void CPointer::set_arg_pointer(object value)
+{
+	unsigned long ptr = ExtractPyPtr(value);
+	dcArgPointer(g_pCallVM, ptr);
+}
+
+void CPointer::set_arg_string(char* value)
+{
+	dcArgPointer(g_pCallVM, (unsigned long) value);
+}
+
+void CPointer::call_void()
+{
+	dcCallVoid(g_pCallVM, m_ulAddr);
+}
+
+bool CPointer::call_bool()
+{
+	return dcCallBool(g_pCallVM, m_ulAddr);
+}
+
+char CPointer::call_char()
+{
+	return dcCallChar(g_pCallVM, m_ulAddr);
+}
+
+unsigned char CPointer::call_uchar()
+{
+	return dcCallChar(g_pCallVM, m_ulAddr);
+}
+
+short CPointer::call_short()
+{
+	return dcCallShort(g_pCallVM, m_ulAddr);
+}
+
+unsigned short CPointer::call_ushort()
+{
+	return dcCallShort(g_pCallVM, m_ulAddr);
+}
+
+int CPointer::call_int()
+{
+	return dcCallInt(g_pCallVM, m_ulAddr);
+}
+
+unsigned int CPointer::call_uint()
+{
+	return dcCallInt(g_pCallVM, m_ulAddr);
+}
+
+long CPointer::call_long()
+{
+	return dcCallLong(g_pCallVM, m_ulAddr);
+}
+
+unsigned long CPointer::call_ulong()
+{
+	return dcCallLong(g_pCallVM, m_ulAddr);
+}
+
+long long CPointer::call_long_long()
+{
+	return dcCallLongLong(g_pCallVM, m_ulAddr);
+}
+
+unsigned long long CPointer::call_ulong_long()
+{
+	return dcCallLongLong(g_pCallVM, m_ulAddr);
+}
+
+float CPointer::call_float()
+{
+	return dcCallFloat(g_pCallVM, m_ulAddr);
+}
+
+double CPointer::call_double()
+{
+	return dcCallDouble(g_pCallVM, m_ulAddr);
+}
+
+CPointer* CPointer::call_pointer()
+{
+	return new CPointer(dcCallPointer(g_pCallVM, m_ulAddr));
+}
+
+const char* CPointer::call_string()
+{
+	return (const char *) dcCallPointer(g_pCallVM, m_ulAddr);
+}
+
 //-----------------------------------------------------------------------------
 // CFunction class
 //-----------------------------------------------------------------------------
