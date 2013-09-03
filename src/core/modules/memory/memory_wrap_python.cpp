@@ -65,40 +65,33 @@ void export_binaryfile()
 
 		// Class methods
 		CLASS_METHOD(CBinaryFile,
-			find_signature,
-			"Returns the address of a signature found in memory.",
-			args("szSignature"),
-			manage_new_object_policy()
-		)
-
-		CLASS_METHOD(CBinaryFile,
-			find_symbol,
-			"Returns the address of a symbol found in memory.",
-			args("szSymbol"),
-			manage_new_object_policy()
-		)
-
-		CLASS_METHOD(CBinaryFile,
 			find_pointer,
 			"Rips out a pointer from a function.",
 			args("szSignature", "iOffset"),
 			manage_new_object_policy()
 		)
 
+		CLASS_METHOD(CBinaryFile,
+			find_address,
+			"Returns the address of a signature or symbol found in memory.",
+			args("identifier"),
+			manage_new_object_policy()
+		)
+
 		// Special methods
 		CLASS_METHOD_SPECIAL(CBinaryFile,
 			"__getattr__",
-			find_symbol,
-			"Returns the address of a symbol found in memory.",
-			args("szSymbol"),
+			find_address,
+			"Returns the address of a signature or symbol found in memory.",
+			args("identifier"),
 			manage_new_object_policy()
 		)
 
 		CLASS_METHOD_SPECIAL(CBinaryFile,
 			"__getitem__",
-			find_symbol,
-			"Returns the address of a symbol found in memory.",
-			args("szSymbol"),
+			find_address,
+			"Returns the address of a signature or symbol found in memory.",
+			args("identifier"),
 			manage_new_object_policy()
 		)
 

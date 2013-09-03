@@ -46,9 +46,10 @@ class CBinaryFile
 public:
 	CBinaryFile(unsigned long ulAddr, unsigned long ulSize);
 
-	CPointer* find_signature(object szSignature);
+	CPointer* find_signature(object oSignature);
 	CPointer* find_symbol(char* szSymbol);
-	CPointer* find_pointer(object szSignature, int iOffset);
+	CPointer* find_pointer(object oIdentifier, int iOffset);
+	CPointer* find_address(object oIdentifier);
 
 	unsigned long get_address() { return m_ulAddr; }
 	unsigned long get_size() { return m_ulSize; }
