@@ -81,7 +81,7 @@ void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 
 
 	if (!iSize)
 	{
-		iSize = getMemSize((void *) (m_ulAddr + iOffset));
+		iSize = UTIL_GetMemSize((void *) (m_ulAddr + iOffset));
 		if(!iSize)
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve size of address.")
 	}
@@ -454,4 +454,9 @@ void CFunction::remove_post_hook(PyObject* pCallable)
 int get_error()
 {
 	return dcGetError(g_pCallVM);
+}
+
+CPointer* alloc(int iSize)
+{
+	return new CPointer((unsigned long) UTIL_Alloc(iSize));
 }

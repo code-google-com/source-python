@@ -40,6 +40,7 @@
 
 #include "memory_scanner.h"
 #include "memory_tools.h"
+#include "utility/sp_util.h"
 
 
 //-----------------------------------------------------------------------------
@@ -219,7 +220,7 @@ CPointer* CBinaryFile::find_pointer(object oIdentifier, int iOffset)
 CPointer* CBinaryFile::find_address(object oIdentifier)
 {
 #ifdef _WIN32
-	if(strcmp(extract<const char*>(oIdentifier.attr("__class__").attr("__name__")), "bytes") == 0)
+	if(CheckClassname(oIdentifier, "bytes"))
 		return find_signature(oIdentifier);
 #endif
 	
