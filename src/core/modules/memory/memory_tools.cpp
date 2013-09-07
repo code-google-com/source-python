@@ -40,6 +40,7 @@
 
 #include "memory_tools.h"
 #include "utility/wrap_macros.h"
+#include "utility/sp_util.h"
 
 
 DCCallVM* g_pCallVM = dcNewCallVM(4096);
@@ -54,8 +55,7 @@ CPointer::CPointer(unsigned long ulAddr /* = 0 */)
 
 CPointer* CPointer::add(int iValue)
 {
-	m_ulAddr += iValue;
-	return this;
+	return new CPointer(m_ulAddr + iValue);
 }
 
 CPointer* CPointer::sub(int iValue)

@@ -32,4 +32,4 @@
 #include "convar.h"
 #ifndef PATCH_CONVAR_H_GET_FLAGS
 #error "Implement ConCommandBase::GetFlags in public/tier1/convar.h"
-#endif"
+#endif
