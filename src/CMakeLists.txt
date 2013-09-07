@@ -29,6 +29,7 @@ Set(SOURCEPYTHON_LOADER_FILES
 # Utility
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_UTIL_HEADERS
+    core/utility/sp_util.h
     core/utility/call_python.h
     core/utility/wrap_macros.h
 	core/utility/mrecipientfilter.h

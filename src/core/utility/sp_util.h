@@ -32,6 +32,7 @@
 #include "eiface.h"
 #include "public/game/server/iplayerinfo.h"
 #include "basehandle.h"
+#include "modules/memory/memory_tools.h"
 
 //---------------------------------------------------------------------------------
 // Globals
@@ -39,6 +40,20 @@
 extern IVEngineServer* engine;
 extern CGlobalVars*	   gpGlobals;
 extern IPlayerInfoManager* playerinfomanager;
+
+
+//---------------------------------------------------------------------------------
+// Converts a Python CPointer object or an integer to an unsigned long
+//---------------------------------------------------------------------------------
+inline unsigned long ExtractPyPtr(object obj)
+{
+	if (strcmp(extract<char *>(obj.attr("__class__").attr("__name__")), "CPointer") == 0)
+	{
+		CPointer* pPtr = extract<CPointer *>(obj);
+		return pPtr->get_address();
+	}
+	return extract<unsigned long>(obj);
+}
 
 //---------------------------------------------------------------------------------
 // Returns the index of an entity.
@@ -182,9 +197,10 @@ inline unsigned int IndexOfIntHandle(int iHandle)
 //---------------------------------------------------------------------------------
 // Returns the index of a pointer
 //---------------------------------------------------------------------------------
-inline unsigned int index_of_pointer(int iPointer)
+inline unsigned int index_of_pointer(object oPtr)
 {
-	IServerUnknown *pUnknown = (IServerUnknown *)iPointer;
+	unsigned long ulPointer = ExtractPyPtr(oPtr);
+	IServerUnknown *pUnknown = (IServerUnknown *) ulPointer;
 	IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
 	if (!pNetworkable)
 	{

@@ -604,28 +604,14 @@ void export_memtools()
 			"__add__",
 			add,
 			"Adds a value to the base address.",
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD_SPECIAL(CPointer,
-			"__radd__",
-			add,
-			"Adds a value to the base address.",
-			reference_existing_object_policy()
+			manage_new_object_policy()
 		)
 
 		CLASS_METHOD_SPECIAL(CPointer,
 			"__sub__",
-			add,
+			sub,
 			"Subtracts a value from the base address.",
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD_SPECIAL(CPointer,
-			"__rsub__",
-			add,
-			"Subtracts a value from the base address.",
-			reference_existing_object_policy()
+			manage_new_object_policy()
 		)
 
 		// Properties

@@ -12,6 +12,7 @@
 #include "memory_tools.h"
 #include "utility/wrap_macros.h"
 #include "utility/call_python.h"
+#include "utility/sp_util.h"
 
 #include "boost/python.hpp"
 using namespace boost::python;
