@@ -39,7 +39,7 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-inline size_t getMemSize(void* ptr)
+inline size_t UTIL_GetMemSize(void* ptr)
 {
 #ifdef _WIN32
 	return g_pMemAlloc->GetSize(ptr);
@@ -50,7 +50,7 @@ inline size_t getMemSize(void* ptr)
 #endif
 }
 
-inline void* allocate(size_t size)
+inline void* UTIL_Alloc(size_t size)
 {
 #ifdef _WIN32
 	return g_pMemAlloc->IndirectAlloc(size);
@@ -61,7 +61,7 @@ inline void* allocate(size_t size)
 #endif
 }
 
-inline void* reallocate(void* ptr, size_t size)
+inline void* UTIL_Realloc(void* ptr, size_t size)
 {
 #ifdef _WIN32
 	return g_pMemAlloc->Realloc(ptr, size);
@@ -72,7 +72,7 @@ inline void* reallocate(void* ptr, size_t size)
 #endif
 }
 
-inline void deallocate(void* ptr)
+inline void UTIL_Dealloc(void* ptr)
 {
 #ifdef _WIN32
 	g_pMemAlloc->Free(ptr);
@@ -133,7 +133,7 @@ public:
 	CPointer*           get_ptr(int iOffset = 0);
 	void                set_ptr(CPointer* ptr, int iOffset = 0);
 
-	unsigned long       get_size() { return getMemSize((void *) m_ulAddr); }
+	unsigned long       get_size() { return UTIL_GetMemSize((void *) m_ulAddr); }
 	unsigned long       get_address() { return m_ulAddr; }
 
 	CPointer*           add(int iValue);
@@ -142,9 +142,8 @@ public:
 
 	CPointer*           get_virtual_func(int iIndex, bool bPlatformCheck = true);
 
-	void                alloc(int iSize) { m_ulAddr = (unsigned long) allocate(iSize); }
-	void                realloc(int iSize) { m_ulAddr = (unsigned long) reallocate((void *) m_ulAddr, iSize); }
-	void                dealloc() { deallocate((void *) m_ulAddr); m_ulAddr = 0; }
+	void                realloc(int iSize) { m_ulAddr = (unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize); }
+	void                dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
 	CFunction*          make_function(Convention eConv, char* szParams);
 
@@ -211,5 +210,6 @@ private:
 };
 
 int get_error();
+CPointer* alloc(int iSize);
 
 #endif // _MEMORY_TOOLS_H

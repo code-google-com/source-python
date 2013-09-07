@@ -172,12 +172,6 @@ void export_memtools()
 		)
 
 		CLASS_METHOD(CPointer,
-			alloc,
-			"Allocates a memory block.",
-			args("iSize")
-		)
-
-		CLASS_METHOD(CPointer,
 			realloc,
 			"Reallocates a memory block.",
 			args("iSize")
@@ -628,6 +622,12 @@ void export_memtools()
 		)
 
 	BOOST_END_CLASS()
+
+	BOOST_FUNCTION(alloc,
+		"Allocates a memory block.",
+		args("iSize"),
+		manage_new_object_policy()
+	);
 
 	BOOST_INHERITED_CLASS_CONSTRUCTOR(CFunction, CPointer, unsigned long, Convention, char*)
 

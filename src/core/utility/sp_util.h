@@ -41,13 +41,21 @@ extern IVEngineServer* engine;
 extern CGlobalVars*	   gpGlobals;
 extern IPlayerInfoManager* playerinfomanager;
 
+//---------------------------------------------------------------------------------
+// Returns True if the class name equals the given string.
+//---------------------------------------------------------------------------------
+inline bool CheckClassname(object obj, char* name)
+{
+	return strcmp(extract<char *>(obj.attr("__class__").attr("__name__")), name) == 0;
+}
+
 
 //---------------------------------------------------------------------------------
-// Converts a Python CPointer object or an integer to an unsigned long
+// Converts a Python CPointer object or an integer to an unsigned long.
 //---------------------------------------------------------------------------------
 inline unsigned long ExtractPyPtr(object obj)
 {
-	if (strcmp(extract<char *>(obj.attr("__class__").attr("__name__")), "CPointer") == 0)
+	if (CheckClassname(obj, "CPointer"))
 	{
 		CPointer* pPtr = extract<CPointer *>(obj);
 		return pPtr->get_address();

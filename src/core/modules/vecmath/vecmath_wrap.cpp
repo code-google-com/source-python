@@ -26,6 +26,7 @@
 
 #include "vecmath_wrap.h"
 #include "utility/wrap_macros.h"
+#include "utility/sp_util.h"
 
 CVector::CVector(float x, float y, float z)
 {
@@ -140,7 +141,7 @@ bool CVector::operator!=(CVector* pOther)
 
 CVector* CVector::operator+(object value)
 {
-	if (strcmp(extract<char*>(value.attr("__class__").attr("__name__")), "CVector") == 0)
+	if (CheckClassname(value, "CVector"))
 	{
 		CVector other = extract<CVector>(value);
 		return new CVector(m_Vector + other);
@@ -155,7 +156,7 @@ CVector* CVector::operator+(object value)
 
 CVector* CVector::operator-(object value)
 {
-	if (strcmp(extract<char*>(value.attr("__class__").attr("__name__")), "CVector") == 0)
+	if (CheckClassname(value, "CVector"))
 	{
 		CVector other = extract<CVector>(value);
 		return new CVector(m_Vector - other);
@@ -170,7 +171,7 @@ CVector* CVector::operator-(object value)
 
 CVector* CVector::operator*(object value)
 {
-	if (strcmp(extract<char*>(value.attr("__class__").attr("__name__")), "CVector") == 0)
+	if (CheckClassname(value, "CVector"))
 	{
 		CVector other = extract<CVector>(value);
 		return new CVector(m_Vector * other);
@@ -182,7 +183,7 @@ CVector* CVector::operator*(object value)
 
 CVector* CVector::operator/(object value)
 {
-	if (strcmp(extract<char*>(value.attr("__class__").attr("__name__")), "CVector") == 0)
+	if (CheckClassname(value, "CVector"))
 	{
 		CVector other = extract<CVector>(value);
 		return new CVector(m_Vector / other);
