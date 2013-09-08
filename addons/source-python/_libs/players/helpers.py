@@ -172,7 +172,7 @@ def index_from_steamid(steamid):
             return index_from_playerinfo(player)
 
     # If no player found with a matching SteamID, raise an error
-    raise ValueError('Invalid SteamID "%s"' % steamid)
+    raise ValueError('Invalid SteamID "{0}"'.format(steamid))
 
 
 @public
@@ -189,7 +189,7 @@ def index_from_uniqueid(uniqueid):
             return index_from_playerinfo(player)
 
     # If no player found with a matching UniqueID, raise an error
-    raise ValueError('Invalid UniqueID "%s"' % uniqueid)
+    raise ValueError('Invalid UniqueID "{0}"'.format(uniqueid))
 
 
 @public
@@ -206,7 +206,7 @@ def index_from_name(name):
             return index_from_playerinfo(player)
 
     # If no player found with a matching name, raise an error
-    raise ValueError('Invalid name "%s"' % name)
+    raise ValueError('Invalid name "{0}"'.format(name))
 
 
 @public
@@ -217,7 +217,7 @@ def uniqueid_from_playerinfo(player):
     if player.is_fake_client():
 
         # Return the bot's UniqueID
-        return 'BOT_%s' % player.get_name()
+        return 'BOT_{0}'.format(player.get_name())
 
     # Get the player's SteamID
     steamid = player.get_networkid_string()
@@ -229,7 +229,7 @@ def uniqueid_from_playerinfo(player):
         address = address_from_player(player)
 
         # Return the Lan player's ID
-        return 'LAN_%s' % '_'.join(address.split(':')[0].split('.'))
+        return 'LAN_{0}'.format('_'.join(address.split(':')[0].split('.')))
 
     # Return the player's SteamID
     return steamid

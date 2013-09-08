@@ -38,7 +38,8 @@ class BaseEntity(object):
         if edict.is_free() or not edict.is_valid():
 
             # If not raise an error
-            raise ValueError('Index "%s" is not a proper entity index' % index)
+            raise ValueError(
+                'Index "{0}" is not a proper entity index'.format(index))
 
         # Create the object
         self = object.__new__(cls)
@@ -95,7 +96,7 @@ class BaseEntity(object):
             return self._get_function(attr)
 
         # If the attribute is not found, raise an error
-        raise AttributeError('Attribute "%s" not found' % attr)
+        raise AttributeError('Attribute "{0}" not found'.format(attr))
 
     def _get_property(self, item):
         '''Gets the value of the given property'''
@@ -107,13 +108,13 @@ class BaseEntity(object):
         prop_type = self.properties[item].type
 
         # Is the property's type a known type?
-        if not hasattr(prop, 'get_%s' % prop_type):
+        if not hasattr(prop, 'get_{0}'.format(prop_type)):
 
             # If not a proper type, raise an error
-            raise TypeError('Invalid property type "%s"' % prop_type)
+            raise TypeError('Invalid property type "{0}"'.format(prop_type))
 
         # Get the property's value
-        value = getattr(prop, 'get_%s' % prop_type)()
+        value = getattr(prop, 'get_{0}'.format(prop_type))()
 
         # Is the property a True/False property?
         if 'True' in self.properties[item]:
@@ -137,13 +138,13 @@ class BaseEntity(object):
         offset_type = self.offsets[item].type
 
         # Is the offset's type a known type?
-        if not hasattr(Binutils, 'GetLoc%s' % offset_type):
+        if not hasattr(Binutils, 'GetLoc{0}'.format(offset_type)):
 
             # If not a proper type, raise an error
-            raise TypeError('Invalid offset type "%s"' % offset_type)
+            raise TypeError('Invalid offset type "{0}"'.format(offset_type))
 
         # Return the value of the offset
-        return getattr(Binutils, 'GetLoc%s' % offset_type)(
+        return getattr(Binutils, 'GetLoc{0}'.format(offset_type))(
             self.pointer + self.offsets[item].offset)
 
     def _get_function(self, item):
@@ -214,7 +215,7 @@ class BaseEntity(object):
         else:
 
             # If the attribute is not found, raise an error
-            raise LookupError('Attribute "%s" not found' % attr)
+            raise LookupError('Attribute "{0}" not found'.format(attr))
 
     def _set_property(self, item, value):
         '''Sets the value of the given propery'''
@@ -226,10 +227,10 @@ class BaseEntity(object):
         prop_type = self.properties[item].type
 
         # Is the property's type a known type?
-        if not hasattr(prop, 'set_%s' % prop_type):
+        if not hasattr(prop, 'set_{0}'.format(prop_type)):
 
             # Raise an error
-            raise TypeError('Invalid property type "%s"' % prop_type)
+            raise TypeError('Invalid property type "{0}"'.format(prop_type))
 
         # Is the property a True/False property?
         if 'True' in self.properties[item]:
@@ -238,7 +239,7 @@ class BaseEntity(object):
             value = self.properties[item][str(value)]
 
         # Set the property's value
-        getattr(prop, 'set_%s' % prop_type)(value)
+        getattr(prop, 'set_{0}'.format(prop_type))(value)
 
     def _set_keyvalue(self, item, value):
         '''Sets the value of the given keyvalue'''
@@ -247,13 +248,13 @@ class BaseEntity(object):
         kv_type = self.keyvalues[item]
 
         # Is the keyvalue's type a known type?
-        if not hasattr(self.edict, 'SetKeyValue%s' % kv_type):
+        if not hasattr(self.edict, 'SetKeyValue{0}'.format(kv_type)):
 
             # Raise an error
-            raise TypeError('Invalid keyvalue type "%s"' % kv_type)
+            raise TypeError('Invalid keyvalue type "{0}"'.format(kv_type))
 
         # Set the keyvalue's value
-        getattr(self.edict, 'SetKeyValue%s' % kv_type)(item, value)
+        getattr(self.edict, 'SetKeyValue{0}'.format(kv_type))(item, value)
 
     def _set_offset(self, item, value):
         '''Sets the value of the given offset'''
@@ -262,13 +263,13 @@ class BaseEntity(object):
         offset_type = self.offsets[item].type
 
         # Is the offset's type a known type?
-        if not hasattr(Binutils, 'SetLoc%s' % offset_type):
+        if not hasattr(Binutils, 'SetLoc{0}'.format(offset_type)):
 
             # If not a proper type, raise an error
-            raise TypeError('Invalid offset type "%s"' % offset_type)
+            raise TypeError('Invalid offset type "{0}"'.format(offset_type))
 
         # Set the offset's value
-        getattr(Binutils, 'SetLoc%s' % offset_type)(
+        getattr(Binutils, 'SetLoc{0}'.format(offset_type))(
             self.pointer + self.offsets[item].offset, value)
 
     def get_color(self):
@@ -291,7 +292,7 @@ class BaseEntity(object):
             # Raise an error
             raise TypeError(
                 'set_color() requires 3 or 4 ' +
-                'arguments, %s were given' % len(args))
+                'arguments, {0} were given'.format(len(args)))
 
         # Get the RGB values
         red, green, blue = args[:3]

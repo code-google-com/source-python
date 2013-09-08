@@ -54,4 +54,5 @@ def echo_console(text):
     for line in text.split('\n'):
 
         # Echo the message
-        GameEngine.server_command('echo "%s"\n' % line.replace('"', "'"))
+        GameEngine.server_command(
+            'echo "{0}"\n'.format(line.replace('"', "'")))

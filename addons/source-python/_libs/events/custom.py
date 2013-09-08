@@ -69,8 +69,8 @@ class CustomEvent(metaclass=_EventMeta):
 
                 # If not, raise an error
                 raise KeyError(
-                    'Given keyword "%s" is not a ' % kwarg +
-                    'variable for the event "%s"' % self.name)
+                    'Given keyword "{0}" is not a variable for '
+                    'the event "{1}"'.format(kwarg, self.name))
 
             # Store the variable's value as a private attribute
             super(CustomEvent, self).__setattr__('_' + kwarg, kwargs[kwarg])

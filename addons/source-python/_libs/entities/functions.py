@@ -77,7 +77,7 @@ class _FunctionInstance(object):
 
             # Raise an error
             raise KeyError(
-                'No function "%s" stored in SignatureDictionary' % name)
+                'No function "{0}" stored in SignatureDictionary'.format(name))
 
         # Store the function to be called
         self.function = SignatureDictionary[name]

@@ -38,7 +38,7 @@ class Signature(object):
         if not return_type in DynCallCalls:
 
             # Raise an error about the return type
-            raise ValueError('Unknown return type "%s"' % return_type)
+            raise ValueError('Unknown return type "{0}"'.format(return_type))
 
         # Get the module for the signature/symbol
         module = ini['module']
@@ -78,8 +78,8 @@ class Signature(object):
 
             # Raise an error about the number of arguments passed
             raise ValueError(
-                'Given arguments (%s) do not match' % len(args) +
-                ' required arguments (%s)' % len(self.arguments))
+                'Given arguments ({0}) do not match required '
+                'arguments ({1})'.format(len(args), len(self.arguments)))
 
         # Reset the vm
         Binutils.dcReset(DynCallVM)
@@ -101,7 +101,8 @@ class Signature(object):
 
                 # Raise an error about the argument type
                 raise ValueError(
-                    'Unknown argument type "%s"' % self.arguments[index])
+                    'Unknown argument type "{0}"'.format(
+                        self.arguments[index]))
 
         # Call the function
         return DynCallCalls[self.return_type](DynCallVM, self.address)

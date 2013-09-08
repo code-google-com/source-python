@@ -85,7 +85,7 @@ class ResourceFile(OrderedDict):
         with self.fullpath.open('w') as open_file:
 
             # Write the .res file's name
-            open_file.write('"%s"\n' % self.filepath)
+            open_file.write('"{0}"\n'.format(self.filepath))
 
             # Create a group of events for the file
             open_file.write('{\n')
@@ -94,7 +94,7 @@ class ResourceFile(OrderedDict):
             for event in self:
 
                 # Write the event
-                open_file.write('    "%s"\n' % event)
+                open_file.write('    "{0}"\n'.format(event))
 
                 # Create a group of variables for the event
                 open_file.write('    {\n')
@@ -105,11 +105,13 @@ class ResourceFile(OrderedDict):
                     # Get the variable's instance
                     instance = self[event]._odict[variable]
 
+                    # Get the variable's comment
+                    comment = '\t// {0}'.format(
+                        instance._comment) if instance._comment else ''
+
                     # Write the variable with its type and comment
-                    open_file.write(
-                        '        "%s"\t"%s"%s\n' % (variable, instance.name,
-                        ('\t// %s' % instance._comment if
-                        instance._comment else '')))
+                    open_file.write('        "{0}"\t"{1}"{2}\n'.format(
+                        variable, instance.name, comment))
 
                 # End the group of variables
                 open_file.write('    }\n')

@@ -62,7 +62,7 @@ class RecipientFilter(CMRecipientFilter):
 
     def __repr__(self):
         '''Return a readable representation of the recipient filter'''
-        return '(%s)' % ' ,'.join(map(str, self))
+        return '({0})'.format(' ,'.join(map(str, self)))
 
     def merge(self, iterable):
         '''Merge the given recipient'''

@@ -27,10 +27,10 @@ from public import public
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store the areas constants
-CONSOLE = 1<<0
-MAIN_LOG = 1<<1
-SP_LOG = 1<<2
-SCRIPT_LOG = 1<<3
+CONSOLE = 1 << 0
+MAIN_LOG = 1 << 1
+SP_LOG = 1 << 2
+SCRIPT_LOG = 1 << 3
 
 # Store the new level names
 ALWAYS = 60

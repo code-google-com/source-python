@@ -27,7 +27,8 @@ __all__ = []
 try:
 
     # Get the game's file's instance
-    _game_instance = __import__('players.games.%s' % GAME_NAME, fromlist=[''])
+    _game_instance = __import__(
+        'players.games.{0}'.format(GAME_NAME), fromlist=[''])
 
 # Was an ImportError encountered?
 except ImportError:
@@ -170,9 +171,9 @@ class _PlayerWeapons(_GameWeapons):
 
             # Raise an error
             raise LookupError(
-                'No index found for given arguments ' +
-                '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
-                'for player "%s"' % self.userid)
+                'No index found for given arguments '
+                '"{0}, {1}, {2}" for player "{3}"'.format(
+                    classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
         weapon = BaseEntity(index, 'weapon')
@@ -214,9 +215,9 @@ class _PlayerWeapons(_GameWeapons):
 
             # Raise an error
             raise LookupError(
-                'No index found for given arguments ' +
-                '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
-                'for player "%s"' % self.userid)
+                'No index found for given arguments '
+                '"{0}, {1}, {2}" for player "{3}"'.format(
+                    classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
         weapon = BaseEntity(index, 'weapon')
@@ -257,9 +258,9 @@ class _PlayerWeapons(_GameWeapons):
 
             # Raise an error
             raise LookupError(
-                'No index found for given arguments ' +
-                '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
-                'for player "%s"' % self.userid)
+                'No index found for given arguments '
+                '"{0}, {1}, {2}" for player "{3}"'.format(
+                    classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
         weapon = BaseEntity(index, 'weapon')
@@ -305,9 +306,9 @@ class _PlayerWeapons(_GameWeapons):
 
             # Raise an error
             raise LookupError(
-                'No index found for given arguments ' +
-                '"%s, %s, %s" ' % (classname, is_filters, not_filters) +
-                'for player "%s"' % self.userid)
+                'No index found for given arguments '
+                '"{0}, {1}, {2}" for player "{3}"'.format(
+                    classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
         weapon = BaseEntity(index, 'weapon')
@@ -411,7 +412,7 @@ class _PlayerWeapons(_GameWeapons):
 
             # Raise an error
             raise ValueError(
-                'No active weapon found for player "%s"' % self.userid)
+                'No active weapon found for player "{0}"'.format(self.userid))
 
         # Return the entity's color
         return BaseEntity(index).color
@@ -430,7 +431,7 @@ class _PlayerWeapons(_GameWeapons):
 
             # Raise an error
             raise ValueError(
-                'No active weapon found for player "%s"' % self.userid)
+                'No active weapon found for player "{0}"'.format(self.userid))
 
         # Set the entity's color
         BaseEntity(index).color = (red, green, blue, alpha)

@@ -45,8 +45,8 @@ class Repeat(AutoUnload):
 
         # Log the __init__ message
         TickRepeatLogger.log_info(
-            'Repeat.__init__: <%s> <%s> <%s>' % (
-            self.callback, self.args, self.kwargs))
+            'Repeat.__init__: <{0}> <{1}> <{2}>'.format(
+                self.callback, self.args, self.kwargs))
 
         # Set up private attributes
         self._interval = 0
@@ -60,7 +60,7 @@ class Repeat(AutoUnload):
 
         # Log the start message
         TickRepeatLogger.log_info(
-            'Repeat.start: <%s> <%s>' % (interval, limit))
+            'Repeat.start: <{0}> <{1}>'.format(interval, limit))
 
         # Is the repeat already running?
         if self._status == Status.RUNNING:
@@ -239,7 +239,7 @@ class Repeat(AutoUnload):
 
                 # Log continuing the loop
                 TickRepeatLogger.log_info(
-                    'Repeat._execute - Remaining - %s' % self.remaining)
+                    'Repeat._execute - Remaining - {0}'.format(self.remaining))
 
             # Call the delay again
             self._delay = TickDelays.delay(self._interval, self._execute)

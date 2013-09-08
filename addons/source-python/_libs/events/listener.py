@@ -49,8 +49,8 @@ class _EventListener(list):
 
             # Raise an error
             raise ValueError(
-                'Event callback "%s" is already ' % callback +
-                'registered for event "%s"' % self.event)
+                'Event callback "{0}" is already registered '
+                'for event "{1}"'.format(callback, self.event))
 
         # Add the callback to the list
         super(_EventListener, self).append(callback)
@@ -63,8 +63,8 @@ class _EventListener(list):
 
             # Raise an error
             raise ValueError(
-                'Event callback "%s" is not ' % callback +
-                'registered for the event "%s"' % self.event)
+                'Event callback "{0}" is not registered for '
+                'the event "{1}"'.format(callback, self.event))
 
         # Remove the callback from the list
         super(_EventListener, self).remove(callback)

@@ -53,7 +53,7 @@ class _EntitySpecials(object):
 
             # Raise an error if not supported
             raise NotImplementedError(
-                'damage is not implemented for %s' % GAME_NAME)
+                'damage is not implemented for {0}'.format(GAME_NAME))
 
         # Was no weapon index given?
         if weapon_index is None and hasattr(self, 'active_weapon'):
@@ -121,7 +121,8 @@ class _EntitySpecials(object):
             if item in DamageOffsets:
 
                 # Set the offset's value
-                getattr(Binutils, 'SetLoc%s' % DamageOffsets[item]['type'])(
+                getattr(
+                    Binutils, 'SetLoc{0}'.format(DamageOffsets[item]['type']))(
                     take_damage_info + DamageOffsets[item]['offset'],
                     kwargs[item])
 

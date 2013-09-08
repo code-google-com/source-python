@@ -39,8 +39,8 @@ class _BaseCommandManager(dict):
 
             # Raise an error
             raise TypeError(
-                '%s commands must be passed as a ' % type(self).__name__ +
-                'list, tuple, or string, not "%s"' % type(names).__name__)
+                '{0} commands must be passed as a list, tuple, or string,'
+                ' not "{1}"'.format(type(self).__name__, type(names).__name__))
 
         # Is there a specified callback manager for this class?
         if not self._callback_manager is None:
@@ -73,7 +73,6 @@ class _BaseCommandManager(dict):
             # Add the callback to the command's list of callbacks
             self[name].append(callback)
 
-
     def unregister_commands(self, names, callback):
         '''Unregisters the given commands from the given callback'''
 
@@ -88,8 +87,8 @@ class _BaseCommandManager(dict):
 
             # Raise an error
             raise TypeError(
-                '%s commands must be passed as a ' % type(self).__name__ +
-                'list, tuple, or string, not "%s"' % type(names).__name__)
+                '{0} commands must be passed as a list, tuple, or string,'
+                ' not "{1}"'.format(type(self).__name__, type(names).__name__))
 
         # Loop through all given names
         for name in names:
@@ -98,7 +97,7 @@ class _BaseCommandManager(dict):
             if not name in self:
 
                 # Raise an error
-                raise KeyError('Command "%s" not registered' % name)
+                raise KeyError('Command "{0}" not registered'.format(name))
 
             # Is there a specified callback manager for this class?
             if not self._callback_manager is None:

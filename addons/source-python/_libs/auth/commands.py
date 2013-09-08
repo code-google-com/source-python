@@ -103,7 +103,7 @@ class _AuthCommands(OrderedDict):
         for item in self:
 
             # Add the base text
-            text = 'auth %s' % item
+            text = 'auth {0}'.format(item)
 
             # Does the current item use arguments?
             if hasattr(self[item], 'args'):
