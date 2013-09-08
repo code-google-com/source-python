@@ -78,7 +78,7 @@ class _DamageOffsets(_ConstantBase):
             return _entity_values['damage'][attr]
 
         # Raise an AttributeError so that hasattr returns False
-        raise AttributeError('Offset "%s" not found' % attr)
+        raise AttributeError('Offset "{0}" not found'.format(attr))
 
 # Get the _DamageOffsets instance
 DamageOffsets = _DamageOffsets()

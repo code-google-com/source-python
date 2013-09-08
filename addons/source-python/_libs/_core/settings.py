@@ -145,9 +145,10 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
         # Set the auth provider comments
         self['AUTH_SETTINGS'].comments['providers'] = _core_strings[
             'providers'].get_string(
-                self._language, providers='\n'.join(_auth_providers),
-                single=_auth_providers[0],
-                multiple=' '.join(_auth_providers[:3])).splitlines()
+            self._language,
+            providers='\n'.join(_auth_providers),
+            single=_auth_providers[0],
+            multiple=' '.join(_auth_providers[:3])).splitlines()
 
     def _check_logging_settings(self):
         '''Adds logging settings if they are missing'''

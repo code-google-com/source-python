@@ -35,7 +35,7 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
         if self.info is None:
 
             raise ValueError(
-                'Invalid IPlayerInfo instance for index "%s"' % index)
+                'Invalid IPlayerInfo instance for index "{0}"'.format(index))
 
         # Set the entities attribute
         self._entities = frozenset(['entity', 'player'])

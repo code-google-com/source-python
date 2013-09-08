@@ -36,16 +36,16 @@ class _BaseRegistry(dict):
 
             # Raise an error, since the item cannot be added twice
             raise NameError(
-                '%s cannot register %s' % (self._class_name, self._name) +
-                ' "%s", it has already been registered.' % item)
+                '{0} cannot register {1} "{2}", it has already '
+                'been registered.'.format(self._class_name, self._name, item))
 
         # Is the given function callable?
         if not callable(function):
 
             # Raise an error, since the object needs to be callable
             raise TypeError(
-                '%s cannot register %s' % (self._class_name, self._name) +
-                ' "%s", given function not callable.' % item)
+                '{0} cannot register {1} "{2}", given function '
+                'is not callable.'.format(self._class_name, self._name, item))
 
         # Add the item to the dictionary
         self[item] = function
@@ -59,8 +59,8 @@ class _BaseRegistry(dict):
             # Raise an error, since the item cannot be
             # unregistered if it has not been registered
             raise NameError(
-                '%s cannot register %s' % (self._class_name, self._name) +
-                ' "%s", it has not been registered.' % item)
+                '{0} cannot unregister {1} "{2}", it has not '
+                'been registered.'.format(self._class_name, self._name, item))
 
         # Remove the item from the dictionary
         del self[item]
@@ -83,7 +83,7 @@ class _FilterRegistry(_BaseRegistry):
         if not item in self:
 
             # Raise an error
-            raise FilterError('Invalid %s "%s"' % (self._name, item))
+            raise FilterError('Invalid {0} "{1}"'.format(self._name, item))
 
         # Return the callable
         return super(_FilterRegistry, self).__getitem__(item)
@@ -103,7 +103,7 @@ class _ReturnTypeRegistry(_BaseRegistry):
         if not item in self:
 
             # Raise an error
-            raise ReturnTypeError('Invalid %s "%s"' % (self._name, item))
+            raise ReturnTypeError('Invalid {0} "{1}"'.format(self._name, item))
 
         # Return the callable
         return super(_ReturnTypeRegistry, self).__getitem__(item)

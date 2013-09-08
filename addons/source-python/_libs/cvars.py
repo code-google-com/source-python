@@ -29,27 +29,28 @@ class ServerVar(cvar_c.CConVar):
         '''Gets the value of the given attribute'''
 
         # Is the attribute a flag?
-        if hasattr(cvar_c, 'FCVAR_%s' % attr.upper()):
+        if hasattr(cvar_c, 'FCVAR_{0}'.format(attr.upper())):
 
             # Return the value of the cvar's flag
             return self.is_flag_set(
-                getattr(cvar_c, 'FCVAR_%s' % attr.upper()))
+                getattr(cvar_c, 'FCVAR_{0}'.format(attr.upper())))
 
         # If not, raise an error
-        raise AttributeError('"ServerVar" object has no attribute "%s"' % attr)
+        raise AttributeError(
+            '"ServerVar" object has no attribute "{0}"'.format(attr))
 
     def __setattr__(self, attr, value):
         '''Sets the value of the given attribute'''
 
         # Is the attribute a flag?
-        if not hasattr(cvar_c, 'FCVAR_%s' % attr.upper()):
+        if not hasattr(cvar_c, 'FCVAR_{0}'.format(attr.upper())):
 
             # Does the instance itself have the attribute?
             if not hasattr(self, attr):
 
                 # If not, raise an error
                 raise AttributeError(
-                    '"ServerVar" object has no attribute "%s"' % attr)
+                    '"ServerVar" object has no attribute "{0}"'.format(attr))
 
             # Set the attribute
             super(ServerVar, self).__setattr__(attr, value)
@@ -58,7 +59,7 @@ class ServerVar(cvar_c.CConVar):
             return
 
         # Get the flag
-        flag = getattr(cvar_c, 'FCVAR_%s' % attr.upper())
+        flag = getattr(cvar_c, 'FCVAR_{0}'.format(attr.upper()))
 
         # Is the value "True"
         if value:

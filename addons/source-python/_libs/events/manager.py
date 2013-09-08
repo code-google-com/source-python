@@ -48,7 +48,7 @@ class _EventRegistry(dict):
         if not callable(callback):
 
             # Raise an error
-            raise ValueError('Callback "%s" is not callable' % callback)
+            raise ValueError('Callback "{0}" is not callable'.format(callback))
 
         # Add the callback to the event's registered callback list
         self[event].append(callback)
@@ -60,7 +60,7 @@ class _EventRegistry(dict):
         if not event in self:
 
             # Raise an error
-            raise ValueError('Event "%s" is not registered' % event)
+            raise ValueError('Event "{0}" is not registered'.format(event))
 
         # Remove the callback from the event's list
         self[event].remove(callback)

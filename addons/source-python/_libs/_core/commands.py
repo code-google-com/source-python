@@ -102,9 +102,10 @@ class _SPCommands(OrderedDict):
                 if len(args) != len(required):
 
                     # Send a message about the sub-command's valid arguments
-                    _CoreCommandsLogger.log_message('[SP] ' +
-                        _command_strings['Invalid Arguments'].get_string(
-                        command=command) + ' '.join(self[command].args))
+                    _CoreCommandsLogger.log_message(
+                        '[SP] ' + _command_strings[
+                            'Invalid Arguments'].get_string(
+                            command=command) + ' '.join(self[command].args))
 
                     # Go no further
                     return
@@ -149,7 +150,7 @@ class _SPCommands(OrderedDict):
                 # Continue onto the next item
                 continue
 
-            # Does the current command have required arguments?
+            # Does the current command have any arguments?
             if hasattr(self[item], 'args'):
 
                 # Add the arguments to the text
@@ -159,7 +160,7 @@ class _SPCommands(OrderedDict):
             message += '\n' + text + self[
                 item].__doc__.rjust(78 - len(text))
 
-        # Send ending message
+        # Send the message
         _CoreCommandsLogger.log_message(message + '\n' + '=' * 78)
 
 # Get the _SPCommands instance
@@ -183,7 +184,7 @@ def _sp_command_callback(CICommand):
         command, args = arg_string.split(maxsplit=1)
 
     # Was an exception raised?
-    except:
+    except ValueError:
 
         # Set the command as the text, since there
         # are either 1 or 0 arguments in the string
@@ -313,7 +314,7 @@ def _print_addons():
             for item in info:
 
                 # Add message for the current item and its value
-                message += '\t%s:\n\t\t%s\n' % (item, info[item])
+                message += '\t{0}:\n\t\t{1}\n'.format(item, info[item])
 
         # Was no AddonInfo instance found?
         else:
@@ -359,9 +360,13 @@ def _print_credits():
         # Add 1 blank line between groups
         message += '\n'
 
-    # Print the ending message
+    # Print the message
     _CoreCommandsLogger.log_message(message + '=' * 61 + '\n\n')
 
+
+# =============================================================================
+# >> SUB-COMMAND REGISTRATION
+# =============================================================================
 # Add addon loading/unloading commands to the dictionary
 _SPCommandsInstance['load'] = _load_addon
 _SPCommandsInstance['load'].args = ['<addon>']

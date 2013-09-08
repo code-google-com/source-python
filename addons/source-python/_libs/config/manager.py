@@ -223,8 +223,8 @@ class ConfigManager(object):
                         line = line.lstrip('/ ').replace('\n', '')
 
                         # Write the current line
-                        open_file.write(
-                            '//%s//\n' % line.center(self.max_line_length - 4))
+                        open_file.write('//{0}//\n'.format(
+                            line.center(self.max_line_length - 4)))
 
                 # Write the separator to end the header
                 open_file.write(separator)
@@ -258,7 +258,7 @@ class ConfigManager(object):
                         open_file.write(
                             '//' + spaces +
                             _config_strings['Default'].get_string() +
-                            ' %s\n' % section.default)
+                            ' {0}\n'.format(section.default))
 
                     # Loop through the description to get valid
                     # lines with length less than the max line length
@@ -283,8 +283,8 @@ class ConfigManager(object):
 
                         # Write the cvar line using the default value
                         open_file.write(
-                            ' ' * self.indention +
-                            section.name + ' %s\n\n\n' % section.default)
+                            ' ' * self.indention + section.name +
+                            ' {0}\n\n\n'.format(section.default))
 
                 # Is the current section a Section?
                 elif isinstance(section, _SectionManager):
@@ -321,9 +321,8 @@ class ConfigManager(object):
                             line = line.lstrip('/ ').replace('\n', '')
 
                             # Write the current line
-                            open_file.write(
-                                '//%s//\n' %
-                                line.center(self.max_line_length - 4))
+                            open_file.write('//{0}//\n'.format(
+                                line.center(self.max_line_length - 4)))
 
                     # Write the separator to end the section
                     open_file.write(separator)
@@ -383,11 +382,12 @@ class ConfigManager(object):
                     for line in _old_config[name]:
 
                         # Write the line to the config file
-                        open_file.write('// %s\n' % line)
+                        open_file.write('// {0}\n'.format(line))
 
     def execute(self):
         '''Executes the config file'''
-        GameEngine.server_command('exec source-python/%s\n' % self.filepath)
+        GameEngine.server_command(
+            'exec source-python/{0}\n'.format(self.filepath))
 
     def _parse_old_file(self):
         '''Parses the old config file to get any values already set'''

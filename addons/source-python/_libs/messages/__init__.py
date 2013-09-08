@@ -25,6 +25,6 @@ MessagesLogger = _SPLogger.messages
 for message_name, message_class in _UserMessages(DATA_PATH.joinpath(
     'messages', 'usermessages.ini'), DATA_PATH.joinpath('messages',
         'games', GAME_NAME + '.ini')).items():
-        
+
     # Globalize the current message class
     globals()[message_name] = message_class

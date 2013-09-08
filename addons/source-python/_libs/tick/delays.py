@@ -37,8 +37,8 @@ class _Delay(object):
 
         # Log the init message
         TickDelaysLogger.log_info(
-            '_Delay.__init__ <%s> <%s> <%s> <%s>' % (
-            seconds, callback, args, kwargs))
+            '_Delay.__init__ <{0}> <{1}> <{2}> <{3}>'.format(
+                seconds, callback, args, kwargs))
 
         # Store the time to execute the callback
         self.exec_time = time.time() + seconds
@@ -53,8 +53,8 @@ class _Delay(object):
 
         # Log the call message
         TickDelaysLogger.log_info(
-            '_Delay.__call__ - Try to call - <%s> <%s> <%s>' % (
-            self.callback, self.args, self.kwargs))
+            '_Delay.__call__ - Try to call - <{0}> <{1}> <{2}>'.format(
+                self.callback, self.args, self.kwargs))
 
         # Use try/except in case an error is encountered
         try:
@@ -96,7 +96,7 @@ class _TickDelays(dict):
         '''Called when first adding a time to the dictionary'''
 
         # Log the missing message
-        TickDelaysLogger.log_info('TickDelays.__missing__ <%s>' % item)
+        TickDelaysLogger.log_info('TickDelays.__missing__ <{0}>'.format(item))
 
         # Is the tick listener registered?
         if not self:
@@ -133,7 +133,7 @@ class _TickDelays(dict):
             remove the time from the ordered list'''
 
         # Log the delitem message
-        TickDelaysLogger.log_info('TickDelays.__delitem__ <%s>' % item)
+        TickDelaysLogger.log_info('TickDelays.__delitem__ <{0}>'.format(item))
 
         # Is the item in the dictionary?
         if not item in self:
@@ -199,7 +199,7 @@ class _TickDelays(dict):
 
         # Log the canceling message
         TickDelaysLogger.log_info(
-            'TickDelays.cancel_delay <%s>' % delay_object)
+            'TickDelays.cancel_delay <{0}>'.format(delay_object))
 
         # Is the given argument a _Delay object?
         if not isinstance(delay_object, _Delay):
@@ -215,8 +215,9 @@ class _TickDelays(dict):
             raise KeyError('Object is no longer registered.')
 
         # Log the removing from list message
-        TickDelaysLogger.log_info('TickDelays.cancel_delay - ' +
-            'Removing from <%s>' % delay_object.exec_time)
+        TickDelaysLogger.log_info(
+            'TickDelays.cancel_delay - Removing from '
+            '<{0}>'.format(delay_object.exec_time))
 
         # Remove the delay from its time
         self[delay_object.exec_time].remove(delay_object)
@@ -225,8 +226,9 @@ class _TickDelays(dict):
         if not self[delay_object.exec_time]:
 
             # Log the deletion of the time from the dictionary message
-            TickDelaysLogger.log_info('TickDelays.cancel_delay - ' +
-                'Removing <%s> from dictionary' % delay_object.exec_time)
+            TickDelaysLogger.log_info(
+                'TickDelays.cancel_delay - Removing <{0}> '
+                'from dictionary'.format(delay_object.exec_time))
 
             # If not, remove the delay's time from the dictionary
             del self[delay_object.exec_time]

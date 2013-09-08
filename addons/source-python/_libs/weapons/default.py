@@ -22,8 +22,10 @@ class NoWeaponManager(object):
 
     def __getattribute__(self, attr):
         '''Raise an error when trying to get an attribute'''
-        raise NotImplementedError('No support for game "%s"' % GAME_NAME)
+        raise NotImplementedError(
+            'No support for game "{0}"'.format(GAME_NAME))
 
     def __setattr__(self, attr, value):
         '''Raise an error when trying to set an attribute'''
-        raise NotImplementedError('No support for game "%s"' % GAME_NAME)
+        raise NotImplementedError(
+            'No support for game "{0}"'.format(GAME_NAME))

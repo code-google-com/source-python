@@ -54,7 +54,8 @@ class LangStrings(dict):
         if not self._mainfile.isfile():
 
             # Raise an error
-            raise FileNotFoundError('No file found at %s' % self._mainfile)
+            raise FileNotFoundError(
+                'No file found at {0}'.format(self._mainfile))
 
         # Get the path to the server specific file
         self._serverfile = self._mainfile.parent.joinpath(
@@ -106,7 +107,7 @@ class LangStrings(dict):
                 # Get the language's string and fix any escaped strings
                 translation_strings[
                     language] = self._replace_escaped_sequences(
-                        main_strings[key][lang])
+                    main_strings[key][lang])
 
             # Add the TranslationStrings instance for the current string
             self[key] = translation_strings
@@ -165,8 +166,8 @@ class LangStrings(dict):
         # Set the initial comments to explain what the file is for
         server_file.initial_comment = _translation_strings[
             'Initial Comment'].get_string(
-                LanguageManager.default,
-                filename=self._mainfile.replace(GAME_PATH, '')).splitlines()
+            LanguageManager.default,
+            filename=self._mainfile.replace(GAME_PATH, '')).splitlines()
 
         # Write the server specific file
         server_file.write()
